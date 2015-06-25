@@ -62,7 +62,10 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
-
+      .when('/categories', {
+        templateUrl: 'views/categories.html',
+        controller: 'CategoriesController'
+      })
       .when('/chat', {
         templateUrl: 'views/chat.html',
         controller: 'ChatCtrl'
@@ -92,7 +95,7 @@ angular.module('routes',['ngRoute'])
       // some of our routes may reject resolve promises with the special {authRequired: true} error
       // this redirects to the login page whenever that is encountered
       $rootScope.$on('$routeChangeError', function(e, next, prev, err) {
-        if( err === 'AUTH_REQUIRED' ) {
+        if( err.toString() === 'AUTH_REQUIRED' ) {
           $location.path(LOGIN_REDIRECT_PATH);
         }
       });
@@ -122,7 +125,7 @@ angular.module('routes',['ngRoute'])
  *
  * Main module of the application.
  */
-angular.module('marketplaceApp', ['routes','ngAnimate','ngAria','ngCookies','ngMessages','ngResource','ngSanitize','firebase','fireBaseConfig'])
+angular.module('marketplaceApp', ['routes','ngAnimate','ngAria','ngCookies','ngMessages','ngResource','ngSanitize','firebase','fireBaseConfig','categories'])
   .controller('MainCtrl', function ($scope) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
@@ -301,12 +304,9 @@ angular.module('fireBaseConfig',[])
     return $firebaseAuth(Ref);
   })
   .factory('Ref', ['$window', 'FIRE_BASE_URL', function($window, FIRE_BASE_URL) {
-    'use strict';
     return new $window.Firebase(FIRE_BASE_URL);
   }])
-  .directive('ngHideAuth', ['Auth', '$timeout', function (Auth, $timeout) {
-    'use strict';
-
+  .directive('ngHideAuth', ['Auth', '$timeout','$log', function (Auth, $timeout, $log) {
     return {
       restrict: 'A',
       link: function(scope, el) {
@@ -315,6 +315,8 @@ angular.module('fireBaseConfig',[])
           // sometimes if ngCloak exists on same element, they argue, so make sure that
           // this one always runs last for reliability
           $timeout(function () {
+            $log.log('\n ngHideAuth directive Auth.$getAuth()',Auth.$getAuth());
+            $log.log('ngHideAuth directive !!Auth.$getAuth()',!!Auth.$getAuth());
             el.toggleClass('ng-cloak', !!Auth.$getAuth());
           }, 0);
         }
@@ -324,11 +326,8 @@ angular.module('fireBaseConfig',[])
       }
     };
   }])
-  .directive('ngShowAuth', ['Auth', '$timeout', function (Auth, $timeout) {
-    'use strict';
-
+  .directive('ngShowAuth', ['Auth', '$timeout', '$log', function (Auth, $timeout, $log) {
     //  A directive that shows elements only when user is logged out. It also waits for Auth to be initialized so there is no initial flashing of incorrect state.
-
     return {
       restrict: 'A',
       link: function(scope, el) {
@@ -338,6 +337,8 @@ angular.module('fireBaseConfig',[])
           // sometimes if ngCloak exists on same element, they argue, so make sure that
           // this one always runs last for reliability
           $timeout(function () {
+            $log.log('\n ngShowAuth directive Auth.$getAuth()',Auth.$getAuth());
+            $log.log('ngShowAuth directive !Auth.$getAuth()',!Auth.$getAuth());
             el.toggleClass('ng-cloak', !Auth.$getAuth());
           }, 0);
         }
@@ -362,7 +363,6 @@ angular.module('httpDelay',[])
 
     $httpProvider.interceptors.push( httpDelay );
 
-
     // I add a delay to both successful and failed responses.
     function httpDelay( $timeout, $q ) {
 
@@ -370,58 +370,35 @@ angular.module('httpDelay',[])
 
       // Return our interceptor configuration.
       return({
-        response: response,
-        responseError: responseError
+        response: function(response){
+          // I intercept successful responses.
+          var deferred = $q.defer();
+          $timeout(
+            function() {
+              deferred.resolve( response );
+            },
+            delayInMilliseconds,
+            // There's no need to trigger a $digest - the view-model has
+            // not been changed.
+            false
+          );
+          return( deferred.promise );
+        },
+        responseError: function (response){
+          // I intercept error responses.
+          var deferred = $q.defer();
+          $timeout(
+            function() {
+              deferred.reject( response );
+            },
+            delayInMilliseconds,
+            // There's no need to trigger a $digest - the view-model has
+            // not been changed.
+            false
+          );
+          return( deferred.promise );
+        }
       });
-
-
-      // ---
-      // PUBLIC METHODS.
-      // ---
-
-
-      // I intercept successful responses.
-      function response( response ) {
-
-        var deferred = $q.defer();
-
-        $timeout(
-          function() {
-
-            deferred.resolve( response );
-
-          },
-          delayInMilliseconds,
-          // There's no need to trigger a $digest - the view-model has
-          // not been changed.
-          false
-        );
-
-        return( deferred.promise );
-
-      }
-
-
-      // I intercept error responses.
-      function responseError( response ) {
-
-        var deferred = $q.defer();
-
-        $timeout(
-          function() {
-
-            deferred.reject( response );
-
-          },
-          delayInMilliseconds,
-          // There's no need to trigger a $digest - the view-model has
-          // not been changed.
-          false
-        );
-
-        return( deferred.promise );
-
-      }
 
     }
 
@@ -462,14 +439,14 @@ angular.module('forms',['ngMessages','cgBusy','jlareau.pnotify','validation.matc
       if($scope.form.$valid){
         $scope.httpRequestPromise = $http.post('/in', $scope.model).
           success(function(data) {
-            if(data['status'] === 'success'){
-              window.location = "/";
+            if(data.status === 'success'){
+              window.location = '/';
             }else{
               notificationService.error(data.message);
             }
           }).
           error(function() {
-            window.location = "/";
+            window.location = '/';
           });
       }
     };
@@ -486,7 +463,7 @@ angular.module('forms',['ngMessages','cgBusy','jlareau.pnotify','validation.matc
       if($scope.form.$valid){
         $scope.httpRequestPromise = $http.post('/snp', $scope.model).
           success(function(data) {
-            if(data['status'] === 'success'){
+            if(data.status === 'success'){
 
               notificationService.success('Listo, ahora intente iniciar sesión en su cuenta.');
 
@@ -499,7 +476,7 @@ angular.module('forms',['ngMessages','cgBusy','jlareau.pnotify','validation.matc
             }
           }).
           error(function() {
-            window.location = "/";
+            window.location = '/';
           });
       }
     };
@@ -515,7 +492,7 @@ angular.module('forms',['ngMessages','cgBusy','jlareau.pnotify','validation.matc
       if($scope.form.$valid){
         $scope.httpRequestPromise = $http.post('/recover-account', $scope.model).
           success(function(data) {
-            if(data['status'] === 'success'){
+            if(data.status === 'success'){
               notificationService.success('Ya le enviamos un correo electrónico para que recupere su cuenta.');
               $modalInstance.close();
             }else{
@@ -523,7 +500,7 @@ angular.module('forms',['ngMessages','cgBusy','jlareau.pnotify','validation.matc
             }
           }).
           error(function() {
-            window.location = "/";
+            window.location = '/';
           });
       }
     };
@@ -547,7 +524,7 @@ angular.module('forms',['ngMessages','cgBusy','jlareau.pnotify','validation.matc
       if($scope.form.$valid){
         $scope.httpRequestPromise = $http.post('/new-user', $scope.model).
           success(function(data) {
-            if(data['status'] === 'success'){
+            if(data.status === 'success'){
               notificationService.success('Casi listo, le hemos enviado un correo para verificar y activar su cuenta.');
               $modalInstance.close();
             }else{
@@ -555,7 +532,7 @@ angular.module('forms',['ngMessages','cgBusy','jlareau.pnotify','validation.matc
             }
           }).
           error(function() {
-            window.location = "/";
+            window.location = '/';
           });
       }
     };
@@ -575,7 +552,7 @@ angular.module('forms',['ngMessages','cgBusy','jlareau.pnotify','validation.matc
       if($scope.form.$valid){
         $scope.httpRequestPromise = $http.post('/sea', $scope.model).
           success(function(data) {
-            if(data['status'] === 'success'){
+            if(data.status === 'success'){
               notificationService.success('Ya hemos enviado otro correo electrónico para verificar su cuenta.');
               $modalInstance.close();
             }else{
@@ -583,7 +560,7 @@ angular.module('forms',['ngMessages','cgBusy','jlareau.pnotify','validation.matc
             }
           }).
           error(function() {
-            window.location = "/";
+            window.location = '/';
           });
       }
     };
@@ -603,49 +580,49 @@ angular.module('publications',[])
       var user   		= href.segment(1);
       var fragments 	= href.fragment(); // $location.path();
 
-      var url_obj         	= {};
-      url_obj['action']     	= action;
-      url_obj['user']     	= user;
-      url_obj['search']      	= '';
-      url_obj['page']        	= '';
-      url_obj['orderBy']    	= '';
+      var urlObj         	= {};
+      urlObj.action     	= action;
+      urlObj.user     	= user;
+      urlObj.search      	= '';
+      urlObj.page        	= '';
+      urlObj.orderBy    	= '';
 
-      if(fragments != ''){
+      if(fragments !== ''){
         var splitSegments = fragments.split('/');
         if(splitSegments.length){
           angular.forEach(splitSegments, function(parameter) {
-            if(parameter.indexOf("search-") !== -1){
-              var search_string 	= $filter('stringReplace')(parameter,'search-','');
-              url_obj.search 		= $filter('noSpecialChars')(search_string);
+            if(parameter.indexOf('search-') !== -1){
+              var searchString 	= $filter('stringReplace')(parameter,'search-','');
+              urlObj.search 		= $filter('noSpecialChars')(searchString);
             }
-            if(parameter.indexOf("page-") !== -1){
-              url_obj.page = parseInt($filter('stringReplace')(parameter,'page-',''));
+            if(parameter.indexOf('page-') !== -1){
+              urlObj.page = parseInt($filter('stringReplace')(parameter,'page-',''));
             }
             switch(parameter) {
               case 'highest-price':
-                url_obj['orderBy'] = "highest-price";
+                urlObj.orderBy = 'highest-price';
                 break;
               case 'lowest-price':
-                url_obj['orderBy'] = "lowest-price";
+                urlObj.orderBy = 'lowest-price';
                 break;
               case 'latest':
-                url_obj['orderBy'] = "latest";
+                urlObj.orderBy = 'latest';
                 break;
               case 'oldest':
-                url_obj['orderBy'] = 'oldest';
+                urlObj.orderBy = 'oldest';
                 break;
               case 'higher-availability':
-                url_obj['orderBy'] = 'higher-availability';
+                urlObj.orderBy = 'higher-availability';
                 break;
               case 'lower-availability':
-                url_obj['orderBy'] = 'lower-availability';
+                urlObj.orderBy = 'lower-availability';
                 break;
             }
           });
         }
       }
 
-      return url_obj;
+      return urlObj;
     };
 
     return {
@@ -655,37 +632,37 @@ angular.module('publications',[])
       page: function(page){
         var urlInfo = info();
         var slug     = '';
-        var new_url = '';
+        var newUrl = '';
 
-        if(urlInfo['orderBy'] != ''){
-          if(urlInfo['search'] !== ''){
-            slug = $filter('slug')(urlInfo['search']);
-            new_url = '#/search-'+slug+'/'+urlInfo['orderBy']+'/page-'+page;
+        if(urlInfo.orderBy !== ''){
+          if(urlInfo.search !== ''){
+            slug = $filter('slug')(urlInfo.search);
+            newUrl = '#/search-'+slug+'/'+urlInfo.orderBy+'/page-'+page;
           }else{
-            new_url = '#/'+urlInfo['orderBy']+'/page-'+page;
+            newUrl = '#/'+urlInfo.orderBy+'/page-'+page;
           }
         }else{
-          if(urlInfo['search'] !== ''){
-            slug = $filter('slug')(urlInfo['search']);
-            new_url = "#/search-"+slug+"/page-"+page;
+          if(urlInfo.search !== ''){
+            slug = $filter('slug')(urlInfo.search);
+            newUrl = '#/search-'+slug+'/page-'+page;
           }else{
-            new_url = "#/page-"+page;
+            newUrl = '#/page-'+page;
           }
         }
 
-        window.location.href = new_url;
+        window.location.href = newUrl;
       },
       orderBy: function(order){
         var urlInfo = info();
-        var new_url = '';
+        var newUrl = '';
 
-        if(urlInfo['search'] !== ''){
-          var slug = $filter('slug')(urlInfo['search']);
-          new_url = '#/search-'+slug+'/'+order;
+        if(urlInfo.search !== ''){
+          var slug = $filter('slug')(urlInfo.search);
+          newUrl = '#/search-'+slug+'/'+order;
         }else{
-          new_url = '#/'+order;
+          newUrl = '#/'+order;
         }
-        window.location.href = new_url;
+        window.location.href = newUrl;
       },
       search:function(searchText){
         $log.log('searchText',searchText);
@@ -703,21 +680,21 @@ angular.module('publications',[])
         if(list.length > 0){
           angular.forEach(list,function(publication){
             var obj = {
-              id: 		publication['Product']['id'],
-              title:		$filter('capitalizeFirstChar')(publication['Product']['title']),
-              slug:		$filter('slug')(publication['Product']['title']),
-              status:		publication['Product']['status'],
-              price:		publication['Product']['price'],
-              quantity:	publication['Product']['quantity'],
-              created:	$filter('dateParse')(publication['Product']['created'],'dd/MM/yyyy - hh:mm a')
+              id: 		publication.product.id,
+              title:		$filter('capitalizeFirstChar')(publication.product.title),
+              slug:		$filter('slug')(publication.product.title),
+              status:		publication.product.status,
+              price:		publication.product.price,
+              quantity:	publication.product.quantity,
+              created:	$filter('dateParse')(publication.product.created,'dd/MM/yyyy - hh:mm a')
             };
             obj.link = '/product/'+obj.id+'/'+obj.slug+'.html';
             obj.draftLink = '/edit-draft/'+obj.id;
 
-            if(publication['Image'] == undefined || publication['Image'].length == 0){
-              obj.image = '/assets/images/no-image-available.png'
+            if(publication.image === undefined || publication.image.length === 0){
+              obj.image = '/assets/images/no-image-available.png';
             }else{
-              obj.image = '/assets/images/publications/'+publication['Image'][0]['name'];
+              obj.image = '/assets/images/publications/'+publication.image[0].name;
             }
             publications.push(obj);
           });
@@ -732,33 +709,39 @@ angular.module('publications',[])
     $scope.publications = [];
     $scope.orderBy = '';
 
+    //var test = {
+    //  expiredSession:true
+    //};
+
+
     var getPublications = function(){
 
       $scope.httpRequestPromise = $http.post('/products', url.info()).
         success(function(data) {
           $log.log('httpRequest data: ',data);
 
-          if(data['expired_session']){
-            window.location = "/login";
+
+          if(data.expiredSession){
+            window.location = '/login';
           }
 
-          if(data['status'] === 'success'){
+          if(data.status === 'success'){
 
-            $scope.publications 	= publications.digest(data['products']);
-            $scope.orderBy 			= data['orderBy'];
-            $scope.search 			= data['search'];
-            $scope.totalItems 		= data['totalItems'];
-            $scope.itemsInThisPage 	= data['itemsInThisPage'];
-            $scope.currentPage 		= data['currentPage'];
-            $scope.totalPages 		= data['totalPages'];
+            $scope.publications 	= publications.digest(data.products);
+            $scope.orderBy 			= data.orderBy;
+            $scope.search 			= data.search;
+            $scope.totalItems 		= data.totalItems;
+            $scope.itemsInThisPage 	= data.itemsInThisPage;
+            $scope.currentPage 		= data.currentPage;
+            $scope.totalPages 		= data.totalPages;
 
           }else{
-            //window.location = "/";
+            //window.location = '/';
           }
 
         }).
         error(function() {
-          window.location = "/";
+          window.location = '/';
         });
     };
 
@@ -807,7 +790,7 @@ angular.module('publications',[])
           if(scope.totalItems > 1){
             var de = '';
             var hasta = '';
-            if(scope.currentPage == scope.totalPages){
+            if(scope.currentPage === scope.totalPages){
               de 		= scope.totalItems-scope.itemsInThisPage+1;
               hasta	= scope.totalItems;
             }
@@ -834,12 +817,12 @@ angular.module('publications',[])
         'publications':'=data',
         'type':'@'
       },
-      link:function(scope,element,attrs){
+      link:function(scope,element){
 
-        if(typeof scope.publications ==  "undefined"){
+        if(typeof scope.publications ===  'undefined'){
           throw { message: 'attrs data is not defined' };
         }
-        if(typeof scope.type ==  "undefined"){
+        if(typeof scope.type ===  'undefined'){
           throw { message: 'attrs type is not defined' };
         }
 
@@ -902,7 +885,7 @@ angular.module('filters',[])
   })
   .filter('capitalizeFirstChar', function() {
     return function(input) {
-      return (!!input) ? input.trim().replace(/(^\w{0,1})/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1);}) : '';
+      return (!!input) ? input.trim().replace(/(^\w?)/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1);}) : '';
     };
   })
   .filter('dateParse', function($filter) {
@@ -911,8 +894,8 @@ angular.module('filters',[])
     };
   })
   .filter('stringReplace', function() {
-    return function(string,change_this,for_this) {
-      return string.split(change_this).join(for_this);
+    return function(string,changeThis,forThis) {
+      return string.split(changeThis).join(forThis);
     };
   });
 
