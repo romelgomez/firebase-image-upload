@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="marketplaceApp">
+  <body ng-app="app">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -71,16 +71,16 @@
     </div>
 
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
-       !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
-       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
-       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
-       }(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <!--&lt;!&ndash; Google Analytics: change UA-XXXXX-X to be your site's ID &ndash;&gt;-->
+     <!--<script>-->
+       <!--!function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){-->
+       <!--(A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),-->
+       <!--r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)-->
+       <!--}(window,document,'script','//www.google-analytics.com/analytics.js','ga');-->
 
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script>
+       <!--ga('create', 'UA-XXXXX-X');-->
+       <!--ga('send', 'pageview');-->
+    <!--</script>-->
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
@@ -125,6 +125,15 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
+        <script src="scripts/filters.js"></script>
+        <script src="scripts/forms.js"></script>
+        <script src="scripts/fire.js"></script>
+        <script src="scripts/routes.js"></script>
+        <script src="scripts/main.js"></script>
+        <script src="scripts/categories.js"></script>
+        <script src="scripts/chat.js"></script>
+        <script src="scripts/login.js"></script>
+        <script src="scripts/account.js"></script>
         <!-- endbuild -->
 </body>
 </html>

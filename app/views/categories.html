@@ -1,1 +1,41 @@
-<div>Categories</div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Nueva Categoría</h3>
+  </div>
+  <div class="panel-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
+
+    <form id="form" name="form" novalidate="" ng-submit="submit()">
+      <div class="form-group">
+        <label>Nueva categoría</label>
+        <input type="text" name="category" ng-model="model.category" required no-special-chars class="form-control" placeholder="Laptops">
+        <div data-ng-messages="form.$submitted && form.category.$error" class="help-block">
+          <div data-ng-message="required">
+            - La <b>categoría</b> es un requisito.
+          </div>
+          <div data-ng-message="noSpecialChars">
+            - La <b>categoría</b> no debe tener caracteres especiales.
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!--<pre>{{form | json}}</pre>-->
+
+  </div>
+  <div class="panel-footer">
+    <button class="btn btn-warning" ng-click="reset()">Cancelar</button>
+    <button form="form" class="btn btn-primary" type="submit">Enviar</button>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Categorías</h3>
+  </div>
+  <div class="panel-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
+
+
+  </div>
+</div>
+
+
