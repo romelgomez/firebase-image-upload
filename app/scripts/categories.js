@@ -1,9 +1,23 @@
 'use strict';
 
 angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
-  .controller('CategoriesController',['$scope','$firebaseArray','FireRef','$log',function($scope,$firebaseArray,FireRef,$log){
+  .factory('tree',[,function(){
 
-    $scope.categories = $firebaseArray(FireRef.child('categories'));
+
+
+    return null;
+  }])
+  .controller('CategoriesController',['$scope','$firebaseArray','FireRef','notificationService','$window','$log',function($scope,$firebaseArray,FireRef,notificationService,$window,$log){
+
+    var categoriesRef  = FireRef.child('categories');
+    $scope.categories = $firebaseArray(categoriesRef);
+
+
+    $scope.httpRequestPromise = $scope.categories.$loaded()
+      .then(null,function(error){
+        notificationService.error(error);
+      });
+
 
     var original = angular.copy($scope.model = {
       category: null
@@ -14,6 +28,27 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
       $scope.form.$setUntouched();
       $scope.form.$setPristine();
     };
+
+    $scope.deleteAllCategories = function(){
+      var onComplete = function(error) {
+        if (error) {
+          notificationService.error(error);
+        } else {
+          notificationService.success('All categories has been deleted');
+        }
+      };
+      categoriesRef.remove(onComplete);
+    };
+
+    $scope.delete = function(record){
+      $scope.categories.$remove(record).then(function(ref){
+        $log.log('ref: ',ref);
+        notificationService.success('This category has been deleted');
+      },function(error){
+        notificationService.error(error);
+      });
+    };
+
 
     $scope.submit = function () {
       if($scope.form.$valid){
@@ -39,22 +74,14 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
             "name":     $scope.model.category
         };
 
-        $scope.categories.$add({properties: properties});
+        $scope.httpRequestPromise = $scope.categories.$add({properties: properties}).then(function() {
+          notificationService.success('Data has been saved to our Firebase database');
+          $scope.reset();
+        },function(error){
+          notificationService.error(error);
+          //$window.location = '/';
+        });
 
-        $scope.reset();
-
-        //$scope.httpRequestPromise = $http.post('/new-user', $scope.model).
-        //  success(function(data) {
-        //    if(data['status'] === 'success'){
-        //      notificationService.success('Casi listo, le hemos enviado un correo para verificar y activar su cuenta.');
-        //      $modalInstance.close();
-        //    }else{
-        //      notificationService.error(data.message);
-        //    }
-        //  }).
-        //  error(function() {
-        //    window.location = "/";
-        //  });
 
       }
     };

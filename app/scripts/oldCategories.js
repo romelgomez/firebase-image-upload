@@ -450,8 +450,8 @@ $(document).ready(function() {
           var deleteCategoryBranch    = $("#delete-category-branch").prop('checked');
           var tree                    = JSON.parse(treeElement.tree('toJson'));
 
+          // Tree es un objeto json Anidado
           var excludeResult           = excludeNode(tree,deleteCategoryId,deleteCategoryBranch);
-
           normalize(excludeResult['target_tree']);
           var new_tree = prepare_for_data_store(excludeResult['target_tree']);
 
