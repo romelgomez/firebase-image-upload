@@ -3,7 +3,7 @@ $(document).ready(function() {
 
   (function( categories, $, undefined ) {
 
-    /*
+    /**
      @Name              -> treeElement
      @visibility        -> Private
      @Type              -> Property
@@ -12,7 +12,7 @@ $(document).ready(function() {
      */
     var treeElement;
 
-    /*
+    /**
      @Name              -> initEstate
      @visibility        -> Private
      @Type              -> Property
@@ -21,7 +21,7 @@ $(document).ready(function() {
      */
     var initEstate;
 
-    /*
+    /**
      @Name              -> displayJqTreeData
      @visibility        -> Private
      @Type              -> Method
@@ -42,21 +42,21 @@ $(document).ready(function() {
       treeElement.tree(options);
     };
 
-    /*
+    /**
      @Name              -> replaceWholeTree
      @visibility        -> Private
      @Type              -> Method
      @Descripción       -> Replace whole Tree.
      @parameters        -> treeData: JqTree data.
-     @returns           -> null
-     @implemented by    -> newCategory(), editCategoryName()
+     @returns           -> NULL
+     @implemented by    -> newCategory(), editCategoryName(), deleteCategory(), treeMove()
      */
     var replaceWholeTree = function(treeData){
       treeElement.tree('loadData', treeData);
     };
 
 
-    /*
+    /**
      @Name              -> packAsJqTreeNode
      @visibility        -> Private
      @Type              -> Method

@@ -13,6 +13,16 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
     $scope.categories = $firebaseArray(categoriesRef);
 
 
+    $scope.logThis = function(){
+
+      angular.forEach($scope.categories, function(value){
+        $log.log(value);
+      });
+
+    };
+
+
+
     $scope.httpRequestPromise = $scope.categories.$loaded()
       .then(null,function(error){
         notificationService.error(error);
@@ -41,7 +51,7 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
     $scope.delete = function(record){
-      $scope.categories.$remove(record).then(function(ref){
+      $scope.httpRequestPromise = $scope.categories.$remove(record).then(function(ref){
         $log.log('ref: ',ref);
         notificationService.success('This category has been deleted');
       },function(error){
