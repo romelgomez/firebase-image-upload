@@ -1,80 +1,83 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Nueva Categoría</h3>
-  </div>
-  <div class="panel-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
+<section cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Nueva Categoría</h3>
+    </div>
+    <div class="panel-body" >
 
-    <form id="form" name="form" novalidate="" ng-submit="submit()">
-      <div class="form-group">
-        <label>Nueva categoría</label>
-        <input type="text" name="category" ng-model="model.category" required no-special-chars class="form-control" placeholder="Laptops">
-        <div data-ng-messages="form.$submitted && form.category.$error" class="help-block">
-          <div data-ng-message="required">
-            - La <b>categoría</b> es un requisito.
-          </div>
-          <div data-ng-message="noSpecialChars">
-            - La <b>categoría</b> no debe tener caracteres especiales.
+      <form id="form" name="form" novalidate="" ng-submit="submit()">
+        <div class="form-group">
+          <label>Nueva categoría</label>
+          <input type="text" name="category" ng-model="model.category" required no-special-chars class="form-control" placeholder="Laptops">
+          <div data-ng-messages="form.$submitted && form.category.$error" class="help-block">
+            <div data-ng-message="required">
+              - La <b>categoría</b> es un requisito.
+            </div>
+            <div data-ng-message="noSpecialChars">
+              - La <b>categoría</b> no debe tener caracteres especiales.
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
 
-    <!--<pre>{{form | json}}</pre>-->
+      <!--<pre>{{form | json}}</pre>-->
 
+    </div>
+    <div class="panel-footer">
+      <button class="btn btn-warning" ng-click="reset()">Cancelar</button>
+      <button form="form" class="btn btn-primary" type="submit">Enviar</button>
+    </div>
   </div>
-  <div class="panel-footer">
-    <button class="btn btn-warning" ng-click="reset()">Cancelar</button>
-    <button form="form" class="btn btn-primary" type="submit">Enviar</button>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title" style="line-height: 30px;">Categorías     <button ng-click="deleteAllCategories()" type="button" class="btn btn-danger pull-right" style="line-height: normal;">Delete All Categories</button></h3>
+    </div>
+    <div class="panel-body">
+
+      <button class="btn btn-default" ng-click="logThis()">Log This</button>
+
+    <hr>
+
+      <tabset justified="true">
+        <tab heading="Pretty JSON">
+          <br>
+          <section ng-if="categories.length > 0">
+            <div class="panel panel-default" ng-repeat="category in categories">
+              <!-- Default panel contents -->
+              <div class="panel-heading" style="line-height: 30px;"><b>$id: </b><span class="label label-primary">{{category.$id}}</span> | <b>$priority: </b> <span class="label label-default">{{(category.$priority == null) ? 'NULL' : category.$priority }}</span> <button ng-click="delete(category)" type="button" class="btn btn-danger pull-right" style="line-height: normal;">Delete</button></div>
+              <!-- Table -->
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Left</th>
+                  <th>Right</th>
+                  <th>parentId</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>{{category.properties.name}}</td>
+                  <td><b>{{category.properties.left}}</b></td>
+                  <td><b>{{category.properties.right}}</b></td>
+                  <td>{{(category.properties.parentId !== '') ? category.properties.parentId : 'NULL'}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section ng-if="categories.length === 0">
+            <h2>There is no categories</h2>
+          </section>
+        </tab>
+        <tab heading="JSON">
+          <br>
+          <pre>{{categories | json}}</pre>
+        </tab>
+        <tab heading="jTree or angular-ui-tree">Long Labeled Justified content</tab>
+      </tabset>
+
+    </div>
   </div>
-</div>
-
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Categorías</h3>
-  </div>
-  <div class="panel-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
-
-
-    <tabset justified="true">
-      <tab heading="Pretty JSON">
-        <br>
-        <section ng-show="categories.length">
-          <div class="panel panel-default" ng-repeat="category in categories">
-            <!-- Default panel contents -->
-            <div class="panel-heading"><b>$id: </b><span class="label label-primary">{{category.$id}}</span> | <b>$priority: </b> <span class="label label-default">{{(category.$priority == null) ? 'NULL' : category.$priority }}</span></div>
-            <!-- Table -->
-            <table class="table">
-              <thead>
-              <tr>
-                <th>Name</th>
-                <th>Left</th>
-                <th>Right</th>
-                <th>parentId</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>{{category.properties.name}}</td>
-                <td><b>{{category.properties.left}}</b></td>
-                <td><b>{{category.properties.right}}</b></td>
-                <td>{{(category.properties.parentId !== '') ? category.properties.parentId : 'NULL'}}</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </tab>
-      <tab heading="JSON">
-        <br>
-        <pre>{{categories | json}}</pre>
-      </tab>
-      <tab heading="jTree">Long Labeled Justified content</tab>
-    </tabset>
-
-
-
-
-  </div>
-</div>
-
-
+</section>

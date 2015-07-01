@@ -94,7 +94,7 @@ angular.module('publications',[])
         window.location.href = newUrl;
       },
       search:function(searchText){
-        $log.log('searchText',searchText);
+        //$log.log('searchText',searchText);
         var slug = $filter('slug')(searchText);
         window.location.href = '#/search-'+slug;
       }
