@@ -1,3 +1,13 @@
+<script type="text/ng-template" id="tree.html">
+<div>
+  <pre>{{jqTreeData | json }}</pre>
+</div>
+</script>
+<script type="text/ng-template" id="noTree.html">
+  <div  class="alert alert-warning" role="alert" >
+    <h2>There is no categories</h2>
+  </div>
+</script>
 <section cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
   <div class="panel panel-default">
     <div class="panel-heading">
