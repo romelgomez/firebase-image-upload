@@ -89,6 +89,16 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
        */
       $scope.sourceDataAsJqTreeData = function(sourceData){
         var targetTree = [];
+
+        $log.log('sourceData 9919: ',sourceData);
+        $log.log('sourceData.length: ',sourceData.length);
+
+        angular.forEach(sourceData, function(value,key){
+          log.log('key:',key);
+          log.log('value:',value);
+        });
+
+
         angular.forEach(sourceData, function(obj){
           var node  = packAsJqTreeNode(obj);
           if(node.parentId != ''){
@@ -121,12 +131,17 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
           throw { message: 'attrs nodes is not defined' };
         }
 
-        //$log.log(scope.nodes);
         //$log.log(scope.jqTreeData);
 
         scope.$watch('nodes', function(){
 
+
+          angular.forEach(scope.nodes, function(value){
+            $log.log(value);
+          });
+
           $log.log('this is scope.nodes: ',scope.nodes);
+          $log.log('this is scope.nodes.length: ',scope.nodes.length);
 
           var template = '';
           if(scope.nodes.length > 0){
@@ -136,7 +151,7 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
           }
 
           scope.jqTreeData = scope.sourceDataAsJqTreeData(scope.nodes);
-          $log.log(scope.jqTreeData);
+          //$log.log('scope.jqTreeData: ',scope.jqTreeData);
 
           element.html($compile($templateCache.get(template))(scope));
         });
@@ -203,9 +218,9 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
     //mockObj = [];
 
 
-    //var categoriesRef  = FireRef.child('categories');
-    //$scope.categories = $firebaseArray(categoriesRef);
-    $scope.categories = mockObj;
+    var categoriesRef  = FireRef.child('categories');
+    $scope.categories = $firebaseArray(categoriesRef);
+    //$scope.categories = mockObj;
 
 
     $scope.logThis = function(){
@@ -214,10 +229,10 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
       });
     };
 
-    //$scope.httpRequestPromise = $scope.categories.$loaded()
-    //  .then(null,function(error){
-    //    notificationService.error(error);
-    //  });
+    $scope.httpRequestPromise = $scope.categories.$loaded()
+      .then(null,function(error){
+        notificationService.error(error);
+      });
 
     var original = angular.copy($scope.model = {
       category: null
