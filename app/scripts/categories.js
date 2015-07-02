@@ -1,7 +1,44 @@
 'use strict';
 
 angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
-  .directive('tree',['$templateCache','$compile',function($templateCache,$compile){
+  .directive('treeOld',['$templateCache','$compile','$log',function($templateCache,$compile,$log){
+
+
+    return {
+      restrict:'E',
+      scope: {
+        'nodes':'@',
+        'jqTreeData':[]
+      },
+      remplace:true,
+      template:'<b>Hi</b>',
+      controller:controller,
+      link:function(scope,element){
+
+        //if(typeof scope.nodes ===  'undefined'){
+        //  throw { message: 'attrs nodes is not defined' };
+        //}
+
+        //$log.log(scope.nodes);
+
+        //scope.$watch('nodes', function(){
+        //
+        //  var template = '';
+        //  if(scope.nodes.length > 0){
+        //    template = 'tree.html';
+        //  }else{
+        //    template = 'noTree.html';
+        //  }
+        //
+        //  scope.jqTreeData = scope.sourceDataAsJqTreeData(scope.nodes);
+        //
+        //  element.html($compile($templateCache.get(template))(scope));
+        //});
+
+      }
+    };
+  }])
+  .directive('tree',['$templateCache','$compile','$log',function($templateCache,$compile,$log){
 
     var controller = function($scope){
       /**
@@ -34,7 +71,7 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
        */
       var insertChildNode = function(targetTree,childNode){
         angular.forEach(targetTree,function(node){
-          if(node.$id == childNode.parentId){
+          if(node.id == childNode.parentId){
             node.children.push(childNode);
           }else{
             if(node.children.length > 0){
@@ -42,7 +79,6 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
             }
           }
         });
-        return null;
       };
 
       /**
@@ -70,66 +106,118 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
 
     };
 
+
     return {
       restrict:'E',
       scope: {
-        'nodes':'@',
-        'jqTreeData':[]
+        nodes: '='
       },
+      replace:true,
       controller:controller,
+      //template:'<pre>{{ nodes | json }}<pre/>',
       link:function(scope,element){
 
         if(typeof scope.nodes ===  'undefined'){
           throw { message: 'attrs nodes is not defined' };
         }
 
+        //$log.log(scope.nodes);
+        //$log.log(scope.jqTreeData);
+
         scope.$watch('nodes', function(){
+
+          $log.log('this is scope.nodes: ',scope.nodes);
+
           var template = '';
-          switch(scope.type) {
-            case 'published':
-              if(scope.publications.length > 0){
-                template = 'tree.html';
-              }else{
-                template = 'noTree.html';
-              }
-              break;
+          if(scope.nodes.length > 0){
+            template = 'tree.html';
+          }else{
+            template = 'noTree.html';
           }
 
           scope.jqTreeData = scope.sourceDataAsJqTreeData(scope.nodes);
+          $log.log(scope.jqTreeData);
 
           element.html($compile($templateCache.get(template))(scope));
         });
 
+
       }
     };
+
   }])
   .controller('CategoriesController',['$scope','$firebaseArray','FireRef','notificationService','$window','$log',function($scope,$firebaseArray,FireRef,notificationService,$window,$log){
 
-    var categoriesRef  = FireRef.child('categories');
-    $scope.categories = $firebaseArray(categoriesRef);
+    var mockObj = [
+      {
+        properties:{
+          name:'Category 0',left:'1',right:'2',parentId:''
+        },
+        $id:'0',
+        $priority:null
+      },
+      {
+        properties:{
+          name:'Category 0',left:'3',right:'4',parentId:''
+        },
+        $id:'1',
+        $priority:null
+      },
+      {
+        properties:{
+          name:'Category 0',left:'5',right:'6',parentId:''
+        },
+        $id:'2',
+        $priority:null
+      },
+      {
+        properties:{
+          name:'Category 0',left:'7',right:'12',parentId:''
+        },
+        $id:'3',
+        $priority:null
+      },
+      {
+        properties:{
+          name:'Category 0',left:'8',right:'9',parentId:'3'
+        },
+        $id:'4',
+        $priority:null
+      },
+      {
+        properties:{
+          name:'Category 0',left:'10',right:'11',parentId:'3'
+        },
+        $id:'5',
+        $priority:null
+      },
+      {
+        properties:{
+          name:'Category 0',left:'13',right:'14',parentId:''
+        },
+        $id:'6',
+        $priority:null
+      }
+    ];
+
+    //mockObj = [];
+
+
+    //var categoriesRef  = FireRef.child('categories');
+    //$scope.categories = $firebaseArray(categoriesRef);
+    $scope.categories = mockObj;
 
 
     $scope.logThis = function(){
-
       angular.forEach($scope.categories, function(value){
         $log.log(value);
       });
-
-      var obj = [
-        {name:'laptop 0',left:'1',right:'2'},
-        {name:'laptop 1',left:'3',right:'4'},
-        {name:'laptop 2',left:'5',right:'6'}
-      ];
-
     };
 
-
-
-    $scope.httpRequestPromise = $scope.categories.$loaded()
-      .then(null,function(error){
-        notificationService.error(error);
-      });
-
+    //$scope.httpRequestPromise = $scope.categories.$loaded()
+    //  .then(null,function(error){
+    //    notificationService.error(error);
+    //  });
 
     var original = angular.copy($scope.model = {
       category: null
