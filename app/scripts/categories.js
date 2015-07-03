@@ -37,6 +37,38 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
   .directive('tree',['$templateCache','$compile','tree','$log',function($templateCache,$compile,tree,$log){
 
     var controller = function($scope){
+
+
+      /**
+       @Name            displayJqTreeData
+       @Descripción     Display initially JqTree Data.
+       @parameters      {element: reference of DOM element, data: object}
+       @returns         null
+       @implementedBy
+       */
+      $scope.displayJqTreeData = function(element,data){
+        var options = {
+          dragAndDrop: true,
+          selectable: true,
+          autoEscape: false,
+          autoOpen: true,
+          data: data
+        };
+
+        element.tree(options);
+      };
+
+      /**
+       @Name         replaceWholeTree
+       @Descripción  Replace whole Tree.
+       @parameters   {element: reference of DOM element, data: object}
+       @returns      null
+       @implementedBy -> newCategory(), editCategoryName(), deleteCategory(), treeMove()
+       */
+      $scope.replaceWholeTree = function(element,data){
+        element.tree('loadData', data);
+      };
+
       /**
        @Name          packAsJqTreeNode
        @visibility    Private
@@ -113,8 +145,12 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         scope.nodes       = tree.nodes();
         scope.jqTreeData  = [];
 
+        scope.displayJqTreeData(element,scope.jqTreeData);
+
         scope.nodes.$watch(function(){
           scope.jqTreeData = scope.sourceDataAsJqTreeData(scope.nodes);
+
+          scope.replaceWholeTree(element,scope.jqTreeData);
 
           //var template = '';
           //if(scope.nodes.length > 0){

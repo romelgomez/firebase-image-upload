@@ -58,6 +58,7 @@ module.exports = function(config) {
       'bower_components/uri.js/src/jquery.URI.min.js',
       'bower_components/uri.js/src/URI.fragmentQuery.js',
       'bower_components/uri.js/src/URI.fragmentURI.js',
+      'bower_components/jqtree/tree.jquery.js',
       'bower_components/mockfirebase/browser/mockfirebase.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
