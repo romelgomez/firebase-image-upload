@@ -64,7 +64,7 @@ angular.module('routes',['ngRoute'])
       })
       .when('/categories', {
         templateUrl: 'views/categories.html',
-        controller: 'CategoriesController'
+        controller: 'TreeController'
       })
       .when('/chat', {
         templateUrl: 'views/chat.html',

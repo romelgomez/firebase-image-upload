@@ -1,44 +1,40 @@
 'use strict';
 
-angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
-  .directive('treeOld',['$templateCache','$compile','$log',function($templateCache,$compile,$log){
+angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
+  .factory('tree',['$q','$firebaseArray','FireRef',function($q,$firebaseArray,FireRef){
 
+    var treeRef = function(){
+      return FireRef.child('tree');
+    };
 
     return {
-      restrict:'E',
-      scope: {
-        'nodes':'@',
-        'jqTreeData':[]
+      ref:function(){
+        return treeRef();
       },
-      remplace:true,
-      template:'<b>Hi</b>',
-      controller:controller,
-      link:function(scope,element){
+      nodes:function(mockObj){
 
-        //if(typeof scope.nodes ===  'undefined'){
-        //  throw { message: 'attrs nodes is not defined' };
-        //}
+        //var deferred = $q.defer();
+        //var promise = deferred.promise;
+        //
+        //var nodes = [
+        //  {properties:{name:'Node 1',left:'1',right:'2',parentId:''},$id:'0',$priority:null},
+        //  {properties:{name:'Node 2',left:'3',right:'4',parentId:''},$id:'1',$priority:null},
+        //  {properties:{name:'Node 3',left:'5',right:'6',parentId:''},$id:'2',$priority:null},
+        //  {properties:{name:'Node 4',left:'7',right:'12',parentId:''},$id:'3',$priority:null},
+        //  {properties:{name:'Node 5',left:'8',right:'9',parentId:'3'},$id:'4',$priority:null},
+        //  {properties:{name:'Node 6',left:'10',right:'11',parentId:'3'},$id:'5',$priority:null},
+        //  {properties:{name:'Node 7',left:'13',right:'14',parentId:''},$id:'6',$priority:null}
+        //];
+        //return (mockObj) ? promise.then(function(nodes){return nodes},null) : $firebaseArray(treeRef());
 
-        //$log.log(scope.nodes);
-
-        //scope.$watch('nodes', function(){
-        //
-        //  var template = '';
-        //  if(scope.nodes.length > 0){
-        //    template = 'tree.html';
-        //  }else{
-        //    template = 'noTree.html';
-        //  }
-        //
-        //  scope.jqTreeData = scope.sourceDataAsJqTreeData(scope.nodes);
-        //
-        //  element.html($compile($templateCache.get(template))(scope));
-        //});
+        return $firebaseArray(treeRef());
 
       }
     };
+
+
   }])
-  .directive('tree',['$templateCache','$compile','$log',function($templateCache,$compile,$log){
+  .directive('tree',['$templateCache','$compile','tree','$log',function($templateCache,$compile,tree,$log){
 
     var controller = function($scope){
       /**
@@ -89,16 +85,6 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
        */
       $scope.sourceDataAsJqTreeData = function(sourceData){
         var targetTree = [];
-
-        $log.log('sourceData 9919: ',sourceData);
-        $log.log('sourceData.length: ',sourceData.length);
-
-        angular.forEach(sourceData, function(value,key){
-          log.log('key:',key);
-          log.log('value:',value);
-        });
-
-
         angular.forEach(sourceData, function(obj){
           var node  = packAsJqTreeNode(obj);
           if(node.parentId != ''){
@@ -116,126 +102,50 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
 
     };
 
-
     return {
       restrict:'E',
-      scope: {
-        nodes: '='
-      },
+      scope: {},
       replace:true,
       controller:controller,
-      //template:'<pre>{{ nodes | json }}<pre/>',
+      template:'<div><pre>{{ nodes | json }}</pre> <pre>{{jqTreeData | json}}</pre><div/>',
       link:function(scope,element){
 
-        if(typeof scope.nodes ===  'undefined'){
-          throw { message: 'attrs nodes is not defined' };
-        }
+        scope.nodes       = tree.nodes();
+        scope.jqTreeData  = [];
 
-        //$log.log(scope.jqTreeData);
-
-        scope.$watch('nodes', function(){
-
-
-          angular.forEach(scope.nodes, function(value){
-            $log.log(value);
-          });
-
-          $log.log('this is scope.nodes: ',scope.nodes);
-          $log.log('this is scope.nodes.length: ',scope.nodes.length);
-
-          var template = '';
-          if(scope.nodes.length > 0){
-            template = 'tree.html';
-          }else{
-            template = 'noTree.html';
-          }
-
+        scope.nodes.$watch(function(){
           scope.jqTreeData = scope.sourceDataAsJqTreeData(scope.nodes);
-          //$log.log('scope.jqTreeData: ',scope.jqTreeData);
 
-          element.html($compile($templateCache.get(template))(scope));
+          //var template = '';
+          //if(scope.nodes.length > 0){
+          //  template = 'tree.html';
+          //}else{
+          //  template = 'noTree.html';
+          //}
+          //
+          //element.html($compile($templateCache.get(template))(scope));
         });
 
-
-      }
+     }
     };
 
   }])
-  .controller('CategoriesController',['$scope','$firebaseArray','FireRef','notificationService','$window','$log',function($scope,$firebaseArray,FireRef,notificationService,$window,$log){
+  .controller('TreeController',['$scope','notificationService','$window','tree','$log',function($scope,notificationService,$window,tree,$log){
 
-    var mockObj = [
-      {
-        properties:{
-          name:'Category 0',left:'1',right:'2',parentId:''
-        },
-        $id:'0',
-        $priority:null
-      },
-      {
-        properties:{
-          name:'Category 0',left:'3',right:'4',parentId:''
-        },
-        $id:'1',
-        $priority:null
-      },
-      {
-        properties:{
-          name:'Category 0',left:'5',right:'6',parentId:''
-        },
-        $id:'2',
-        $priority:null
-      },
-      {
-        properties:{
-          name:'Category 0',left:'7',right:'12',parentId:''
-        },
-        $id:'3',
-        $priority:null
-      },
-      {
-        properties:{
-          name:'Category 0',left:'8',right:'9',parentId:'3'
-        },
-        $id:'4',
-        $priority:null
-      },
-      {
-        properties:{
-          name:'Category 0',left:'10',right:'11',parentId:'3'
-        },
-        $id:'5',
-        $priority:null
-      },
-      {
-        properties:{
-          name:'Category 0',left:'13',right:'14',parentId:''
-        },
-        $id:'6',
-        $priority:null
-      }
-    ];
-
-    //mockObj = [];
-
-
-    var categoriesRef  = FireRef.child('categories');
-    $scope.categories = $firebaseArray(categoriesRef);
-    //$scope.categories = mockObj;
-
+    $scope.nodes = tree.nodes();
 
     $scope.logThis = function(){
-      angular.forEach($scope.categories, function(value){
+      angular.forEach($scope.nodes, function(value){
         $log.log(value);
       });
     };
 
-    $scope.httpRequestPromise = $scope.categories.$loaded()
-      .then(null,function(error){
-        notificationService.error(error);
-      });
+    $scope.httpRequestPromise = $scope.nodes.$loaded(null,function(error){
+      notificationService.error(error);
+    });
 
     var original = angular.copy($scope.model = {
-      category: null
+      node: null
     });
 
     $scope.reset = function(){
@@ -244,37 +154,36 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
       $scope.form.$setPristine();
     };
 
-    $scope.deleteAllCategories = function(){
+    $scope.deleteTree = function(){
       var onComplete = function(error) {
         if (error) {
           notificationService.error(error);
         } else {
-          notificationService.success('All categories has been deleted');
+          notificationService.success('The tree or nodes has been deleted');
         }
       };
-      categoriesRef.remove(onComplete);
+      tree.ref().remove(onComplete);
     };
 
-    $scope.delete = function(record){
-      $scope.httpRequestPromise = $scope.categories.$remove(record).then(function(ref){
-        $log.log('ref: ',ref);
+    $scope.deleteNode = function(record){
+      $scope.httpRequestPromise = $scope.nodes.$remove(record).then(function(ref){
+        //$log.log('ref: ',ref);
         notificationService.success('This category has been deleted');
       },function(error){
         notificationService.error(error);
       });
     };
 
-
     $scope.submit = function () {
       if($scope.form.$valid){
 
         $log.log($scope.model);
 
-        var categoriesLength = $scope.categories.length;
+        var nodesLength = $scope.nodes.length;
         var left, right;
 
-        if(categoriesLength >= 1){
-          var upperLimit = categoriesLength * 2;
+        if(nodesLength >= 1){
+          var upperLimit = nodesLength * 2;
           left    = upperLimit+1;
           right   = upperLimit+2;
         }else{
@@ -286,10 +195,10 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
             "left":     left,
             "right":    right,
             "parentId": '',
-            "name":     $scope.model.category
+            "name":     $scope.model.node
         };
 
-        $scope.httpRequestPromise = $scope.categories.$add({properties: properties}).then(function() {
+        $scope.httpRequestPromise = $scope.nodes.$add({properties: properties}).then(function() {
           notificationService.success('Data has been saved to our Firebase database');
           $scope.reset();
         },function(error){
@@ -297,12 +206,8 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
           //$window.location = '/';
         });
 
-
       }
     };
-
-
-
 
 
   }]);
