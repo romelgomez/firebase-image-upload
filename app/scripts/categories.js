@@ -134,6 +134,31 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           return targetTree;
         };
 
+        /**
+         @Name              prepareDataForFireBase
+         @Descripción       Recursive Method, Prepare data for FireBase data store.
+         @parameters        {tree: object}
+         @returns           object
+         @implementedBy    deleteCategory(), treeMove();
+         */
+        var prepareDataForFireBase = function(tree){
+          var nodes = {};
+          var process = function(tree){
+            angular.forEach(tree,function(node){
+              nodes[node.id]                      = {};
+              nodes[node.id].properties           = {};
+              nodes[node.id].properties.name      = node.name;
+              nodes[node.id].properties.parentId  = node.parentId;
+              nodes[node.id].properties.left      = node.left;
+              nodes[node.id].properties.right     = node.right;
+              if(node.children.length > 0){
+                process(node.children);
+              }
+            });
+          };
+          process(tree);
+          return nodes;
+        };
 
         /**
          @Name            normalize
@@ -142,18 +167,27 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
          @returns         Null
          @implementedBy   deleteCategory(), treeMove();
          */
-        var normalize = function(tree,parentId,count){
-          angular.forEach(tree,function(node){
-            node.left     = (count) ? count: 1; count +=1;
-            node.parentId =  (parentId) ? parentId: '';
-            if(node.children !== undefined && node.children.length >= 1){
-              // There are child nodes
-              normalize(node.children,node.id,count);
-            }else{
-              node.children = [];
-            }
-            node.right = count; count +=1;
-          });
+        var normalize = function(tree){
+          var count;
+          var fix = function(tree,parentId){
+            angular.forEach(tree,function(node){
+              if(!count){ count = 1; }
+              node.left = count; count +=1;
+              if(parentId){
+                node.parentId = parentId;
+              }else{
+                node.parentId = '';
+              }
+              if(node.children !== undefined && node.children.length >= 1){
+                // There are child nodes
+                fix(node.children,node.id);
+              }else{
+                node.children = [];
+              }
+              node.right = count; count +=1;
+            });
+          };
+          fix(tree);
         };
 
         /**
@@ -175,15 +209,16 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           event.preventDefault();
           event.move_info.do_move();
 
-          $log.log(element.tree('toJson'));
-
           var proposalTree = angular.fromJson(element.tree('toJson'));
 
-          $log.log('no normalized',proposalTree);
+          normalize(proposalTree);
 
-          var proposalTree2 = JSON.parse(element.tree('toJson'));
+          var newTree = prepareDataForFireBase(proposalTree);
 
-          $log.log('no normalized 2 ',proposalTree2);
+           //$log.log('newTree: ',angular.toJson(newTree));
+
+          var ref = tree.ref();
+          ref.set(newTree);
 
 
           //var proposalTree = angular.fromJson(element.tree('toJson'));
@@ -280,11 +315,39 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
   }])
-  .controller('TreeController',['$scope','notificationService','$window','tree','$log',function($scope,notificationService,$window,tree,$log){
+  .controller('TreeController',['$scope','notificationService','$window','tree','$log','FireRef',function($scope,notificationService,$window,tree,$log,FireRef){
 
     $scope.nodes = tree.nodes();
 
     $scope.logThis = function(){
+
+      var users = FireRef.child('users');
+
+      var obj = {
+        'name':'romel',
+        'lastName':'Gomez'
+      };
+
+      var obj3 = {
+        0:{"$id":"-JtKa2UVs-ZbBZZfOQ8h","properties":{"name":"nex","parentId":"","left":1,"right":4}},
+        1:{"$id":"-JtKa1GCXOe7Jx1ctBnc","properties":{"name":"hi","parentId":"-JtKa2UVs-ZbBZZfOQ8h","left":2,"right":3}},
+        2:{"$id":"-JtKa37qGVOBZcArg4MS","properties":{"name":"ok","parentId":"","left":5,"right":6}},
+        3:{"$id":"-JtKarCcedt-dQwvJb02","properties":{"name":"1132","parentId":"","left":7,"right":8}},
+        4:{"$id":"-JtM5tEXUMv-p5d_nIlP","properties":{"name":"ok","parentId":"","left":9,"right":10}}
+      };
+
+      var obj4 = {
+        '-JtKa2UVs-ZbBZZfOQ8h':{"properties":{"name":"nex","parentId":"","left":1,"right":4}},
+        '-JtKa1GCXOe7Jx1ctBnc':{"properties":{"name":"hi","parentId":"-JtKa2UVs-ZbBZZfOQ8h","left":2,"right":3}},
+        '-JtKa37qGVOBZcArg4MS':{"properties":{"name":"ok","parentId":"","left":5,"right":6}},
+        '-JtKarCcedt-dQwvJb02':{"properties":{"name":"1132","parentId":"","left":7,"right":8}},
+        '-JtM5tEXUMv-p5d_nIlP':{"properties":{"name":"ok","parentId":"","left":9,"right":10}}
+      };
+
+
+      users.set(obj4);
+
+
       angular.forEach($scope.nodes, function(value){
         $log.log(value);
       });
