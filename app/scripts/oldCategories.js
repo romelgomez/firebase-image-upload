@@ -209,7 +209,7 @@ $(document).ready(function() {
       return result;
     };
 
-    /*
+    /**
      @Name              -> normalize
      @visibility        -> Private
      @Type              -> Recursive Method
@@ -593,7 +593,7 @@ $(document).ready(function() {
 
     };
 
-    /*
+    /**
      @Name              -> treeMove
      @visibility        -> Private
      @Type              -> Event
@@ -798,7 +798,7 @@ $(document).ready(function() {
       validate.form("category-add-form",validateObj);
     };
 
-    /*
+    /**
      @Name              -> treeSelect
      @visibility        -> Private
      @Type              -> Event

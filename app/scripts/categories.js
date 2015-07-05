@@ -36,121 +36,235 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
   }])
   .directive('tree',['$templateCache','$compile','tree','$log',function($templateCache,$compile,tree,$log){
 
-    var controller = function($scope){
-
-
-      /**
-       @Name            displayJqTreeData
-       @Descripción     Display initially JqTree Data.
-       @parameters      {element: reference of DOM element, data: object}
-       @returns         null
-       @implementedBy
-       */
-      $scope.displayJqTreeData = function(element,data){
-        var options = {
-          dragAndDrop: true,
-          selectable: true,
-          autoEscape: false,
-          autoOpen: true,
-          data: data
-        };
-
-        element.tree(options);
-      };
-
-      /**
-       @Name         replaceWholeTree
-       @Descripción  Replace whole Tree.
-       @parameters   {element: reference of DOM element, data: object}
-       @returns      null
-       @implementedBy -> newCategory(), editCategoryName(), deleteCategory(), treeMove()
-       */
-      $scope.replaceWholeTree = function(element,data){
-        element.tree('loadData', data);
-      };
-
-      /**
-       @Name          packAsJqTreeNode
-       @visibility    Private
-       @Description   Source node is packed as JqTree node.
-       @parameters    {sourceNode: object}
-       @return        Object
-       @implementedBy sourceDataAsJqTreeData();
-       */
-      var packAsJqTreeNode = function(sourceNode){
-        var node = {};
-        node.id         = sourceNode.$id;
-        node.label      = sourceNode.properties.name;
-        node.parentId   = sourceNode.properties.parentId;
-        node.left       = sourceNode.properties.left;
-        node.right      = sourceNode.properties.right;
-        node.children   = [];
-        return node;
-      };
-
-      /**
-       @Name          insertChildNode
-       @visibility    Private
-       @Description   Recursive Method; (EN) Is like push(), only that this function completely traverses the tree looking for the father to the son or node  (ES) Hace las veces de push(), solo que esta función recorre el árbol completamente buscando el padre para el hijo o nodo.
-       Para el objeto actual, si se detecta que es un objeto dependiente, se mapea recursivamente targetTree, donde si id del objeto dependiente es igual al el objeto para el momento en el bucle recursivo, quiere decir que tal objeto dependiente es hijo del objeto actual.
-       @parameters    {targetTree: Array,childNode: Object}
-       @returns       null
-       @implementedBy sourceDataAsJqTreeData();
-       */
-      var insertChildNode = function(targetTree,childNode){
-        angular.forEach(targetTree,function(node){
-          if(node.id == childNode.parentId){
-            node.children.push(childNode);
-          }else{
-            if(node.children.length > 0){
-              insertChildNode(node.children,childNode);
-            }
-          }
-        });
-      };
-
-      /**
-       @Name        sourceDataAsJqTreeData
-       @Description Format source data array as JqTree data.
-       @parameters  {sourceData: Array}
-       @returns     Array
-       */
-      $scope.sourceDataAsJqTreeData = function(sourceData){
-        var targetTree = [];
-        angular.forEach(sourceData, function(obj){
-          var node  = packAsJqTreeNode(obj);
-          if(node.parentId != ''){
-            // Is child node
-            // Recursive Function
-            insertChildNode(targetTree,node);
-          }else{
-            // Is root node
-            // Se inserta el nodo directamente
-            targetTree.push(node);
-          }
-        });
-        return targetTree;
-      };
-
-    };
-
     return {
       restrict:'E',
       scope: {},
       replace:true,
-      controller:controller,
-      template:'<div><pre>{{ nodes | json }}</pre> <pre>{{jqTreeData | json}}</pre><div/>',
+      template:'<div><div/>',
       link:function(scope,element){
 
-        scope.nodes       = tree.nodes();
-        scope.jqTreeData  = [];
+        /**
+         @Name            displayJqTreeData
+         @Descripción     Display initially JqTree Data.
+         @parameters      {element: reference of DOM element, data: object}
+         @returns         null
+         @implementedBy
+         */
+        var displayJqTreeData = function(element,data){
+          var options = {
+            dragAndDrop: true,
+            selectable: true,
+            autoEscape: false,
+            autoOpen: true,
+            data: data
+          };
 
-        scope.displayJqTreeData(element,scope.jqTreeData);
+          element.tree(options);
+        };
 
-        scope.nodes.$watch(function(){
-          scope.jqTreeData = scope.sourceDataAsJqTreeData(scope.nodes);
+        /**
+         @Name         replaceWholeTree
+         @Descripción  Replace whole Tree.
+         @parameters   {element: reference of DOM element, data: object}
+         @returns      null
+         @implementedBy -> newCategory(), editCategoryName(), deleteCategory(), treeMove()
+         */
+        var replaceWholeTree = function(element,data){
+          element.tree('loadData', data);
+        };
 
-          scope.replaceWholeTree(element,scope.jqTreeData);
+        /**
+         @Name          packAsJqTreeNode
+         @visibility    Private
+         @Description   Source node is packed as JqTree node.
+         @parameters    {sourceNode: object}
+         @return        Object
+         @implementedBy sourceDataAsJqTreeData();
+         */
+        var packAsJqTreeNode = function(sourceNode){
+          var node = {};
+          node.id         = sourceNode.$id;
+          node.label      = sourceNode.properties.name;
+          node.parentId   = sourceNode.properties.parentId;
+          node.left       = parseInt(sourceNode.properties.left);
+          node.right      = parseInt(sourceNode.properties.right);
+          node.children   = [];
+          return node;
+        };
+
+        /**
+         @Name          insertChildNode
+         @visibility    Private
+         @Description   Recursive Method; (EN) Is like push(), only that this function completely traverses the tree looking for the father to the son or node  (ES) Hace las veces de push(), solo que esta función recorre el árbol completamente buscando el padre para el hijo o nodo.
+         Para el objeto actual, si se detecta que es un objeto dependiente, se mapea recursivamente targetTree, donde si id del objeto dependiente es igual al el objeto para el momento en el bucle recursivo, quiere decir que tal objeto dependiente es hijo del objeto actual.
+         @parameters    {targetTree: Array,childNode: Object}
+         @returns       null
+         @implementedBy sourceDataAsJqTreeData();
+         */
+        var insertChildNode = function(targetTree,childNode){
+          angular.forEach(targetTree,function(node){
+            if(node.id == childNode.parentId){
+              node.children.push(childNode);
+            }else{
+              if(node.children.length > 0){
+                insertChildNode(node.children,childNode);
+              }
+            }
+          });
+        };
+
+        /**
+         @Name        sourceDataAsJqTreeData
+         @Description Recursive Function, Format source data array as JqTree data.
+         @parameters  {sourceData: Array}
+         @returns     Array
+         */
+        var sourceDataAsJqTreeData = function(sourceData){
+          var targetTree = [];
+          angular.forEach(sourceData, function(obj){
+            var node  = packAsJqTreeNode(obj);
+            if(node.parentId != ''){
+              // Is child node
+              insertChildNode(targetTree,node);
+            }else{
+              // Is root node
+              targetTree.push(node);
+            }
+          });
+          return targetTree;
+        };
+
+
+        /**
+         @Name            normalize
+         @Descripción     Recursive Method, Fix .left and .right values of node of tree.
+         @parameters      {tree:object}
+         @returns         Null
+         @implementedBy   deleteCategory(), treeMove();
+         */
+        var normalize = function(tree,parentId,count){
+          angular.forEach(tree,function(node){
+            node.left     = (count) ? count: 1; count +=1;
+            node.parentId =  (parentId) ? parentId: '';
+            if(node.children !== undefined && node.children.length >= 1){
+              // There are child nodes
+              normalize(node.children,node.id,count);
+            }else{
+              node.children = [];
+            }
+            node.right = count; count +=1;
+          });
+        };
+
+        /**
+         @Name          nodes
+         @Descripción   The real time data front fireBase
+         */
+        var nodes = tree.nodes();
+
+        /**
+         @Descripción   Displaying initially Data, which is []
+         */
+        displayJqTreeData(element,[]);
+
+        /**
+         @Descripción   Observing the move event
+         */
+        element.bind('tree.move',function(event) {
+
+          event.preventDefault();
+          event.move_info.do_move();
+
+          $log.log(element.tree('toJson'));
+
+          var proposalTree = angular.fromJson(element.tree('toJson'));
+
+          $log.log('no normalized',proposalTree);
+
+          var proposalTree2 = JSON.parse(element.tree('toJson'));
+
+          $log.log('no normalized 2 ',proposalTree2);
+
+
+          //var proposalTree = angular.fromJson(element.tree('toJson'));
+          //
+          //$log.log('no normalized',proposalTree);
+          //
+          //normalize(proposalTree);
+          //
+          //$log.log('normalized',proposalTree);
+
+          //var tree = JSON.parse(treeElement.tree('toJson'));
+          //
+          //normalize(tree);
+          //
+          //var new_tree = prepare_for_data_store(tree);
+          //
+          //request_parameters['data'] = {
+          //  'tree':new_tree
+          //};
+          //
+          //ajax.request(request_parameters);
+          //
+
+        });
+
+        /**
+         @Descripción   Observing the select event
+         */
+        element.bind('tree.select',function(event) {
+
+            $log.log('event.node',event.node);
+
+            $log.log(element.tree('toJson'));
+
+            var proposalTree = angular.fromJson(element.tree('toJson'));
+
+            $log.log('no normalized',proposalTree);
+
+            var proposalTree2 = JSON.parse(element.tree('toJson'));
+
+            $log.log('no normalized 2 ',proposalTree2);
+
+            //var adminCategory = $("#admin-category");
+
+            //if (event.node) {
+            //
+            //  //  EDIT
+            //  $("#edit-category-id").val(event['node']['id']);
+            //  $("#edit-category-name").val(event['node']['name']);
+            //
+            //  //  Delete
+            //  $("#delete-category-id").val(event['node']['id']);
+            //  $("#delete-category-name").text(event['node']['name']);
+            //
+            //  if(event['node']['children'].length > 0){
+            //    $("#delete-category-branch").parents(".form-group").show();
+            //  }else{
+            //    $("#delete-category-branch").parents(".form-group").hide();
+            //  }
+            //
+            //  // Habilita los botones.
+            //  adminCategory.find("button").each(function(k,element){
+            //    $(element).removeClass("disabled");
+            //  });
+            //}else {
+            //  // inhabilita los botones.
+            //  adminCategory.find("button").each(function(k,element){
+            //    $(element).addClass("disabled");
+            //  });
+            //}
+
+          }
+        );
+
+
+        /**
+         @Descripción   Observing changes in nodes var, which has first [] empty array, after some time is get server data.
+         */
+        nodes.$watch(function(){
+
+          replaceWholeTree(element,sourceDataAsJqTreeData(nodes));
 
           //var template = '';
           //if(scope.nodes.length > 0){
