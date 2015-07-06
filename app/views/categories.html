@@ -41,17 +41,38 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title" style="line-height: 30px;">Categorías     <button ng-click="deleteTree()" type="button" class="btn btn-danger pull-right" style="line-height: normal;">Delete All Categories</button></h3>
+      <h3 class="panel-title" style="line-height: 30px;">Debug</h3>
     </div>
     <div class="panel-body">
 
-    <button class="btn btn-default" ng-click="logThis()">Log This</button>
-    <!--<hr>-->
+      <button class="btn btn-default" ng-click="saveA()">Save A</button>
+      <button class="btn btn-default" ng-click="requestA()">Request A</button>
+      <hr>
+      <button class="btn btn-default" ng-click="saveB()">Save B</button>
+      <button class="btn btn-default" ng-click="requestB()">Request B</button>
 
+      <hr>
+      <pre>{{ logNodes | json }}</pre>
+
+    </div>
+  </div>
+
+
+
+    <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title" style="line-height: 30px;">Categorías     <button ng-click="deleteTree()" type="button" class="btn btn-danger pull-right" style="line-height: normal;">Delete All Categories</button></h3>
+    </div>
+    <div class="panel-body">
+      <hr>
       <tabset justified="true">
         <tab heading="JqTree">
           <br>
           <tree></tree>
+        </tab>
+        <tab heading="JqTree RAM DATA">
+          <br>
+          <pre>{{asJqTreeData | json }}</pre>
         </tab>
         <tab heading="Pretty HTML">
           <br>

@@ -1,36 +1,150 @@
 'use strict';
 
 angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
-  .factory('tree',['$q','$firebaseArray','FireRef',function($q,$firebaseArray,FireRef){
+  .factory('tree',['$q','$firebaseArray','FireRef','$log',function($q,$firebaseArray,FireRef,$log){
 
     var treeRef = function(){
       return FireRef.child('tree');
+    };
+
+    /**
+     @Name          packAsJqTreeNode
+     @visibility    Private
+     @Description   Source node is packed as JqTree node.
+     @parameters    {sourceNode: object}
+     @return        Object
+     @implementedBy sourceDataAsJqTreeData();
+     */
+    var packAsJqTreeNode = function(sourceNode){
+      var node = {};
+      node.id         = sourceNode.$id;
+      node.label      = sourceNode.name;
+      node.parentId   = sourceNode.parentId;
+      node.left       = parseInt(sourceNode.left);
+      node.right      = parseInt(sourceNode.right);
+      node.children   = [];
+      return node;
+    };
+
+    /**
+     @Name          insertChildNode
+     @visibility    Private
+     @Description   Recursive Method; (EN) Is like push(), only that this function completely traverses the tree looking for the father to the son or node  (ES) Hace las veces de push(), solo que esta función recorre el árbol completamente buscando el padre para el hijo o nodo.
+     Para el objeto actual, si se detecta que es un objeto dependiente, se mapea recursivamente targetTree, donde si id del objeto dependiente es igual al el objeto para el momento en el bucle recursivo, quiere decir que tal objeto dependiente es hijo del objeto actual.
+     @parameters    {targetTree: Array,childNode: Object}
+     @returns       null
+     @implementedBy sourceDataAsJqTreeData();
+     */
+    var insertChildNode = function(targetTree,childNode){
+      angular.forEach(targetTree,function(node){
+        if(node.id == childNode.parentId){
+          node.children.push(childNode);
+        }else{
+          if(node.children.length > 0){
+            insertChildNode(node.children,childNode);
+          }
+        }
+      });
     };
 
     return {
       ref:function(){
         return treeRef();
       },
-      nodes:function(mockObj){
+      nodes:function(){
 
-        //var deferred = $q.defer();
-        //var promise = deferred.promise;
+
+        //var messagesRef = new Firebase("https://berlin.firebaseio.com/elementsB");
+        //// download the data from a Firebase database reference into a (pseudo read-only) array
         //
-        //var nodes = [
-        //  {properties:{name:'Node 1',left:'1',right:'2',parentId:''},$id:'0',$priority:null},
-        //  {properties:{name:'Node 2',left:'3',right:'4',parentId:''},$id:'1',$priority:null},
-        //  {properties:{name:'Node 3',left:'5',right:'6',parentId:''},$id:'2',$priority:null},
-        //  {properties:{name:'Node 4',left:'7',right:'12',parentId:''},$id:'3',$priority:null},
-        //  {properties:{name:'Node 5',left:'8',right:'9',parentId:'3'},$id:'4',$priority:null},
-        //  {properties:{name:'Node 6',left:'10',right:'11',parentId:'3'},$id:'5',$priority:null},
-        //  {properties:{name:'Node 7',left:'13',right:'14',parentId:''},$id:'6',$priority:null}
-        //];
-        //return (mockObj) ? promise.then(function(nodes){return nodes},null) : $firebaseArray(treeRef());
+        //// create a query for the most recent 25 messages on the server
+        //var query = messagesRef.orderByChild("left");
+        //
+        //// the $firebaseArray service properly handles Firebase database queries as well
+        //$scope.logNodes = $firebaseArray(query);
+        //
 
-        return $firebaseArray(treeRef());
-
-      }
-    };
+        return $firebaseArray(treeRef().orderByChild("left"));
+      },
+      updateAllTree:function(newTree){
+        var ref = treeRef();
+        ref.set(newTree);
+      },
+    /**
+     @Name        sourceDataAsJqTreeData
+     @Description Recursive Function, Format source data array as JqTree data.
+     @parameters  {sourceData: Array}
+     @returns     Array
+     */
+      sourceDataAsJqTreeData: function(sourceData){
+      var targetTree = [];
+      angular.forEach(sourceData, function(obj){
+        var node  = packAsJqTreeNode(obj);
+        if(node.parentId != ''){
+          // Is child node
+          //$log.log('Is child node');
+          insertChildNode(targetTree,node);
+        }else{
+          // Is root node
+          targetTree.push(node);
+        }
+      });
+      return targetTree;
+    },
+    /**
+     @Name              prepareDataForFireBase
+     @Descripción       Recursive Method, Prepare data for FireBase data store.
+     @parameters        {tree: object}
+     @returns           object
+     @implementedBy    deleteCategory(), treeMove();
+     */
+    prepareDataForFireBase: function(tree){
+      var nodes = {};
+      var process = function(tree){
+        angular.forEach(tree,function(node){
+          nodes[node.id]                      = {};
+          nodes[node.id].name      = node.name;
+          nodes[node.id].parentId  = node.parentId;
+          nodes[node.id].left      = node.left;
+          nodes[node.id].right     = node.right;
+          if(node.children.length > 0){
+            process(node.children);
+          }
+        });
+      };
+      process(tree);
+      return nodes;
+    },
+    /**
+     @Name            normalize
+     @Descripción     Recursive Method, Fix .left and .right values of node of tree.
+     @parameters      {tree:object}
+     @returns         Null
+     @implementedBy   deleteCategory(), treeMove();
+     */
+     normalize: function(tree){
+      var count;
+      var fix = function(tree,parentId){
+        angular.forEach(tree,function(node){
+          if(!count){ count = 1; }
+          node.left = count; count +=1;
+          if(parentId){
+            node.parentId = parentId;
+          }else{
+            node.parentId = '';
+          }
+          if(node.children !== undefined && node.children.length >= 1){
+            // There are child nodes
+            fix(node.children,node.id);
+          }else{
+            node.children = [];
+          }
+          node.right = count; count +=1;
+        });
+      };
+      fix(tree);
+    }
+  };
 
 
   }])
@@ -73,122 +187,6 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           element.tree('loadData', data);
         };
 
-        /**
-         @Name          packAsJqTreeNode
-         @visibility    Private
-         @Description   Source node is packed as JqTree node.
-         @parameters    {sourceNode: object}
-         @return        Object
-         @implementedBy sourceDataAsJqTreeData();
-         */
-        var packAsJqTreeNode = function(sourceNode){
-          var node = {};
-          node.id         = sourceNode.$id;
-          node.label      = sourceNode.properties.name;
-          node.parentId   = sourceNode.properties.parentId;
-          node.left       = parseInt(sourceNode.properties.left);
-          node.right      = parseInt(sourceNode.properties.right);
-          node.children   = [];
-          return node;
-        };
-
-        /**
-         @Name          insertChildNode
-         @visibility    Private
-         @Description   Recursive Method; (EN) Is like push(), only that this function completely traverses the tree looking for the father to the son or node  (ES) Hace las veces de push(), solo que esta función recorre el árbol completamente buscando el padre para el hijo o nodo.
-         Para el objeto actual, si se detecta que es un objeto dependiente, se mapea recursivamente targetTree, donde si id del objeto dependiente es igual al el objeto para el momento en el bucle recursivo, quiere decir que tal objeto dependiente es hijo del objeto actual.
-         @parameters    {targetTree: Array,childNode: Object}
-         @returns       null
-         @implementedBy sourceDataAsJqTreeData();
-         */
-        var insertChildNode = function(targetTree,childNode){
-          angular.forEach(targetTree,function(node){
-            if(node.id == childNode.parentId){
-              node.children.push(childNode);
-            }else{
-              if(node.children.length > 0){
-                insertChildNode(node.children,childNode);
-              }
-            }
-          });
-        };
-
-        /**
-         @Name        sourceDataAsJqTreeData
-         @Description Recursive Function, Format source data array as JqTree data.
-         @parameters  {sourceData: Array}
-         @returns     Array
-         */
-        var sourceDataAsJqTreeData = function(sourceData){
-          var targetTree = [];
-          angular.forEach(sourceData, function(obj){
-            var node  = packAsJqTreeNode(obj);
-            if(node.parentId != ''){
-              // Is child node
-              insertChildNode(targetTree,node);
-            }else{
-              // Is root node
-              targetTree.push(node);
-            }
-          });
-          return targetTree;
-        };
-
-        /**
-         @Name              prepareDataForFireBase
-         @Descripción       Recursive Method, Prepare data for FireBase data store.
-         @parameters        {tree: object}
-         @returns           object
-         @implementedBy    deleteCategory(), treeMove();
-         */
-        var prepareDataForFireBase = function(tree){
-          var nodes = {};
-          var process = function(tree){
-            angular.forEach(tree,function(node){
-              nodes[node.id]                      = {};
-              nodes[node.id].properties           = {};
-              nodes[node.id].properties.name      = node.name;
-              nodes[node.id].properties.parentId  = node.parentId;
-              nodes[node.id].properties.left      = node.left;
-              nodes[node.id].properties.right     = node.right;
-              if(node.children.length > 0){
-                process(node.children);
-              }
-            });
-          };
-          process(tree);
-          return nodes;
-        };
-
-        /**
-         @Name            normalize
-         @Descripción     Recursive Method, Fix .left and .right values of node of tree.
-         @parameters      {tree:object}
-         @returns         Null
-         @implementedBy   deleteCategory(), treeMove();
-         */
-        var normalize = function(tree){
-          var count;
-          var fix = function(tree,parentId){
-            angular.forEach(tree,function(node){
-              if(!count){ count = 1; }
-              node.left = count; count +=1;
-              if(parentId){
-                node.parentId = parentId;
-              }else{
-                node.parentId = '';
-              }
-              if(node.children !== undefined && node.children.length >= 1){
-                // There are child nodes
-                fix(node.children,node.id);
-              }else{
-                node.children = [];
-              }
-              node.right = count; count +=1;
-            });
-          };
-          fix(tree);
-        };
 
         /**
          @Name          nodes
@@ -211,36 +209,15 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
           var proposalTree = angular.fromJson(element.tree('toJson'));
 
-          normalize(proposalTree);
+          tree.normalize(proposalTree);
 
-          var newTree = prepareDataForFireBase(proposalTree);
+          //$log.log('proposalTree',angular.toJson(proposalTree));
 
-           //$log.log('newTree: ',angular.toJson(newTree));
+          var newTree = tree.prepareDataForFireBase(proposalTree);
 
-          var ref = tree.ref();
-          ref.set(newTree);
+          //$log.log('after prepareDataForFireBase()',angular.toJson(newTree));
 
-
-          //var proposalTree = angular.fromJson(element.tree('toJson'));
-          //
-          //$log.log('no normalized',proposalTree);
-          //
-          //normalize(proposalTree);
-          //
-          //$log.log('normalized',proposalTree);
-
-          //var tree = JSON.parse(treeElement.tree('toJson'));
-          //
-          //normalize(tree);
-          //
-          //var new_tree = prepare_for_data_store(tree);
-          //
-          //request_parameters['data'] = {
-          //  'tree':new_tree
-          //};
-          //
-          //ajax.request(request_parameters);
-          //
+          tree.updateAllTree(newTree);
 
         });
 
@@ -251,44 +228,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
             $log.log('event.node',event.node);
 
-            $log.log(element.tree('toJson'));
-
-            var proposalTree = angular.fromJson(element.tree('toJson'));
-
-            $log.log('no normalized',proposalTree);
-
-            var proposalTree2 = JSON.parse(element.tree('toJson'));
-
-            $log.log('no normalized 2 ',proposalTree2);
-
             //var adminCategory = $("#admin-category");
-
-            //if (event.node) {
-            //
-            //  //  EDIT
-            //  $("#edit-category-id").val(event['node']['id']);
-            //  $("#edit-category-name").val(event['node']['name']);
-            //
-            //  //  Delete
-            //  $("#delete-category-id").val(event['node']['id']);
-            //  $("#delete-category-name").text(event['node']['name']);
-            //
-            //  if(event['node']['children'].length > 0){
-            //    $("#delete-category-branch").parents(".form-group").show();
-            //  }else{
-            //    $("#delete-category-branch").parents(".form-group").hide();
-            //  }
-            //
-            //  // Habilita los botones.
-            //  adminCategory.find("button").each(function(k,element){
-            //    $(element).removeClass("disabled");
-            //  });
-            //}else {
-            //  // inhabilita los botones.
-            //  adminCategory.find("button").each(function(k,element){
-            //    $(element).addClass("disabled");
-            //  });
-            //}
 
           }
         );
@@ -299,8 +239,9 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
          */
         nodes.$watch(function(){
 
-          replaceWholeTree(element,sourceDataAsJqTreeData(nodes));
+          replaceWholeTree(element,tree.sourceDataAsJqTreeData(nodes));
 
+          $log.log('1');
           //var template = '';
           //if(scope.nodes.length > 0){
           //  template = 'tree.html';
@@ -315,42 +256,93 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
   }])
-  .controller('TreeController',['$scope','notificationService','$window','tree','$log','FireRef',function($scope,notificationService,$window,tree,$log,FireRef){
+  .controller('TreeController',['$scope','notificationService','$window','tree','$log','FireRef','$firebaseArray',function($scope,notificationService,$window,tree,$log,FireRef,$firebaseArray){
 
     $scope.nodes = tree.nodes();
 
-    $scope.logThis = function(){
+    $scope.asJqTreeData = [];
 
-      var users = FireRef.child('users');
+    $scope.nodes.$watch(function () {
+      $scope.asJqTreeData = tree.sourceDataAsJqTreeData($scope.nodes);
+    });
 
-      var obj = {
-        'name':'romel',
-        'lastName':'Gomez'
+
+    $scope.saveA = function(){
+
+      //query.addSort("left", Query.SortDirection.ASCENDING);
+
+      var elementsA = FireRef.child('elementsA');
+
+      //in server B,A,C
+
+      // A,B,C
+      var objA = {
+        '-JtKa2UVs-ZbBZZfOQ8h':{"properties":{"name":"A","parentId":"","left":1,"right":2}},
+        '-JtKa1GCXOe7Jx1ctBnc':{"properties":{"name":"B","parentId":"","left":3,"right":4}},
+        '-JtKa37qGVOBZcArg4MS':{"properties":{"name":"C","parentId":"","left":5,"right":6}}
       };
 
-      var obj3 = {
-        0:{"$id":"-JtKa2UVs-ZbBZZfOQ8h","properties":{"name":"nex","parentId":"","left":1,"right":4}},
-        1:{"$id":"-JtKa1GCXOe7Jx1ctBnc","properties":{"name":"hi","parentId":"-JtKa2UVs-ZbBZZfOQ8h","left":2,"right":3}},
-        2:{"$id":"-JtKa37qGVOBZcArg4MS","properties":{"name":"ok","parentId":"","left":5,"right":6}},
-        3:{"$id":"-JtKarCcedt-dQwvJb02","properties":{"name":"1132","parentId":"","left":7,"right":8}},
-        4:{"$id":"-JtM5tEXUMv-p5d_nIlP","properties":{"name":"ok","parentId":"","left":9,"right":10}}
+      // B,C,A
+      var objB = {
+        '-JtKa2UVs-ZbBZZfOQ8h':{"properties":{"name":"A","parentId":"","left":4,"right":5}},
+        '-JtKa1GCXOe7Jx1ctBnc':{"properties":{"name":"B","parentId":"","left":1,"right":2}},
+        '-JtKa37qGVOBZcArg4MS':{"properties":{"name":"C","parentId":"","left":3,"right":6}}
       };
 
-      var obj4 = {
-        '-JtKa2UVs-ZbBZZfOQ8h':{"properties":{"name":"nex","parentId":"","left":1,"right":4}},
-        '-JtKa1GCXOe7Jx1ctBnc':{"properties":{"name":"hi","parentId":"-JtKa2UVs-ZbBZZfOQ8h","left":2,"right":3}},
-        '-JtKa37qGVOBZcArg4MS':{"properties":{"name":"ok","parentId":"","left":5,"right":6}},
-        '-JtKarCcedt-dQwvJb02':{"properties":{"name":"1132","parentId":"","left":7,"right":8}},
-        '-JtM5tEXUMv-p5d_nIlP':{"properties":{"name":"ok","parentId":"","left":9,"right":10}}
+      elementsA.set(objB);
+
+    };
+
+    $scope.requestA = function(){
+
+      var elementsARef = new Firebase("https://berlin.firebaseio.com/elementsA");
+      // download the data from a Firebase database reference into a (pseudo read-only) array
+
+      // create a query for the most recent 25 messages on the server
+      var query = elementsARef.orderByChild("left");
+
+      // the $firebaseArray service properly handles Firebase database queries as well
+      $scope.logNodes = $firebaseArray(query);
+
+    };
+
+    $scope.saveB = function(){
+
+      //query.addSort("left", Query.SortDirection.ASCENDING);
+
+      var elementsB = FireRef.child('elementsB');
+
+      //in datebase is B,A,C
+
+      // A,B,C
+      var objA = {
+        '-JtKa2UVs-ZbBZZfOQ8h':{"name":"A","parentId":"","left":1,"right":2},
+        '-JtKa1GCXOe7Jx1ctBnc':{"name":"B","parentId":"","left":3,"right":4},
+        '-JtKa37qGVOBZcArg4MS':{"name":"C","parentId":"","left":5,"right":6}
       };
 
+      // B,C,A
+      var objB = {
+        '-JtKa2UVs-ZbBZZfOQ8h':{"name":"A","parentId":"","left":4,"right":5},
+        '-JtKa1GCXOe7Jx1ctBnc':{"name":"B","parentId":"","left":1,"right":2},
+        '-JtKa37qGVOBZcArg4MS':{"name":"C","parentId":"","left":3,"right":6}
+      };
 
-      users.set(obj4);
+      elementsB.set(objB);
 
+    };
 
-      angular.forEach($scope.nodes, function(value){
-        $log.log(value);
-      });
+    $scope.requestB = function(){
+
+      var elementsBRef = new Firebase("https://berlin.firebaseio.com/elementsB");
+      // download the data from a Firebase database reference into a (pseudo read-only) array
+
+      // create a query for the most recent 25 messages on the server
+      var query = elementsBRef.orderByChild("left");
+
+      // the $firebaseArray service properly handles Firebase database queries as well
+      $scope.logNodes = $firebaseArray(query);
+
     };
 
     $scope.httpRequestPromise = $scope.nodes.$loaded(null,function(error){
@@ -390,8 +382,6 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     $scope.submit = function () {
       if($scope.form.$valid){
 
-        $log.log($scope.model);
-
         var nodesLength = $scope.nodes.length;
         var left, right;
 
@@ -404,14 +394,14 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           right   = 2;
         }
 
-        var properties = {
+        var node = {
             "left":     left,
             "right":    right,
             "parentId": '',
             "name":     $scope.model.node
         };
 
-        $scope.httpRequestPromise = $scope.nodes.$add({properties: properties}).then(function() {
+        $scope.httpRequestPromise = $scope.nodes.$add(node).then(function() {
           notificationService.success('Data has been saved to our Firebase database');
           $scope.reset();
         },function(error){
