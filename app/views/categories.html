@@ -1,74 +1,43 @@
-<script type="text/ng-template" id="tree.html">
-<div>1</div>
-</script>
-<script type="text/ng-template" id="noTree.html">
-  <div  class="alert alert-warning" role="alert" >
-    <h2>There is no categories</h2>
-  </div>
-</script>
-<section cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
+<section cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">Nueva Categoría</h3>
+      <h3 class="panel-title">New category</h3>
     </div>
     <div class="panel-body" >
 
       <form id="form" name="form" novalidate="" ng-submit="submit()">
         <div class="form-group">
-          <label>Nueva categoría</label>
+          <label>New category</label>
           <input type="text" name="category" ng-model="model.node" required no-special-chars class="form-control" placeholder="Laptops">
           <div data-ng-messages="form.$submitted && form.category.$error" class="help-block">
             <div data-ng-message="required">
-              - La <b>categoría</b> es un requisito.
+              - The <b>category</b> is required.
             </div>
             <div data-ng-message="noSpecialChars">
-              - La <b>categoría</b> no debe tener caracteres especiales.
+              - La <b>category</b> must not have special characters.
             </div>
           </div>
         </div>
       </form>
 
-      <!--<pre>{{form | json}}</pre>-->
-
     </div>
     <div class="panel-footer">
-      <button class="btn btn-warning" ng-click="reset()">Cancelar</button>
-      <button form="form" class="btn btn-primary" type="submit">Enviar</button>
+      <button form="form" class="btn btn-primary" type="submit">Send</button>
+      <button class="btn btn-warning" ng-click="reset()">Cancel</button>
     </div>
   </div>
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title" style="line-height: 30px;">Debug</h3>
+      <h3 class="panel-title" style="line-height: 30px;">Categories     <button ng-click="deleteTree()" type="button" class="btn btn-danger pull-right" style="line-height: normal;">Delete All Categories</button></h3>
     </div>
     <div class="panel-body">
-
-      <button class="btn btn-default" ng-click="saveA()">Save A</button>
-      <button class="btn btn-default" ng-click="requestA()">Request A</button>
-      <hr>
-      <button class="btn btn-default" ng-click="saveB()">Save B</button>
-      <button class="btn btn-default" ng-click="requestB()">Request B</button>
-
-      <hr>
-      <pre>{{ logNodes | json }}</pre>
-
-    </div>
-  </div>
-
-
-
-    <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title" style="line-height: 30px;">Categorías     <button ng-click="deleteTree()" type="button" class="btn btn-danger pull-right" style="line-height: normal;">Delete All Categories</button></h3>
-    </div>
-    <div class="panel-body">
-      <hr>
       <tabset justified="true">
         <tab heading="JqTree">
           <br>
           <tree></tree>
         </tab>
-        <tab heading="JqTree RAM DATA">
+        <tab heading="JqTree RAW DATA">
           <br>
           <pre>{{asJqTreeData | json }}</pre>
         </tab>
@@ -90,10 +59,10 @@
                 </thead>
                 <tbody>
                 <tr>
-                  <td>{{node.properties.name}}</td>
-                  <td><b>{{node.properties.left}}</b></td>
-                  <td><b>{{node.properties.right}}</b></td>
-                  <td>{{(node.properties.parentId !== '') ? node.properties.parentId : 'NULL'}}</td>
+                  <td>{{node.name}}</td>
+                  <td><b>{{node.left}}</b></td>
+                  <td><b>{{node.right}}</b></td>
+                  <td>{{(node.parentId !== '') ? node.parentId : 'NULL'}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -112,3 +81,31 @@
     </div>
   </div>
 </section>
+
+
+<script type="text/ng-template" id="deleteNode.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Do you really want to delete this category?</h3>
+  </div>
+  <!--<div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">-->
+  <div class="modal-body">
+
+    <h3 class="text-danger" style="margin-top: 0; margin-bottom: 0;">{{node.name | capitalizeFirstChar}}</h3>
+
+    <form id="deleteBranchForm" name="form" novalidate="" ng-submit="confirm()">
+      <div ng-show="branchCheckBox">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="branch" ng-model="model.branch" value="">
+            And daughters categories to.
+          </label>
+        </div>
+      </div>
+    </form>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button form="deleteBranchForm" class="btn btn-primary" type="submit">Confirm</button>
+  </div>
+</script>

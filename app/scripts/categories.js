@@ -29,15 +29,14 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     /**
      @Name          insertChildNode
      @visibility    Private
-     @Description   Recursive Method; (EN) Is like push(), only that this function completely traverses the tree looking for the father to the son or node  (ES) Hace las veces de push(), solo que esta función recorre el árbol completamente buscando el padre para el hijo o nodo.
-     Para el objeto actual, si se detecta que es un objeto dependiente, se mapea recursivamente targetTree, donde si id del objeto dependiente es igual al el objeto para el momento en el bucle recursivo, quiere decir que tal objeto dependiente es hijo del objeto actual.
+     @Description   Recursive Method; Is like push(), only that this function completely traverses the tree looking for the father to the son or node.
      @parameters    {targetTree: Array,childNode: Object}
      @returns       null
      @implementedBy sourceDataAsJqTreeData();
      */
     var insertChildNode = function(targetTree,childNode){
       angular.forEach(targetTree,function(node){
-        if(node.id == childNode.parentId){
+        if(node.id === childNode.parentId){
           node.children.push(childNode);
         }else{
           if(node.children.length > 0){
@@ -52,27 +51,37 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         return treeRef();
       },
       nodes:function(){
-        return $firebaseArray(treeRef().orderByChild("left"));
+        return $firebaseArray(treeRef().orderByChild('left'));
       },
       updateAllTree:function(newTree){
+        var deferred = $q.defer();
+        var promise = deferred.promise;
         var ref = treeRef();
         ref.set(newTree, function(error) {
           if (error) {
             notificationService.error(error);
+            deferred.reject();
           } else {
             notificationService.success('The tree or nodes has been update');
+            deferred.resolve();
           }
         });
+        return promise;
       },
       deleteAllTree: function(){
+        var deferred = $q.defer();
+        var promise = deferred.promise;
         var onComplete = function(error) {
           if (error) {
             notificationService.error(error);
+            deferred.reject();
           } else {
             notificationService.success('The tree or nodes has been deleted');
+            deferred.resolve();
           }
         };
         treeRef().remove(onComplete);
+        return promise;
       },
       /**
        @Name        sourceDataAsJqTreeData
@@ -84,7 +93,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         var targetTree = [];
         angular.forEach(sourceData, function(obj){
           var node  = packAsJqTreeNode(obj);
-          if(node.parentId != ''){
+          if(node.parentId !== ''){
             // Is child node
             insertChildNode(targetTree,node);
           }else{
@@ -96,7 +105,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
       },
       /**
        @Name              prepareDataForFireBase
-       @Descripción       Recursive Method, Prepare data for FireBase data store.
+       @Description       Recursive Method, Prepare data for FireBase data store.
        @parameters        {tree: object}
        @returns           object
        @implementedBy    deleteCategory(), treeMove();
@@ -120,7 +129,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
       },
       /**
        @Name            normalize
-       @Descripción     Recursive Method, Fix .left and .right values of node of tree.
+       @Description     Recursive Method, Fix .left and .right values of node of tree.
        @parameters      {tree:object}
        @returns         Null
        @implementedBy   deleteCategory(), treeMove();
@@ -146,6 +155,82 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           });
         };
         fix(tree);
+      },
+      /**
+       @Name              excludeNode
+       @Description       Recursive Method, Exclude node delete.
+       @parameters        {tree: object, nodeId:  'string, id of node', branch: 'bolean, delete children nodes too'}
+       @returns           object; .targetTree: tree with deleted node's already excluded; .recordsIdsForDelete: id of records to delete;
+       */
+      excludeNode : function(tree,nodeId,branch){
+        var result = {
+          targetTree: [],
+          recordsIdsForDelete:[]
+        };
+        var getRecordsIdsForDelete = function(deleteNode){
+          var result = [];
+          result.push(deleteNode.id);
+          var process = function(node){
+            angular.forEach(node, function (current_node) {
+              result.push(current_node.id);
+              if(current_node.children.length > 0){
+                process(current_node.children);
+              }
+            });
+          };
+          process(deleteNode.children);
+          return result;
+        };
+        var process = function(tree){
+          angular.forEach(tree, function (node) {
+            if(node.id == nodeId){
+              if(node.children.length > 0){
+                if(branch == true){
+                  // delete node and children
+                  result.recordsIdsForDelete = getRecordsIdsForDelete(node);
+                }else{
+                  // Keep children
+                  result.recordsIdsForDelete.push(node.id);
+                  if(node.parentId == ''){
+                    for(var i = 0; i < node.children.length; i++){
+                      node.children[i].parentId = '';
+                    }
+                  }else{
+                    for(var e = 0; e < node.children.length; e++){
+                      node.children[e].parentId = node.parentId;
+                    }
+                  }
+                  process(node.children);
+                }
+              }else{
+                result.recordsIdsForDelete.push(node.id);
+              }
+            }else{
+              var new_node = {
+                id:             node.id,
+                parentId:       node.parentId,
+                name:           node.label,
+                left:           node.left,
+                right:          node.right,
+                children:       []
+              };
+              if(node.parentId !== ''){
+                // Is child node
+                // Función recursiva
+                insertChildNode(result.targetTree,new_node);
+              }else{
+                // Is root node
+                // Se inserta el nodo directamente
+                result.targetTree.push(new_node);
+              }
+              if(node.children !== undefined){
+                process(node.children);
+              }
+            }
+          });
+        };
+        process(tree);
+        return result;
       }
     };
 
@@ -155,14 +240,13 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
     return {
       restrict:'E',
-      scope: {},
       replace:true,
       template:'<div><div/>',
       link:function(scope,element){
 
         /**
          @Name            displayJqTreeData
-         @Descripción     Display initially JqTree Data.
+         @Description     Display initially JqTree Data.
          @parameters      {element: reference of DOM element, data: object}
          @returns         null
          @implementedBy
@@ -181,7 +265,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
         /**
          @Name         replaceWholeTree
-         @Descripción  Replace whole Tree.
+         @Description  Replace whole Tree.
          @parameters   {element: reference of DOM element, data: object}
          @returns      null
          @implementedBy -> newCategory(), editCategoryName(), deleteCategory(), treeMove()
@@ -192,12 +276,12 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
 
         /**
-         @Descripción   Displaying initially Data, which is []
+         @Description   Displaying initially Data, which is []
          */
         displayJqTreeData(element,[]);
 
         /**
-         @Descripción   Observing the move event
+         @Description   Observing the move event
          */
         element.bind('tree.move',function(event) {
           event.preventDefault();
@@ -205,11 +289,11 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           var proposalTree = angular.fromJson(element.tree('toJson'));
           tree.normalize(proposalTree);
           var newTree = tree.prepareDataForFireBase(proposalTree);
-          tree.updateAllTree(newTree);
+          scope.updateAllTree(newTree);
         });
 
         /**
-         @Descripción   Observing the select event
+         @Description   Observing the select event
          */
         element.bind('tree.select',function(event) {
             $log.log('event.node',event.node);
@@ -218,23 +302,24 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
         /**
          @Name          nodes
-         @Descripción   The real time data front fireBase
+         @Description   The real time data front fireBase
          */
         var nodes = tree.nodes();
 
         /**
-         @Descripción   Observing changes in nodes var, which has first [] empty array, after some time is get server data.
+         @Description   Observing changes in nodes var, which has first [] empty array, after some time is get server data.
          */
         nodes.$watch(function(){
           replaceWholeTree(element,tree.sourceDataAsJqTreeData(nodes));
-          $log.log('/*/*/*/*/*/*/*/*/*/*/*/*/ 1 /*/*/*/*/*/*/*/*/*/*/*/');
         });
 
       }
     };
 
   }])
-  .controller('TreeController',['$scope','notificationService','$window','tree','$log','FireRef','$firebaseArray',function($scope,notificationService,$window,tree,$log,FireRef,$firebaseArray){
+  .controller('TreeController',['$scope','notificationService','tree','$modal','$log',function($scope,notificationService,tree,$modal,$log){
+
+    $scope.requestPromise = $scope.httpRequestPromise;
 
     $scope.nodes = tree.nodes();
 
@@ -243,85 +328,6 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     $scope.nodes.$watch(function () {
       $scope.asJqTreeData = tree.sourceDataAsJqTreeData($scope.nodes);
     });
-
-
-    $scope.saveA = function(){
-
-      //query.addSort("left", Query.SortDirection.ASCENDING);
-
-      var elementsA = FireRef.child('elementsA');
-
-      //in server B,A,C
-
-      // A,B,C
-      var objA = {
-        '-JtKa2UVs-ZbBZZfOQ8h':{"properties":{"name":"A","parentId":"","left":1,"right":2}},
-        '-JtKa1GCXOe7Jx1ctBnc':{"properties":{"name":"B","parentId":"","left":3,"right":4}},
-        '-JtKa37qGVOBZcArg4MS':{"properties":{"name":"C","parentId":"","left":5,"right":6}}
-      };
-
-      // B,C,A
-      var objB = {
-        '-JtKa2UVs-ZbBZZfOQ8h':{"properties":{"name":"A","parentId":"","left":4,"right":5}},
-        '-JtKa1GCXOe7Jx1ctBnc':{"properties":{"name":"B","parentId":"","left":1,"right":2}},
-        '-JtKa37qGVOBZcArg4MS':{"properties":{"name":"C","parentId":"","left":3,"right":6}}
-      };
-
-      elementsA.set(objB);
-
-    };
-
-    $scope.requestA = function(){
-
-      var elementsARef = new Firebase("https://berlin.firebaseio.com/elementsA");
-      // download the data from a Firebase database reference into a (pseudo read-only) array
-
-      // create a query for the most recent 25 messages on the server
-      var query = elementsARef.orderByChild("left");
-
-      // the $firebaseArray service properly handles Firebase database queries as well
-      $scope.logNodes = $firebaseArray(query);
-
-    };
-
-    $scope.saveB = function(){
-
-      //query.addSort("left", Query.SortDirection.ASCENDING);
-
-      var elementsB = FireRef.child('elementsB');
-
-      //in datebase is B,A,C
-
-      // A,B,C
-      var objA = {
-        '-JtKa2UVs-ZbBZZfOQ8h':{"name":"A","parentId":"","left":1,"right":2},
-        '-JtKa1GCXOe7Jx1ctBnc':{"name":"B","parentId":"","left":3,"right":4},
-        '-JtKa37qGVOBZcArg4MS':{"name":"C","parentId":"","left":5,"right":6}
-      };
-
-      // B,C,A
-      var objB = {
-        '-JtKa2UVs-ZbBZZfOQ8h':{"name":"A","parentId":"","left":4,"right":5},
-        '-JtKa1GCXOe7Jx1ctBnc':{"name":"B","parentId":"","left":1,"right":2},
-        '-JtKa37qGVOBZcArg4MS':{"name":"C","parentId":"","left":3,"right":6}
-      };
-
-      elementsB.set(objB);
-
-    };
-
-    $scope.requestB = function(){
-
-      var elementsBRef = new Firebase("https://berlin.firebaseio.com/elementsB");
-      // download the data from a Firebase database reference into a (pseudo read-only) array
-
-      // create a query for the most recent 25 messages on the server
-      var query = elementsBRef.orderByChild("left");
-
-      // the $firebaseArray service properly handles Firebase database queries as well
-      $scope.logNodes = $firebaseArray(query);
-
-    };
 
     $scope.httpRequestPromise = $scope.nodes.$loaded(null,function(error){
       notificationService.error(error);
@@ -338,14 +344,25 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
     $scope.deleteTree = function(){
-      tree.deleteAllTree();
+      $scope.httpRequestPromise = tree.deleteAllTree();
     };
 
-    $scope.deleteNode = function(record){
-      $scope.httpRequestPromise = $scope.nodes.$remove(record).then(function(ref){
-        //$log.log('ref: ',ref);
-        notificationService.success('This category has been deleted');
-      },function(error){
+    $scope.deleteNode = function(node){
+      var modalInstance = $modal.open({
+        templateUrl: 'deleteNode.html',
+        controller: 'DeleteNodeController',
+        resolve: {
+          node: function () {
+            return node;
+          }
+        }
+      });
+      modalInstance.result.then(function(branch){
+        var newData = tree.excludeNode($scope.asJqTreeData,node.$id,branch);
+        tree.normalize(newData.targetTree);
+        var newTree = tree.prepareDataForFireBase(newData.targetTree);
+        $scope.httpRequestPromise = tree.updateAllTree(newTree);
+      }, function (error) {
         notificationService.error(error);
       });
     };
@@ -366,10 +383,10 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         }
 
         var node = {
-          "left":     left,
-          "right":    right,
-          "parentId": '',
-          "name":     $scope.model.node
+          left:     left,
+          right:    right,
+          parentId: '',
+          name:     $scope.model.node
         };
 
         $scope.httpRequestPromise = $scope.nodes.$add(node).then(function() {
@@ -383,5 +400,26 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
       }
     };
 
+    $scope.updateAllTree = function (newTree){
+      $scope.httpRequestPromise = tree.updateAllTree(newTree)
+    };
+
+
+  }])
+  .controller('DeleteNodeController',['$scope','$modalInstance','node',function($scope,$modalInstance,node){
+
+    $scope.node           = node;
+    $scope.branchCheckBox = (($scope.node.left+1) !== ($scope.node.right));
+    $scope.model = {
+      branch: null
+    };
+
+    $scope.confirm  = function () {
+      $modalInstance.close($scope.model.branch);
+    };
+
+    $scope.cancel   = function () {
+      $modalInstance.dismiss('this has be cancel');
+    };
 
   }]);
