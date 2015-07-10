@@ -1,0 +1,197 @@
+<!--<?php echo $this->Html->css('redactor',false); ?>-->
+
+<style type="text/css">
+
+  .error {
+    border: 1px solid red;
+  }
+
+  .ulMenu {
+    float: left;
+    overflow: auto;
+    height: 250px; /* 170 */
+    width: 250px;
+    border-right: 1px solid;
+    background-color: aliceblue;
+  }
+
+  .li-selected{
+    background: #ACEAFF;
+  }
+
+  .ul-parent-selected{
+    background: #9DE7FF;
+  }
+
+  .li-parent-selected{
+    background: #6FDBFF;
+  }
+
+  .liMenu{
+    padding: 5px;
+    padding-left: 10px;
+    cursor: pointer;
+  }
+
+  .class-all-menu-container{
+    overflow: hidden;
+    border: 1px solid black;
+    padding: 10px;
+    background-color: whitesmoke;
+    border-top-left-radius: 6px 6px;
+    border-top-right-radius: 6px 6px;
+    border-bottom-left-radius: 6px 6px;
+    border-bottom-right-radius: 6px 6px;
+  }
+
+  .menu-container{
+    overflow: hidden;
+    border: 1px solid black;
+  }
+
+  .category-selected{
+    width: 300px;
+    float: left;
+    height: 250px;
+    border-right: 1px solid;
+    background-color: aliceBlue;
+
+  }
+
+  .category-selected-text{
+    background-color: aliceBlue;
+    color: #E32;
+    font-family: 'Gill Sans','lucida grande', helvetica, arial, sans-serif;
+    font-size: 190%;
+  }
+
+  .menuBox{
+    border: 1px solid #B9B9B9;
+    height: 265px;
+    border-top-left-radius: 6px 6px;
+    border-top-right-radius: 6px 6px;
+    border-bottom-left-radius: 6px 6px;
+    border-bottom-right-radius: 6px 6px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+
+  #path span{
+    cursor: pointer;
+  }
+
+
+  form .required {
+    font-weight: bold;
+  }
+  form .required label:after {
+    color: #e32;
+    content: '*';
+    display:inline;
+  }
+
+  .required h3:after {
+    color: #e32;
+    content: '*';
+    display:inline;
+  }
+
+  .requiredInput{
+    background-color: #FFD1D1;
+    border: 1px solid red;
+  }
+
+  .addProduct {
+    overflow: hidden;
+    display: none;
+  }
+
+  .categorySelector {
+    overflow: hidden;
+  }
+
+  .addContent {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+</style>
+
+<section ng-controller="PublicationsController">
+
+  <div class="page-header">
+    <h1>Seleccione una categoría <small>la que mejor se adapte al producto que desea publicar.</small></h1>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Categorías</h3>
+    </div>
+    <div class="panel-body">
+
+        <!--<div ng-repeat="node in nodes | filter: ">-->
+          <!--{{node.name}}-->
+        <!--</div>-->
+
+    </div>
+    <div class="panel-footer">
+      <button ng-click="newUser()" type="button" class="btn btn-primary">Confirm selection</button>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Panel title</h3>
+    </div>
+    <div class="panel-body">
+      Panel content
+    </div>
+  </div>
+
+</section>
+
+
+
+
+<div class="categorySelector">
+
+  <table class="table table-bordered" style="margin-bottom: 10px;">
+    <tbody>
+    <tr>
+      <td style="width:173px">
+        <button id="add-content" type="button" class="btn btn-primary disabled addContent" disabled="disabled" >Confirmar y continuar</button>
+      </td>
+      <td>
+        <ul id="path" class="breadcrumb" style=" border: 1px solid #CCC; padding: 6px 15px; ">
+          <li class="active" >Publicar</li>
+        </ul>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="well well-small">
+    <div id="menu-box" class="menuBox"  style="" >
+      <div id="menu" style="overflow: hidden; width: 803px;">
+        <div class="ulMenu" id="default-options">
+          <div class="liMenu" id="category-id-142"> Electrónicos</div>
+          <div class="liMenu" id="category-id-151"> Computación</div>
+          <div class="liMenu li-selected" id="category-id-163"> otra categoría</div>
+          <div class="liMenu" id="category-id-166"> una categoría 1</div>
+        </div>
+        <div class="ulMenu" id="dependent-options-16918">
+          <div id="category-id-164" class="liMenu li-selected"> categoría 5</div>
+        </div>
+        <div id="category-selected" class="category-selected">
+          <div style="margin-top: 50px;">
+            <center><span class="category-selected-text">Categoría seleccionada!</span> <br><img src="/images/ok.png" alt="Gracias"></center>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- inter -->
+<div class="addProduct"></div>

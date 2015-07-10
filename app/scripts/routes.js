@@ -66,6 +66,10 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'views/categories.html',
         controller: 'TreeController'
       })
+      .when('/new-publication', {
+        templateUrl: 'views/newPublication.html',
+        controller: 'PublicationsController'
+      })
       .when('/chat', {
         templateUrl: 'views/chat.html',
         controller: 'ChatController'
