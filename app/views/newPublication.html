@@ -117,31 +117,29 @@
 
 </style>
 
-<section ng-controller="PublicationsController">
-
-  <div class="page-header">
-    <h1>Seleccione una categoría <small>la que mejor se adapte al producto que desea publicar.</small></h1>
-  </div>
+<section ng-controller="PublicationsController" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">Categorías</h3>
+      <h3 class="panel-title">Seleccione una categoría:</h3>
+    </div>
+    <div class="list-group">
+      <button type="button" class="list-group-item" ng-repeat="node in nodes | filter:{parentId:''}:true" >{{node.name | capitalizeFirstChar}}</button>
     </div>
     <div class="panel-body">
-
-        <!--<div ng-repeat="node in nodes | filter: ">-->
-          <!--{{node.name}}-->
-        <!--</div>-->
-
+      <ol class="breadcrumb" style="margin-bottom: 7px;">
+        <li class="active">Home</li>
+      </ol>
+      <small>NOTA: Seleccione la categoría que mejor se adapte al producto que desea publicar.</small>
     </div>
-    <div class="panel-footer">
-      <button ng-click="newUser()" type="button" class="btn btn-primary">Confirm selection</button>
+    <div class="panel-footer" style="text-align: right;">
+      <button ng-click="newUser()" type="button" class="btn btn-primary ">Confirm selection</button>
     </div>
   </div>
 
-  <div class="panel panel-default">
+  <div class="panel panel-default" style="display:none;">
     <div class="panel-heading">
-      <h3 class="panel-title">Panel title</h3>
+      <h3 class="panel-title">New Publication</h3>
     </div>
     <div class="panel-body">
       Panel content
@@ -150,48 +148,50 @@
 
 </section>
 
+<section style="display: none;">
+  <hr>
 
+  <div class="categorySelector">
 
+    <table class="table table-bordered" style="margin-bottom: 10px;">
+      <tbody>
+      <tr>
+        <td style="width:173px">
+          <button id="add-content" type="button" class="btn btn-primary disabled addContent" disabled="disabled" >Confirmar y continuar</button>
+        </td>
+        <td>
+          <ul id="path" class="breadcrumb" style=" border: 1px solid #CCC; padding: 6px 15px; ">
+            <li class="active" >Publicar</li>
+          </ul>
+        </td>
+      </tr>
+      </tbody>
+    </table>
 
-<div class="categorySelector">
-
-  <table class="table table-bordered" style="margin-bottom: 10px;">
-    <tbody>
-    <tr>
-      <td style="width:173px">
-        <button id="add-content" type="button" class="btn btn-primary disabled addContent" disabled="disabled" >Confirmar y continuar</button>
-      </td>
-      <td>
-        <ul id="path" class="breadcrumb" style=" border: 1px solid #CCC; padding: 6px 15px; ">
-          <li class="active" >Publicar</li>
-        </ul>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-
-  <div class="well well-small">
-    <div id="menu-box" class="menuBox"  style="" >
-      <div id="menu" style="overflow: hidden; width: 803px;">
-        <div class="ulMenu" id="default-options">
-          <div class="liMenu" id="category-id-142"> Electrónicos</div>
-          <div class="liMenu" id="category-id-151"> Computación</div>
-          <div class="liMenu li-selected" id="category-id-163"> otra categoría</div>
-          <div class="liMenu" id="category-id-166"> una categoría 1</div>
-        </div>
-        <div class="ulMenu" id="dependent-options-16918">
-          <div id="category-id-164" class="liMenu li-selected"> categoría 5</div>
-        </div>
-        <div id="category-selected" class="category-selected">
-          <div style="margin-top: 50px;">
-            <center><span class="category-selected-text">Categoría seleccionada!</span> <br><img src="/images/ok.png" alt="Gracias"></center>
+    <div class="well well-small">
+      <div id="menu-box" class="menuBox"  style="" >
+        <div id="menu" style="overflow: hidden; width: 803px;">
+          <div class="ulMenu" id="default-options">
+            <div class="liMenu" id="category-id-142"> Electrónicos</div>
+            <div class="liMenu" id="category-id-151"> Computación</div>
+            <div class="liMenu li-selected" id="category-id-163"> otra categoría</div>
+            <div class="liMenu" id="category-id-166"> una categoría 1</div>
+          </div>
+          <div class="ulMenu" id="dependent-options-16918">
+            <div id="category-id-164" class="liMenu li-selected"> categoría 5</div>
+          </div>
+          <div id="category-selected" class="category-selected">
+            <div style="margin-top: 50px;">
+              <center><span class="category-selected-text">Categoría seleccionada!</span> <br><img src="/images/ok.png" alt="Gracias"></center>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 
-</div>
+  <!-- inter -->
+  <div class="addProduct"></div>
+</section>
 
-<!-- inter -->
-<div class="addProduct"></div>

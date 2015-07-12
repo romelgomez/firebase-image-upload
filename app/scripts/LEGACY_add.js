@@ -248,7 +248,7 @@ var _delete =  function(){
  * Parametros:
  * 	path: un objeto json
  * */
-var set_path =  function(path){
+var                 set_path =  function(path){
   var h = '';
 
   $.each(path,function(k,v){

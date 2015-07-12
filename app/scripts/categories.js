@@ -285,7 +285,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
          */
         element.bind('tree.move',function(event) {
           event.preventDefault();
-          event.move_info.do_move();
+          event.move_info.do_move(); // jshint ignore:line
           var proposalTree = angular.fromJson(element.tree('toJson'));
           tree.normalize(proposalTree);
           var newTree = tree.prepareDataForFireBase(proposalTree);
@@ -319,7 +319,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
   }])
   .controller('TreeController',['$scope','notificationService','tree','$modal',function($scope,notificationService,tree,$modal){
 
-    $scope.requestPromise = $scope.httpRequestPromise;
+    //$scope.requestPromise = $scope.httpRequestPromise;
 
     $scope.nodes = tree.nodes();
 
