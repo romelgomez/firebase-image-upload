@@ -119,34 +119,74 @@
 
 <section ng-controller="PublicationsController" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
-  <div class="panel panel-default">
+  <div class="panel panel-default" ng-show="categoryExpected === false">
     <div class="panel-heading">
       <h3 class="panel-title">Seleccione una categoría:</h3>
     </div>
     <div class="list-group">
-      <button type="button" class="list-group-item" ng-repeat="node in nodes | filter:{parentId:''}:true" >{{node.name | capitalizeFirstChar}}</button>
+      <button type="button" class="list-group-item" ng-click="setCategory(node.$id)" ng-repeat="node in nodes | filter:{parentId:category}:true" >{{node.name | capitalizeFirstChar}}</button>
     </div>
     <div class="panel-body">
+
       <ol class="breadcrumb" style="margin-bottom: 7px;">
-        <li class="active">Home</li>
+        <li ng-click="category =''; path =[];" ng-class="{'a-link': path.length > 0}" > Home </li>
+        <li ng-repeat="node in path" ng-click="setCategory(node.$id)" ng-class="{'a-link': !$last}"> {{node.name | capitalizeFirstChar}} </li>
       </ol>
+
       <small>NOTA: Seleccione la categoría que mejor se adapte al producto que desea publicar.</small>
+
     </div>
     <div class="panel-footer" style="text-align: right;">
-      <button ng-click="newUser()" type="button" class="btn btn-primary ">Confirm selection</button>
+      <button ng-click="categoryExpected = true" type="button" class="btn btn-primary" ng-disabled="category ===''" >Confirm selection</button>
     </div>
   </div>
 
-  <div class="panel panel-default" style="display:none;">
+  <div class="panel panel-default" ng-show="categoryExpected">
     <div class="panel-heading">
       <h3 class="panel-title">New Publication</h3>
     </div>
     <div class="panel-body">
+
+      <button ng-click="categoryExpected = false">Edit category</button>
+
+      <ol class="breadcrumb" style="margin-bottom: 7px;">
+        <li ng-click="category =''; path =[];" ng-class="{'a-link': path.length > 0}" > Home </li>
+        <li ng-repeat="node in path" ng-click="setCategory(node.$id)" ng-class="{'a-link': !$last}"> {{node.name | capitalizeFirstChar}} </li>
+      </ol>
+
+
       Panel content
     </div>
   </div>
 
 </section>
+
+<!--
+
+    FORMA EN QUE AÑADO active A LA CATEGORIA SELECIONADA
+    un array, formado por todos los id de la categorias selecionadas.
+
+    al selecionar una categoria tengo que armar un array, con todos los ancentros de tal categoria, este array sera usado para definir el path
+
+    para activar la clase active en una categoria, ng-class="{active:isSelected(node.id)}"
+
+    isSelected hara uso del array que almacena las id selecionadas. si existe tal id retornara true.
+
+    FORMA EN QUE MUESTRO LAS CATEGORIAS
+    defino una variable: var categpria. esta variable sera al principo una cadena vacia,
+
+      <button type="button" class="list-group-item" ng-repeat="node in nodes | filter:{parentId:''}:true" >{{node.name | capitalizeFirstChar}}</button>
+
+    en el filtro  parentId debe hacer referencia a una variable, esta variable almacena el id de la categoria seleccionada. haciendo que solo se muestren
+    las categorias hijas o categorias de pendientes de la categoria selecionada.
+
+    el usuario podra selecionar cualquier categoria, si importar el nivel, se le llama a eso, selección floja, ya que puede suceder que las definiciones existente
+    no encajen con la publicaion o el producto, por lo tanto, con tal que se seccione una esta bien, ya que se espera que seleciona una categoria muy general donde
+    si encaje la publicación.
+
+    si la categoria actual selecioanda no tiene hijos el bloque donde se muestra las categorias no desaparece
+
+-->
 
 <section style="display: none;">
   <hr>
