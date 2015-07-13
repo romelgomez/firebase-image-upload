@@ -147,91 +147,121 @@
     </div>
     <div class="panel-body">
 
-      <button ng-click="categoryExpected = false">Edit category</button>
-
       <ol class="breadcrumb" style="margin-bottom: 7px;">
-        <li ng-click="category =''; path =[];" ng-class="{'a-link': path.length > 0}" > Home </li>
-        <li ng-repeat="node in path" ng-click="setCategory(node.$id)" ng-class="{'a-link': !$last}"> {{node.name | capitalizeFirstChar}} </li>
+        <li> Home </li>
+        <li ng-repeat="node in path"> {{node.name | capitalizeFirstChar}} </li>
       </ol>
 
+      <button ng-click="categoryExpected = false" type="button" class="btn btn-default">Edit category</button>
 
-      Panel content
-    </div>
-  </div>
+      <!--<button id="update"   type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Update</button>-->
+      <!--<button type="button" class="btn btn-default publication-status-button"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause</button>-->
+      <!--<button type="button" class="btn btn-default publication-status-button"><span class="glyphicon glyphicon-play"></span> Enable</button>-->
+      <!--<button id="delete"   class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Delete</button>-->
 
-</section>
+      <button id="publish"	class="btn btn-primary"	type="submit" >Publish</button>
+      <button id="save-now" class="btn btn-success"	type="button" >Save Now</button>
+      <button id="discard"	class="btn btn-warning"	type="button" >Discard</button>
 
-<!--
+      <div id="debugTime" style="padding-top: 10px; ">The publication was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>
+      <div id="debugTime" style="padding-top: 10px; ">The draft was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>
 
-    FORMA EN QUE AÑADO active A LA CATEGORIA SELECIONADA
-    un array, formado por todos los id de la categorias selecionadas.
+      <hr>
 
-    al selecionar una categoria tengo que armar un array, con todos los ancentros de tal categoria, este array sera usado para definir el path
 
-    para activar la clase active en una categoria, ng-class="{active:isSelected(node.id)}"
+      <form name="form" novalidate="" ng-submit="submit()">
 
-    isSelected hara uso del array que almacena las id selecionadas. si existe tal id retornara true.
-
-    FORMA EN QUE MUESTRO LAS CATEGORIAS
-    defino una variable: var categpria. esta variable sera al principo una cadena vacia,
-
-      <button type="button" class="list-group-item" ng-repeat="node in nodes | filter:{parentId:''}:true" >{{node.name | capitalizeFirstChar}}</button>
-
-    en el filtro  parentId debe hacer referencia a una variable, esta variable almacena el id de la categoria seleccionada. haciendo que solo se muestren
-    las categorias hijas o categorias de pendientes de la categoria selecionada.
-
-    el usuario podra selecionar cualquier categoria, si importar el nivel, se le llama a eso, selección floja, ya que puede suceder que las definiciones existente
-    no encajen con la publicaion o el producto, por lo tanto, con tal que se seccione una esta bien, ya que se espera que seleciona una categoria muy general donde
-    si encaje la publicación.
-
-    si la categoria actual selecioanda no tiene hijos el bloque donde se muestra las categorias no desaparece
-
--->
-
-<section style="display: none;">
-  <hr>
-
-  <div class="categorySelector">
-
-    <table class="table table-bordered" style="margin-bottom: 10px;">
-      <tbody>
-      <tr>
-        <td style="width:173px">
-          <button id="add-content" type="button" class="btn btn-primary disabled addContent" disabled="disabled" >Confirmar y continuar</button>
-        </td>
-        <td>
-          <ul id="path" class="breadcrumb" style=" border: 1px solid #CCC; padding: 6px 15px; ">
-            <li class="active" >Publicar</li>
-          </ul>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-
-    <div class="well well-small">
-      <div id="menu-box" class="menuBox"  style="" >
-        <div id="menu" style="overflow: hidden; width: 803px;">
-          <div class="ulMenu" id="default-options">
-            <div class="liMenu" id="category-id-142"> Electrónicos</div>
-            <div class="liMenu" id="category-id-151"> Computación</div>
-            <div class="liMenu li-selected" id="category-id-163"> otra categoría</div>
-            <div class="liMenu" id="category-id-166"> una categoría 1</div>
-          </div>
-          <div class="ulMenu" id="dependent-options-16918">
-            <div id="category-id-164" class="liMenu li-selected"> categoría 5</div>
-          </div>
-          <div id="category-selected" class="category-selected">
-            <div style="margin-top: 50px;">
-              <center><span class="category-selected-text">Categoría seleccionada!</span> <br><img src="/images/ok.png" alt="Gracias"></center>
+        <div class="form-group">
+          <label>Email o dirección de correo electrónico</label>
+          <input type="email" name="email" ng-model="model.email" required class="form-control" placeholder="Ingrese su correo o email"  >
+          <div data-ng-messages="form.$submitted && form.email.$error" class="help-block">
+            <div data-ng-message="email">
+              - La <b>dirección de correo electrónico</b> debe ser valida.
+            </div>
+            <div data-ng-message="required">
+              - La <b>dirección de correo electrónico</b> es requerida.
             </div>
           </div>
         </div>
+
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" name="password" ng-model="model.password" required minlength="7" class="form-control" placeholder="Ingrese su contraseña" >
+          <div data-ng-messages="form.$submitted && form.password.$error" class="help-block">
+            <div data-ng-message="minlength" >
+              - La <b>contraseña</b> debe tener como mínimo 7 caracteres.
+            </div>
+            <div data-ng-message="required" >
+              - La <b>contraseña</b> es requerida.
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Entrar</button>
+
+      </form>
+
+
+      <!-- Form ProductTitle -->
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label class="control-label" for="ProductTitle"><span class="glyphicon glyphicon-bookmark"></span> Title</label>
+            <span class="help-block" style="display: none;">Required</span>
+          </div>
+        </div>
       </div>
+
+      <!-- Form ProductBody -->
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label class="control-label" for="ProductBody"><span class="glyphicon glyphicon-book"></span> Description</label>
+            <span class="help-block" style="display: none;"><p class="text-danger">The description is required</p></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form ProductPrice -->
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label class="control-label" for="ProductPrice"><span class="glyphicon glyphicon-tag"></span> Price</label>
+            <div class="input-group col-xs-4">
+              <div class="input-group-addon">$</div>
+            </div>
+            <span class="help-block" style="display: none;">Required</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form ProductQuantity -->
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label class="control-label" for="ProductQuantity"><span class="glyphicon glyphicon-th"></span> Quantity in stock</label>
+            <div class="input-group col-xs-4">
+              <div class="input-group-addon">Units</div>
+            </div>
+            <span class="help-block" style="display: none;">Required</span>
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
+    <ul class="list-group">
+      <li class="list-group-item" >
+        <h3 id="panels" class="page-header" style="margin-top: 10px;">Images  <small><button id="continue-upload" type="button" class="btn btn-link clickable" style="display: none;">Add more pictures!</button> <button id="upload-all" type="button" class="btn btn-link" style="display: none;">Upload images!</button></small></h3>
+        <div id="previews" class="well dropzone-previews" style="margin-bottom: 10px;">
+          <button id="first-files" class="btn btn-primary clickable">Select the images from the computer</button>
+        </div>
+      </li>
+    </ul>
 
   </div>
 
-  <!-- inter -->
-  <div class="addProduct"></div>
 </section>
+
 
