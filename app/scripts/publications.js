@@ -1,23 +1,13 @@
 'use strict';
 
-angular.module('publications',['tree','filters'])
-  .controller('PublicationsController',['$scope','tree','notificationService','$filter',function($scope,tree,notificationService,$filter){
+angular.module('publications',['tree','filters','ngMessages','angular-redactor'])
+  .controller('PublicationsController',['$scope','tree','notificationService','$filter','$log',function($scope,tree,notificationService,$filter,$log){
 
     $scope.nodes = tree.nodes();
 
     $scope.httpRequestPromise = $scope.nodes.$loaded(null,function(error){
       notificationService.error(error);
     });
-
-    $scope.getChildren = function(nodeId){
-      var children = [];
-      angular.forEach($scope.nodes,function(node){
-        if(node.parentId === nodeId){
-          children.push(node);
-        }
-      });
-      return children;
-    };
 
     $scope.category = '';
 
@@ -26,53 +16,55 @@ angular.module('publications',['tree','filters'])
     $scope.path = [];
 
     $scope.setCategory = function (categoryId) {
-      $scope.category = categoryId;
-
-      $scope.path = getPath(categoryId);
+      $scope.category   = categoryId;
+      $scope.path       = getPath(categoryId,$scope.nodes);
     };
 
-    var getPath = function (categoryId){
+    var getPath = function (nodeId,nodes){
       var path = [];
-      var nodes   = $filter('reverse')($scope.nodes);
-      var proces = function (nodeId){
-        angular.forEach(nodes,function(node){
+      var reverseNodes   = $filter('reverse')(nodes);
+      var process = function (nodeId){
+        angular.forEach(reverseNodes,function(node){
           if(nodeId === node.$id){
             path.push(node);
             if(node.parentId !== ''){
-              proces(node.parentId);
+              process(node.parentId);
             }
           }
         });
       };
-      proces(categoryId);
+      process(nodeId);
       return $filter('reverse')(path);
     };
 
+    var original = angular.copy($scope.model = {
+      title: null,
+      description: null,
+      price: null,
+      quantity: null
+    });
 
-    /*
-     FORMA EN QUE AÑADO active A LA CATEGORIA SELECIONADA
-     un array, formado por todos los id de la categorias selecionadas.
+    $scope.reset = function(){
+      $scope.model = angular.copy(original);
+      $scope.form.$setUntouched();
+      $scope.form.$setPristine();
+    };
 
-     al selecionar una categoria tengo que armar un array, con todos los ancentros de tal categoria, este array sera usado para definir el path
+    $scope.submit = function () {
+      if($scope.form.$valid){
 
-     para activar la clase active en una categoria, ng-class="{active:isSelected(node.id)}"
+        $log.log('$scope.model',$scope.model);
 
-     isSelected hara uso del array que almacena las id selecionadas. si existe tal id retornara true.
+        //$scope.httpRequestPromise = $scope.nodes.$add(node).then(function() {
+        //  notificationService.success('Data has been saved to our Firebase database');
+        //  $scope.reset();
+        //},function(error){
+        //  notificationService.error(error);
+        //  //$window.location = '/';
+        //});
 
-     FORMA EN QUE MUESTRO LAS CATEGORIAS
-     defino una variable: var categpria. esta variable sera al principo una cadena vacia,
-
-     <button type="button" class="list-group-item" ng-repeat="node in nodes | filter:{parentId:''}:true" >{{node.name | capitalizeFirstChar}}</button>
-
-     en el filtro  parentId debe hacer referencia a una variable, esta variable almacena el id de la categoria seleccionada. haciendo que solo se muestren
-     las categorias hijas o categorias de pendientes de la categoria selecionada.
-
-     el usuario podra selecionar cualquier categoria, si importar el nivel, se le llama a eso, selección floja, ya que puede suceder que las definiciones existente
-     no encajen con la publicaion o el producto, por lo tanto, con tal que se seccione una esta bien, ya que se espera que seleciona una categoria muy general donde
-     si encaje la publicación.
-
-     si la categoria actual selecioanda no tiene hijos el bloque donde se muestra las categorias no desaparece
-     */
+      }
+    };
 
 
     //var publications = [

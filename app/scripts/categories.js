@@ -47,9 +47,9 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
     return {
-      ref:function(){
-        return treeRef();
-      },
+      //ref:function(){
+      //  return treeRef();
+      //},
       nodes:function(){
         return $firebaseArray(treeRef().orderByChild('left'));
       },
@@ -317,7 +317,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
   }])
-  .controller('TreeController',['$scope','notificationService','tree','$modal',function($scope,notificationService,tree,$modal){
+  .controller('TreeController',['$scope','notificationService','tree','$modal','$log',function($scope,notificationService,tree,$modal,$log){
 
     //$scope.requestPromise = $scope.httpRequestPromise;
 
@@ -389,7 +389,8 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           name:     $scope.model.node
         };
 
-        $scope.httpRequestPromise = $scope.nodes.$add(node).then(function() {
+        $scope.httpRequestPromise = $scope.nodes.$add(node).then(function(ref) {
+          $log.log('category ref',ref.key());
           notificationService.success('Data has been saved to our Firebase database');
           $scope.reset();
         },function(error){

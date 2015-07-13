@@ -1,122 +1,3 @@
-<!--<?php echo $this->Html->css('redactor',false); ?>-->
-
-<style type="text/css">
-
-  .error {
-    border: 1px solid red;
-  }
-
-  .ulMenu {
-    float: left;
-    overflow: auto;
-    height: 250px; /* 170 */
-    width: 250px;
-    border-right: 1px solid;
-    background-color: aliceblue;
-  }
-
-  .li-selected{
-    background: #ACEAFF;
-  }
-
-  .ul-parent-selected{
-    background: #9DE7FF;
-  }
-
-  .li-parent-selected{
-    background: #6FDBFF;
-  }
-
-  .liMenu{
-    padding: 5px;
-    padding-left: 10px;
-    cursor: pointer;
-  }
-
-  .class-all-menu-container{
-    overflow: hidden;
-    border: 1px solid black;
-    padding: 10px;
-    background-color: whitesmoke;
-    border-top-left-radius: 6px 6px;
-    border-top-right-radius: 6px 6px;
-    border-bottom-left-radius: 6px 6px;
-    border-bottom-right-radius: 6px 6px;
-  }
-
-  .menu-container{
-    overflow: hidden;
-    border: 1px solid black;
-  }
-
-  .category-selected{
-    width: 300px;
-    float: left;
-    height: 250px;
-    border-right: 1px solid;
-    background-color: aliceBlue;
-
-  }
-
-  .category-selected-text{
-    background-color: aliceBlue;
-    color: #E32;
-    font-family: 'Gill Sans','lucida grande', helvetica, arial, sans-serif;
-    font-size: 190%;
-  }
-
-  .menuBox{
-    border: 1px solid #B9B9B9;
-    height: 265px;
-    border-top-left-radius: 6px 6px;
-    border-top-right-radius: 6px 6px;
-    border-bottom-left-radius: 6px 6px;
-    border-bottom-right-radius: 6px 6px;
-    overflow-x: scroll;
-    overflow-y: hidden;
-  }
-
-  #path span{
-    cursor: pointer;
-  }
-
-
-  form .required {
-    font-weight: bold;
-  }
-  form .required label:after {
-    color: #e32;
-    content: '*';
-    display:inline;
-  }
-
-  .required h3:after {
-    color: #e32;
-    content: '*';
-    display:inline;
-  }
-
-  .requiredInput{
-    background-color: #FFD1D1;
-    border: 1px solid red;
-  }
-
-  .addProduct {
-    overflow: hidden;
-    display: none;
-  }
-
-  .categorySelector {
-    overflow: hidden;
-  }
-
-  .addContent {
-    padding-top: 6px;
-    padding-bottom: 6px;
-  }
-
-</style>
-
 <section ng-controller="PublicationsController" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
   <div class="panel panel-default" ng-show="categoryExpected === false">
@@ -133,7 +14,13 @@
         <li ng-repeat="node in path" ng-click="setCategory(node.$id)" ng-class="{'a-link': !$last}"> {{node.name | capitalizeFirstChar}} </li>
       </ol>
 
-      <small>NOTA: Seleccione la categoría que mejor se adapte al producto que desea publicar.</small>
+      <small>
+        NOTAS:
+        <ul>
+          <li>Seleccione la categoría que mejor se adapte a la publicación. No importa si es muy general o específica, lo importante es que seleccione una.</li>
+          <li>Seleccionar una categoría específica es preferible ya que permitirá al usuario filtrar con mayor eficacia las publicaciones, sin embargo si la categoría específica no está disponible, seleccione una categoría general.</li>
+        </ul>
+      </small>
 
     </div>
     <div class="panel-footer" style="text-align: right;">
@@ -159,95 +46,77 @@
       <!--<button type="button" class="btn btn-default publication-status-button"><span class="glyphicon glyphicon-play"></span> Enable</button>-->
       <!--<button id="delete"   class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Delete</button>-->
 
-      <button id="publish"	class="btn btn-primary"	type="submit" >Publish</button>
+      <!--<button  class="btn btn-primary" type="submit">Enviar</button>-->
+
+      <button form="form" id="publish"	class="btn btn-primary"	type="submit" >Publish</button>
       <button id="save-now" class="btn btn-success"	type="button" >Save Now</button>
       <button id="discard"	class="btn btn-warning"	type="button" >Discard</button>
 
-      <div id="debugTime" style="padding-top: 10px; ">The publication was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>
-      <div id="debugTime" style="padding-top: 10px; ">The draft was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>
+      <!--<div id="debugTime" style="padding-top: 10px; ">The publication was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>-->
+      <!--<div id="debugTime" style="padding-top: 10px; ">The draft was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>-->
 
       <hr>
 
-
-      <form name="form" novalidate="" ng-submit="submit()">
+      <form id="form" name="form" novalidate="" ng-submit="submit()">
 
         <div class="form-group">
-          <label>Email o dirección de correo electrónico</label>
-          <input type="email" name="email" ng-model="model.email" required class="form-control" placeholder="Ingrese su correo o email"  >
-          <div data-ng-messages="form.$submitted && form.email.$error" class="help-block">
-            <div data-ng-message="email">
-              - La <b>dirección de correo electrónico</b> debe ser valida.
-            </div>
+          <label class="control-label" for="title"><span class="glyphicon glyphicon-bookmark"></span> Title</label>
+          <input type="text" name="title" ng-model="model.title" required minlength="7" class="form-control" placeholder="" id="title">
+          <div data-ng-messages="form.$submitted && form.title.$error" class="help-block">
             <div data-ng-message="required">
-              - La <b>dirección de correo electrónico</b> es requerida.
+              - The <b>title</b> is required.
+            </div>
+            <div data-ng-message="minlength" >
+              - The <b>title</b> must be at least 7 characters long.
             </div>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Contraseña</label>
-          <input type="password" name="password" ng-model="model.password" required minlength="7" class="form-control" placeholder="Ingrese su contraseña" >
-          <div data-ng-messages="form.$submitted && form.password.$error" class="help-block">
-            <div data-ng-message="minlength" >
-              - La <b>contraseña</b> debe tener como mínimo 7 caracteres.
-            </div>
+          <label class="control-label" for="description"><span class="glyphicon glyphicon-book"></span> Description</label>
+          <textarea redactor name="description" ng-model="model.description" required class="form-control" placeholder="" id="description"></textarea>
+          <div data-ng-messages="form.$submitted && form.description.$error" class="help-block">
             <div data-ng-message="required" >
-              - La <b>contraseña</b> es requerida.
+              - The <b>description</b> is required.
             </div>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Entrar</button>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="form-group">
+              <label class="control-label" for="price"><span class="glyphicon glyphicon-tag"></span> Price</label>
+              <div class="input-group col-xs-4">
+                <div class="input-group-addon">$</div>
+                <input name="price" ng-model="model.price" required class="form-control" placeholder="Eje: 1000" type="number" id="price">
+              </div>
+              <div data-ng-messages="form.$submitted && form.price.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>price</b> is required.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="form-group">
+              <label class="control-label" for="quantity"><span class="glyphicon glyphicon-th"></span> Quantity in stock</label>
+              <div class="input-group col-xs-4">
+                <div class="input-group-addon">Units</div>
+                <input name="quantity" ng-model="model.quantity" required class="form-control" placeholder="Eje: 100" type="number" id="quantity">
+              </div>
+              <div data-ng-messages="form.$submitted && form.quantity.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>quantity</b> is required.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
       </form>
-
-
-      <!-- Form ProductTitle -->
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="form-group">
-            <label class="control-label" for="ProductTitle"><span class="glyphicon glyphicon-bookmark"></span> Title</label>
-            <span class="help-block" style="display: none;">Required</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Form ProductBody -->
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="form-group">
-            <label class="control-label" for="ProductBody"><span class="glyphicon glyphicon-book"></span> Description</label>
-            <span class="help-block" style="display: none;"><p class="text-danger">The description is required</p></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Form ProductPrice -->
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="form-group">
-            <label class="control-label" for="ProductPrice"><span class="glyphicon glyphicon-tag"></span> Price</label>
-            <div class="input-group col-xs-4">
-              <div class="input-group-addon">$</div>
-            </div>
-            <span class="help-block" style="display: none;">Required</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Form ProductQuantity -->
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="form-group">
-            <label class="control-label" for="ProductQuantity"><span class="glyphicon glyphicon-th"></span> Quantity in stock</label>
-            <div class="input-group col-xs-4">
-              <div class="input-group-addon">Units</div>
-            </div>
-            <span class="help-block" style="display: none;">Required</span>
-          </div>
-        </div>
-      </div>
-
 
 
     </div>
@@ -263,5 +132,3 @@
   </div>
 
 </section>
-
-

@@ -44,7 +44,7 @@ module.exports = function(config) {
       'bower_components/angular-pnotify/src/angular-pnotify.js',
       'bower_components/angular-busy/dist/angular-busy.js',
       'bower_components/angular-uuid-service/angular-uuid-service.js',
-      'bower_components/angular-validation-match/dist/angular-input-match.min.js',
+      'bower_components/angular-validation-match/dist/angular-validation-match.min.js',
       'bower_components/underscore/underscore.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/dropzone/dist/min/dropzone.min.js',
@@ -59,6 +59,7 @@ module.exports = function(config) {
       'bower_components/uri.js/src/URI.fragmentQuery.js',
       'bower_components/uri.js/src/URI.fragmentURI.js',
       'bower_components/jqtree/tree.jquery.js',
+      'bower_components/angular-redactor/angular-redactor.js',
       'bower_components/mockfirebase/browser/mockfirebase.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower

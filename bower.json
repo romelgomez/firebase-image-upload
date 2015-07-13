@@ -29,7 +29,8 @@
     "pnotify": "2.0.1",
     "uri.js": "~1.15.1",
     "ui.bootstrap": "0.13.0",
-    "jqtree": "1.1.0"
+    "jqtree": "1.1.0",
+    "angular-redactor": "~1.1.5"
   },
   "devDependencies": {
     "mockfirebase": "0.11.0",
