@@ -1,37 +1,44 @@
 'use strict';
 
 angular.module('publications',['tree','filters','ngMessages','angular-redactor'])
-  .factory('publications',['$q','FireRef','notificationService','$filter',function($q,FireRef,notificationService,$filter){
+  .factory('publicationsService',['$q','FireRef','$firebaseArray','notificationService','$filter',function($q,FireRef,$firebaseArray,notificationService,$filter){
 
     var publicationsRef = function(){
       return FireRef.child('publications');
     };
 
+    return {
+      publications: function () {
+        return $firebaseArray(publicationsRef());
+      }
+    };
+
   }])
   .controller('PublicationsController',['$scope','tree','notificationService','$filter','$log',function($scope,tree,notificationService,$filter,$log){
 
-    $scope.nodes = tree.nodes();
+    $scope.treeNodes = tree.nodes();
 
-    $scope.httpRequestPromise = $scope.nodes.$loaded(null,function(error){
+    $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
       notificationService.error(error);
     });
-
-    $scope.category = '';
 
     $scope.categoryExpected = false;
 
     $scope.path = [];
 
     $scope.setCategory = function (categoryId) {
-      $scope.category   = categoryId;
-      $scope.path       = tree.getPath(categoryId,$scope.nodes);
+      $scope.model.category = categoryId;
+      $scope.path           = tree.getPath(categoryId,$scope.treeNodes);
     };
 
+    // id, user_id, title, body, 	price, quantity, status, published, banned, deleted, created, modified
+
     var original = angular.copy($scope.model = {
-      title: null,
-      description: null,
-      price: null,
-      quantity: null
+      category:     '',
+      title:        null,
+      description:  null,
+      price:        null,
+      quantity:     null
     });
 
     $scope.reset = function(){
@@ -40,6 +47,12 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
       $scope.form.$setPristine();
     };
 
+    /**
+     @Name
+     @Description
+     @parameters
+     @returns
+     */
     $scope.submit = function () {
       if($scope.form.$valid){
 
@@ -56,10 +69,60 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
       }
     };
 
-    $scope.saveDraft = function(){
+    var key = '';
 
+    $scope.save = function(validate){
+
+      // [snapshots] luego de presionar <Publish>, y cada vez que el vendedor presione el botón <Update>, se crea una instantánea de la publicación.
+      // Cuando el cliente confirma el contrato, lo hará sobre la última instantánea guardada. El comprador tendrá derechos y deberes según
+      // lo especifique la instantánea. Si el vendedor luego modifica la publicación, estará creado otra instantánea o contrato.
+      //
+      // Las modificaciones realizadas a la publicación se reflejarán en todos los clientes que la estén visualizando, tan rápido como la
+      // latencia de la conexión de internet lo permita.
+      //
+      // <Update> <Pause or Enable> <Delete>
+      // <Publish> <Save> <Discard>
+      //
+      // Publish & Update  -> Valida que las fotos y los campos del formulario esten completos
+      // Save              -> Toma lo que este al momento y guarda
+      // Pause             -> actualiza un campo
+      // Enable            -> actualiza un campo
+      // Delete            -> actualiza un campo
+      // Discard           -> actualiza un campo
+
+      // id, user_id, title, body, 	price, quantity, status, published, banned, deleted, created, modified
+
+      //var function
+
+      if(validate){
+        if($scope.form.$valid){
+
+        }
+      }else{
+
+      }
+
+      //timestamp: Firebase.ServerValue.TIMESTAMP
     };
 
+
+//    var messages = $FirebaseArray(ref);
+//
+//// add a new record to the list
+//    messages.$add({
+//      user: "physicsmarie",
+//      text: "Hello world"
+//    });
+//
+//// remove an item from the list
+//    messages.$remove(someRecordKey);
+//
+//// change a message and save it
+//    var item = messages.$getRecord(someRecordKey);
+//    item.user = "alanisawesome";
+//    messages.$save(item).then(function() {
+//      // data has been saved to our database
+//    });
 
     //var publications = [
     //  {

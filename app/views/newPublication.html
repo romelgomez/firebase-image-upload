@@ -5,12 +5,12 @@
       <h3 class="panel-title">Seleccione una categoría:</h3>
     </div>
     <div class="list-group">
-      <button type="button" class="list-group-item" ng-click="setCategory(node.$id)" ng-repeat="node in nodes | filter:{parentId:category}:true" >{{node.name | capitalizeFirstChar}}</button>
+      <button type="button" class="list-group-item" ng-click="setCategory(node.$id)" ng-repeat="node in treeNodes | filter:{parentId:model.category}:true" >{{node.name | capitalizeFirstChar}}</button>
     </div>
     <div class="panel-body">
 
       <ol class="breadcrumb" style="margin-bottom: 7px;">
-        <li ng-click="category =''; path =[];" ng-class="{'a-link': path.length > 0}" > Home </li>
+        <li ng-click="model.category =''; path =[];" ng-class="{'a-link': path.length > 0}" > Home </li>
         <li ng-repeat="node in path" ng-click="setCategory(node.$id)" ng-class="{'a-link': !$last}"> {{node.name | capitalizeFirstChar}} </li>
       </ol>
 
@@ -24,7 +24,7 @@
 
     </div>
     <div class="panel-footer" style="text-align: right;">
-      <button ng-click="categoryExpected = true" type="button" class="btn btn-primary" ng-disabled="category ===''" >Confirm selection</button>
+      <button ng-click="categoryExpected = true" type="button" class="btn btn-primary" ng-disabled="model.category ===''" >Confirm selection</button>
     </div>
   </div>
 
