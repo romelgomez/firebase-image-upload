@@ -1,6 +1,13 @@
 'use strict';
 
 angular.module('publications',['tree','filters','ngMessages','angular-redactor'])
+  .factory('publications',['$q','FireRef','notificationService','$filter',function($q,FireRef,notificationService,$filter){
+
+    var publicationsRef = function(){
+      return FireRef.child('publications');
+    };
+
+  }])
   .controller('PublicationsController',['$scope','tree','notificationService','$filter','$log',function($scope,tree,notificationService,$filter,$log){
 
     $scope.nodes = tree.nodes();
@@ -17,24 +24,7 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
 
     $scope.setCategory = function (categoryId) {
       $scope.category   = categoryId;
-      $scope.path       = getPath(categoryId,$scope.nodes);
-    };
-
-    var getPath = function (nodeId,nodes){
-      var path = [];
-      var reverseNodes   = $filter('reverse')(nodes);
-      var process = function (nodeId){
-        angular.forEach(reverseNodes,function(node){
-          if(nodeId === node.$id){
-            path.push(node);
-            if(node.parentId !== ''){
-              process(node.parentId);
-            }
-          }
-        });
-      };
-      process(nodeId);
-      return $filter('reverse')(path);
+      $scope.path       = tree.getPath(categoryId,$scope.nodes);
     };
 
     var original = angular.copy($scope.model = {
@@ -64,6 +54,10 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
         //});
 
       }
+    };
+
+    $scope.saveDraft = function(){
+
     };
 
 

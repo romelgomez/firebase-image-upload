@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
-  .factory('tree',['$q','$firebaseArray','FireRef','notificationService',function($q,$firebaseArray,FireRef,notificationService){
+  .factory('tree',['$q','$firebaseArray','FireRef','notificationService','$filter',function($q,$firebaseArray,FireRef,notificationService,$filter){
 
     var treeRef = function(){
       return FireRef.child('tree');
@@ -47,9 +47,6 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
     return {
-      //ref:function(){
-      //  return treeRef();
-      //},
       nodes:function(){
         return $firebaseArray(treeRef().orderByChild('left'));
       },
@@ -231,6 +228,22 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         };
         process(tree);
         return result;
+      },
+      getPath : function(nodeId,nodes){
+        var path = [];
+        var reverseNodes   = $filter('reverse')(nodes);
+        var process = function (nodeId){
+          angular.forEach(reverseNodes,function(node){
+            if(nodeId === node.$id){
+              path.push(node);
+              if(node.parentId !== ''){
+                process(node.parentId);
+              }
+            }
+          });
+        };
+        process(nodeId);
+        return $filter('reverse')(path);
       }
     };
 

@@ -44,7 +44,7 @@ module.exports = function(config) {
       'bower_components/angular-pnotify/src/angular-pnotify.js',
       'bower_components/angular-busy/dist/angular-busy.js',
       'bower_components/angular-uuid-service/angular-uuid-service.js',
-      'bower_components/angular-validation-match/dist/angular-validation-match.min.js',
+      'bower_components/angular-validation-match/dist/angular-input-match.min.js',
       'bower_components/underscore/underscore.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/dropzone/dist/min/dropzone.min.js',
