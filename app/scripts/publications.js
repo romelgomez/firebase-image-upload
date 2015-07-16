@@ -73,43 +73,49 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
 
     $scope.save = function(validate){
 
-      // snapshots of publications
-      // releases
+      /*
 
-      // [snapshots] luego de presionar <Publish>, y cada vez que el vendedor presione el botón <Update>, se crea una instantánea de la publicación.
-      // Cuando el cliente confirma el contrato, lo hará sobre la última instantánea guardada. El comprador tendrá derechos y deberes según
-      // lo especifique la instantánea. Si el vendedor luego modifica la publicación, estará creado otra instantánea o contrato.
-      //
-      // Las modificaciones realizadas a la publicación se reflejarán en todos los clientes que la estén visualizando, tan rápido como la
-      // latencia de la conexión de internet lo permita.
-      //
-      // <Update> <Pause or Enable> <Delete>
-      // <Publish> <Save> <Discard>
-      //
-      // Publish & Update  -> validate = true;  Valida que las fotos y los campos del formulario esten completos
-      // Save              -> validate = false; Toma lo que este al momento y guarda
-      // Pause             -> actualiza un campo
-      // Enable            -> actualiza un campo
-      // Delete            -> actualiza un campo
-      // Discard           -> actualiza un campo
+       snapshots of publications
+       releases
 
-      // publications           snapshots
+       [snapshots] luego de presionar <Publish>, y cada vez que el vendedor presione el botón <Update>, se crea una instantánea de la publicación.
+       Cuando el cliente confirma el contrato, lo hará sobre la última instantánea guardada. El comprador tendrá derechos y deberes según
+       lo especifique la instantánea. Si el vendedor luego modifica la publicación, estará creado otra instantánea o contrato.
 
-      // category               category
-      // userId                 userId
-      // title                  title
-      // description            description
-      // price                  price
-      // quantity               quantity
-      // barcode                barcode
-      // warranty               warranty
-      //                        termsOfService
-      // paused                                     true or false
-      // released                                   true or false
-      // deleted                                    true or false
-      // created  (draft)       created (released)             Firebase.ServerValue.TIMESTAMP
+       Las modificaciones realizadas a la publicación se reflejarán en todos los clientes que la estén visualizando, tan rápido como la
+       latencia de la conexión de internet lo permita.
 
-      //var function
+       <Update> <Pause or Enable> <Delete>
+       <Publish> <Save> <Discard>
+
+       Publish & Update  -> validate = true;  Valida que las fotos y los campos del formulario esten completos
+       Save              -> validate = false; Toma lo que este al momento y guarda
+       Pause             -> actualiza un campo
+       Enable            -> actualiza un campo
+       Delete            -> actualiza un campo
+       Discard           -> actualiza un campo
+
+       publications           snapshots
+
+       category               category
+       type
+       userId                 userId
+       title                  title
+       description            description
+       price                  price
+       quantity               quantity
+       barcode                barcode
+       warranty               warranty
+                              termsOfService
+       paused                                     true or false
+       released                                   true or false
+       deleted                                    true or false
+       created  (draft)       created (released)             Firebase.ServerValue.TIMESTAMP
+
+       type [marketplace, jobs, real estate, autos, boats, planes]
+
+
+      */
 
       if(validate){
         if($scope.form.$valid){
