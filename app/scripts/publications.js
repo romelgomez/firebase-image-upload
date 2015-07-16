@@ -78,6 +78,9 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
        snapshots of publications
        releases
 
+       cuando el usuario confirma la compra se crea un instantánea de todos los datos.
+
+
        [snapshots] luego de presionar <Publish>, y cada vez que el vendedor presione el botón <Update>, se crea una instantánea de la publicación.
        Cuando el cliente confirma el contrato, lo hará sobre la última instantánea guardada. El comprador tendrá derechos y deberes según
        lo especifique la instantánea. Si el vendedor luego modifica la publicación, estará creado otra instantánea o contrato.
@@ -110,9 +113,9 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
        paused                                     true or false
        released                                   true or false
        deleted                                    true or false
-       created  (draft)       created (released)             Firebase.ServerValue.TIMESTAMP
+       created  (draft) created (released)        Firebase.ServerValue.TIMESTAMP
 
-       type [marketplace, jobs, real estate, autos, boats, planes]
+       type [MarketPlace, Jobs, Real Estate, Autos] // Boats, Planes, stock market
 
 
       */

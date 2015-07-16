@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 /*
  * Type: función
  * Descrición: funcion destinada a pausar una publicación activa
