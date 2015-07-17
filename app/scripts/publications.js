@@ -101,8 +101,7 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
        publications           snapshots
 
        category               category
-       type
-       userId                 userId
+       user
        title                  title
        description            description
        price                  price
@@ -111,11 +110,27 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
        warranty               warranty
                               termsOfService
        paused                                     true or false
-       released                                   true or false
+       releaseDate                                Firebase.ServerValue.TIMESTAMP
        deleted                                    true or false
        created  (draft) created (released)        Firebase.ServerValue.TIMESTAMP
 
-       type [MarketPlace, Jobs, Real Estate, Autos] // Boats, Planes, stock market
+       Main Categories [Market, Jobs, Real Estate, Vehicles] // Boats, Planes, stock market
+
+       <publications>
+
+       category               string
+       user                   string
+       title                  string
+       description            string
+       price                  int
+       quantity               int
+       barcode                string
+       warranty               string
+       releaseDate            date
+       paused                 boolean
+       deleted                boolean
+
+
 
 
       */
