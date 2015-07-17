@@ -5,7 +5,7 @@
       <h3 class="panel-title">Seleccione una categoría:</h3>
     </div>
     <div class="list-group">
-      <button type="button" class="list-group-item" ng-click="setCategory(node.$id)" ng-repeat="node in treeNodes | filter:{parentId:model.category}:true" >{{node.name | capitalizeFirstChar}}</button>
+      <button type="button" class="list-group-item" ng-click="setCategory(node.$id)" ng-repeat="node in treeNodes | filter:{parentId:model.category}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{node.name | capitalizeFirstChar}}</button>
     </div>
     <div class="panel-body">
 
@@ -57,10 +57,10 @@
 
       <hr>
 
-      <form id="form" name="form" novalidate="" ng-submit="submit()">
+      <form id="form" name="form" novalidate="" ng-submit="save()">
 
         <div class="form-group">
-          <label class="control-label" for="title"><span class="glyphicon glyphicon-bookmark"></span> Title</label>
+          <label class="control-label" for="title"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>
           <input type="text" name="title" ng-model="model.title" required minlength="7" class="form-control" placeholder="" id="title">
           <div data-ng-messages="form.$submitted && form.title.$error" class="help-block">
             <div data-ng-message="required">
@@ -73,7 +73,7 @@
         </div>
 
         <div class="form-group">
-          <label class="control-label" for="description"><span class="glyphicon glyphicon-book"></span> Description</label>
+          <label class="control-label" for="description"><span class="glyphicon glyphicon-book"></span> Description <sup style="color: red;">*</sup></label>
           <textarea redactor name="description" ng-model="model.description" required class="form-control" placeholder="" id="description"></textarea>
           <div data-ng-messages="form.$submitted && form.description.$error" class="help-block">
             <div data-ng-message="required" >
@@ -82,11 +82,11 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="form-group">
-              <label class="control-label" for="price"><span class="glyphicon glyphicon-tag"></span> Price</label>
-              <div class="input-group col-xs-4">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-xs-4">
+              <label class="control-label" for="price"><span class="glyphicon glyphicon-tag"></span> Price <sup style="color: red;">*</sup></label>
+              <div class="input-group">
                 <div class="input-group-addon">$</div>
                 <input name="price" ng-model="model.price" required class="form-control" placeholder="Eje: 1000" type="number" id="price">
               </div>
@@ -99,11 +99,11 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="form-group">
-              <label class="control-label" for="quantity"><span class="glyphicon glyphicon-th"></span> Quantity in stock</label>
-              <div class="input-group col-xs-4">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-xs-4">
+              <label class="control-label" for="quantity"><i class="fa fa-cubes"></i> Quantity in stock <sup style="color: red;">*</sup></label>
+              <div class="input-group">
                 <div class="input-group-addon">Units</div>
                 <input name="quantity" ng-model="model.quantity" required class="form-control" placeholder="Eje: 100" type="number" id="quantity">
               </div>
@@ -116,13 +116,33 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <div class="row">
+            <div class="col-xs-4">
+              <label for="barcode"><i class="fa fa-barcode"></i> Barcode</label>
+              <input name="barcode" ng-model="model.barcode" class="form-control" placeholder="" type="text" id="barcode">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label" for="warranty"><i class="fa fa-certificate"></i> Warranty <sup style="color: red;">*</sup></label>
+          <textarea redactor name="warranty" ng-model="model.warranty" required class="form-control" placeholder="" id="warranty"></textarea>
+          <div data-ng-messages="form.$submitted && form.description.$error" class="help-block">
+            <div data-ng-message="required" >
+              - The <b>Warranty</b> is required.
+            </div>
+          </div>
+        </div>
+
       </form>
 
+      <div class="alert alert-info" style="margin-bottom: 0;" role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
 
     </div>
     <ul class="list-group">
       <li class="list-group-item" >
-        <h3 id="panels" class="page-header" style="margin-top: 10px;">Images  <small><button id="continue-upload" type="button" class="btn btn-link clickable" style="display: none;">Add more pictures!</button> <button id="upload-all" type="button" class="btn btn-link" style="display: none;">Upload images!</button></small></h3>
+        <h3 id="panels" class="page-header" style="margin-top: 10px;">Images  <sup style="color: red;">*</sup> <small><button id="continue-upload" type="button" class="btn btn-link clickable" style="display: none;">Add more pictures!</button> <button id="upload-all" type="button" class="btn btn-link" style="display: none;">Upload images!</button></small></h3>
         <div id="previews" class="well dropzone-previews" style="margin-bottom: 10px;">
           <button id="first-files" class="btn btn-primary clickable">Select the images from the computer</button>
         </div>
