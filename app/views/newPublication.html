@@ -1,16 +1,35 @@
 <section ng-controller="PublicationsController" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
+  <div class="panel panel-default" style="display: none;">
+    <div class="panel-heading">Debug</div>
+    <div class="panel-body">
+
+      <button ng-click="getRecord()" type="button" class="btn btn-primary" >getRecord()</button>
+      <button ng-click="saveCustom()" type="button" class="btn btn-primary" >saveCustom()</button>
+
+
+      <pre>{{publications | json}}</pre>
+
+      <div ng-repeat="publication in publications">
+         <pre>{{publication | json}}</pre>
+      </div>
+
+
+    </div>
+  </div>
+
+
   <div class="panel panel-default" ng-show="categoryExpected === false">
     <div class="panel-heading">
       <h3 class="panel-title">Seleccione una categoría:</h3>
     </div>
     <div class="list-group">
-      <button type="button" class="list-group-item" ng-click="setCategory(node.$id)" ng-repeat="node in treeNodes | filter:{parentId:model.category}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{node.name | capitalizeFirstChar}}</button>
+      <button type="button" class="list-group-item" ng-click="setCategory(node.$id)" ng-repeat="node in treeNodes | filter:{parentId: (model.categoryId) ? model.categoryId: ''}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{node.name | capitalizeFirstChar}}</button>
     </div>
     <div class="panel-body">
 
       <ol class="breadcrumb" style="margin-bottom: 7px;">
-        <li ng-click="model.category =''; path =[];" ng-class="{'a-link': path.length > 0}" > Home </li>
+        <li ng-click="model.categoryId =''; path =[];" ng-class="{'a-link': path.length > 0}" > Home </li>
         <li ng-repeat="node in path" ng-click="setCategory(node.$id)" ng-class="{'a-link': !$last}"> {{node.name | capitalizeFirstChar}} </li>
       </ol>
 
@@ -22,9 +41,11 @@
         </ul>
       </small>
 
+      <!--<pre>{{treeNodes | json }}</pre>-->
+
     </div>
     <div class="panel-footer" style="text-align: right;">
-      <button ng-click="categoryExpected = true" type="button" class="btn btn-primary" ng-disabled="model.category ===''" >Confirm selection</button>
+      <button ng-click="categoryExpected = true" type="button" class="btn btn-primary" ng-disabled="model.categoryId ===''" >Confirm selection</button>
     </div>
   </div>
 
@@ -49,7 +70,6 @@
       <!--<button  class="btn btn-primary" type="submit">Enviar</button>-->
 
       <button form="form" id="publish"	class="btn btn-primary"	type="submit" >Publish</button>
-      <button id="save-now" class="btn btn-success"	type="button" >Save Now</button>
       <button id="discard"	class="btn btn-warning"	type="button" >Discard</button>
 
       <!--<div id="debugTime" style="padding-top: 10px; ">The publication was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>-->
@@ -57,7 +77,7 @@
 
       <hr>
 
-      <form id="form" name="form" novalidate="" ng-submit="save()">
+      <form id="form" name="form" novalidate="" ng-submit="submit()">
 
         <div class="form-group">
           <label class="control-label" for="title"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>

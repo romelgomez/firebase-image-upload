@@ -3,37 +3,37 @@
 angular.module('publications',['tree','filters','ngMessages','angular-redactor'])
   .factory('publicationsService',['$q','FireRef','$firebaseArray','notificationService','$filter',function($q,FireRef,$firebaseArray,notificationService,$filter){
 
-    var publicationsRef = function(){
-      return FireRef.child('publications');
-    };
 
     return {
-      publications: function () {
-        return $firebaseArray(publicationsRef());
+      publications: function (type) {
+
+        //if
+
+        return $firebaseArray(FireRef.child('publications').child(type));
+      },
+      //getRecord: function (key){
+      //  return publications.$getRecord(key);
+      //},
+      getKey: function(){
+        var deferred = $q.defer();
+        var promise = deferred.promise;
+        publications.$add({}).then(function(ref) {
+          var key = ref.key();
+          deferred.resolve(key);
+        },function(error){
+          deferred.reject(error);
+        });
+        return promise;
       }
-    };
+  };
 
   }])
-  .controller('PublicationsController',['$scope','tree','publicationsService','notificationService','$filter','$log',function($scope,tree,publicationsService,notificationService,$filter,$log){
+  .controller('PublicationsController',['$scope','$q','tree','publicationsService','notificationService','$filter','$log',function($scope,$q,tree,publicationsService,notificationService,$filter,$log){
 
-    $scope.treeNodes = tree.nodes();
-
-    $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
-      notificationService.error(error);
-    });
-
-    $scope.categoryExpected = false;
-
-    $scope.path = [];
-
-    $scope.setCategory = function (categoryId) {
-      $scope.model.category = categoryId;
-      $scope.path           = tree.getPath(categoryId,$scope.treeNodes);
-    };
-
-    // id, user_id, title, body, 	price, quantity, status, published, banned, deleted, created, modified
-
-    var original = angular.copy($scope.model = {
+    $scope.treeNodes          = tree.nodes();
+    $scope.categoryExpected   = false;
+    $scope.path               = [];
+    $scope.model = {
       userId:       null,
       categoryId:   null,
       title:        null,
@@ -45,63 +45,127 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
       releaseDate:  null,
       paused:       null,
       deleted:      null
-    });
-
-    $scope.reset = function(){
-      $scope.model = angular.copy(original);
-      $scope.form.$setUntouched();
-      $scope.form.$setPristine();
     };
 
-    var id = '';
+    var key = '';
 
-    var publications = publicationsService.publications();
+    //var publications = publicationsService.publications();
 
-    $scope.httpRequestPromise = publications.$loaded(null,function(error){
+    //$scope.publications = publications;
+
+    $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
       notificationService.error(error);
     });
 
-    /**
-     @Name
-     @Description
-     @parameters
-     @returns
-     */
-    $scope.save = function(validate){
+    //$scope.httpRequestPromise = publications.$loaded(null,function(error){
+    //  notificationService.error(error);
+    //});
 
-      //if(validate){
-      //  if($scope.form.$valid){
-      //    // update
-      //    $scope.model.releaseDate = Firebase.ServerValue.TIMESTAMP;
-      //
-      //
-      //  }
-      //}else{
-      //  if(id === ''){
-      //    $scope.httpRequestPromise = publications.$add($scope.model).then(function(ref) {
-      //      key = ref.key();
-      //      notificationService.success('Data has been saved to our Firebase database');
-      //    },function(error){
-      //      notificationService.error(error);
-      //    });
-      //    // add a new record
-      //  }else{
-      //    // update
-      //
-      //    var record = publications.$getRecord(key);
-      //
-      //
-      //
-      //    publications.$save(record).then(function() {
-      //      notificationService.success('Data has been update to our Firebase database');
-      //    },function(error){
-      //      notificationService.error(error);
-      //    });
-      //
-      //  }
-      //}
-
+    $scope.setCategory = function (categoryId) {
+      $scope.model.categoryId = categoryId;
+      $scope.path             = tree.getPath(categoryId,$scope.treeNodes);
     };
+
+
+    //var save = function(record){
+    //  publications.$save(record).then(function() {
+    //    notificationService.success('Data has been save to our Firebase database');
+    //  },function(error){
+    //    notificationService.error(error);
+    //  });
+    //};
+
+//    var setRecord = function(key){
+//      /*
+//       Returns the record from the array for the given key. If the key is not found, returns null. This method utilizes $indexFor(key) to find the appropriate record.
+//
+//       var list = $firebaseArray(ref);
+//       var rec = list.$getRecord("foo"); // record with $id === "foo" or null
+//     */
+//*
+//      var record = publications.$getRecord(key);
+//
+//      /*
+//        existen diferente modelos
+//        el modelo de mercado es diferente del modelo para cargar las ofertas de trabajo.
+//     */
+//
+//      $scope.model = {
+//        userId:       null,
+//        categoryId:   null,
+//        title:        null,
+//        description:  null,
+//        price:        null,
+//        quantity:     null,
+//        barcode:      null,
+//        warranty:     null,
+//        releaseDate:  null,
+//        paused:       null,
+//        deleted:      null
+//      };
+//
+//      record.userId         = $scope.model.userId;
+//      record.categoryId     = $scope.model.categoryId;
+//      record.title          = $scope.model.title;
+//      record.description    = $scope.model.description;
+//      record.price          = $scope.model.price;
+//      record.quantity       = $scope.model.quantity;
+//      record.barcode        = $scope.model.barcode;
+//      record.warranty       = $scope.model.warranty;
+//      record.releaseDate    = (record.releaseDate) ? record.releaseDate:  Firebase.ServerValue.TIMESTAMP;
+//      record.paused         = $scope.model.paused;
+//      record.deleted        = $scope.model.deleted;
+//
+//    };
+
+    //var getRecord = function (id){
+    //  return publications.$getRecord(id);
+    //};
+
+    //var category = function (){
+    //  this.category       = "-JuRf94Wkek95szSUwBc";
+    //  this.categoryId     = 7;
+    //  this.userId         = 7;
+    //  this.$id            = "-JuSLL6XgFMeG6VDtKb9";
+    //  this.$priority      = null;
+    //};
+
+    //$scope.saveCustom =function(){
+    //  var custom = {
+    //    $$hashKey: "object:20",
+    //    "category": "-JuRf94Wkek95szSUwBc",
+    //    "categoryId": 77,
+    //    "userId": 656546,
+    //    "$id": "-JuSLL6XgFMeG6VDtKb9",
+    //    "$priority": null
+    //  };
+    //
+    //  var record =  getRecord(custom.$id);
+    //  //$log.log('custom', custom);
+    //  //$log.log('record',record);
+    //
+    //  record.categoryId = 32132151321513215;
+    //
+    //  publications.$save(record).then(function() {
+    //    notificationService.success('Data has been save to our Firebase database');
+    //  },function(error){
+    //    notificationService.error(error);
+    //  });
+    //
+    //};
+    //
+    //
+    //$scope.submit = function(){
+    //  if($scope.form.$valid){
+    //    if(key){
+    //    }else{
+    //      getKey().then(setRecord(key),function(error){
+    //        notificationService.error(error);
+    //      })
+    //
+    //    }
+    //  }
+    //};
 
   }]);
 
@@ -137,6 +201,22 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
 
 
 /*
+
+ if(validate){
+ }else{
+ if(id === ''){
+ $scope.httpRequestPromise = publications.$add($scope.model).then(function(ref) {
+ key = ref.key();
+ notificationService.success('Data has been saved to our Firebase database');
+ },function(error){
+ notificationService.error(error);
+ });
+ // add a new record
+ }else{
+
+ }
+ }
+
 
  snapshots of publications
  releases
