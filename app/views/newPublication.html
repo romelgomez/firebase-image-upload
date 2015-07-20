@@ -1,18 +1,17 @@
 <section ng-controller="PublicationsController" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
-  <div class="panel panel-default" style="display: none;">
+  <div class="panel panel-default">
     <div class="panel-heading">Debug</div>
     <div class="panel-body">
 
-      <button ng-click="getRecord()" type="button" class="btn btn-primary" >getRecord()</button>
-      <button ng-click="saveCustom()" type="button" class="btn btn-primary" >saveCustom()</button>
+      <!--<button ng-click="getRecord()" type="button" class="btn btn-primary" >getRecord()</button>-->
+      <!--<button ng-click="saveCustom()" type="button" class="btn btn-primary" >saveCustom()</button>-->
 
+      <pre>{{model | json}}</pre>
 
-      <pre>{{publications | json}}</pre>
-
-      <div ng-repeat="publication in publications">
-         <pre>{{publication | json}}</pre>
-      </div>
+      <!--<div ng-repeat="publication in publications">-->
+         <!--<pre>{{publication | json}}</pre>-->
+      <!--</div>-->
 
 
     </div>
@@ -60,7 +59,7 @@
         <li ng-repeat="node in path"> {{node.name | capitalizeFirstChar}} </li>
       </ol>
 
-      <button ng-click="categoryExpected = false" type="button" class="btn btn-default">Edit category</button>
+      <button ng-click="categoryExpected = false; model.categoryId =''; path =[];" type="button" class="btn btn-default">Edit category</button>
 
       <!--<button id="update"   type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Update</button>-->
       <!--<button type="button" class="btn btn-default publication-status-button"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause</button>-->

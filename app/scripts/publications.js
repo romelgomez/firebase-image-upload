@@ -3,23 +3,22 @@
 angular.module('publications',['tree','filters','ngMessages','angular-redactor'])
   .factory('publicationsService',['$q','FireRef','$firebaseArray','notificationService','$filter',function($q,FireRef,$firebaseArray,notificationService,$filter){
 
+    var publications = function(){
+      return $firebaseArray(FireRef.child('publications'))
+    };
 
     return {
-      publications: function (type) {
-
-        //if
-
-        return $firebaseArray(FireRef.child('publications').child(type));
+      publications: function () {
+        return publications();
       },
-      //getRecord: function (key){
-      //  return publications.$getRecord(key);
-      //},
-      getKey: function(){
+      getRecord: function (key){
+        //return
+      },
+      newKey: function(){
         var deferred = $q.defer();
         var promise = deferred.promise;
-        publications.$add({}).then(function(ref) {
-          var key = ref.key();
-          deferred.resolve(key);
+        publications().$add({'uuid':'dedwedwe'}).then(function(ref) {
+          deferred.resolve(ref.key());
         },function(error){
           deferred.reject(error);
         });
@@ -30,50 +29,108 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
   }])
   .controller('PublicationsController',['$scope','$q','tree','publicationsService','notificationService','$filter','$log',function($scope,$q,tree,publicationsService,notificationService,$filter,$log){
 
+    //Main Categories [market, jobs] // realEstate, vehicles, boats, planes, stockMarket
+
     $scope.treeNodes          = tree.nodes();
     $scope.categoryExpected   = false;
     $scope.path               = [];
     $scope.model = {
-      userId:       null,
-      categoryId:   null,
-      title:        null,
-      description:  null,
+      userId:       '',
+      categoryId:   '',
+      title:        '',
+      description:  '',
       price:        null,
       quantity:     null,
-      barcode:      null,
-      warranty:     null,
-      releaseDate:  null,
-      paused:       null,
-      deleted:      null
+      barcode:      '',
+      warranty:     '',
+      releaseDate:  '',
+      paused:       false,
+      deleted:      false
     };
-
-    var key = '';
-
-    //var publications = publicationsService.publications();
-
-    //$scope.publications = publications;
 
     $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
       notificationService.error(error);
     });
-
-    //$scope.httpRequestPromise = publications.$loaded(null,function(error){
-    //  notificationService.error(error);
-    //});
 
     $scope.setCategory = function (categoryId) {
       $scope.model.categoryId = categoryId;
       $scope.path             = tree.getPath(categoryId,$scope.treeNodes);
     };
 
+    var key;
 
-    //var save = function(record){
-    //  publications.$save(record).then(function() {
-    //    notificationService.success('Data has been save to our Firebase database');
-    //  },function(error){
-    //    notificationService.error(error);
-    //  });
-    //};
+    var save = function(record){
+
+      $log.log(record);
+
+
+
+
+    };
+
+    $scope.submit = function(){
+      if($scope.form.$valid){
+        if(key){
+          save(publicationsService.getRecord(key));
+        }else{
+          publicationsService.newKey().then(function(key){
+
+            $log.log('key',key);
+            var record = publicationsService.publications().$getRecord(key);
+            $log.log('record',record);
+
+            //save();
+            //var record = publicationsService.getRecord(key);
+            //
+            //$log.log(record);
+            //
+            ////record.userId         = $scope.model.userId;
+            //record.categoryId     = $scope.model.categoryId;
+            //record.title          = $scope.model.title;
+            //record.description    = $scope.model.description;
+            //record.price          = $scope.model.price;
+            //record.quantity       = $scope.model.quantity;
+            //record.barcode        = $scope.model.barcode;
+            //record.warranty       = $scope.model.warranty;
+            //record.releaseDate    = record.releaseDate ? record.releaseDate:  Firebase.ServerValue.TIMESTAMP;
+            //record.paused         = record.paused ? record.paused : false;
+            //record.deleted        = record.deleted ? record.deleted : false;
+            //
+            //publicationsService.publications().$save(record).then(function() {
+            //  notificationService.success('Data has been save to our Firebase database');
+            //});
+
+          },function(error){
+            notificationService.error(error);
+          })
+
+        }
+      }
+    };
+
+
+  }]);
+
+
+
+//var key = '';
+
+//$scope.httpRequestPromise = publications.$loaded(null,function(error){
+//  notificationService.error(error);
+//});
+
+//var publications = publicationsService.publications();
+
+//$scope.publications = publications;
+
+
+//var save = function(record){
+//  publications.$save(record).then(function() {
+//    notificationService.success('Data has been save to our Firebase database');
+//  },function(error){
+//    notificationService.error(error);
+//  });
+//};
 
 //    var setRecord = function(key){
 //      /*
@@ -118,58 +175,54 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
 //
 //    };
 
-    //var getRecord = function (id){
-    //  return publications.$getRecord(id);
-    //};
+//var getRecord = function (id){
+//  return publications.$getRecord(id);
+//};
 
-    //var category = function (){
-    //  this.category       = "-JuRf94Wkek95szSUwBc";
-    //  this.categoryId     = 7;
-    //  this.userId         = 7;
-    //  this.$id            = "-JuSLL6XgFMeG6VDtKb9";
-    //  this.$priority      = null;
-    //};
+//var category = function (){
+//  this.category       = "-JuRf94Wkek95szSUwBc";
+//  this.categoryId     = 7;
+//  this.userId         = 7;
+//  this.$id            = "-JuSLL6XgFMeG6VDtKb9";
+//  this.$priority      = null;
+//};
 
-    //$scope.saveCustom =function(){
-    //  var custom = {
-    //    $$hashKey: "object:20",
-    //    "category": "-JuRf94Wkek95szSUwBc",
-    //    "categoryId": 77,
-    //    "userId": 656546,
-    //    "$id": "-JuSLL6XgFMeG6VDtKb9",
-    //    "$priority": null
-    //  };
-    //
-    //  var record =  getRecord(custom.$id);
-    //  //$log.log('custom', custom);
-    //  //$log.log('record',record);
-    //
-    //  record.categoryId = 32132151321513215;
-    //
-    //  publications.$save(record).then(function() {
-    //    notificationService.success('Data has been save to our Firebase database');
-    //  },function(error){
-    //    notificationService.error(error);
-    //  });
-    //
-    //};
-    //
-    //
-    //$scope.submit = function(){
-    //  if($scope.form.$valid){
-    //    if(key){
-    //    }else{
-    //      getKey().then(setRecord(key),function(error){
-    //        notificationService.error(error);
-    //      })
-    //
-    //    }
-    //  }
-    //};
-
-  }]);
-
-
+//$scope.saveCustom =function(){
+//  var custom = {
+//    $$hashKey: "object:20",
+//    "category": "-JuRf94Wkek95szSUwBc",
+//    "categoryId": 77,
+//    "userId": 656546,
+//    "$id": "-JuSLL6XgFMeG6VDtKb9",
+//    "$priority": null
+//  };
+//
+//  var record =  getRecord(custom.$id);
+//  //$log.log('custom', custom);
+//  //$log.log('record',record);
+//
+//  record.categoryId = 32132151321513215;
+//
+//  publications.$save(record).then(function() {
+//    notificationService.success('Data has been save to our Firebase database');
+//  },function(error){
+//    notificationService.error(error);
+//  });
+//
+//};
+//
+//
+//$scope.submit = function(){
+//  if($scope.form.$valid){
+//    if(key){
+//    }else{
+//      getKey().then(setRecord(key),function(error){
+//        notificationService.error(error);
+//      })
+//
+//    }
+//  }
+//};
 
 //    var messages = $FirebaseArray(ref);
 //
