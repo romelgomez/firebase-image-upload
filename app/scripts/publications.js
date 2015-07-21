@@ -3,17 +3,16 @@
 angular.module('publications',['tree','filters','ngMessages','angular-redactor'])
   .factory('publicationsService',['$q','FireRef','$firebaseArray','notificationService','$filter','$log',function($q,FireRef,$firebaseArray,notificationService,$filter,$log){
 
-    var publications = function(){
-      return $firebaseArray(FireRef.child('publications'))
-    };
+    //var publications = function(){
+    //  return $firebaseArray(FireRef.child('publications'))
+    //};
+
+    var publications = $firebaseArray(FireRef.child('publications'));
 
     return {
-      publications: function () {
-        return publications();
-      },
+      publications: publications,
       updateRecord: function (key,model){
-
-        var record = publications().$getRecord(key);
+        var record = publications.$getRecord(key);
 
         $log.log('record:',record);
         $log.log('key:',key);
@@ -24,7 +23,7 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
           record[i] = value;
         });
 
-        publications().$save(record).then(function() {
+        publications.$save(record).then(function() {
           notificationService.success('Data has been save to our Firebase database');
         });
 
@@ -33,7 +32,8 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
         var deferred = $q.defer();
         var promise = deferred.promise;
 
-        var publications = $firebaseArray(FireRef.child('publications')); // parece ser que la referencia no esta bien definida.
+        // // parece ser que la referencia no esta bien definida.
+        //var publications = publications(); // parece ser que la referencia no esta bien definida.
 
         publications.$add({'uuid':'dedwedwe','type':'market'}).then(function(ref) {
 
@@ -133,14 +133,13 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
           //save(publicationsService.getRecord(key));
         }else{
           publicationsService.newKey().then(function(key){
-            //$log.log('key: ',key);
+            $log.log('key: ',key);
 
-            //var record = publicationsService.publications().$getRecord(key);
+            var record = publicationsService.publications.$getRecord(key);
             //
-            //$log.log('record: ',record);
+            $log.log('record: ',record);
 
-
-            //publicationsService.updateRecord(key,$scope.model);
+            publicationsService.updateRecord(key,$scope.model);
           });
 
 
