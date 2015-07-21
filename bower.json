@@ -19,7 +19,7 @@
     "angular-pnotify": "~0.0.6",
     "angular-busy": "4.1.3",
     "angular-new-router": "0.5.3",
-    "angular-uuid-service": "^0.1.0",
+    "angular-uuid-service": "~0.1.0",
     "angular-validation-match": "~1.5.0",
     "underscore": "1.8.3",
     "angular-bootstrap": "0.13.0",

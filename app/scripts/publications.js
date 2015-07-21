@@ -1,47 +1,28 @@
 'use strict';
 
-angular.module('publications',['tree','filters','ngMessages','angular-redactor'])
-  .factory('publicationsService',['$q','FireRef','$firebaseArray','notificationService','$filter','$log',function($q,FireRef,$firebaseArray,notificationService,$filter,$log){
+// definir el type de publication
+// añadir soporte a otro tipo de publicación
 
-    //var publications = function(){
-    //  return $firebaseArray(FireRef.child('publications'))
-    //};
+angular.module('publications',['tree','filters','uuid','ngMessages','angular-redactor'])
+  .factory('publicationsService',['$q','rfc4122','FireRef','$firebaseArray','notificationService','$filter','$log',function($q,rfc4122,FireRef,$firebaseArray,notificationService,$filter,$log){
 
     var publications = $firebaseArray(FireRef.child('publications'));
 
     return {
       publications: publications,
-      updateRecord: function (key,model){
-        var record = publications.$getRecord(key);
-
-        $log.log('record:',record);
-        $log.log('key:',key);
-
-        angular.forEach(model,function(value,i){
-          $log.log('value: ',value);
-          $log.log('index key: ',i);
-          record[i] = value;
+      updateRecord: function (recordKey,model){
+        var record = publications.$getRecord(recordKey);
+        angular.forEach(model,function(value,key){
+          record[key] = value;
         });
-
         publications.$save(record).then(function() {
           notificationService.success('Data has been save to our Firebase database');
         });
-
       },
       newKey: function(){
         var deferred = $q.defer();
         var promise = deferred.promise;
-
-        // // parece ser que la referencia no esta bien definida.
-        //var publications = publications(); // parece ser que la referencia no esta bien definida.
-
-        publications.$add({'uuid':'dedwedwe','type':'market'}).then(function(ref) {
-
-          var record = publications.$getRecord(ref.key());
-
-          $log.log('record: ',record);
-
-
+        publications.$add({uuid:rfc4122.v4()}).then(function(ref){
           deferred.resolve(ref.key());
         },function(error){
           deferred.reject(error);
@@ -54,41 +35,6 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
   .controller('PublicationsController',['$scope','$q','tree','publicationsService','notificationService','$filter','$log','$firebaseArray','FireRef',function($scope,$q,tree,publicationsService,notificationService,$filter,$log,$firebaseArray,FireRef){
 
     //Main Categories [market, jobs] // realEstate, vehicles, boats, planes, stockMarket
-
-    $scope.getThisRecord = function(){
-      //var ref = new Firebase("https://berlin.firebaseio.com/publications");
-      //var record = ref.$getRecord('-JuiMwzyR8SQhScNELPm');
-
-      var messages = $firebaseArray(FireRef.child('messages'));
-
-      messages.$add({
-        user: "physicsmarie",
-        text: "Hello world"
-      }).then(function(ref) {
-        var key = ref.key();
-        $log.log('key',key);
-
-        var record = messages.$getRecord(key);
-
-        $log.log(record);
-      });
-
-
-//      //messages.$remove(someRecordKey);
-//
-//// change a message and save it
-//      var item = messages.$getRecord(someRecordKey);
-//      item.user = "alanisawesome";
-//      messages.$save(item).then(function() {
-//        // data has been saved to our database
-//      });
-//
-//      var ref = $firebaseArray(FireRef.child('publications'));
-//      var record = ref.$getRecord('-JuiMwzyR8SQhScNELPm')
-//
-//      $log.log(record);
-    };
-
 
     $scope.treeNodes          = tree.nodes();
     $scope.categoryExpected   = false;
@@ -116,64 +62,17 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
       $scope.path             = tree.getPath(categoryId,$scope.treeNodes);
     };
 
-    var key;
-
-    var save = function(record){
-
-      $log.log(record);
-
-
-
-
-    };
+    var recordKey;
 
     $scope.submit = function(){
       if($scope.form.$valid){
-        if(key){
-          //save(publicationsService.getRecord(key));
+        if(recordKey){
+          publicationsService.updateRecord(recordKey,$scope.model);
         }else{
           publicationsService.newKey().then(function(key){
-            $log.log('key: ',key);
-
-            var record = publicationsService.publications.$getRecord(key);
-            //
-            $log.log('record: ',record);
-
+            recordKey = key;
             publicationsService.updateRecord(key,$scope.model);
           });
-
-
-          //  .then(function(key){
-          //
-          //  $log.log('key',key);
-          //  var record = publicationsService.publications().$getRecord(key);
-          //  $log.log('record',record);
-          //
-          //  //save();
-          //  //var record = publicationsService.getRecord(key);
-          //  //
-          //  //$log.log(record);
-          //  //
-          //  ////record.userId         = $scope.model.userId;
-          //  //record.categoryId     = $scope.model.categoryId;
-          //  //record.title          = $scope.model.title;
-          //  //record.description    = $scope.model.description;
-          //  //record.price          = $scope.model.price;
-          //  //record.quantity       = $scope.model.quantity;
-          //  //record.barcode        = $scope.model.barcode;
-          //  //record.warranty       = $scope.model.warranty;
-          //  //record.releaseDate    = record.releaseDate ? record.releaseDate:  Firebase.ServerValue.TIMESTAMP;
-          //  //record.paused         = record.paused ? record.paused : false;
-          //  //record.deleted        = record.deleted ? record.deleted : false;
-          //  //
-          //  //publicationsService.publications().$save(record).then(function() {
-          //  //  notificationService.success('Data has been save to our Firebase database');
-          //  //});
-          //
-          //},function(error){
-          //  notificationService.error(error);
-          //})
-
         }
       }
     };
@@ -182,164 +81,7 @@ angular.module('publications',['tree','filters','ngMessages','angular-redactor']
   }]);
 
 
-
-//var key = '';
-
-//$scope.httpRequestPromise = publications.$loaded(null,function(error){
-//  notificationService.error(error);
-//});
-
-//var publications = publicationsService.publications();
-
-//$scope.publications = publications;
-
-
-//var save = function(record){
-//  publications.$save(record).then(function() {
-//    notificationService.success('Data has been save to our Firebase database');
-//  },function(error){
-//    notificationService.error(error);
-//  });
-//};
-
-//    var setRecord = function(key){
-//      /*
-//       Returns the record from the array for the given key. If the key is not found, returns null. This method utilizes $indexFor(key) to find the appropriate record.
-//
-//       var list = $firebaseArray(ref);
-//       var rec = list.$getRecord("foo"); // record with $id === "foo" or null
-//     */
-//*
-//      var record = publications.$getRecord(key);
-//
-//      /*
-//        existen diferente modelos
-//        el modelo de mercado es diferente del modelo para cargar las ofertas de trabajo.
-//     */
-//
-//      $scope.model = {
-//        userId:       null,
-//        categoryId:   null,
-//        title:        null,
-//        description:  null,
-//        price:        null,
-//        quantity:     null,
-//        barcode:      null,
-//        warranty:     null,
-//        releaseDate:  null,
-//        paused:       null,
-//        deleted:      null
-//      };
-//
-//      record.userId         = $scope.model.userId;
-//      record.categoryId     = $scope.model.categoryId;
-//      record.title          = $scope.model.title;
-//      record.description    = $scope.model.description;
-//      record.price          = $scope.model.price;
-//      record.quantity       = $scope.model.quantity;
-//      record.barcode        = $scope.model.barcode;
-//      record.warranty       = $scope.model.warranty;
-//      record.releaseDate    = (record.releaseDate) ? record.releaseDate:  Firebase.ServerValue.TIMESTAMP;
-//      record.paused         = $scope.model.paused;
-//      record.deleted        = $scope.model.deleted;
-//
-//    };
-
-//var getRecord = function (id){
-//  return publications.$getRecord(id);
-//};
-
-//var category = function (){
-//  this.category       = "-JuRf94Wkek95szSUwBc";
-//  this.categoryId     = 7;
-//  this.userId         = 7;
-//  this.$id            = "-JuSLL6XgFMeG6VDtKb9";
-//  this.$priority      = null;
-//};
-
-//$scope.saveCustom =function(){
-//  var custom = {
-//    $$hashKey: "object:20",
-//    "category": "-JuRf94Wkek95szSUwBc",
-//    "categoryId": 77,
-//    "userId": 656546,
-//    "$id": "-JuSLL6XgFMeG6VDtKb9",
-//    "$priority": null
-//  };
-//
-//  var record =  getRecord(custom.$id);
-//  //$log.log('custom', custom);
-//  //$log.log('record',record);
-//
-//  record.categoryId = 32132151321513215;
-//
-//  publications.$save(record).then(function() {
-//    notificationService.success('Data has been save to our Firebase database');
-//  },function(error){
-//    notificationService.error(error);
-//  });
-//
-//};
-//
-//
-//$scope.submit = function(){
-//  if($scope.form.$valid){
-//    if(key){
-//    }else{
-//      getKey().then(setRecord(key),function(error){
-//        notificationService.error(error);
-//      })
-//
-//    }
-//  }
-//};
-
-//    var messages = $FirebaseArray(ref);
-//
-//// add a new record to the list
-//    messages.$add({
-//      user: "physicsmarie",
-//      text: "Hello world"
-//    });
-//
-//// remove an item from the list
-//    messages.$remove(someRecordKey);
-//
-//// change a message and save it
-//    var item = messages.$getRecord(someRecordKey);
-//    item.user = "alanisawesome";
-//    messages.$save(item).then(function() {
-//      // data has been saved to our database
-//    });
-
-//var publications = [
-//  {
-//    "left": 1,
-//    "name": "321",
-//    "parentId": "",
-//    "right": 4,
-//    "$id": "-Jtj9bAlDopYZTwv_PNU",
-//    "$priority": null
-//  },
-
-
 /*
-
- if(validate){
- }else{
- if(id === ''){
- $scope.httpRequestPromise = publications.$add($scope.model).then(function(ref) {
- key = ref.key();
- notificationService.success('Data has been saved to our Firebase database');
- },function(error){
- notificationService.error(error);
- });
- // add a new record
- }else{
-
- }
- }
-
 
  snapshots of publications
  releases
