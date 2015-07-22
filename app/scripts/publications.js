@@ -42,6 +42,7 @@ angular.module('publications',['tree','filters','uuid','ngMessages','angular-red
     $scope.model = {
       userId:       '1',
       categoryId:   '',
+      type:         '',
       title:        '',
       description:  '',
       price:        null,
@@ -60,6 +61,7 @@ angular.module('publications',['tree','filters','uuid','ngMessages','angular-red
     $scope.setCategory = function (categoryId) {
       $scope.model.categoryId = categoryId;
       $scope.path             = tree.getPath(categoryId,$scope.treeNodes);
+      $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
     };
 
     var recordKey;

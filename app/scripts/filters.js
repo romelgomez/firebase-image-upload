@@ -35,4 +35,9 @@ angular.module('filters',[])
     return function(items) {
       return angular.isArray(items)? items.slice().reverse() : [];
     };
+  })
+  .filter('camelCase', function() {
+    return function(input) {
+      return  (!!input) ? input.trim().replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) { if (+match === 0) return ''; return index == 0 ? match.toLowerCase() : match.toUpperCase(); }) : '';
+    };
   });
