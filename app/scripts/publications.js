@@ -1,6 +1,5 @@
 'use strict';
 
-// definir el type de publication
 // añadir soporte a otro tipo de publicación
 
 angular.module('publications',['tree','filters','uuid','ngMessages','angular-redactor'])
@@ -13,21 +12,16 @@ angular.module('publications',['tree','filters','uuid','ngMessages','angular-red
       updateRecord: function (recordKey,model){
         var record = publications.$getRecord(recordKey);
         angular.forEach(model,function(value,key){
-          record[key] = value;
+          if(key === 'releaseDate'){
+            record[key] = (record[key]) ? record[key] : Firebase.ServerValue.TIMESTAMP;
+          }else{
+            record[key] = value;
+          }
         });
-        publications.$save(record).then(function() {
-          notificationService.success('Data has been save to our Firebase database');
-        });
+        return publications.$save(record);
       },
       newKey: function(){
-        var deferred = $q.defer();
-        var promise = deferred.promise;
-        publications.$add({uuid:rfc4122.v4()}).then(function(ref){
-          deferred.resolve(ref.key());
-        },function(error){
-          deferred.reject(error);
-        });
-        return promise;
+        return publications.$add({uuid:rfc4122.v4()});
       }
   };
 
@@ -69,12 +63,21 @@ angular.module('publications',['tree','filters','uuid','ngMessages','angular-red
     $scope.submit = function(){
       if($scope.form.$valid){
         if(recordKey){
-          publicationsService.updateRecord(recordKey,$scope.model);
+          $scope.httpRequestPromise = publicationsService.updateRecord(recordKey,$scope.model)
+            .then(function() {
+              notificationService.success('Data has been save to our Firebase database');
+            });
         }else{
-          publicationsService.newKey().then(function(key){
-            recordKey = key;
-            publicationsService.updateRecord(key,$scope.model);
-          });
+          $scope.httpRequestPromise = publicationsService.newKey()
+            .then(function(ref){
+              recordKey = ref.key();
+              return publicationsService.updateRecord(recordKey,$scope.model);
+            })
+            .then(function() {
+              notificationService.success('Data has been save to our Firebase database');
+            },function(error){
+              notificationService.error(error);
+            });
         }
       }
     };
