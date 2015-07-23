@@ -3,7 +3,7 @@
 // añadir soporte a otro tipo de publicación
 
 angular.module('publications',['tree','filters','uuid','ngMessages','angular-redactor'])
-  .factory('publicationsService',['$q','rfc4122','FireRef','$firebaseArray','notificationService','$filter','$log',function($q,rfc4122,FireRef,$firebaseArray,notificationService,$filter,$log){
+  .factory('publicationsService',['$q','$window','rfc4122','FireRef','$firebaseArray',function($q,$window,rfc4122,FireRef,$firebaseArray){
 
     var publications = $firebaseArray(FireRef.child('publications'));
 
@@ -13,7 +13,7 @@ angular.module('publications',['tree','filters','uuid','ngMessages','angular-red
         var record = publications.$getRecord(recordKey);
         angular.forEach(model,function(value,key){
           if(key === 'releaseDate'){
-            record[key] = (record[key]) ? record[key] : Firebase.ServerValue.TIMESTAMP;
+            record[key] = (record[key]) ? record[key] : $window.Firebase.ServerValue.TIMESTAMP;
           }else{
             record[key] = value;
           }
@@ -26,7 +26,7 @@ angular.module('publications',['tree','filters','uuid','ngMessages','angular-red
   };
 
   }])
-  .controller('PublicationsController',['$scope','$q','tree','publicationsService','notificationService','$filter','$log','$firebaseArray','FireRef',function($scope,$q,tree,publicationsService,notificationService,$filter,$log,$firebaseArray,FireRef){
+  .controller('PublicationsController',['$scope','$q','tree','publicationsService','notificationService','$filter',function($scope,$q,tree,publicationsService,notificationService,$filter){
 
     //Main Categories [market, jobs] // realEstate, vehicles, boats, planes, stockMarket
 
@@ -83,6 +83,33 @@ angular.module('publications',['tree','filters','uuid','ngMessages','angular-red
     };
 
 
+  }])
+  .directive('ngDropZone', ['$window',function ($window) {
+    return {
+      restrict: 'AE',
+      template: '<div ng-transclude></div>',
+      transclude: true,
+      scope: {
+        dropZone: '=',
+        dropZoneConfig: '='
+      },
+      link: function(scope, element) {
+        if(!angular.isDefined($window.Dropzone)){ throw new Error('DropZone.js not loaded.'); }
+
+        scope.dropZoneConfig = {
+          options: angular.isDefined(scope.dropZoneConfig.options) ? scope.dropZoneConfig.options : {},
+          eventHandlers: angular.isDefined(scope.dropZoneConfig.eventHandlers) ? scope.dropZoneConfig.eventHandlers : {}
+        };
+
+        var dropZone = new $window.Dropzone(element[0], scope.dropZoneConfig.options);
+
+        angular.forEach(scope.dropZoneConfig.eventHandlers, function (handler, event) {
+          dropZone.on(event, handler);
+        });
+
+        scope.dropZone = dropZone;
+      }
+    };
   }]);
 
 
