@@ -160,14 +160,19 @@
 
     </div>
     <ul class="list-group">
-      <li class="list-group-item" >
-        <h3 id="panels" class="page-header" style="margin-top: 10px;">Images  <sup style="color: red;">*</sup> <small><button id="continue-upload" type="button" class="btn btn-link clickable" style="display: none;">Add more pictures!</button> <button id="upload-all" type="button" class="btn btn-link" style="display: none;">Upload images!</button></small></h3>
-        <div id="previews" class="well dropzone-previews" style="margin-bottom: 10px;">
-          <button id="first-files" class="btn btn-primary clickable">Select the images from the computer</button>
-        </div>
+      <li class="list-group-item">
+        <ng-drop-zone data-drop-zone-instance="dropZoneInstance" data-drop-zone-config="dropZoneConfig" ></ng-drop-zone>
       </li>
     </ul>
 
   </div>
 
 </section>
+
+
+<script type="text/ng-template" id="dropZoneTemplate.html">
+  <h3 class="page-header" style="margin-top: 10px;">Images  <sup style="color: red;">*</sup> <small><button ng-show="continueUpload" type="button" class="btn btn-link clickable">Add more pictures!</button> <button ng-show="uploadAllButton" type="button" class="btn btn-link">Upload images!</button></small></h3>
+  <div id="previews" class="well dropzone dropzone-previews" style="margin-bottom: 10px;">
+    <button ng-click="firstFiles()" class="btn btn-primary clickable">Select the images from the computer</button>
+  </div>
+</script>
