@@ -57,7 +57,7 @@ angular.module('filters',[])
   }])
   /**
    @Name         noSpecialChars
-   @Description  Replace whole Tree.
+   @Description  All special chars are replaced by spaces.
    @parameters   {element: reference of DOM element, data: object}
    @returns      null
    */

@@ -70,6 +70,7 @@ module.exports = function(config) {
 
     // list of files / patterns to exclude
     exclude: [
+      'app/scripts/LEGACY_add.js'
     ],
 
     // web server port
