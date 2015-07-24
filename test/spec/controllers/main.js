@@ -34,29 +34,38 @@ describe('Test filters', function () {
 
   it('All first letters of each word should be capital letters', function () {
     // Arrange.
-    var testText = 'Your best days are not behind you; your best days are out in front of you.', result;
+    var testText = 'hello word', result;
     // Act.
     result = $filter('capitalize')(testText);
     // Assert.
-    expect(result).toEqual('Your Best Days Are Not Behind You; Your Best Days Are Out In Front Of You.');
+    expect(result).toEqual('Hello Word');
   });
 
   it('All letters should be downCased and spaces and specialChars are replaced by hyphens \'-\'', function () {
     // Arrange.
-    var testText = 'Your best days are not behind you; your best days are out in front of you.', result;
+    var testText = 'Hello ·· Word', result;
     // Act.
     result = $filter('slug')(testText);
     // Assert.
-    expect(result).toEqual('your-best-days-are-not-behind-you-your-best-days-are-out-in-front-of-you');
+    expect(result).toEqual('hello-word');
   });
 
   it('All special chars should be replaced by white spaces, and only one space should be exist between words', function () {
     // Arrange.
-    var testText = 'Your ~#~#~ ł@€@ł @łðßæðæßð best days are not ðß æßðæ æßðð  ðæßð æß  ðæßð æbehind you; your best days are out in front of you.', result;
+    var testText = 'Hello #@#~½~¬½~¬~½@#@ word ()/()()(/$""·$"¿? .', result;
     // Act.
     result = $filter('noSpecialChars')(testText);
     // Assert.
-    expect(result).toEqual('Your best days are not behind you; your best days are out in front of you.');
+    expect(result).toEqual('Hello word');
+  });
+
+  it('Should be capitalize the first Char', function () {
+    // Arrange.
+    var testText = 'hello word', result;
+    // Act.
+    result = $filter('capitalizeFirstChar')(testText);
+    // Assert.
+    expect(result).toEqual('Hello word');
   });
 
 });
