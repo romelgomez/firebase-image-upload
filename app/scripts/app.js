@@ -4,4 +4,4 @@
 
 //angular.module('app',['ui.bootstrap','forms','publications','filters']);
 
-angular.module('app',['filters','forms','firebase','fire','routes','main','tree','publications','chat','login','account','ui.bootstrap']);
+angular.module('app',['filters','forms','firebase','fire','routes','main','tree','publications','chat','login','account','ui.bootstrap','ngUpload']);

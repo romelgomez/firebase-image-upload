@@ -1,17 +1,11 @@
 <section ng-controller="PublicationsController" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
-  <div class="panel panel-default" style="display: none;">
+  <div class="panel panel-default">
     <div class="panel-heading">Debug</div>
     <div class="panel-body">
 
-      <button ng-click="getThisRecord()" type="button" class="btn btn-primary" >getThisRecord()</button>
-      <!--<button ng-click="saveCustom()" type="button" class="btn btn-primary" >saveCustom()</button>-->
+      <ng-upload></ng-upload>
 
-      <pre>{{model | json}}</pre>
-
-      <!--<div ng-repeat="publication in publications">-->
-         <!--<pre>{{publication | json}}</pre>-->
-      <!--</div>-->
 
 
     </div>
