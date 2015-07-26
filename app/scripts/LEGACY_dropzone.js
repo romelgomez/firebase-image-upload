@@ -406,7 +406,7 @@
       var elementOptions, fallback, _ref;
       this.element = element;
       this.version = Dropzone.version;
-      this.defaultOptions.previewTemplate = this.defaultOptions.previewTemplate.replace(/\n*/g, "");
+      this.defaultOptions.previewTemplate = this.defaultOptions.previewTemplate.replace(/\n*/g, '');
       this.clickableElements = [];
       this.listeners = [];
       this.files = [];
@@ -709,6 +709,7 @@
     };
 
     Dropzone.prototype.getFallbackForm = function() {
+
       var existingFallback, fields, fieldsString, form;
       if (existingFallback = this.getExistingFallback()) {
         return existingFallback;

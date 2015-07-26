@@ -1,77 +1,68 @@
+// https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications
+// https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+// https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
+
 angular.module('ngUpload',[])
-  .directive('ngUpload', ['$window','$log',function ($window,$log) {
-
-
-    //myDropzone.on("addedfile", function(file) {
-    //  file.previewElement.addEventListener("click", function() {
-    //    myDropzone.removeFile(file);
-    //  });
-    //});
+  .directive('ngUpload', ['$q','$window','$log',function ($q,$window,$log) {
 
     var controller = function ($scope){
 
-      //$scope.firstFiles = function(){
-      //  $log.log('ok');
-      //};
+      $scope.readFiles = function(file){
+        $log.log('file',file);
 
-      //$scope.continueUpload   = false;
-      //$scope.uploadAllButton  = false;
+        var deferred = $q.defer();
+        var promise = deferred.promise;
 
-      //$scope.dropZoneConfig = {
-      //  options: {
-      //    url: 'upload.php',
-      //    previewsContainer: '#previews',  // Define the container to display the previews
-      //    clickable: '.clickable',         // Define the element that should be used as click trigger to select files.
-      //    paramName: 'image',              // The name that will be used to transfer the file
-      //    maxFilesize: 10,                 // MB
-      //    acceptedFiles: 'image/*',
-      //    autoQueue: false,
-      //    //previewTemplate: layout,
-      //    init: function() {
-      //
-      //      $scope.$watch(function(scope) { return scope.dropZoneInstance; },
-      //        function() {
-      //          //$log.log('$scope.dropZone ',$scope.dropZoneInstance);
-      //
-      //        }
-      //      );
-      //
-      //    }
-      //  },
-      //  eventHandlers: {
-      //    'addedfile': function (file) {
-      //
-      //      //$scope.firstFiles();
-      //      //$log.log('getFilesWithStatus',$scope.dropZoneInstance.getFilesWithStatus(Dropzone.ADDED));
-      //      //removeButton(myDropzone,file);
-      //
-      //
-      //    },
-      //    'sending': function (file, xhr, formData) {
-      //      //formData.append("product_id", $('#ProductId').val());
-      //    },
-      //    'success': function (file, response) {
-      //    },
-      //    'error': function (file, error, response) {
-      //    }
-      //  }
-      //};
+        var reader  = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onloadend = function () {
+          $log.log('reader.result',reader.result);
+          deferred.resolve(reader.result);
+        };
+
+        return promise;
+      };
+
+      $scope.someFunction = function(){
+        $log.log('someFunction is called');
+        $log.log('scope.queue',$scope.queue);
+      };
+
+      var queue = [];
+
+      $scope.queueFiles = function(files){
+        angular.forEach(files,function(file){
+          queue.push(file);
+        });
+        $log.log('queue',queue);
+      };
 
     };
 
     return {
       restrict: 'E',
-      template: '<input name="file" type="file" multiple />',
-      transclude: true,
+      templateUrl: 'ngUpload.html',
       scope: {},
       controller:controller,
       link: function(scope, element) {
 
-        //scope.$watch(function() { return element; },
+        scope.queue = [];
+        element.on('change', function (event) {
+          angular.forEach(event.target.files,function(file){
+            scope.queue.push(file);
+          });
+          $log.log('scope.queue',scope.queue);
+        });
+
+        //element.on('change')
+
+        //scope.$watch(function(scope) { return scope.queue; },
         //  function() {
-        //    //$log.log('$scope.dropZone ',$scope.dropZoneInstance);
         //  }
         //);
+
+        //$log.log('changeEvent.target.files',event.target.files);
 
       }
     };

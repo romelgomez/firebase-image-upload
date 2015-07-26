@@ -170,3 +170,14 @@
     <button ng-click="firstFiles()" class="btn btn-primary clickable">Select the images from the computer</button>
   </div>
 </script>
+
+<script type="text/ng-template" id="ngUpload.html">
+  <input type="file" multiple="multiple" accept="image/*">
+
+  <button ng-click="someFunction()" class="btn btn-default">someFunction()</button>
+  <ul>
+    <li ng-repeat="file in queue track by $index">
+      <img ng-src="readFile(file)" style="width: 200px;">
+    </li>
+  </ul>
+</script>
