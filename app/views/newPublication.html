@@ -173,10 +173,18 @@
 
 <script type="text/ng-template" id="ngUpload.html">
 <input type="file" multiple="multiple" accept="image/*">
+<hr>
+<button ng-click="removeAllQueueFiles()">Remove All Queue Files</button>
+<hr>
+<div class="well well-sm">
 
-<ul>
-  <li ng-repeat="file in queueFiles">
-    <img ng-src="{{file.preview}}" style="width: 200px;">
-  </li>
-</ul>
+  <div class="row">
+    <div class="col-xs-6 col-md-3" ng-repeat="file in queueFiles">
+      <a href="#" class="thumbnail">
+        <img ng-src="{{file.preview}}" alt="...">
+      </a>
+    </div>
+  </div>
+
+</div>
 </script>
