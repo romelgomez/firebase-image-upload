@@ -3,64 +3,103 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
 
 angular.module('ngUpload',[])
-  .directive('ngUpload', ['$q','$window','$log',function ($q,$window,$log) {
+  .controller('NgUploadController',['$scope',function($scope){
+
+    $scope.queueFiles = [];
+
+    //scope.$watch(function(scope) { return scope.queueFiles; },
+    //  function() {
+    //
+    //    //angular.forEach(scope.queueFiles, function(value,index){
+    //    //    //value
+    //    //});
+    //  }
+    //);
+
+
+  }])
+  .directive('ngUpload', ['$q','$window','rfc4122','$log',function ($q,$window,rfc4122,$log) {
 
     var controller = function ($scope){
-
-      $scope.readFiles = function(file){
-        $log.log('file',file);
-
-        var deferred = $q.defer();
-        var promise = deferred.promise;
-
-        var reader  = new FileReader();
-        reader.readAsDataURL(file);
-
-        reader.onloadend = function () {
-          $log.log('reader.result',reader.result);
-          deferred.resolve(reader.result);
-        };
-
-        return promise;
-      };
-
-      $scope.someFunction = function(){
-        $log.log('someFunction is called');
-        $log.log('scope.queue',$scope.queue);
-      };
-
-      var queue = [];
-
-      $scope.queueFiles = function(files){
-        angular.forEach(files,function(file){
-          queue.push(file);
-        });
-        $log.log('queue',queue);
-      };
-
     };
 
     return {
       restrict: 'E',
       templateUrl: 'ngUpload.html',
-      scope: {},
+      scope: {
+        queueFiles:'='
+      },
       controller:controller,
       link: function(scope, element) {
 
-        scope.queue = [];
+        scope.queueFiles = scope.queueFiles ? scope.queueFiles : {};
         element.on('change', function (event) {
           angular.forEach(event.target.files,function(file){
-            scope.queue.push(file);
+            var uuid = rfc4122.v4();
+            scope.queueFiles[uuid] =  {
+              file:file
+            };
+            var reader = new FileReader();
+            reader.onloadstart = function () {
+              scope.$apply(function () {
+                scope.queueFiles[[uuid]].preview = 'images/loading.gif';
+              });
+            };
+            reader.onload = function (loadEvent) {
+              scope.$apply(function () {
+                scope.queueFiles[[uuid]].preview = loadEvent.target.result;
+              });
+            };
+            reader.readAsDataURL(file);
           });
-          $log.log('scope.queue',scope.queue);
         });
 
-        //element.on('change')
 
-        //scope.$watch(function(scope) { return scope.queue; },
-        //  function() {
-        //  }
-        //);
+        //scope.queueFiles = scope.queueFiles ? scope.queueFiles : [];
+        //element.on('change', function (event) {
+        //  angular.forEach(event.target.files,function(file){
+        //    var reader = new FileReader();
+        //    reader.onload = function (loadEvent) {
+        //      scope.$apply(function () {
+        //        scope.queueFiles.push({
+        //          preview:loadEvent.target.result,
+        //          file:file
+        //        });
+        //      });
+        //    };
+        //    reader.readAsDataURL(file);
+        //  });
+        //});
+
+
+
+        //scope.queueFiles = scope.queueFiles ? scope.queueFiles : [];
+        //element.on('change', function (event) {
+        //  angular.forEach(event.target.files,function(file){
+        //    scope.queueFiles.push({
+        //      preview:'images/loading.gif',
+        //      file:file
+        //    });
+        //  });
+        //  scope.$apply();
+        //  //$log.log('queueFiles',scope.queueFiles);
+        //});
+
+
+
+        //scope.queueFiles = scope.queueFiles ? scope.queueFiles : [];
+        //element.on('change', function (event) {
+        //  angular.forEach(event.target.files,function(file){
+        //    scope.queueFiles.push({
+        //      preview:'images/loading.gif',
+        //      file:file
+        //    });
+        //  });
+        //  scope.$apply();
+        //  $log.log('queueFiles',scope.queueFiles);
+        //});
+
+
 
         //$log.log('changeEvent.target.files',event.target.files);
 
