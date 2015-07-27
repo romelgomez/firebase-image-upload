@@ -14,6 +14,11 @@ angular.module('ngUpload',[])
         $scope.queueFiles = {};
       };
 
+      $scope.removeFileFromTheQueueFiles = function(uuid){
+        $log.log('the uuid of this file is:', uuid);
+        delete $scope.queueFiles[uuid];
+      };
+
     };
 
     return {
@@ -29,6 +34,7 @@ angular.module('ngUpload',[])
             var uuid = rfc4122.v4();
             scope.queueFiles[uuid] =  {
               file: file,
+              name: file.name,
               preview:'images/loading.gif'
             };
 
