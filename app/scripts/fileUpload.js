@@ -1,17 +1,23 @@
 'use strict';
 
 angular.module('fileUpload',[])
-  .controller('FileUploadController', [function () {
+  .controller('FileUploadController', ['$scope','fileUploadService','$log',function ($scope,fileUploadService,$log) {
+
+    $scope.queueFiles = fileUploadService.getFiles();
+
+    $scope.removeAllQueueFiles = function(){
+      $log.log('removeAllQueueFiles is called.');
+    };
+
+    $scope.removeFileFromTheQueueFiles = function(reference){
+      $log.info('removeFileFromTheQueueFiles is called.');
+      $log.info('The reference is:',reference);
+    };
 
   }])
-  .factory('fileUploadService',['$q','rfc4122',function ($q,rfc4122) {
+  .factory('fileUploadService',['$q','rfc4122','$log',function ($q,rfc4122,$log) {
 
     var queueFiles  = {};
-
-    //var getFile = function(reference){
-    //  return queueFiles[reference];
-    //};
-
 
     return {
       getFiles: function(){
@@ -21,8 +27,11 @@ angular.module('fileUpload',[])
         var deferred = $q.defer();
         var promise = deferred.promise;
         var uuid    = rfc4122.v4();
+        // creating file object
+        queueFiles[uuid]          = {};
         queueFiles[uuid].file     = file;
         queueFiles[uuid].fileName = file.name;
+        queueFiles[uuid].preview  = 'images/loading.gif';
         if(queueFiles[uuid]){
           deferred.resolve(uuid); // reference
         }else{
@@ -44,49 +53,66 @@ angular.module('fileUpload',[])
         };
         reader.readAsDataURL(queueFiles[reference].file);
         return promise;
+      },
+      updateFileObj:function(reference,reading){
+        queueFiles[reference].preview = reading;
       }
-    }
-  }])
-  .directive('fileUpload',['fileUploadService',function(fileUploadService){
+    };
 
+  }])
+  .directive('fileUpload',['$q','fileUploadService',function($q,fileUploadService){
     return {
-      link: function (scope,element,attrs) {
+      restrict: 'E',
+      templateUrl: 'fileUpload.html',
+      scope: {},
+      link: function (scope,element) {
         element.on('change', function (event) {
           angular.forEach(event.target.files,function(file){
 
             fileUploadService.addFile(file)
               .then(function(reference){
-                // leer
-                var deferred = $q.defer();
-                var promise = deferred.promise;
-
-                //return {uuid:reference, :fileUploadService.readFile(reference)};
+                // read file
+                var referencePromise  = $q.when(reference);
+                var reading           = fileUploadService.readFile(reference);
+                return $q.all([referencePromise,reading]);
               })
-              .then(function(obj){
-                // update
+              .then(function(arrayData){
+                // update file object
+                var reference = arrayData[0];
+                var reading   = arrayData[1];
+                fileUploadService.updateFileObj(reference,reading);
               });
 
-          fileUploadService.readFile(file).then(function(){
-
           });
-
-          //$scope.httpRequestPromise = publicationsService.newKey()
-          //  .then(function(ref){
-          //    recordKey = ref.key();
-          //    return publicationsService.updateRecord(recordKey,$scope.model);
-          //  })
-          //  .then(function() {
-          //    notificationService.success('Data has been save to our Firebase database');
-          //  },function(error){
-          //    notificationService.error(error);
-          //  });
-
-
-        });
         });
       }
-    }
+    };
+  }])
+  .directive('preview',['$log',function ($log) {
+    // preview data-preview-img="{{value.preview}}"
+    return {
+      restrict: 'A',
+      scope: {
+        previewImg:'='
+      },
+      link: function (scope,element,attrs) {
 
+        scope.$watch(function(scope) { return scope.previewImg; },
+          function() {
+            $log.info('scope.previewImg',scope.previewImg);
+            if(scope.previewImg !== undefined){
+              attrs.src   = scope.previewImg;
+              attrs.ngSrc = scope.previewImg;
+
+              $log.info('attrs.src:',   attrs.src);
+              $log.info('attrs.ngSrc:', attrs.ngSrc);
+
+            }
+          }
+        );
+
+      }
+    };
   }]);
 
 
@@ -97,64 +123,64 @@ angular.module('fileUpload',[])
 // https://developer.mozilla.org/en-US/docs/Web/API/FileReader
 // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
 
-angular.module('ngUploadLegacy',[])
-  .directive('ngUpload', ['$q','$window','rfc4122','$log',function ($q,$window,rfc4122,$log) {
-
-    var controller = function ($scope){
-
-      $scope.queueFiles = {};
-
-      $scope.removeAllQueueFiles = function(){
-        $scope.queueFiles = {};
-      };
-
-      $scope.removeFileFromTheQueueFiles = function(uuid){
-        $log.log('the uuid of this file is:', uuid);
-        delete $scope.queueFiles[uuid];
-      };
-
-    };
-
-    return {
-      restrict: 'E',
-      templateUrl: 'ngUpload.html',
-      scope: {},
-      controller:controller,
-      link: function(scope, element) {
-
-        scope.queueFiles = scope.queueFiles ? scope.queueFiles : {};
-        element.on('change', function (event) {
-          angular.forEach(event.target.files,function(file){
-            var uuid = rfc4122.v4();
-            scope.queueFiles[uuid] =  {
-              file: file,
-              name: file.name,
-              preview:'images/loading.gif'
-            };
-
-            scope.$apply(function(scope){
-              var reader = new FileReader();
-              reader.onerror = function(){
-                // The reading operation encounter an error.
-                scope.queueFiles[uuid].preview        = 'images/error.png';
-                scope.queueFiles[uuid].previewStatus  = 'error';
-                scope.$apply();
-              };
-              reader.onload = function (loadEvent) {
-                // The reading operation is successfully completed.
-                scope.queueFiles[uuid].preview        = loadEvent.target.result;
-                scope.queueFiles[uuid].previewStatus  = 'success';
-                scope.$apply();
-              };
-              reader.readAsDataURL(file);
-            });
-
-          });
-        });
-
-      }
-    };
-  }]);
+//angular.module('ngUploadLegacy',[])
+//  .directive('ngUpload', ['$q','$window','rfc4122','$log',function ($q,$window,rfc4122,$log) {
+//
+//    var controller = function ($scope){
+//
+//      $scope.queueFiles = {};
+//
+//      $scope.removeAllQueueFiles = function(){
+//        $scope.queueFiles = {};
+//      };
+//
+//      $scope.removeFileFromTheQueueFiles = function(uuid){
+//        $log.log('the uuid of this file is:', uuid);
+//        delete $scope.queueFiles[uuid];
+//      };
+//
+//    };
+//
+//    return {
+//      restrict: 'E',
+//      templateUrl: 'ngUpload.html',
+//      scope: {},
+//      controller:controller,
+//      link: function(scope, element) {
+//
+//        scope.queueFiles = scope.queueFiles ? scope.queueFiles : {};
+//        element.on('change', function (event) {
+//          angular.forEach(event.target.files,function(file){
+//            var uuid = rfc4122.v4();
+//            scope.queueFiles[uuid] =  {
+//              file: file,
+//              name: file.name,
+//              preview:'images/loading.gif'
+//            };
+//
+//            scope.$apply(function(scope){
+//              var reader = new FileReader();
+//              reader.onerror = function(){
+//                // The reading operation encounter an error.
+//                scope.queueFiles[uuid].preview        = 'images/error.png';
+//                scope.queueFiles[uuid].previewStatus  = 'error';
+//                scope.$apply();
+//              };
+//              reader.onload = function (loadEvent) {
+//                // The reading operation is successfully completed.
+//                scope.queueFiles[uuid].preview        = loadEvent.target.result;
+//                scope.queueFiles[uuid].previewStatus  = 'success';
+//                scope.$apply();
+//              };
+//              reader.readAsDataURL(file);
+//            });
+//
+//          });
+//        });
+//
+//      }
+//    };
+//  }]);
 
 
 
