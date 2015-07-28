@@ -1,0 +1,31 @@
+<div class="panel panel-default">
+  <div class="panel-heading">Debug</div>
+  <div class="panel-body">
+
+
+    <!--<ng-upload></ng-upload>-->
+
+  </div>
+</div>
+
+<script type="text/ng-template" id="ngUpload.html">
+  <input type="file" multiple="multiple" accept="image/*">
+  <hr>
+  <button ng-click="removeAllQueueFiles()">Remove All Queue Files</button>
+  <hr>
+  <div class="well well-sm">
+
+    <div class="row">
+      <div class="col-sm-6 col-md-4" ng-repeat="(key, value) in queueFiles">
+        <div class="thumbnail">
+          <img ng-src="{{value.preview}}" alt="{{value.name}}">
+          <div class="caption">
+            <b>{{value.name}}</b>
+            <p><button ng-click="removeFileFromTheQueueFiles(key)" >Remove</button></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</script>

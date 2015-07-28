@@ -26,7 +26,7 @@ angular.module('publications',['tree','filters','uuid','ngMessages','angular-red
   };
 
   }])
-  .controller('PublicationsController',['$scope','$q','tree','publicationsService','notificationService','$filter','$log',function($scope,$q,tree,publicationsService,notificationService,$filter,$log){
+  .controller('PublicationsController',['$scope','$q','tree','publicationsService','notificationService','$filter','$log',function($scope,$q,tree,publicationsService,notificationService,$filter){
 
     //Main Categories [market, jobs] // realEstate, vehicles, boats, planes, stockMarket
 
@@ -83,93 +83,6 @@ angular.module('publications',['tree','filters','uuid','ngMessages','angular-red
     };
 
 
-  }])
-  .directive('ngDropZone', ['$window','$log',function ($window,$log) {
-
-
-    //myDropzone.on("addedfile", function(file) {
-    //  file.previewElement.addEventListener("click", function() {
-    //    myDropzone.removeFile(file);
-    //  });
-    //});
-
-    var controller = function ($scope){
-
-      $scope.firstFiles = function(){
-         $log.log('ok');
-      };
-
-      //$scope.continueUpload   = false;
-      //$scope.uploadAllButton  = false;
-
-      $scope.dropZoneConfig = {
-        options: {
-          url: 'upload.php',
-          previewsContainer: '#previews',  // Define the container to display the previews
-          clickable: '.clickable',         // Define the element that should be used as click trigger to select files.
-          paramName: 'image',              // The name that will be used to transfer the file
-          maxFilesize: 10,                 // MB
-          acceptedFiles: 'image/*',
-          autoQueue: false,
-          //previewTemplate: layout,
-          init: function() {
-
-            $scope.$watch(function(scope) { return scope.dropZoneInstance; },
-              function() {
-                //$log.log('$scope.dropZone ',$scope.dropZoneInstance);
-
-              }
-            );
-
-          }
-        },
-        eventHandlers: {
-          'addedfile': function (file) {
-
-            //$scope.firstFiles();
-            //$log.log('getFilesWithStatus',$scope.dropZoneInstance.getFilesWithStatus(Dropzone.ADDED));
-            //removeButton(myDropzone,file);
-
-
-          },
-          'sending': function (file, xhr, formData) {
-            //formData.append("product_id", $('#ProductId').val());
-          },
-          'success': function (file, response) {
-          },
-          'error': function (file, error, response) {
-          }
-        }
-      };
-
-    };
-
-    return {
-      restrict: 'AE',
-      templateUrl: 'dropZoneTemplate.html',
-      transclude: true,
-      scope: {
-        dropZoneInstance: '=',
-        dropZoneConfig: '='
-      },
-      controller:controller,
-      link: function(scope, element) {
-        if(!angular.isDefined($window.Dropzone)){ throw new Error('DropZone.js not loaded.'); }
-
-        scope.dropZoneConfig = {
-          options: angular.isDefined(scope.dropZoneConfig.options) ? scope.dropZoneConfig.options : {},
-          eventHandlers: angular.isDefined(scope.dropZoneConfig.eventHandlers) ? scope.dropZoneConfig.eventHandlers : {}
-        };
-
-        var dropZoneInstance = new $window.Dropzone(element[0], scope.dropZoneConfig.options);
-
-        angular.forEach(scope.dropZoneConfig.eventHandlers, function (handler, event) {
-          dropZoneInstance.on(event, handler);
-        });
-
-        scope.dropZoneInstance = dropZoneInstance;
-      }
-    };
   }]);
 
 

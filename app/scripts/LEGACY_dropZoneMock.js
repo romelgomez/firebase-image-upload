@@ -1,3 +1,5 @@
+/* jshint ignore:start */
+
 (function() {
 
   var Dropzone, Emitter, camelize, contentLoaded, detectVerticalSquash, drawImageIOSFix, noop, without,

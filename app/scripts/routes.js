@@ -82,6 +82,10 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'views/account.html',
         controller: 'AccountController'
       })
+      .when('/file-upload', {
+        templateUrl: 'views/fileUpload.html',
+        controller: 'FileUploadController'
+      })
       .otherwise({redirectTo: '/'});
   }])
 
