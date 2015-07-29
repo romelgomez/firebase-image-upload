@@ -100,6 +100,22 @@ ul.jqtree-tree span.jqtree-border {
   color: #a94442;
 }
 
+/* FileUpload START */
+.file-name{
+  white-space: nowrap;
+}
+.file-name:not(:hover) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.remove-button{
+  padding-top: 10px;
+}
+.img-preview{
+  border: inherit;
+}
+/* FileUpload END */
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {

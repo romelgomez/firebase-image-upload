@@ -147,4 +147,20 @@ angular.module('filters',[])
     return function(input) {
       return  (!!input) ? input.trim().replace(/[\-_](\w)/g, function(match) { return match.charAt(1).toUpperCase(); }) : '';
     };
-  }]);
+  }])
+  /**
+   * @Name         bytes
+   * @Source       https://gist.github.com/thomseddon/3511330
+   * @Description  Byte format filter
+   * @parameters   string
+   * @returns      string
+   */
+  .filter('bytes', function() {
+    return function(bytes, precision) {
+      if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+      if (typeof precision === 'undefined') precision = 1;
+      var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+        number = Math.floor(Math.log(bytes) / Math.log(1024));
+      return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
+    }
+  });

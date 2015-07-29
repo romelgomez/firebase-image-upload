@@ -12,10 +12,11 @@
       <div class="row">
         <div class="col-sm-6 col-md-4" ng-repeat="(key, value) in queueFiles">
           <div class="thumbnail">
-            <img ng-src="{{value.preview}}" alt="{{value.fileName}}" style="border: inherit;">
+            <img class="img-preview" ng-src="{{value.preview}}" alt="{{value.fileName}}">
             <div class="caption">
-              <b>{{value.fileName}}</b>
-              <div style="padding-top: 10px;">
+              <div class="file-name">{{value.fileName}}</div>
+              <div >{{value.fileSize | bytes}}</div>
+              <div class="remove-button">
                 <button ng-click="removeFileFromTheQueueFiles(key)" class="btn btn-danger">Remove</button>
               </div>
             </div>

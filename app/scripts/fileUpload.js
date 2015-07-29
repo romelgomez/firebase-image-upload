@@ -57,6 +57,7 @@ angular.module('fileUpload',[])
       $scope.queueFiles[uuid]          = {
         file:     file,
         fileName: file.name,
+        fileSize: file.size,
         preview:  'images/loading.jpeg'
       };
       if($scope.queueFiles[uuid]){
