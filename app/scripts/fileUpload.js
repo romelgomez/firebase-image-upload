@@ -36,7 +36,7 @@ angular.module('fileUpload',[])
               var reading   = arrayData[1];
               updateFileObj(reference,reading);
             },function(error){
-                $log.error('error',error);
+                $log.error('Error: ',error);
             });
         });
       }
@@ -106,7 +106,7 @@ angular.module('fileUpload',[])
      * @returns      undefined
      * */
     $scope.removeAllQueueFiles = function(){
-      $scope.queueFiles = {}
+      $scope.queueFiles = {};
     };
 
     /**
