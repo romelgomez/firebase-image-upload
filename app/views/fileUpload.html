@@ -5,17 +5,19 @@
     <file-upload files="formFiles"></file-upload>
 
     <hr>
-    <button ng-click="removeAllQueueFiles()">Remove All Queue Files</button>
+    <button ng-click="removeAllQueueFiles()" class="btn btn-danger">Remove All Queue Files</button>
     <hr>
 
     <div class="well well-sm">
       <div class="row">
         <div class="col-sm-6 col-md-4" ng-repeat="(key, value) in queueFiles">
           <div class="thumbnail">
-            <img ng-src="{{value.preview}}" alt="{{value.fileName}}">
+            <img ng-src="{{value.preview}}" alt="{{value.fileName}}" style="border: inherit;">
             <div class="caption">
               <b>{{value.fileName}}</b>
-              <p><button ng-click="removeFileFromTheQueueFiles(key)" >Remove</button></p>
+              <div style="padding-top: 10px;">
+                <button ng-click="removeFileFromTheQueueFiles(key)" class="btn btn-danger">Remove</button>
+              </div>
             </div>
           </div>
         </div>
