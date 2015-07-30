@@ -18,6 +18,15 @@ angular.module('fileUpload',[])
     $scope.queueFiles  = {};
 
     /**
+     * @name queueFiles
+     * @Description return the Length of $scope.queueFiles object
+     * @Type object
+     * */
+    $scope.queueFilesLength  = function(){
+      return Object.keys($scope.queueFiles).length;
+    };
+
+    /**
      * @Description  Watch changes in formFiles array, to add to queueFiles object the the last files specified by the User.
      * */
     $scope.$watch(function(scope) { return scope.formFiles; },
@@ -120,7 +129,7 @@ angular.module('fileUpload',[])
       delete $scope.queueFiles[reference];
     };
 
-    $scope.uploadFiles = function(){
+    $scope.selectFiles = function(){
       $scope.fileInputElement.click();
     }
 
@@ -129,7 +138,7 @@ angular.module('fileUpload',[])
    * @name fileUpload Directive
    * @Description  Take the last files specified by the User.
    * */
-  .directive('fileUpload',['$log',function($log){
+  .directive('fileUpload',[function(){
     return {
       restrict: 'E',
       templateUrl: 'fileUpload.html',
@@ -140,11 +149,6 @@ angular.module('fileUpload',[])
       },
       link: function (scope,element) {
         scope.fileInputElement = element;
-
-        element.on('click',function(){
-          $log.info('the directive is clicked');
-        });
-
         element.on('change', function (event) {
           scope.files = event.target.files;
           scope.$apply();

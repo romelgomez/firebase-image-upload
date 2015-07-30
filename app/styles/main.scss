@@ -114,6 +114,14 @@ ul.jqtree-tree span.jqtree-border {
 .img-preview{
   border: inherit;
 }
+.file-input{
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+}
 /* FileUpload END */
 
 /* Responsive: Portrait tablets and up */
