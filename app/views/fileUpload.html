@@ -2,7 +2,9 @@
   <div class="panel-heading">Debug</div>
   <div class="panel-body">
 
-    <file-upload files="formFiles"></file-upload>
+    <button ng-click="uploadFiles()" class="btn btn-default">Upload File</button>
+
+    <file-upload files="formFiles" file-input-element="fileInputElement"></file-upload>
 
     <hr>
     <button ng-click="removeAllQueueFiles()" class="btn btn-danger">Remove All Queue Files</button>

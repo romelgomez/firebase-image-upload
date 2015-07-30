@@ -120,19 +120,31 @@ angular.module('fileUpload',[])
       delete $scope.queueFiles[reference];
     };
 
+    $scope.uploadFiles = function(){
+      $scope.fileInputElement.click();
+    }
+
   }])
   /**
    * @name fileUpload Directive
    * @Description  Take the last files specified by the User.
    * */
-  .directive('fileUpload',[function(){
+  .directive('fileUpload',['$log',function($log){
     return {
       restrict: 'E',
       templateUrl: 'fileUpload.html',
+      replace:true,
       scope: {
-        files:'='
+        files:'=',
+        fileInputElement:'='
       },
       link: function (scope,element) {
+        scope.fileInputElement = element;
+
+        element.on('click',function(){
+          $log.info('the directive is clicked');
+        });
+
         element.on('change', function (event) {
           scope.files = event.target.files;
           scope.$apply();
