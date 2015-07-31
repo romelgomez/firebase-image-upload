@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('fileUpload',[])
-  .controller('FileUploadController', ['$scope','$q','rfc4122','$log',function ($scope,$q,rfc4122,$log) {
+  .controller('FileUploadController', ['$scope','$q','rfc4122','$window','$log',function ($scope,$q,rfc4122,$window,$log) {
 
     /**
      * @name formFiles
@@ -129,9 +129,73 @@ angular.module('fileUpload',[])
       delete $scope.queueFiles[reference];
     };
 
+    /**
+     * @name selectFiles
+     * @Description  Triggers event click on fileInputElement element expose by the directive in the scope.
+     * @parameters   {}
+     * @returns      undefined
+     * */
     $scope.selectFiles = function(){
       $scope.fileInputElement.click();
-    }
+    };
+
+    /**
+     * @name uploadFiles
+     * @Description
+     * @parameters   {}
+     * @returns      undefined
+     * */
+    $scope.uploadFiles = function(){
+      $log.info('uploadFiles was clicked');
+
+      //reduceImagenSizeAndQuality('http://i.imgur.com/SHo6Fub.jpg',100).then(function(result){
+      //  $log.info(result);
+      //});
+
+    };
+
+    //function imageToDataUri(img, width, height) {
+    //  // create an off-screen canvas
+    //  var canvas = document.createElement('canvas'),
+    //    context = canvas.getContext('2d');
+    //  // set its dimension to target size
+    //  canvas.width = width;
+    //  canvas.height = height;
+    //  // draw source image into the off-screen canvas:
+    //  context.drawImage(img, 0, 0, width, height);
+    //  // encode image to data-uri with base64 version of compressed image
+    //  return canvas.toDataURL();
+    //}
+
+    var reduceImagenSizeAndQuality = function(img,MAX_HEIGHT){
+      //var deferred = $q.defer();
+      //var promise = deferred.promise;
+      //
+      //var imagen = new $window.Image();
+      //imagen.on('load',function () {
+      //  //var canvas   = angular.element('canvas');
+      //  //canvas.width = width;
+      //  //canvas.height = height;
+      //  //
+      //  //var context  = canvas.getContext('2d');
+      //  //context.scale(width,  height);
+      //  //context.drawImage(img, 0, 0);
+      //
+      //  if(image.height > MAX_HEIGHT) {
+      //    image.width *= MAX_HEIGHT / image.height;
+      //    image.height = MAX_HEIGHT;
+      //  }
+      //  var context = canvas.getContext("2d");
+      //  context.clearRect(0, 0, canvas.width, canvas.height);
+      //  canvas.width = image.width;
+      //  canvas.height = image.height;
+      //  context.drawImage(image, 0, 0, image.width, image.height);
+      //
+      //  deferred.resolve(canvas.toDataURL());
+      //});
+      //image.src = img;
+      //return promise;
+    };
 
   }])
   /**
