@@ -60,7 +60,6 @@ angular.module('fileUpload',[])
      * */
     var addFile = function (file) {
       var deferred = $q.defer();
-      var promise = deferred.promise;
       var uuid    = rfc4122.v4();
       // creating file object
       $scope.queueFiles[uuid]          = {
@@ -74,7 +73,7 @@ angular.module('fileUpload',[])
       }else{
         deferred.reject('Undefined reference, check rfc4122 dependence file is loared.');
       }
-      return promise;
+      return deferred.promise;
     };
 
     /**
@@ -85,7 +84,6 @@ angular.module('fileUpload',[])
      * */
     var readFile =function(reference){
       var deferred = $q.defer();
-      var promise = deferred.promise;
       var reader = new FileReader();
       reader.onerror = function(error){
         // The reading operation encounter an error.
@@ -96,7 +94,7 @@ angular.module('fileUpload',[])
         deferred.resolve(loadEvent.target.result);
       };
       reader.readAsDataURL($scope.queueFiles[reference].file);
-      return promise;
+      return deferred.promise;
     };
 
     /**
@@ -148,53 +146,62 @@ angular.module('fileUpload',[])
     $scope.uploadFiles = function(){
       $log.info('uploadFiles was clicked');
 
-      //reduceImagenSizeAndQuality('http://i.imgur.com/SHo6Fub.jpg',100).then(function(result){
-      //  $log.info(result);
-      //});
+      angular.forEach($scope.queueFiles,function(fileObject){
+        reduceImagenSizeAndQuality(fileObject)
+      });
 
     };
 
-    //function imageToDataUri(img, width, height) {
-    //  // create an off-screen canvas
-    //  var canvas = document.createElement('canvas'),
-    //    context = canvas.getContext('2d');
-    //  // set its dimension to target size
-    //  canvas.width = width;
-    //  canvas.height = height;
-    //  // draw source image into the off-screen canvas:
-    //  context.drawImage(img, 0, 0, width, height);
-    //  // encode image to data-uri with base64 version of compressed image
-    //  return canvas.toDataURL();
-    //}
+    /**
+     * @name reduceImagenSizeAndQuality  or generateThumbnails
+     * @Description TARGET: Before to upload, the imagen file is modified to match the requirements expected.
+     * @parameters   {}
+     * @returns      undefined
+     * */
+    var reduceImagenSizeAndQuality = function(fileObject){
 
-    var reduceImagenSizeAndQuality = function(img,MAX_HEIGHT){
-      //var deferred = $q.defer();
-      //var promise = deferred.promise;
-      //
-      //var imagen = new $window.Image();
-      //imagen.on('load',function () {
-      //  //var canvas   = angular.element('canvas');
-      //  //canvas.width = width;
-      //  //canvas.height = height;
-      //  //
-      //  //var context  = canvas.getContext('2d');
-      //  //context.scale(width,  height);
-      //  //context.drawImage(img, 0, 0);
-      //
-      //  if(image.height > MAX_HEIGHT) {
-      //    image.width *= MAX_HEIGHT / image.height;
-      //    image.height = MAX_HEIGHT;
-      //  }
-      //  var context = canvas.getContext("2d");
-      //  context.clearRect(0, 0, canvas.width, canvas.height);
-      //  canvas.width = image.width;
-      //  canvas.height = image.height;
-      //  context.drawImage(image, 0, 0, image.width, image.height);
-      //
-      //  deferred.resolve(canvas.toDataURL());
-      //});
-      //image.src = img;
-      //return promise;
+      function resizeBase64Img(imagen, width, height) {
+        var deferred          = $q.defer();
+        var canvasElement     = document.createElement('canvas');
+        var imagenElement     = document.createElement('img');
+        imagenElement.onload  = function(){
+          var  dimensions = calculateAspectRatioFit(imagenElement.width,imagenElement.height,width,height);
+          canvasElement.width   = dimensions.width;
+          canvasElement.height  = dimensions.height;
+          var context           = canvasElement.getContext('2d');
+          context.drawImage(imagenElement, 0, 0, dimensions.width, dimensions.height);
+          deferred.resolve(canvasElement.toDataURL('image/jpeg', 0.7));
+        };
+        imagenElement.src = imagen;
+        return deferred.promise;
+      }
+
+      /**
+       * Conserve aspect ratio of the orignal region. Useful when shrinking/enlarging
+       * images to fit into a certain area.
+       * @source  http://stackoverflow.com/a/14731922
+       *
+       * @param {Number} srcWidth Source area width
+       * @param {Number} srcHeight Source area height
+       * @param {Number} maxWidth Fittable area maximum available width
+       * @param {Number} maxHeight Fittable area maximum available height
+       * @return {Object} { width, heigth }
+       */
+      function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
+
+        var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+
+        return { width: srcWidth*ratio, height: srcHeight*ratio };
+      }
+
+      var customImagen = resizeBase64Img(fileObject.preview,200,200).then(function(result){
+        var debugImagen = document.createElement('img');
+        debugImagen.src = result;
+        angular.element('.debug').append(debugImagen);
+      });
+
+      $log.log('customImagen',customImagen);
+
     };
 
   }])
