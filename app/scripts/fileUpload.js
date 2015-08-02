@@ -146,63 +146,84 @@ angular.module('fileUpload',[])
     $scope.uploadFiles = function(){
       $log.info('uploadFiles was clicked');
 
-      angular.forEach($scope.queueFiles,function(fileObject){
-        reduceImagenSizeAndQuality(fileObject)
+      angular.forEach($scope.queueFiles,function(fileObject,reference){
+
+        /**
+         * IMAGEN MODEL
+         * parentId
+         * publicationId
+         * size
+         * name  UUID
+         * nameTag
+         * delete
+         * created
+         * modified
+         * */
+
+        var referencePromise  = $q.when(reference);
+        var i600x600          = generateThumbnail(fileObject.preview,600,600);
+        var i200x200          = generateThumbnail(fileObject.preview,200,200);
+
+        $q.all([referencePromise,i200x200,i600x600]).then(function(result){
+          var reference = result[0];
+          var i600      = result[1];
+          var i200      = result[2];
+
+          $log.info('reference',reference);
+
+          //var debugImagen1 = document.createElement('img');
+          //debugImagen1.src = i600;
+          //angular.element('.debug').append(debugImagen1);
+          //
+          //var debugImagen2 = document.createElement('img');
+          //debugImagen2.src = i200;
+          //angular.element('.debug').append(debugImagen2);
+
+        });
+
+
       });
 
     };
 
     /**
-     * @name reduceImagenSizeAndQuality  or generateThumbnails
-     * @Description TARGET: Before to upload, the imagen file is modified to match the requirements expected.
+     * @name generateThumbnails
+     * @Description reduce imagen size and quality.
      * @parameters   {}
      * @returns      undefined
      * */
-    var reduceImagenSizeAndQuality = function(fileObject){
-
-      function resizeBase64Img(imagen, width, height) {
-        var deferred          = $q.defer();
-        var canvasElement     = document.createElement('canvas');
-        var imagenElement     = document.createElement('img');
-        imagenElement.onload  = function(){
-          var  dimensions = calculateAspectRatioFit(imagenElement.width,imagenElement.height,width,height);
-          canvasElement.width   = dimensions.width;
-          canvasElement.height  = dimensions.height;
-          var context           = canvasElement.getContext('2d');
-          context.drawImage(imagenElement, 0, 0, dimensions.width, dimensions.height);
-          deferred.resolve(canvasElement.toDataURL('image/jpeg', 0.7));
-        };
-        imagenElement.src = imagen;
-        return deferred.promise;
-      }
-
-      /**
-       * Conserve aspect ratio of the orignal region. Useful when shrinking/enlarging
-       * images to fit into a certain area.
-       * @source  http://stackoverflow.com/a/14731922
-       *
-       * @param {Number} srcWidth Source area width
-       * @param {Number} srcHeight Source area height
-       * @param {Number} maxWidth Fittable area maximum available width
-       * @param {Number} maxHeight Fittable area maximum available height
-       * @return {Object} { width, heigth }
-       */
-      function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
-
-        var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
-
-        return { width: srcWidth*ratio, height: srcHeight*ratio };
-      }
-
-      var customImagen = resizeBase64Img(fileObject.preview,200,200).then(function(result){
-        var debugImagen = document.createElement('img');
-        debugImagen.src = result;
-        angular.element('.debug').append(debugImagen);
-      });
-
-      $log.log('customImagen',customImagen);
-
+    var generateThumbnail = function(imagen, width, height){
+      var deferred          = $q.defer();
+      var canvasElement     = document.createElement('canvas');
+      var imagenElement     = document.createElement('img');
+      imagenElement.onload  = function(){
+        var  dimensions = calculateAspectRatioFit(imagenElement.width,imagenElement.height,width,height);
+        canvasElement.width   = dimensions.width;
+        canvasElement.height  = dimensions.height;
+        var context           = canvasElement.getContext('2d');
+        context.drawImage(imagenElement, 0, 0, dimensions.width, dimensions.height);
+        deferred.resolve(canvasElement.toDataURL('image/jpeg', 0.7));
+      };
+      imagenElement.src = imagen;
+      return deferred.promise;
     };
+
+    /**
+     * Conserve aspect ratio of the orignal region. Useful when shrinking/enlarging
+     * images to fit into a certain area.
+     * @source  http://stackoverflow.com/a/14731922
+     *
+     * @param {Number} srcWidth Source area width
+     * @param {Number} srcHeight Source area height
+     * @param {Number} maxWidth Fittable area maximum available width
+     * @param {Number} maxHeight Fittable area maximum available height
+     * @return {Object} { width, heigth }
+     */
+    var calculateAspectRatioFit = function (srcWidth, srcHeight, maxWidth, maxHeight) {
+      var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+      return { width: srcWidth*ratio, height: srcHeight*ratio };
+    };
+
 
   }])
   /**
