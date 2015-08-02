@@ -1,7 +1,24 @@
 'use strict';
 
 angular.module('fileUpload',[])
-  .controller('FileUploadController', ['$scope','$q','rfc4122','$window','$log',function ($scope,$q,rfc4122,$window,$log) {
+  .factory('imagesService',['$q','rfc4122','FireRef','$firebaseArray',function($q,rfc4122,FireRef,$firebaseArray){
+
+    var records = $firebaseArray(FireRef.child('images'));
+
+    return {
+      images: records,
+      deleteRecord: function (recordKey){
+        var record = records.$getRecord(recordKey);
+        record.deleted = true;
+        return records.$save(record);
+      },
+      addRecord: function(object){
+        return records.$add(object);
+      }
+    };
+
+  }])
+  .controller('FileUploadController', ['$scope','$q','rfc4122','imagesService','$log',function ($scope,$q,rfc4122,imagesService,$log) {
 
     /**
      * @name formFiles
@@ -148,39 +165,42 @@ angular.module('fileUpload',[])
 
       angular.forEach($scope.queueFiles,function(fileObject,reference){
 
-        /**
-         * IMAGEN MODEL
-         * parentId
-         * publicationId
-         * size
-         * name  UUID
-         * nameTag
-         * delete
-         * created
-         * modified
-         * */
+        var referencePromise          = $q.when(reference);
+        var fileNamePromise           = $q.when(fileObject.fileName);
+        var w600xh600ThumbnailPromise = generateThumbnail(fileObject.preview,600,600);
+        var w200xh200ThumbnailPromise = generateThumbnail(fileObject.preview,200,200);
 
-        var referencePromise  = $q.when(reference);
-        var i600x600          = generateThumbnail(fileObject.preview,600,600);
-        var i200x200          = generateThumbnail(fileObject.preview,200,200);
+        $q.all([referencePromise,fileNamePromise,w200xh200ThumbnailPromise,w600xh600ThumbnailPromise]).then(function(result){
+          var reference           = result[0];
+          var fileName            = result[1];
+          var w200xh200Thumbnail  = result[2];
+          var w600xh600Thumbnail  = result[3];
 
-        $q.all([referencePromise,i200x200,i600x600]).then(function(result){
-          var reference = result[0];
-          var i600      = result[1];
-          var i200      = result[2];
+          var record = {
+            publicationId:'1',
+            reference: reference,
+            fileName: fileName,
+            thumbnails : {
+              w200h200:w200xh200Thumbnail,
+              w600h600:w600xh600Thumbnail
+            },
+            deleted:false
+          };
 
-          $log.info('reference',reference);
+          $log.info('record',record);
 
-          //var debugImagen1 = document.createElement('img');
-          //debugImagen1.src = i600;
-          //angular.element('.debug').append(debugImagen1);
-          //
-          //var debugImagen2 = document.createElement('img');
-          //debugImagen2.src = i200;
-          //angular.element('.debug').append(debugImagen2);
+          imagesService.addRecord(record).then(function(ref){
+            var id = ref.key();
+            console.log("added record with id " + id);
+          },function(error){
+            $log.error('Error: ',error);
+          },function(percentComplete){
+            $log.info('percentComplete: ',percentComplete);
+          });
+
+
 
         });
-
 
       });
 
@@ -188,9 +208,9 @@ angular.module('fileUpload',[])
 
     /**
      * @name generateThumbnails
-     * @Description reduce imagen size and quality.
-     * @parameters   {}
-     * @returns      undefined
+     * @Description  reduce imagen size and quality.
+     * @parameters   {imagen: base64, width: int, height: int}
+     * @returns      promise
      * */
     var generateThumbnail = function(imagen, width, height){
       var deferred          = $q.defer();
