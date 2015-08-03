@@ -20,6 +20,8 @@ angular.module('fileUpload',[])
   }])
   .controller('FileUploadController', ['$scope','$q','rfc4122','imagesService','$log',function ($scope,$q,rfc4122,imagesService,$log) {
 
+    $scope.images = imagesService.images;
+
     /**
      * @name formFiles
      * @Description  The LAST files specified by the User.
@@ -153,16 +155,6 @@ angular.module('fileUpload',[])
     $scope.selectFiles = function(){
       $scope.fileInputElement.click();
     };
-
-
-    var uploadProgress = function(){
-      var deferred = $q.defer();
-
-      // $scope.queueFilesLength
-
-      return deferred.promise;
-    };
-
 
     /**
      * @name uploadFiles
