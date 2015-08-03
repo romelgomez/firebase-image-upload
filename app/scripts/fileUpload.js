@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('fileUpload',[])
-  .factory('imagesService',['$q','rfc4122','FireRef','$firebaseArray',function($q,rfc4122,FireRef,$firebaseArray){
+  .factory('imagesService',['FireRef','$firebaseArray',function(FireRef,$firebaseArray){
 
     var records = $firebaseArray(FireRef.child('images'));
 
@@ -88,7 +88,7 @@ angular.module('fileUpload',[])
       if($scope.queueFiles[uuid]){
         deferred.resolve(uuid); // reference
       }else{
-        deferred.reject('Undefined reference, check rfc4122 dependence file is loared.');
+        deferred.reject('Undefined reference, check rfc4122 dependence file is loaded.');
       }
       return deferred.promise;
     };
@@ -154,11 +154,22 @@ angular.module('fileUpload',[])
       $scope.fileInputElement.click();
     };
 
+
+    var uploadProgress = function(){
+      var deferred = $q.defer();
+
+      // $scope.queueFilesLength
+
+      return deferred.promise;
+    };
+
+
     /**
      * @name uploadFiles
      * @Description
      * @parameters   {}
      * @returns      undefined
+     * TODO - Add progress support for all and each file
      * */
     $scope.uploadFiles = function(){
       $log.info('uploadFiles was clicked');
@@ -191,14 +202,12 @@ angular.module('fileUpload',[])
 
           imagesService.addRecord(record).then(function(ref){
             var id = ref.key();
-            console.log("added record with id " + id);
+            $log.info("added record with id " + id);
           },function(error){
             $log.error('Error: ',error);
-          },function(percentComplete){
-            $log.info('percentComplete: ',percentComplete);
+          },function(requestInfo){
+            $log.info('percentComplete: ',requestInfo);
           });
-
-
 
         });
 
