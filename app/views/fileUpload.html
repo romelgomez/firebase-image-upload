@@ -2,65 +2,39 @@
   <div class="panel-heading">Debug</div>
   <div class="panel-body">
 
-    <tabset justified="true">
-      <tab heading="Upload">
-        <br>
-        <button ng-click="selectFiles()" class="btn btn-primary">Select the images from the computer</button>
+    <button ng-click="selectFiles()" class="btn btn-primary">Select the images from the computer</button>
 
-        <file-upload files="formFiles" file-input-element="fileInputElement"></file-upload>
+    <file-upload files="formFiles" file-input-element="fileInputElement"></file-upload>
 
-        <section ng-show="queueFilesLength() > 0">
-          <hr>
-          <div class="btn-toolbar" role="toolbar" aria-label="...">
-            <div class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()">Remove All Queue Images</button>
-            </div>
-            <div class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-primary" ng-click="uploadFiles()">Start Upload Images</button>
-            </div>
-          </div>
-          <hr>
+    <section ng-show="queueFilesLength() > 0">
+      <hr>
+      <div class="btn-toolbar" role="toolbar" aria-label="...">
+        <div class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()">Remove All Queue Images</button>
+        </div>
+        <div class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-primary" ng-click="uploadFiles()">Start Upload Images</button>
+        </div>
+      </div>
+      <hr>
 
-          <div class="well well-sm">
-            <div class="row">
-              <div class="col-sm-6 col-md-4" ng-repeat="(key, value) in queueFiles">
-                <div class="thumbnail">
-                  <img class="img-preview" ng-src="{{value.preview}}" alt="{{value.fileName}}">
-                  <div class="caption">
-                    <div class="file-name">{{value.fileName}}</div>
-                    <div >{{value.fileSize | bytes}}</div>
-                    <div class="remove-button">
-                      <button ng-click="removeFileFromTheQueueFiles(key)" class="btn btn-danger">Remove</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </tab>
-      <tab heading="In Server">
-        <!--<pre>{{images | json}}</pre>-->
-
-        <div class="well well-sm">
-          <div class="row">
-            <div class="col-sm-6 col-md-4" ng-repeat="image in images">
-              <div class="thumbnail">
-                <img class="img-preview" ng-src="{{image.thumbnails.w200h200}}" alt="{{image.fileName}}">
-                <div class="caption">
-                  <div class="file-name">{{image.fileName}}</div>
-                  <!--<div >{{value.fileSize | bytes}}</div>-->
-                  <!--<div class="remove-button">-->
-                    <!--<button ng-click="removeFileFromTheQueueFiles(key)" class="btn btn-danger">Remove</button>-->
-                  <!--</div>-->
+      <div class="well well-sm">
+        <div class="row">
+          <div class="col-sm-6 col-md-4" ng-repeat="(key, value) in queueFiles">
+            <div class="thumbnail">
+              <img class="img-preview" ng-src="{{value.preview}}" alt="{{value.fileName}}">
+              <div class="caption">
+                <div class="file-name">{{value.fileName}}</div>
+                <div >{{value.fileSize | bytes}}</div>
+                <div class="remove-button">
+                  <button ng-click="removeFileFromTheQueueFiles(key)" class="btn btn-danger">Remove</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-      </tab>
-    </tabset>
+      </div>
+    </section>
 
 
   </div>
