@@ -147,16 +147,6 @@ angular.module('fileUpload',[])
     };
 
     /**
-     * @name selectFiles
-     * @Description  Triggers event click on fileInputElement element expose by the directive in the scope.
-     * @parameters   {}
-     * @returns      undefined
-     * */
-    $scope.selectFiles = function(){
-      $scope.fileInputElement.click();
-    };
-
-    /**
      * @name uploadFiles
      * @Description
      * @parameters   {}
@@ -260,8 +250,7 @@ angular.module('fileUpload',[])
       templateUrl: 'fileUpload.html',
       replace:true,
       scope: {
-        files:'=',
-        fileInputElement:'='
+        files:'='
       },
       link: function (scope,element) {
         fileUploadService.fileInputElement = element;
@@ -272,6 +261,10 @@ angular.module('fileUpload',[])
       }
     };
   }])
+  /**
+   @name fileUploadTrigger
+   @Description  Triggers click event on file Input Element.
+   */
   .directive('fileUploadTrigger',['fileUploadService',function(fileUploadService){
     return {
       restrict: 'A',
