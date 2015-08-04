@@ -247,11 +247,14 @@ angular.module('fileUpload',[])
 
 
   }])
+  .factory('fileUploadService',[function(){
+    return {};
+  }])
   /**
    * @name fileUpload Directive
    * @Description  Take the last files specified by the User.
    * */
-  .directive('fileUpload',[function(){
+  .directive('fileUpload',['fileUploadService',function(fileUploadService){
     return {
       restrict: 'E',
       templateUrl: 'fileUpload.html',
@@ -261,11 +264,22 @@ angular.module('fileUpload',[])
         fileInputElement:'='
       },
       link: function (scope,element) {
-        scope.fileInputElement = element;
+        fileUploadService.fileInputElement = element;
         element.on('change', function (event) {
           scope.files = event.target.files;
           scope.$apply();
         });
+      }
+    };
+  }])
+  .directive('fileUploadTrigger',['fileUploadService',function(fileUploadService){
+    return {
+      restrict: 'A',
+      link: function (scope,element) {
+        element.bind('click', function () {
+          fileUploadService.fileInputElement.click();
+        });
+
       }
     };
   }]);
