@@ -22,7 +22,27 @@ angular.module('fileUpload',[])
 
     //$scope.images = imagesService.images;
 
+    // TODO existen tres de queueFiles, en controlador, en variable del servicio, en la variable definida en el objeto del servicio,
+    // buscar tratar eliminar las tres.
+    // http://jsfiddle.net/Raibaz/M98Wd/
+    // http://stackoverflow.com/questions/21337666/passing-a-promise-into-ngrepeat
+
     $scope.queueFiles = fileUploadService.queueFiles; // !== undefined ? fileUploadService.queueFiles : {};
+
+    //$scope.fileUploadService = fileUploadService;
+
+    $scope.cleanQueueFiles = function(){
+      $scope.queueFiles = {};
+    };
+
+    $scope.logQueueFiles = function(){
+      $log.info('fileUploadService.queueFiles: ',fileUploadService.queueFiles);
+      $log.info('$scope.queueFiles: ',$scope.queueFiles);
+    };
+
+    $scope.logQueueFilesInService = function(){
+      fileUploadService.logQueueFiles();
+    };
 
     /**
      * @name queueFiles
@@ -47,7 +67,7 @@ angular.module('fileUpload',[])
     $scope.uploadFiles = function(){
       $log.info('uploadFiles was clicked');
 
-      angular.forEach($scope.queueFiles,function(fileObject,reference){
+      angular.forEach(fileUploadService.queueFiles,function(fileObject,reference){
 
         var referencePromise          = $q.when(reference);
         var fileNamePromise           = $q.when(fileObject.fileName);
@@ -199,6 +219,9 @@ angular.module('fileUpload',[])
           deferred.resolve();
         }
         return deferred.promise;
+      },
+      logQueueFiles:function(){
+        $log.info('QueueFiles in service',queueFiles);
       },
       removeAllQueueFiles : function(){
         var deferred = $q.defer();
