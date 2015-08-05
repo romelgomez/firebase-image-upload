@@ -4,7 +4,7 @@
 
     <button file-upload-trigger class="btn btn-primary">Select the images from the computer</button>
 
-    <file-upload files="formFiles"></file-upload>
+    <file-upload></file-upload>
 
     <section ng-show="queueFilesLength() > 0">
       <hr>
@@ -27,7 +27,7 @@
                 <div class="file-name">{{value.fileName}}</div>
                 <div >{{value.fileSize | bytes}}</div>
                 <div class="remove-button">
-                  <button ng-click="removeFileFromTheQueueFiles(key)" class="btn btn-danger">Remove</button>
+                  <button remove-file-from-the-queue-files data-reference="{{key}}"  class="btn btn-danger">Remove</button>
                 </div>
               </div>
             </div>
