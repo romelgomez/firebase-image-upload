@@ -7,11 +7,11 @@ angular.module('fileUpload',[])
 
     return {
       images: records,
-      deleteRecord: function (recordKey){
-        var record = records.$getRecord(recordKey);
-        record.deleted = true;
-        return records.$save(record);
-      },
+      //deleteRecord: function (recordKey){
+      //  var record = records.$getRecord(recordKey);
+      //  record.deleted = true;
+      //  return records.$save(record);
+      //},
       addRecord: function(object){
         return records.$add(object);
       }
@@ -22,30 +22,12 @@ angular.module('fileUpload',[])
 
     //$scope.images = imagesService.images;
 
-    // TODO existen tres de queueFiles, en controlador, en variable del servicio, en la variable definida en el objeto del servicio,
-    // buscar tratar eliminar las tres.
-    // http://jsfiddle.net/Raibaz/M98Wd/
-    // http://stackoverflow.com/questions/21337666/passing-a-promise-into-ngrepeat
-
-    $scope.queueFiles = fileUploadService.queueFiles; // !== undefined ? fileUploadService.queueFiles : {};
-
-    //$scope.fileUploadService = fileUploadService;
-
-    $scope.cleanQueueFiles = function(){
-      $scope.queueFiles = {};
-    };
-
-    $scope.logQueueFiles = function(){
-      $log.info('fileUploadService.queueFiles: ',fileUploadService.queueFiles);
-      $log.info('$scope.queueFiles: ',$scope.queueFiles);
-    };
-
-    $scope.logQueueFilesInService = function(){
-      fileUploadService.logQueueFiles();
-    };
+    fileUploadService.queueFiles().then(function(files) {
+      $scope.queueFiles  = files;
+    });
 
     /**
-     * @name queueFiles
+     * @name queueFilesLength
      * @Description return the Length of $scope.queueFiles object
      * @Type object
      * */
@@ -95,7 +77,7 @@ angular.module('fileUpload',[])
 
           imagesService.addRecord(record).then(function(ref){
             var id = ref.key();
-            $log.info("added record with id " + id);
+            $log.info('added record with id ' + id);
           },function(error){
             $log.error('Error: ',error);
           },function(requestInfo){
@@ -116,7 +98,8 @@ angular.module('fileUpload',[])
      * @Description  The ALL files specified by the User To upload.
      * @Type object
      * */
-    var queueFiles  = {};
+    var queueFiles        = {};
+    var copyOfQueueFiles  = angular.copy(queueFiles);
 
     /**
      * @name queueFiles
@@ -178,7 +161,9 @@ angular.module('fileUpload',[])
      **/
 
     return {
-      queueFiles:queueFiles,
+      queueFiles:function(){
+        return $q.when(queueFiles);
+      },
       queueFilesLength:function(){
         return Object.keys(queueFiles).length;
       },
@@ -214,21 +199,13 @@ angular.module('fileUpload',[])
         return deferred.promise;
       },
       updateFileObj : function(reference,reading){
-        var deferred = $q.defer();
-        if(queueFiles[reference].preview = reading){
-          deferred.resolve();
-        }
-        return deferred.promise;
-      },
-      logQueueFiles:function(){
-        $log.info('QueueFiles in service',queueFiles);
+        return $q.when(queueFiles[reference].preview = reading);
       },
       removeAllQueueFiles : function(){
         var deferred = $q.defer();
-        if(queueFiles = {}){
+        if(angular.copy(copyOfQueueFiles, queueFiles)){
           deferred.resolve('All queue files has been removed successfully.');
         }
-        $log.info('reference',queueFiles);
         return deferred.promise;
       },
       removeFileFromTheQueueFiles : function(reference){
@@ -274,14 +251,11 @@ angular.module('fileUpload',[])
           angular.forEach(event.target.files,function(file){
             fileUploadService.newFile(file)
               .then(function(reference){
-                //$log.info('fileUploadService.queueFiles::: ',angular.toJson(fileUploadService.queueFiles));
                 // read file
                 return $q.all({reference: $q.when(reference), reading: fileUploadService.readFile(reference)});
               }).then(function(the){
                 // update file object
-                fileUploadService.updateFileObj(the.reference,the.reading).then(function(){
-                  //$log.info('fileUploadService.queueFiles',angular.toJson(fileUploadService.queueFiles));
-                });
+                fileUploadService.updateFileObj(the.reference,the.reading);
               },
               function(error){
                 $log.error('Error: ',error);
@@ -329,7 +303,7 @@ angular.module('fileUpload',[])
    @name removeFileFromTheQueueFiles
    @Description  delete the specified file object in queueFiles object.
    */
-  .directive('removeFileFromTheQueueFiles',['fileUploadService','notificationService','$log',function(fileUploadService,notificationService,$log){
+  .directive('removeFileFromTheQueueFiles',['fileUploadService','notificationService',function(fileUploadService,notificationService){
     return {
       restrict: 'A',
       scope:{
