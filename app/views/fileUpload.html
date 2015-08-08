@@ -6,11 +6,11 @@
 
     <file-upload></file-upload>
 
-    <section ng-show="queueFilesLength() > 0">
+    <section ng-show="filesLength() > 0">
       <hr>
       <div class="btn-toolbar" role="toolbar" aria-label="...">
         <div class="btn-group" role="group" aria-label="...">
-          <button type="button" class="btn btn-danger" remove-all-queue-files>Remove All Queue Images</button>
+          <button type="button" class="btn btn-danger" remove-files>Remove All Queue Images</button>
         </div>
         <div class="btn-group" role="group" aria-label="...">
           <button type="button" class="btn btn-primary" ng-click="uploadFiles()">Start Upload Images</button>
@@ -20,14 +20,14 @@
 
       <div class="well well-sm">
         <div class="row">
-          <div class="col-sm-6 col-md-4" ng-repeat="(key, value) in queueFiles">
+          <div class="col-sm-6 col-md-4" ng-repeat="(key, value) in files">
             <div class="thumbnail">
               <img class="img-preview" ng-src="{{value.preview}}" alt="{{value.fileName}}">
               <div class="caption">
                 <div class="file-name">{{value.fileName}}</div>
                 <div >{{value.fileSize | bytes}}</div>
                 <div class="remove-button">
-                  <button remove-file-from-the-queue-files data-reference="{{key}}"  class="btn btn-danger">Remove</button>
+                  <button remove-file data-reference="{{key}}"  class="btn btn-danger">Remove</button>
                 </div>
               </div>
             </div>

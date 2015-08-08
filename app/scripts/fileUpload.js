@@ -1,5 +1,11 @@
 'use strict';
 
+// TODO - 1) Add progress support for all and each file.
+// TODO - 2) Add supports to other type of files
+// TODO - 3) Add supports to the files already uploaded
+// TODO - 4) Improve the model to handel images in data base
+
+
 angular.module('fileUpload',[])
   .factory('imagesService',['FireRef','$firebaseArray',function(FireRef,$firebaseArray){
 
@@ -22,34 +28,18 @@ angular.module('fileUpload',[])
 
     //$scope.images = imagesService.images;
 
-    fileUploadService.queueFiles().then(function(files) {
-      $scope.queueFiles  = files;
+    fileUploadService.files().then(function(ifiles) {
+      $scope.files  = ifiles;
     });
 
-    /**
-     * @name queueFilesLength
-     * @Description return the Length of $scope.queueFiles object
-     * @Type object
-     * */
-    $scope.queueFilesLength  = function(){
-      return fileUploadService.queueFilesLength();
+    $scope.filesLength  = function(){
+      return fileUploadService.filesLength();
     };
 
-
-
-
-    /**
-     * @name uploadFiles
-     * @Description
-     * @parameters   {}
-     * @returns      undefined
-     * TODO - 1) Add progress support for all and each file;
-     * 2) Improve the model,
-     * */
     $scope.uploadFiles = function(){
       $log.info('uploadFiles was clicked');
 
-      angular.forEach(fileUploadService.queueFiles,function(fileObject,reference){
+      angular.forEach(fileUploadService.files,function(fileObject,reference){
 
         var referencePromise          = $q.when(reference);
         var fileNamePromise           = $q.when(fileObject.fileName);
@@ -94,97 +84,77 @@ angular.module('fileUpload',[])
   .factory('fileUploadService',['$q','rfc4122','$log',function($q,rfc4122,$log){
 
     /**
-     * @name queueFiles
-     * @Description  The ALL files specified by the User To upload.
-     * @Type object
+     * The ALL files, in queue to upload and those already in server.
+     * @type {object}
      * */
-    var queueFiles        = {};
-    var copyOfQueueFiles  = angular.copy(queueFiles);
+    var files     = {};
 
     /**
-     * @name queueFiles
-     * @Description return the Length of $scope.queueFiles object
-     * @Type object
+     * Copy of files object, used for return the file object to its original state, which it is an empty object '{}'.
+     * @type {object}
      * */
+    var filesCopy = angular.copy(files);
 
     /**
-     * Conserve aspect ratio of the orignal region. Useful when shrinking/enlarging
+     * Conserve aspect ratio of the original region. Useful when shrinking/enlarging
      * images to fit into a certain area.
-     * @source  http://stackoverflow.com/a/14731922
+     * Source:  http://stackoverflow.com/a/14731922
      *
      * @param {Number} srcWidth Source area width
      * @param {Number} srcHeight Source area height
-     * @param {Number} maxWidth Fittable area maximum available width
-     * @param {Number} maxHeight Fittable area maximum available height
-     * @return {Object} { width, heigth }
+     * @param {Number} maxWidth Nestable area maximum available width
+     * @param {Number} maxHeight Nestable area maximum available height
+     * @return {Object} { width, height }
      */
     var calculateAspectRatioFit = function (srcWidth, srcHeight, maxWidth, maxHeight) {
       var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
       return { width: srcWidth*ratio, height: srcHeight*ratio };
     };
 
-    /**
-     @name addFile
-     @Description  Receives one FILE type object, which is added or "pushed" to the queueFiles object. Later, we can get that object with the reference that return the success
-     promise. The reference is UUID (https://en.wikipedia.org/wiki/Universally_unique_identifier).
-     @parameters   {file: FILE Type}
-     @returns      promise; The success promise return UUID string;
-     **/
-
-    /**
-     @name readFile
-     @Description  Receives the reference (UUID) of the FILE object in queueFiles object. Create FileReader instance to read the file with that reference.
-     @parameters   {reference: UUID Type}
-     @returns      promise; The success promise return the Reading, is type string.
-     **/
-
-    /**
-     @name updateFileObj
-     @Description  Receives the reference (UUID), and the Reading result of the FILE object in queueFiles object.
-     @parameters   {reference: UUID Type, reading: String Type}
-     @returns      promise
-     **/
-
-    /**
-     @name generateThumbnails
-     @Description  reduce imagen size and quality.
-     @parameters   {imagen: base64, width: int, height: int}
-     @returns      promise
-     **/
-
-    /**
-     @name newFile
-     @Description  Receives one FILE type object, which is added or "pushed" to the queueFiles object. Later, we can get that object with the reference that return the success
-     promise. The reference is UUID (https://en.wikipedia.org/wiki/Universally_unique_identifier).
-     @parameters   {file: FILE Type}
-     @returns      promise; The success promise return UUID string;
-     **/
-
     return {
-      queueFiles:function(){
-        return $q.when(queueFiles);
+      /**
+       * how many files there are
+       * @return Promise.<Object>
+       * */
+      files: function(){
+        return $q.when(files);
       },
-      queueFilesLength:function(){
-        return Object.keys(queueFiles).length;
+      /**
+       * how many files there are
+       * @return {Number}
+       * */
+      filesLength : function(){
+        return Object.keys(files).length;
       },
-      newFile:function(file){
+      /**
+       Receives one FILE type object, which is added or "pushed" to the files object. Later, we can get that object with the reference that return the success
+       promise. The reference is UUID (https://en.wikipedia.org/wiki/Universally_unique_identifier).
+       @param {File} file
+       @returns Promise.<String>
+       **/
+      newFile : function(file){
         var deferred = $q.defer();
         var uuid    = rfc4122.v4();
         // creating file object
-        queueFiles[uuid]          = {
+        files[uuid]          = {
           file:     file,
           fileName: file.name,
           fileSize: file.size,
           preview:  'images/loading.jpeg'
         };
-        if(queueFiles[uuid]){
+        if(files[uuid]){
           deferred.resolve(uuid); // reference
         }else{
           deferred.reject('Undefined reference, check rfc4122 dependence file is loaded.');
         }
         return deferred.promise;
       },
-      readFile:function(reference){
+      /**
+       Receives the reference (UUID) of the FILE object in files object. Create FileReader instance to read the file with that reference.
+       @param  {String} reference is UUID string.
+       @returns  Promise.<String> . The Reading is a base64 string.
+       **/
+      readFile : function(reference){
         var deferred = $q.defer();
         var reader = new FileReader();
         reader.onerror = function(error){
@@ -195,30 +165,50 @@ angular.module('fileUpload',[])
           // The reading operation is successfully completed.
           deferred.resolve(loadEvent.target.result);
         };
-        reader.readAsDataURL(queueFiles[reference].file);
+        reader.readAsDataURL(files[reference].file);
         return deferred.promise;
       },
+      /**
+       Receives the reference (UUID), and the Reading result of the FILE object in files object.
+       @param {String} reference is UUID string
+       @param {reading} reading is base64 string
+       @returns Promise.<String>
+       **/
       updateFileObj : function(reference,reading){
-        return $q.when(queueFiles[reference].preview = reading);
+        return $q.when(files[reference].preview = reading);
       },
-      removeAllQueueFiles : function(){
+      /**
+       TODO Remove ALL files, in queue to upload and those already in server.
+       @returns Promise.<String>
+       **/
+      removeFiles : function(){
         var deferred = $q.defer();
-        if(angular.copy(copyOfQueueFiles, queueFiles)){
+        if(angular.copy(filesCopy, files)){
           deferred.resolve('All queue files has been removed successfully.');
         }
         return deferred.promise;
       },
-      removeFileFromTheQueueFiles : function(reference){
+      /**
+       TODO Remove the file with the reference provided in queue to upload or one that it is in the server.
+       @returns Promise.<String>
+       **/
+      removeFile : function(reference){
         var deferred = $q.defer();
-        var fileName = queueFiles[reference].fileName;
-        if(delete queueFiles[reference]){
+        var fileName = files[reference].fileName;
+        if(delete files[reference]){
           var message = 'The file: '+ fileName +', has been removed successfully.';
-          $log.info('message',message);
           deferred.resolve(message);
         }
         return deferred.promise;
       },
-      generateThumbnail:function(imagen, width, height){
+      /**
+       Reduce imagen size and quality.
+       @param {String} imagen is a base64 string
+       @param {Number} width
+       @param {Number} height
+       @returns Promise.<String>
+       **/
+      generateThumbnail : function(imagen, width, height){
         var deferred          = $q.defer();
         var canvasElement     = document.createElement('canvas');
         var imagenElement     = document.createElement('img');
@@ -281,9 +271,9 @@ angular.module('fileUpload',[])
   }])
   /**
    @name removeAllQueueFiles
-   @Description  return queueFiles object to original state.
+   @Description  return files object to original state.
    */
-  .directive('removeAllQueueFiles',['fileUploadService','notificationService',function(fileUploadService,notificationService){
+  .directive('removeFiles',['fileUploadService','notificationService',function(fileUploadService,notificationService){
     return {
       restrict: 'A',
       scope:{
@@ -291,7 +281,7 @@ angular.module('fileUpload',[])
       },
       link: function (scope,element) {
         element.bind('click', function () {
-          fileUploadService.removeAllQueueFiles().then(function(message){
+          fileUploadService.removeFiles().then(function(message){
             scope.successMessage = scope.successMessage ? scope.successMessage : message;
             notificationService.success(scope.successMessage);
           });
@@ -301,9 +291,9 @@ angular.module('fileUpload',[])
   }])
   /**
    @name removeFileFromTheQueueFiles
-   @Description  delete the specified file object in queueFiles object.
+   @Description  delete the specified file object in files object.
    */
-  .directive('removeFileFromTheQueueFiles',['fileUploadService','notificationService',function(fileUploadService,notificationService){
+  .directive('removeFile',['fileUploadService','notificationService',function(fileUploadService,notificationService){
     return {
       restrict: 'A',
       scope:{
@@ -312,7 +302,7 @@ angular.module('fileUpload',[])
       },
       link: function (scope,element) {
         element.bind('click', function () {
-          fileUploadService.removeFileFromTheQueueFiles(scope.reference).then(function(message){
+          fileUploadService.removeFile(scope.reference).then(function(message){
             scope.successMessage = scope.successMessage ? scope.successMessage : message;
             notificationService.success(scope.successMessage);
           });
