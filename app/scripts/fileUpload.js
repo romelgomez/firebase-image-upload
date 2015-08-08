@@ -1,13 +1,51 @@
 'use strict';
 
-// TODO - 1) Add progress support for all and each file.
-// TODO - 2) Add supports to other type of files
-// TODO - 3) Add supports to the files already uploaded
-// TODO - 4) Improve the model to handel images in data base
+// TODO - Improve the model to handel images in data base
+// TODO - Add progress support for all and each file.
+// TODO - Add supports to other type of files
+// TODO - Add supports to the files already uploaded
+// TODO - Remove ALL files, in queue to upload and those already in server.
+// TODO - Remove the file with the reference provided in queue to upload or one that it is in the server.
 
 
 angular.module('fileUpload',[])
-  .factory('imagesService',['FireRef','$firebaseArray',function(FireRef,$firebaseArray){
+  .factory('fireBaseService',['FireRef','$firebaseArray',function(FireRef,$firebaseArray){
+
+    /** Data Base structure
+
+     Publications Path:
+     publications/uuid/images/uuid/deleted
+
+     publications:{
+              uuid:{
+                name:'publication name'
+                description:'publication description'
+                images:{
+                  uuid:true,
+                  uuid:false,
+                  uuid:false,
+                  uuid:true,
+                  uuid:true
+                }
+              }
+            }
+
+     Images Paths:
+     images/uuid/name
+     images/uuid/thumbnails/w200xh200
+     images/uuid/thumbnails/w600xh600
+
+     images:{
+              uuid:{
+                name:'file name',
+                thumbnails:{
+                  w200xh200:'base64 string',
+                  w600xh600:'base64 string'
+                }
+              }
+            }
+
+     **/
 
     var records = $firebaseArray(FireRef.child('images'));
 
@@ -24,7 +62,7 @@ angular.module('fileUpload',[])
     };
 
   }])
-  .controller('FileUploadController', ['$scope','$q','rfc4122','imagesService','fileUploadService','$log',function ($scope,$q,rfc4122,imagesService,fileUploadService,$log) {
+  .controller('FileUploadController', ['$scope','$q','rfc4122','fireBaseService','fileUploadService','$log',function ($scope,$q,rfc4122,fireBaseService,fileUploadService,$log) {
 
     //$scope.images = imagesService.images;
 
@@ -41,38 +79,46 @@ angular.module('fileUpload',[])
 
       angular.forEach(fileUploadService.files,function(fileObject,reference){
 
-        var referencePromise          = $q.when(reference);
-        var fileNamePromise           = $q.when(fileObject.fileName);
-        var w600xh600ThumbnailPromise = fileUploadService.generateThumbnail(fileObject.preview,600,600);
-        var w200xh200ThumbnailPromise = fileUploadService.generateThumbnail(fileObject.preview,200,200);
+        var promises = {
+          reference:          $q.when(reference),
+          fileName:           $q.when(fileObject.fileName),
+          w200xh200Thumbnail: fileUploadService.generateThumbnail(fileObject.preview,200,200),
+          w600xh600Thumbnail: fileUploadService.generateThumbnail(fileObject.preview,600,600)
+        };
 
-        $q.all([referencePromise,fileNamePromise,w200xh200ThumbnailPromise,w600xh600ThumbnailPromise]).then(function(result){
-          var reference           = result[0];
-          var fileName            = result[1];
-          var w200xh200Thumbnail  = result[2];
-          var w600xh600Thumbnail  = result[3];
+        $q.all(promises).then(function(the){
+          var reference           = the.reference;
+          var fileName            = the.fileName;
+          var w200xh200Thumbnail  = the.w200xh200Thumbnail;
+          var w600xh600Thumbnail  = the.w600xh600Thumbnail;
 
-          var record = {
+
+          var w200xh200Record = {
             publicationId:'1',
             reference: reference,
             fileName: fileName,
-            thumbnails : {
-              w200h200:w200xh200Thumbnail,
-              w600h600:w600xh600Thumbnail
-            },
+            thumbnail : w200xh200Thumbnail,
+            deleted:false
+          };
+
+          var w600xh600Record = {
+            publicationId:'1',
+            reference: reference,
+            fileName: fileName,
+            thumbnail : w600xh600Thumbnail,
             deleted:false
           };
 
           $log.info('record',record);
 
-          imagesService.addRecord(record).then(function(ref){
-            var id = ref.key();
-            $log.info('added record with id ' + id);
-          },function(error){
-            $log.error('Error: ',error);
-          },function(requestInfo){
-            $log.info('percentComplete: ',requestInfo);
-          });
+          //imagesService.addRecord(record).then(function(ref){
+          //  var id = ref.key();
+          //  $log.info('added record with id ' + id);
+          //},function(error){
+          //  $log.error('Error: ',error);
+          //},function(requestInfo){
+          //  $log.info('percentComplete: ',requestInfo);
+          //});
 
         });
 
