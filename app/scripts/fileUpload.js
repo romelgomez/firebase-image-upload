@@ -297,12 +297,11 @@ angular.module('fileUpload',[])
     return {
       restrict: 'A',
       scope:{
-        reference:'@',
         successMessage:'@'
       },
-      link: function (scope,element) {
+      link: function (scope,element,attributes) {
         element.bind('click', function () {
-          fileUploadService.removeFile(scope.reference).then(function(message){
+          fileUploadService.removeFile(attributes['removeFile']).then(function(message){
             scope.successMessage = scope.successMessage ? scope.successMessage : message;
             notificationService.success(scope.successMessage);
           });
