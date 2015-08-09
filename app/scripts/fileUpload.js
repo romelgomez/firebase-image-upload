@@ -11,15 +11,15 @@
 angular.module('fileUpload',[])
   .factory('fireBaseService',['FireRef','$firebaseArray',function(FireRef,$firebaseArray){
 
-    /** Data Base structure
+    /*******  Data Base Structure  *******
 
      Publications Path:
-     publications/uuid/images/uuid/deleted
+     publications/fireBaseUniqueIdentifier/images/uuid/deleted
 
      publications:{
-              uuid:{
-                name:'publication name'
-                description:'publication description'
+              fireBaseUniqueIdentifier:{
+                title:'publication title',
+                description:'publication description',
                 images:{
                   uuid:true,
                   uuid:false,
@@ -47,7 +47,15 @@ angular.module('fileUpload',[])
 
      **/
 
-    var records = $firebaseArray(FireRef.child('images'));
+    //var records = $firebaseArray(FireRef.child('images'));
+    //var records = $firebaseArray(FireRef.child('publications'));
+
+    //var list = $firebaseArray(ref);
+    //list.$add({ foo: "bar" }).then(function(ref) {
+    //  var id = ref.key();
+    //  console.log("added record with id " + id);
+    //  list.$indexFor(id); // returns location in the array
+    //});
 
     return {
       images: records,
@@ -62,9 +70,7 @@ angular.module('fileUpload',[])
     };
 
   }])
-  .controller('FileUploadController', ['$scope','$q','rfc4122','fireBaseService','fileUploadService','$log',function ($scope,$q,rfc4122,fireBaseService,fileUploadService,$log) {
-
-    //$scope.images = imagesService.images;
+  .controller('FileUploadController', ['$scope','$q','rfc4122','FireRef','$firebaseArray','$firebaseObject','fileUploadService','$log',function ($scope,$q,rfc4122,FireRef,$firebaseArray,$firebaseObject,fileUploadService,$log) {
 
     fileUploadService.files().then(function(ifiles) {
       $scope.files  = ifiles;
@@ -77,51 +83,40 @@ angular.module('fileUpload',[])
     $scope.uploadFiles = function(){
       $log.info('uploadFiles was clicked');
 
-      angular.forEach(fileUploadService.files,function(fileObject,reference){
+      fileUploadService.files().then(function(files) {
+        angular.forEach(files,function(fileObject,reference){
 
-        var promises = {
-          reference:          $q.when(reference),
-          fileName:           $q.when(fileObject.fileName),
-          w200xh200Thumbnail: fileUploadService.generateThumbnail(fileObject.preview,200,200),
-          w600xh600Thumbnail: fileUploadService.generateThumbnail(fileObject.preview,600,600)
-        };
-
-        $q.all(promises).then(function(the){
-          var reference           = the.reference;
-          var fileName            = the.fileName;
-          var w200xh200Thumbnail  = the.w200xh200Thumbnail;
-          var w600xh600Thumbnail  = the.w600xh600Thumbnail;
-
-
-          var w200xh200Record = {
-            publicationId:'1',
-            reference: reference,
-            fileName: fileName,
-            thumbnail : w200xh200Thumbnail,
-            deleted:false
+          var promises = {
+            reference:          $q.when(reference),
+            fileName:           $q.when(fileObject.fileName),
+            w200xh200Thumbnail: fileUploadService.generateThumbnail(fileObject.preview,200,200,0.7),
+            w600xh600Thumbnail: fileUploadService.generateThumbnail(fileObject.preview,600,600,1.0)
           };
 
-          var w600xh600Record = {
-            publicationId:'1',
-            reference: reference,
-            fileName: fileName,
-            thumbnail : w600xh600Thumbnail,
-            deleted:false
-          };
+          $q.all(promises).then(function(the){
+            var reference           = the.reference;
+            var fileName            = the.fileName;
+            var w200xh200Thumbnail  = the.w200xh200Thumbnail;
+            var w600xh600Thumbnail  = the.w600xh600Thumbnail;
 
-          $log.info('record',record);
+            var ref = FireRef.child('images').child(reference);
 
-          //imagesService.addRecord(record).then(function(ref){
-          //  var id = ref.key();
-          //  $log.info('added record with id ' + id);
-          //},function(error){
-          //  $log.error('Error: ',error);
-          //},function(requestInfo){
-          //  $log.info('percentComplete: ',requestInfo);
-          //});
+            var obj = $firebaseObject(ref);
+            obj.name = fileName;
+            obj.thumbnails = {};
+            obj.thumbnails.w200xh200 = w200xh200Thumbnail;
+            obj.thumbnails.w600xh600 = w600xh600Thumbnail;
+
+            obj.$save().then(function(ref) {
+              var id = ref.key();
+              $log.info('added record with id ' + id);
+            }, function(error) {
+              $log.error('Error: ',error);
+            });
+
+          });
 
         });
-
       });
 
     };
@@ -252,9 +247,10 @@ angular.module('fileUpload',[])
        @param {String} imagen is a base64 string
        @param {Number} width
        @param {Number} height
+       @param {Number} quality from 0.1 to 1.0
        @returns Promise.<String>
        **/
-      generateThumbnail : function(imagen, width, height){
+      generateThumbnail : function(imagen, width, height, quality){
         var deferred          = $q.defer();
         var canvasElement     = document.createElement('canvas');
         var imagenElement     = document.createElement('img');
@@ -264,7 +260,7 @@ angular.module('fileUpload',[])
           canvasElement.height  = dimensions.height;
           var context           = canvasElement.getContext('2d');
           context.drawImage(imagenElement, 0, 0, dimensions.width, dimensions.height);
-          deferred.resolve(canvasElement.toDataURL('image/jpeg', 0.7));
+          deferred.resolve(canvasElement.toDataURL('image/jpeg', quality));
         };
         imagenElement.src = imagen;
         return deferred.promise;
