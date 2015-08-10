@@ -9,7 +9,7 @@
 
 
 angular.module('fileUpload',[])
-  .factory('fireBaseService',['FireRef','$firebaseArray',function(FireRef,$firebaseArray){
+  .factory('fireBaseService',[function(){
 
     /*******  Data Base Structure  *******
 
@@ -47,30 +47,10 @@ angular.module('fileUpload',[])
 
      **/
 
-    //var records = $firebaseArray(FireRef.child('images'));
-    //var records = $firebaseArray(FireRef.child('publications'));
-
-    //var list = $firebaseArray(ref);
-    //list.$add({ foo: "bar" }).then(function(ref) {
-    //  var id = ref.key();
-    //  console.log("added record with id " + id);
-    //  list.$indexFor(id); // returns location in the array
-    //});
-
-    return {
-      images: records,
-      //deleteRecord: function (recordKey){
-      //  var record = records.$getRecord(recordKey);
-      //  record.deleted = true;
-      //  return records.$save(record);
-      //},
-      addRecord: function(object){
-        return records.$add(object);
-      }
-    };
+    return {};
 
   }])
-  .controller('FileUploadController', ['$scope','$q','rfc4122','FireRef','$firebaseArray','$firebaseObject','fileUploadService','$log',function ($scope,$q,rfc4122,FireRef,$firebaseArray,$firebaseObject,fileUploadService,$log) {
+  .controller('FileUploadController', ['$scope','$q','rfc4122','FireRef','$firebaseObject','fileUploadService','$log',function ($scope,$q,rfc4122,FireRef,$firebaseObject,fileUploadService,$log) {
 
     fileUploadService.files().then(function(ifiles) {
       $scope.files  = ifiles;
