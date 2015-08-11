@@ -2,6 +2,15 @@
 
 // TODO - Improve the model to handel images in data base
 // TODO - Add progress support for all and each file.
+/**
+ * hay dos tipos de archivos, los que estan en cola, y los que estan en el servidor. solo los archivos que estan el cola debe
+ * presentar tal comportamiento <progres bar>. En ese sentido debo poder indentificar cuales archivos estan en cola.
+ *
+ * cuando borrarmos un archivo, este puede estar en cola o en el servidor, una vez mas necesitamos un identificador con el cual
+ * determinemos si ese archivo esta en cola o en el servidor. Si esta en el servidor, realizamos una solicitud http, si se tiene existo, se borrar del object files
+ * si esta en cola simplemente se borra de files object
+ *
+ * */
 // TODO - Add supports to other type of files
 // TODO - Add supports to the files already uploaded
 // TODO - Remove ALL files, in queue to upload and those already in server.
@@ -255,7 +264,7 @@ angular.module('fileUpload',[])
   .directive('fileUpload',['$q','fileUploadService','$log',function($q,fileUploadService,$log){
     return {
       restrict: 'E',
-      templateUrl: 'fileUpload.html',
+      template: '<input type="file" multiple="multiple" accept="image/*" class="file-input">',
       replace:true,
       link: function (scope,element) {
         fileUploadService.fileInputElement = element;
