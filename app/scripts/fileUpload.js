@@ -1,16 +1,19 @@
 'use strict';
 
-// TODO - Improve the model to handel images in data base
-// TODO - Add progress support for all and each file.
 /**
- * hay dos tipos de archivos, los que estan en cola, y los que estan en el servidor. solo los archivos que estan el cola debe
- * presentar tal comportamiento <progres bar>. En ese sentido debo poder indentificar cuales archivos estan en cola.
+ * NOTAS:
  *
- * cuando borrarmos un archivo, este puede estar en cola o en el servidor, una vez mas necesitamos un identificador con el cual
- * determinemos si ese archivo esta en cola o en el servidor. Si esta en el servidor, realizamos una solicitud http, si se tiene existo, se borrar del object files
- * si esta en cola simplemente se borra de files object
+ * Hay dos tipos de archivos, los que están en cola, y los que están en el servidor. solo los archivos que estan el cola debe
+ * presentar tal comportamiento <progressbar>. En ese sentido se debe poder identificar cuáles archivos están en cola.
+ *
+ * Cuando borramos un archivo, este puede estar en cola o en el servidor, una vez más necesitamos un identificador con el cual
+ * determinemos si ese archivo esta en cola o en el servidor. Si está en el servidor, realizamos una solicitud http,
+ * si se tiene éxito, se borra del object files, si esta en cola simplemente se borra de files object
  *
  * */
+
+// TODO - Improve the model to handel images in data base
+// TODO - Add progress support for all and each file.
 // TODO - Add supports to other type of files
 // TODO - Add supports to the files already uploaded
 // TODO - Remove ALL files, in queue to upload and those already in server.
@@ -160,7 +163,7 @@ angular.module('fileUpload',[])
        Receives one FILE type object, which is added or "pushed" to the files object. Later, we can get that object with the reference that return the success
        promise. The reference is UUID (https://en.wikipedia.org/wiki/Universally_unique_identifier).
        @param {File} file
-       @returns Promise.<String>
+       @return Promise.<String>
        **/
       newFile : function(file){
         var deferred = $q.defer();
@@ -182,7 +185,7 @@ angular.module('fileUpload',[])
       /**
        Receives the reference (UUID) of the FILE object in files object. Create FileReader instance to read the file with that reference.
        @param  {String} reference is UUID string.
-       @returns  Promise.<String> . The Reading is a base64 string.
+       @return  Promise.<String> . The Reading is a base64 string.
        **/
       readFile : function(reference){
         var deferred = $q.defer();
@@ -202,14 +205,14 @@ angular.module('fileUpload',[])
        Receives the reference (UUID), and the Reading result of the FILE object in files object.
        @param {String} reference is UUID string
        @param {reading} reading is base64 string
-       @returns Promise.<String>
+       @return Promise.<String>
        **/
       updateFileObj : function(reference,reading){
         return $q.when(files[reference].preview = reading);
       },
       /**
        TODO Remove ALL files, in queue to upload and those already in server.
-       @returns Promise.<String>
+       @return Promise.<String>
        **/
       removeFiles : function(){
         var deferred = $q.defer();
@@ -220,7 +223,7 @@ angular.module('fileUpload',[])
       },
       /**
        TODO Remove the file with the reference provided in queue to upload or one that it is in the server.
-       @returns Promise.<String>
+       @return Promise.<String>
        **/
       removeFile : function(reference){
         var deferred = $q.defer();
@@ -237,7 +240,7 @@ angular.module('fileUpload',[])
        @param {Number} width
        @param {Number} height
        @param {Number} quality from 0.1 to 1.0
-       @returns Promise.<String>
+       @return Promise.<String>
        **/
       generateThumbnail : function(imagen, width, height, quality){
         var deferred          = $q.defer();

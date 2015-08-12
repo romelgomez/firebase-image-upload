@@ -2,7 +2,7 @@
 
 // añadir soporte a otro tipo de publicación
 
-angular.module('publications',['tree','filters','uuid','ngMessages','angular-redactor'])
+angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular-redactor'])
   .factory('publicationsService',['$q','$window','rfc4122','FireRef','$firebaseArray',function($q,$window,rfc4122,FireRef,$firebaseArray){
 
     var publications = $firebaseArray(FireRef.child('publications'));
