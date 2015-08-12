@@ -258,8 +258,7 @@ angular.module('fileUpload',[])
 
   }])
   /**
-   * @name fileUpload Directive
-   * @Description  Take the last files specified by the User.
+   * The fileUpload Directive Take the last files specified by the User.
    * */
   .directive('fileUpload',['$q','fileUploadService','$log',function($q,fileUploadService,$log){
     return {
@@ -287,9 +286,8 @@ angular.module('fileUpload',[])
     };
   }])
   /**
-   @name fileUploadTrigger
-   @Description  Triggers click event on file Input Element.
-   */
+   * The fileUploadTrigger Directive Triggers click event on file Input Element.
+   * */
   .directive('fileUploadTrigger',['fileUploadService',function(fileUploadService){
     return {
       restrict: 'A',
@@ -301,9 +299,8 @@ angular.module('fileUpload',[])
     };
   }])
   /**
-   @name removeAllQueueFiles
-   @Description  return files object to original state.
-   */
+   * The removeFiles return files object to original state.
+   * */
   .directive('removeFiles',['fileUploadService','notificationService',function(fileUploadService,notificationService){
     return {
       restrict: 'A',
@@ -321,9 +318,8 @@ angular.module('fileUpload',[])
     };
   }])
   /**
-   @name removeFileFromTheQueueFiles
-   @Description  delete the specified file object in files object.
-   */
+   * The removeFile directive delete the specified file object in files object.
+   * */
   .directive('removeFile',['fileUploadService','notificationService',function(fileUploadService,notificationService){
     return {
       restrict: 'A',
