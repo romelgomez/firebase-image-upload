@@ -14,7 +14,7 @@
 // TODO - Add supports to other type of files
 // TODO - Add supports to the files already uploaded
 // TODO - Remove ALL files, in queue to upload and those already in server.
-// TODO - Remove the file with the reference provided in queue to upload or one that it is in the server.
+// TODO - Remove THE file, in queue to upload or that it is already in the server.
 
 
 angular.module('fileUpload',[])
@@ -332,7 +332,7 @@ angular.module('fileUpload',[])
       },
       link: function (scope,element,attributes) {
         element.bind('click', function () {
-          fileUploadService.removeFile(attributes['removeFile']).then(function(message){
+          fileUploadService.removeFile(attributes.removeFile).then(function(message){
             scope.successMessage = scope.successMessage ? scope.successMessage : message;
             notificationService.success(scope.successMessage);
           });
