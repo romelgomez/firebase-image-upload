@@ -104,7 +104,7 @@ angular.module('fileUpload',['ngProgress'])
             $scope.progressInstances[reference] = obj.$save().then(function(ref) {
               var reference = ref.key();
               $log.info('added record with id ' + reference);
-              $scope.files[reference].inServer = true;
+              fileUploadService.updateFileObj(reference,{inServer:true});
             }, function(error) {
               $log.error('Error: ',error);
             });
@@ -206,13 +206,15 @@ angular.module('fileUpload',['ngProgress'])
         return deferred.promise;
       },
       /**
-       Receives the reference (UUID), and the Reading result of the FILE object in files object.
+       Receives the reference (UUID), and the new data object.
        @param {String} reference is UUID string
-       @param {reading} reading is base64 string
-       @return Promise.<String>
+       @param {Object} newData
+       @return undefined
        **/
-      updateFileObj : function(reference,reading){
-        return $q.when(files[reference].preview = reading);
+      updateFileObj : function(reference,newData){
+        angular.forEach(newData, function (value, key) {
+          files[reference][key] = value;
+        });
       },
       /**
        TODO Remove ALL files, in queue to upload and those already in server.
@@ -282,7 +284,7 @@ angular.module('fileUpload',['ngProgress'])
                 return $q.all({reference: $q.when(reference), reading: fileUploadService.readFile(reference)});
               }).then(function(the){
                 // update file object
-                fileUploadService.updateFileObj(the.reference,the.reading);
+                fileUploadService.updateFileObj(the.reference,{preview: the.reading});
               },
               function(error){
                 $log.error('Error: ',error);
