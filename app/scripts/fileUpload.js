@@ -23,7 +23,7 @@
 angular.module('fileUpload',['ngProgress'])
   .factory('fireBaseService',[function(){
 
-    /*******  Data Base Structure  *******
+    /******* FireBase Data Base Structure  *******
 
      Publications Path:
      publications/fireBaseUniqueIdentifier/images/uuid/deleted
@@ -64,8 +64,8 @@ angular.module('fileUpload',['ngProgress'])
   }])
   .controller('FileUploadController', ['$scope','$q','rfc4122','FireRef','$firebaseObject','fileUploadService','ngProgressFactory','$log',function ($scope,$q,rfc4122,FireRef,$firebaseObject,fileUploadService,ngProgressFactory,$log) {
 
-    fileUploadService.files().then(function(ifiles) {
-      $scope.files  = ifiles;
+    fileUploadService.files().then(function(_files_) {
+      $scope.files  = _files_;
     });
 
     $scope.filesLength  = function(){
@@ -104,6 +104,7 @@ angular.module('fileUpload',['ngProgress'])
             $scope.progressInstances[reference] = obj.$save().then(function(ref) {
               var reference = ref.key();
               $log.info('added record with id ' + reference);
+              $scope.files[reference].inServer = true;
             }, function(error) {
               $log.error('Error: ',error);
             });
@@ -175,7 +176,8 @@ angular.module('fileUpload',['ngProgress'])
           file:     file,
           fileName: file.name,
           fileSize: file.size,
-          preview:  'images/loading.jpeg'
+          preview:  'images/loading.jpeg',
+          inServer: false
         };
         if(files[uuid]){
           deferred.resolve(uuid); // reference

@@ -26,6 +26,7 @@
               <div class="caption">
                 <div class="file-name">{{value.fileName}}</div>
                 <div >{{value.fileSize | bytes}}</div>
+                <span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span>
                 <div class="remove-button">
                   <button remove-file="{{key}}" class="btn btn-danger">Remove</button>
                 </div>
