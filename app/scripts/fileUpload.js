@@ -72,7 +72,7 @@ angular.module('fileUpload',['ngProgress'])
       return fileUploadService.filesLength();
     };
 
-    $scope.ngProgressInstances = {};
+    $scope.progressInstances = {};
 
     $scope.uploadFiles = function(){
       $log.info('uploadFiles was clicked');
@@ -101,24 +101,12 @@ angular.module('fileUpload',['ngProgress'])
             obj.thumbnails.w200xh200 = w200xh200Thumbnail;
             obj.thumbnails.w600xh600 = w600xh600Thumbnail;
 
-            $scope.ngProgressInstances[reference] = ngProgressFactory.createInstance();
-            $log.info('angular.element',angular.element('#'+reference).find('.caption'));
-            $scope.ngProgressInstances[reference].setParent(document.getElementById(reference));
-
-            // TODO To active this, i need to improve ngProgress (TypeError: this.parent.appendChild is not a function)
-            //$scope.ngProgressInstances[reference].setParent(document.getElementById(reference).getElementsByClassName('caption')); //
-            //$scope.ngProgressInstances[reference].setParent(angular.element('#'+reference).find('.caption'));
-
-            $scope.ngProgressInstances[reference].setAbsolute();
-            $scope.ngProgressInstances[reference].start();
-
-            //obj.$save().then(function(ref) {
-            //  var reference = ref.key();
-            //  $scope.ngProgressInstances[reference].complete();
-            //  $log.info('added record with id ' + reference);
-            //}, function(error) {
-            //  $log.error('Error: ',error);
-            //});
+            $scope.progressInstances[reference] = obj.$save().then(function(ref) {
+              var reference = ref.key();
+              $log.info('added record with id ' + reference);
+            }, function(error) {
+              $log.error('Error: ',error);
+            });
 
           });
 
