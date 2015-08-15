@@ -27,29 +27,35 @@ angular.module('fileUpload',['ngProgress'])
 
      Publications Path:
      publications/fireBaseUniqueIdentifier/images/uuid/deleted
+     publications/fireBaseUniqueIdentifier/images/uuid/name
 
      publications:{
               fireBaseUniqueIdentifier:{
                 title:'publication title',
                 description:'publication description',
                 images:{
-                  uuid:true,
-                  uuid:false,
-                  uuid:false,
-                  uuid:true,
-                  uuid:true
+                  uuid:{
+                    name:'file name',
+                    isDeleted:false
+                  },
+                  uuid:{
+                    name:'file name',
+                    isDeleted:false
+                  },
+                  uuid:{
+                    name:'file name',
+                    isDeleted:true
+                  }
                 }
               }
             }
 
      Images Paths:
-     images/uuid/name
      images/uuid/thumbnails/w200xh200
      images/uuid/thumbnails/w600xh600
 
      images:{
               uuid:{
-                name:'file name',
                 thumbnails:{
                   w200xh200:'base64 string',
                   w600xh600:'base64 string'
@@ -63,6 +69,10 @@ angular.module('fileUpload',['ngProgress'])
 
   }])
   .controller('FileUploadController', ['$scope','$q','rfc4122','FireRef','$firebaseObject','fileUploadService','ngProgressFactory','$log',function ($scope,$q,rfc4122,FireRef,$firebaseObject,fileUploadService,ngProgressFactory,$log) {
+
+    var fixedFireBaseUniqueIdentifier = '-Juqip8bcmF7u3z97fbe';
+    var publicationImagesRef = FireRef.child('publications').child(fixedFireBaseUniqueIdentifier).child('images');
+    var publicationImagesObj = $firebaseObject(publicationImagesRef);
 
     fileUploadService.files().then(function(_files_) {
       $scope.files  = _files_;
@@ -93,15 +103,15 @@ angular.module('fileUpload',['ngProgress'])
             var w200xh200Thumbnail  = the.w200xh200Thumbnail;
             var w600xh600Thumbnail  = the.w600xh600Thumbnail;
 
-            var ref = FireRef.child('images').child(reference);
+            var imagesRef = FireRef.child('images').child(reference);
 
-            var obj = $firebaseObject(ref);
-            obj.name = fileName;
-            obj.thumbnails = {};
-            obj.thumbnails.w200xh200 = w200xh200Thumbnail;
-            obj.thumbnails.w600xh600 = w600xh600Thumbnail;
+            var imageObj = $firebaseObject(imagesRef);
+            imageObj.name = fileName;
+            imageObj.thumbnails = {};
+            imageObj.thumbnails.w200xh200 = w200xh200Thumbnail;
+            imageObj.thumbnails.w600xh600 = w600xh600Thumbnail;
 
-            $scope.progressInstances[reference] = obj.$save().then(function(ref) {
+            $scope.progressInstances[reference] = imageObj.$save().then(function(ref) {
               var reference = ref.key();
               $log.info('added record with id ' + reference);
               fileUploadService.updateFileObj(reference,{inServer:true});
@@ -109,12 +119,51 @@ angular.module('fileUpload',['ngProgress'])
               $log.error('Error: ',error);
             });
 
+            publicationImagesObj[reference]           = {};
+            publicationImagesObj[reference].name      = fileName;
+            publicationImagesObj[reference].isDeleted = false;
+            publicationImagesObj.$save()
+
           });
 
         });
       });
 
     };
+
+    var filesInServer = function(){
+
+      publicationImagesObj.$watch(function() {
+        angular.forEach(publicationImagesObj,function(fileObj,reference){
+          if(!fileObj.isDeleted){
+            if(!angular.isDefined($scope.files[reference])){
+
+              //var w200xh200ThumbnailReference = FireRef.child('images').child(reference).child('thumbnails').child('w200xh200');
+
+              var file = {};
+
+              file[reference]          = {
+                fileName: fileObj.name,
+                preview:  'images/loading.jpeg',
+                inServer: true
+              };
+
+              $log.info('file',file);
+
+              //fileUploadService.files.push(file);
+              //var imageObj  = $firebaseObject(imagesRef);
+              //var file = {};
+              //file.fileName =  imageObj.name
+
+            }
+          }
+        });
+      });
+
+
+    };
+
+    filesInServer();
 
   }])
   .factory('fileUploadService',['$q','rfc4122','$log',function($q,rfc4122,$log){
