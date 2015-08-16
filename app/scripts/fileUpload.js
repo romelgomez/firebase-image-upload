@@ -82,53 +82,57 @@ angular.module('fileUpload',[])
       return fileUploadService.filesLength();
     };
 
+    $scope.queueFiles = function(){
+      return fileUploadService.queueFiles();
+    };
+
     $scope.progressInstances = {};
 
     $scope.uploadFiles = function(){
       fileUploadService.files().then(function(files) {
         angular.forEach(files,function(fileObject,reference){
-
-          var promises = {
-            reference:          $q.when(reference),
-            fileName:           $q.when(fileObject.fileName),
-            w200xh200Thumbnail: fileUploadService.generateThumbnail(fileObject.preview,200,200,0.7),
-            w600xh600Thumbnail: fileUploadService.generateThumbnail(fileObject.preview,600,600,1.0)
-          };
-
-          $q.all(promises).then(function(the){
-            var reference           = the.reference;
-            var fileName            = the.fileName;
-            var w200xh200Thumbnail  = the.w200xh200Thumbnail;
-            var w600xh600Thumbnail  = the.w600xh600Thumbnail;
-
-            var imagesRef  = FireRef.child('images').child(reference);
-            var imageObj   = $firebaseObject(imagesRef);
-
-            imageObj.name = fileName;
-            imageObj.thumbnails = {};
-            imageObj.thumbnails.w200xh200 = {};
-            imageObj.thumbnails.w200xh200.reference = reference;
-            imageObj.thumbnails.w200xh200.base64     = w200xh200Thumbnail;
-
-            imageObj.thumbnails.w600xh600 = {};
-            imageObj.thumbnails.w600xh600.reference = reference;
-            imageObj.thumbnails.w600xh600.base64     = w600xh600Thumbnail;
-
-            publicationImagesObject[reference]           = {};
-            publicationImagesObject[reference].name      = fileName;
-            publicationImagesObject[reference].isDeleted = false;
-
-            var savingOperations = {
-              inImages: imageObj.$save().then(function(ref) {
-                var reference = ref.key();
-                fileUploadService.updateFileObj(reference,{inServer:true});
-              }),
-              inPublications: publicationImagesObject.$save()
+          if(fileObject.inServer === false){
+            var promises = {
+              reference:          $q.when(reference),
+              fileName:           $q.when(fileObject.fileName),
+              w200xh200Thumbnail: fileUploadService.generateThumbnail(fileObject.preview,200,200,0.7),
+              w600xh600Thumbnail: fileUploadService.generateThumbnail(fileObject.preview,600,600,1.0)
             };
 
-            $scope.progressInstances[reference] = $q.all(savingOperations);
-          });
+            $q.all(promises).then(function(the){
+              var reference           = the.reference;
+              var fileName            = the.fileName;
+              var w200xh200Thumbnail  = the.w200xh200Thumbnail;
+              var w600xh600Thumbnail  = the.w600xh600Thumbnail;
 
+              var imagesRef  = FireRef.child('images').child(reference);
+              var imageObj   = $firebaseObject(imagesRef);
+
+              imageObj.name = fileName;
+              imageObj.thumbnails = {};
+              imageObj.thumbnails.w200xh200 = {};
+              imageObj.thumbnails.w200xh200.reference = reference;
+              imageObj.thumbnails.w200xh200.base64     = w200xh200Thumbnail;
+
+              imageObj.thumbnails.w600xh600 = {};
+              imageObj.thumbnails.w600xh600.reference = reference;
+              imageObj.thumbnails.w600xh600.base64     = w600xh600Thumbnail;
+
+              publicationImagesObject[reference]           = {};
+              publicationImagesObject[reference].name      = fileName;
+              publicationImagesObject[reference].isDeleted = false;
+
+              var savingOperations = {
+                inImages: imageObj.$save().then(function(ref) {
+                  var reference = ref.key();
+                  fileUploadService.updateFileObj(reference,{inServer:true});
+                }),
+                inPublications: publicationImagesObject.$save()
+              };
+
+              $scope.progressInstances[reference] = $q.all(savingOperations);
+            });
+          }
         });
       });
 
@@ -206,6 +210,17 @@ angular.module('fileUpload',[])
        * */
       filesLength : function(){
         return Object.keys(files).length;
+      },
+      /**
+       * how many files are in queue to upload
+       * @return {Boolean}
+       * */
+      queueFiles : function(){
+        var queue = false;
+        angular.forEach(files,function(file){
+          if(file.inServer === false){ queue = true; }
+        });
+        return queue;
       },
       /**
        Receives one FILE type object, which is added or "pushed" to the files object. Later, we can get that object with the reference that return the success

@@ -7,15 +7,18 @@
     <file-upload></file-upload>
 
     <section ng-show="filesLength() > 0">
-      <hr>
-      <div class="btn-toolbar" role="toolbar" aria-label="...">
-        <div class="btn-group" role="group" aria-label="...">
-          <button type="button" class="btn btn-danger" remove-files>Remove All Queue Images</button>
+      <section ng-show="queueFiles()">
+        <hr>
+        <div class="btn-toolbar" role="toolbar" aria-label="...">
+          <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-danger" remove-files>Remove All Queue Images</button>
+          </div>
+          <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-primary" ng-click="uploadFiles()">Start Upload Images</button>
+          </div>
         </div>
-        <div class="btn-group" role="group" aria-label="...">
-          <button type="button" class="btn btn-primary" ng-click="uploadFiles()">Start Upload Images</button>
-        </div>
-      </div>
+      </section>
+
       <hr>
 
       <div class="well well-sm">
