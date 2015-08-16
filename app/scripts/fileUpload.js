@@ -106,8 +106,13 @@ angular.module('fileUpload',[])
 
             imageObj.name = fileName;
             imageObj.thumbnails = {};
-            imageObj.thumbnails.w200xh200 = w200xh200Thumbnail;
-            imageObj.thumbnails.w600xh600 = w600xh600Thumbnail;
+            imageObj.thumbnails.w200xh200 = {};
+            imageObj.thumbnails.w200xh200.reference = reference;
+            imageObj.thumbnails.w200xh200.base64     = w200xh200Thumbnail;
+
+            imageObj.thumbnails.w600xh600 = {};
+            imageObj.thumbnails.w600xh600.reference = reference;
+            imageObj.thumbnails.w600xh600.base64     = w600xh600Thumbnail;
 
             publicationImagesObject[reference]           = {};
             publicationImagesObject[reference].name      = fileName;
@@ -129,36 +134,32 @@ angular.module('fileUpload',[])
 
     };
 
-    //var filesInServer = function(){
-    //  publicationImagesObj.$watch(function() {
-    //    angular.forEach(publicationImagesObj,function(fileObj,reference){
-    //      if(!fileObj.isDeleted){
-    //        if(!angular.isDefined($scope.files[reference])){
-    //
-    //          //var w200xh200ThumbnailReference = FireRef.child('images').child(reference).child('thumbnails').child('w200xh200');
-    //
-    //          var file = {};
-    //
-    //          file[reference]          = {
-    //            fileName: fileObj.name,
-    //            preview:  'images/loading.jpeg',
-    //            inServer: true
-    //          };
-    //
-    //          $log.info('file',file);
-    //
-    //          //fileUploadService.files.push(file);
-    //          //var imageObj  = $firebaseObject(imagesRef);
-    //          //var file = {};
-    //          //file.fileName =  imageObj.name
-    //
-    //        }
-    //      }
-    //    });
-    //  });
-    //};
-    //
-    //filesInServer();
+    var filesInServer = function(){
+      publicationImagesObject.$watch(function() {
+        angular.forEach(publicationImagesObject,function(fileObj,reference){
+          if(!fileObj.isDeleted){
+            fileUploadService.files().then(function(files) {
+              if(!angular.isDefined(files[reference])){
+                var file = {
+                  fileName: fileObj.name,
+                  preview:  'images/loading.jpeg',
+                  inServer: true
+                };
+                fileUploadService.insertFile(reference,file);
+
+                var w200xh200ThumbnailReference = FireRef.child('images').child(reference).child('thumbnails').child('w200xh200');
+                var imageObj  = $firebaseObject(w200xh200ThumbnailReference);
+                imageObj.$loaded(function(thumbnailObject){
+                  fileUploadService.updateFileObj(thumbnailObject.reference,{preview:thumbnailObject.base64})
+                });
+              }
+            });
+          }
+        });
+      });
+    };
+
+    filesInServer();
 
   }])
   .factory('fileUploadService',['$q','rfc4122','$log',function($q,rfc4122,$log){
@@ -223,6 +224,14 @@ angular.module('fileUpload',[])
           inServer: false
         };
         return $q.when(uuid);
+      },
+      /**
+       * insert custom made file object in files object
+       * @param {String} reference
+       * @param {Object} fileObject
+       **/
+      insertFile : function (reference,fileObject) {
+        files[reference] = fileObject;
       },
       /**
        Receives the reference (UUID) of the FILE object in files object. Create FileReader instance to read the file with that reference.
