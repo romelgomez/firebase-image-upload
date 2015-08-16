@@ -279,15 +279,16 @@ angular.module('fileUpload',[])
         });
       },
       /**
-       TODO Remove ALL files, in queue to upload and those already in server.
+       Remove ALL queue files to upload.
        @return Promise.<String>
        **/
-      removeFiles : function(){
-        var deferred = $q.defer();
-        if(angular.copy(filesCopy, files)){
-          deferred.resolve('All queue files has been removed successfully.');
-        }
-        return deferred.promise;
+      removeQueueFiles : function(){
+        angular.forEach(files,function(fileObject,reference){
+          if(fileObject.inServer === false){
+            delete files[reference];
+          }
+        });
+        return $q.when('All queue files has been removed successfully.');
       },
       /**
        TODO Remove the file with the reference provided in queue to upload or one that it is in the server.
@@ -296,8 +297,12 @@ angular.module('fileUpload',[])
       removeFile : function(reference){
         var deferred = $q.defer();
         var fileName = files[reference].fileName;
-        if(delete files[reference]){
-          var message = 'The file: '+ fileName +', has been removed successfully.';
+        var message = 'The file: '+ fileName +', has been removed successfully.';
+        if(files[reference].inServer){
+          $log.info('make http request');
+          deferred.resolve(message);
+        }else{
+          delete files[reference];
           deferred.resolve(message);
         }
         return deferred.promise;
@@ -372,7 +377,7 @@ angular.module('fileUpload',[])
   /**
    * The removeFiles return files object to original state.
    * */
-  .directive('removeFiles',['fileUploadService','notificationService',function(fileUploadService,notificationService){
+  .directive('removeQueueFiles',['fileUploadService','notificationService',function(fileUploadService,notificationService){
     return {
       restrict: 'A',
       scope:{
@@ -380,7 +385,7 @@ angular.module('fileUpload',[])
       },
       link: function (scope,element) {
         element.bind('click', function () {
-          fileUploadService.removeFiles().then(function(message){
+          fileUploadService.removeQueueFiles().then(function(message){
             scope.successMessage = scope.successMessage ? scope.successMessage : message;
             notificationService.success(scope.successMessage);
           });
