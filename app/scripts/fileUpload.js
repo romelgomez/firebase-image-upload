@@ -20,7 +20,7 @@
 // TODO - Remove THE file, in queue to upload or that it is already in the server.
 
 
-angular.module('fileUpload',['ngProgress'])
+angular.module('fileUpload',[])
   .factory('fireBaseService',[function(){
 
     /******* FireBase Data Base Structure  *******
@@ -68,11 +68,11 @@ angular.module('fileUpload',['ngProgress'])
     return {};
 
   }])
-  .controller('FileUploadController', ['$scope','$q','rfc4122','FireRef','$firebaseObject','fileUploadService','ngProgressFactory','$log',function ($scope,$q,rfc4122,FireRef,$firebaseObject,fileUploadService,ngProgressFactory,$log) {
+  .controller('FileUploadController', ['$scope','$q','rfc4122','FireRef','$firebaseObject','fileUploadService','$log',function ($scope,$q,rfc4122,FireRef,$firebaseObject,fileUploadService,$log) {
 
     var fixedFireBaseUniqueIdentifier = '-Juqip8bcmF7u3z97fbe';
-    var publicationImagesRef = FireRef.child('publications').child(fixedFireBaseUniqueIdentifier).child('images');
-    var publicationImagesObj = $firebaseObject(publicationImagesRef);
+    var publicationImagesReference  = FireRef.child('publications').child(fixedFireBaseUniqueIdentifier).child('images');
+    var publicationImagesObject = $firebaseObject(publicationImagesReference);
 
     fileUploadService.files().then(function(_files_) {
       $scope.files  = _files_;
@@ -85,8 +85,6 @@ angular.module('fileUpload',['ngProgress'])
     $scope.progressInstances = {};
 
     $scope.uploadFiles = function(){
-      $log.info('uploadFiles was clicked');
-
       fileUploadService.files().then(function(files) {
         angular.forEach(files,function(fileObject,reference){
 
@@ -103,27 +101,27 @@ angular.module('fileUpload',['ngProgress'])
             var w200xh200Thumbnail  = the.w200xh200Thumbnail;
             var w600xh600Thumbnail  = the.w600xh600Thumbnail;
 
-            var imagesRef = FireRef.child('images').child(reference);
+            var imagesRef  = FireRef.child('images').child(reference);
+            var imageObj   = $firebaseObject(imagesRef);
 
-            var imageObj = $firebaseObject(imagesRef);
             imageObj.name = fileName;
             imageObj.thumbnails = {};
             imageObj.thumbnails.w200xh200 = w200xh200Thumbnail;
             imageObj.thumbnails.w600xh600 = w600xh600Thumbnail;
 
-            $scope.progressInstances[reference] = imageObj.$save().then(function(ref) {
-              var reference = ref.key();
-              $log.info('added record with id ' + reference);
-              fileUploadService.updateFileObj(reference,{inServer:true});
-            }, function(error) {
-              $log.error('Error: ',error);
-            });
+            publicationImagesObject[reference]           = {};
+            publicationImagesObject[reference].name      = fileName;
+            publicationImagesObject[reference].isDeleted = false;
 
-            publicationImagesObj[reference]           = {};
-            publicationImagesObj[reference].name      = fileName;
-            publicationImagesObj[reference].isDeleted = false;
-            publicationImagesObj.$save()
+            var savingOperations = {
+              inImages: imageObj.$save().then(function(ref) {
+                var reference = ref.key();
+                fileUploadService.updateFileObj(reference,{inServer:true});
+              }),
+              inPublications: publicationImagesObject.$save()
+            };
 
+            $scope.progressInstances[reference] = $q.all(savingOperations);
           });
 
         });
@@ -131,39 +129,36 @@ angular.module('fileUpload',['ngProgress'])
 
     };
 
-    var filesInServer = function(){
-
-      publicationImagesObj.$watch(function() {
-        angular.forEach(publicationImagesObj,function(fileObj,reference){
-          if(!fileObj.isDeleted){
-            if(!angular.isDefined($scope.files[reference])){
-
-              //var w200xh200ThumbnailReference = FireRef.child('images').child(reference).child('thumbnails').child('w200xh200');
-
-              var file = {};
-
-              file[reference]          = {
-                fileName: fileObj.name,
-                preview:  'images/loading.jpeg',
-                inServer: true
-              };
-
-              $log.info('file',file);
-
-              //fileUploadService.files.push(file);
-              //var imageObj  = $firebaseObject(imagesRef);
-              //var file = {};
-              //file.fileName =  imageObj.name
-
-            }
-          }
-        });
-      });
-
-
-    };
-
-    filesInServer();
+    //var filesInServer = function(){
+    //  publicationImagesObj.$watch(function() {
+    //    angular.forEach(publicationImagesObj,function(fileObj,reference){
+    //      if(!fileObj.isDeleted){
+    //        if(!angular.isDefined($scope.files[reference])){
+    //
+    //          //var w200xh200ThumbnailReference = FireRef.child('images').child(reference).child('thumbnails').child('w200xh200');
+    //
+    //          var file = {};
+    //
+    //          file[reference]          = {
+    //            fileName: fileObj.name,
+    //            preview:  'images/loading.jpeg',
+    //            inServer: true
+    //          };
+    //
+    //          $log.info('file',file);
+    //
+    //          //fileUploadService.files.push(file);
+    //          //var imageObj  = $firebaseObject(imagesRef);
+    //          //var file = {};
+    //          //file.fileName =  imageObj.name
+    //
+    //        }
+    //      }
+    //    });
+    //  });
+    //};
+    //
+    //filesInServer();
 
   }])
   .factory('fileUploadService',['$q','rfc4122','$log',function($q,rfc4122,$log){
@@ -218,7 +213,6 @@ angular.module('fileUpload',['ngProgress'])
        @return Promise.<String>
        **/
       newFile : function(file){
-        var deferred = $q.defer();
         var uuid    = rfc4122.v4();
         // creating file object
         files[uuid]          = {
@@ -228,12 +222,7 @@ angular.module('fileUpload',['ngProgress'])
           preview:  'images/loading.jpeg',
           inServer: false
         };
-        if(files[uuid]){
-          deferred.resolve(uuid); // reference
-        }else{
-          deferred.reject('Undefined reference, check rfc4122 dependence file is loaded.');
-        }
-        return deferred.promise;
+        return $q.when(uuid);
       },
       /**
        Receives the reference (UUID) of the FILE object in files object. Create FileReader instance to read the file with that reference.
