@@ -257,8 +257,8 @@ angular.module('fileUpload',[])
         if(files[reference].inServer){
           var imageObject = $firebaseObject(publicationImagesReference.child(reference));
           imageObject.isDeleted = true;
-          imageObject.save().then(function(){
-            //delete files[reference];
+          imageObject.$save().then(function(){
+            delete files[reference];
             deferred.resolve(message);
           });
         }else{
