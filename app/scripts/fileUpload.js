@@ -1,24 +1,5 @@
 'use strict';
 
-/**
- * NOTAS:
- *
- * Hay dos tipos de archivos, los que están en cola, y los que están en el servidor. solo los archivos que estan el cola debe
- * presentar tal comportamiento <progressbar>. En ese sentido se debe poder identificar cuáles archivos están en cola.
- *
- * Cuando borramos un archivo, este puede estar en cola o en el servidor, una vez más necesitamos un identificador con el cual
- * determinemos si ese archivo esta en cola o en el servidor. Si está en el servidor, realizamos una solicitud http,
- * si se tiene éxito, se borra del object files, si esta en cola simplemente se borra de files object
- *
- * */
-
-// TODO - Improve the model to handel images in data base
-// TODO - Add progress support for all and each file.
-// TODO - Add supports to other type of files
-// TODO - Add supports to the files already uploaded
-// TODO - Remove ALL files, in queue to upload and those already in server.
-// TODO - Remove THE file, in queue to upload or that it is already in the server.
-
 /******* FireBase Data Base Structure  *******
 
  Publications Path:
