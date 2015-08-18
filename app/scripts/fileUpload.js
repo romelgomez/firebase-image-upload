@@ -3,7 +3,7 @@
 /******* FireBase Data Base Structure  *******
 
  Publications Path:
- publications/fireBaseUniqueIdentifier/images/uuid/deleted
+ publications/fireBaseUniqueIdentifier/images/uuid/isDeleted
  publications/fireBaseUniqueIdentifier/images/uuid/name
 
  publications:{
@@ -34,8 +34,14 @@
  images:{
               uuid:{
                 thumbnails:{
-                  w200xh200:'base64 string',
-                  w600xh600:'base64 string'
+                  w200xh200:{
+                    reference: uuid,
+                    base64: 'base64 string'
+                  },
+                  w600xh600:{
+                    reference: uuid,
+                    base64: 'base64 string'
+                  }
                 }
               }
             }
@@ -43,7 +49,7 @@
  **/
 
 angular.module('fileUpload',[])
-  .controller('FileUploadController', ['$scope','$q','rfc4122','fileService','$log',function ($scope,$q,rfc4122,fileService,$log) {
+  .controller('FileUploadController', ['$scope','$q','fileService',function ($scope,$q,fileService) {
 
     fileService.files().then(function(_files_) {
       $scope.files  = _files_;
@@ -72,7 +78,7 @@ angular.module('fileUpload',[])
     fileService.filesInServer();
 
   }])
-  .factory('fileService',['$q','rfc4122','FireRef','$firebaseObject','$log',function($q,rfc4122,FireRef,$firebaseObject,$log){
+  .factory('fileService',['$q','rfc4122','FireRef','$firebaseObject',function($q,rfc4122,FireRef,$firebaseObject){
 
     var fixedFireBaseUniqueIdentifier = '-Juqip8bcmF7u3z97fbe';
     var publicationImagesReference = FireRef.child('publications').child(fixedFireBaseUniqueIdentifier).child('images');
