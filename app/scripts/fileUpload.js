@@ -100,10 +100,10 @@ angular.module('fileUpload',[])
     };
 
     /**
-     Receives the reference (UUID), and the new data object.
-     @param {String} reference is UUID string
-     @param {Object} newData
-     @return undefined
+     * Receives the reference (UUID), and the new data object.
+     * @param {String} reference is UUID string
+     * @param {Object} newData
+     * @return undefined
      **/
     var updateFileObj = function(reference,newData){
       angular.forEach(newData, function (value, key) {
@@ -153,7 +153,7 @@ angular.module('fileUpload',[])
 
     return {
       /**
-       * how many files there are
+       * files, to upload and in server
        * @return Promise.<Object>
        * */
       files: function(){
