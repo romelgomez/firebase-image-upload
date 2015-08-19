@@ -36,16 +36,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
     $scope.model = {
       userId:       '1',
       categoryId:   '',
-      type:         '',
-      title:        '',
-      description:  '',
-      price:        null,
-      quantity:     null,
-      barcode:      '',
-      warranty:     '',
-      releaseDate:  '',
-      paused:       false,
-      deleted:      false
+      type:         ''
     };
 
     $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
@@ -83,7 +74,41 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
     };
 
 
+  }])
+  .directive('publicationType',['$templateCache','$compile',function($templateCache,$compile){
+
+    return {
+      restrict:'E',
+      scope: {
+        'model':'=',
+        'modelType':'='
+      },
+      link:function(scope,element){
+
+        //if(typeof scope.publications ===  'undefined'){
+        //  throw { message: 'attrs data is not defined' };
+        //}
+        //if(typeof scope.type ===  'undefined'){
+        //  throw { message: 'attrs type is not defined' };
+        //}
+
+        scope.$watch('modelType', function(){
+          var template = '';
+          switch(scope.modelType) {
+            case 'market':
+              template = 'market.html';
+              break;
+            case 'jobs':
+              template = 'jobs.html';
+              break;
+          }
+          element.html($compile($templateCache.get(template))(scope));
+        });
+
+      }
+    };
   }]);
+
 
 
 /*
