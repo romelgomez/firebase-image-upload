@@ -26,11 +26,11 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
   };
 
   }])
-  .controller('PublicationsController',['$scope','$q','tree','publicationsService','notificationService','$filter','$log',function($scope,$q,tree,publicationsService,notificationService,$filter){
+  .controller('PublicationsController',['$scope','$q','treeService','publicationsService','notificationService','$filter','$log',function($scope,$q,treeService,publicationsService,notificationService,$filter){
 
     //Main Categories [market, jobs] // realEstate, vehicles, boats, planes, stockMarket
 
-    $scope.treeNodes          = tree.nodes();
+    $scope.treeNodes          = treeService.nodes();
     $scope.categoryExpected   = false;
     $scope.path               = [];
     $scope.model = {
@@ -54,7 +54,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
 
     $scope.setCategory = function (categoryId) {
       $scope.model.categoryId = categoryId;
-      $scope.path             = tree.getPath(categoryId,$scope.treeNodes);
+      $scope.path             = treeService.getPath(categoryId,$scope.treeNodes);
       $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
     };
 
