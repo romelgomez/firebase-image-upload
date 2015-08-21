@@ -51,6 +51,9 @@
       </ol>
 
       <button ng-click="categoryExpected = false; model.categoryId =''; path =[];" type="button" class="btn btn-default">Edit category</button>
+      <button form="{{model.type}}" class="btn btn-primary"	type="submit" >Publish</button>
+      <button class="btn btn-warning"	type="button" >Discard</button>
+      <hr>
 
       <!--<button id="update"   type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Update</button>-->
       <!--<button type="button" class="btn btn-default publication-status-button"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause</button>-->
@@ -58,14 +61,9 @@
       <!--<button id="delete"   class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Delete</button>-->
 
       <!--<button  class="btn btn-primary" type="submit">Enviar</button>-->
-
-      <button form="form" id="publish"	class="btn btn-primary"	type="submit" >Publish</button>
-      <button id="discard"	class="btn btn-warning"	type="button" >Discard</button>
-
       <!--<div id="debugTime" style="padding-top: 10px; ">The publication was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>-->
       <!--<div id="debugTime" style="padding-top: 10px; ">The draft was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>-->
 
-      <hr>
       <publication-type model-type="model.type" model="model"></publication-type>
 
       <div class="alert alert-info" style="margin-bottom: 0;" role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
@@ -94,15 +92,11 @@
 </script>
 
 
-
 <script type="text/ng-template" id="market.html">
-  <h3>Market</h3>
-
-  <form id="form" name="form" novalidate="" ng-submit="submit()">
-
+  <form id="market" name="form" novalidate="" ng-submit="submit()">
     <div class="form-group">
-      <label class="control-label" for="title"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>
-      <input type="text" name="title" ng-model="model.title" required minlength="7" class="form-control" placeholder="" id="title">
+      <label class="control-label"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>
+      <input type="text" name="title" ng-model="model.title" required minlength="7" class="form-control" placeholder="">
       <div data-ng-messages="form.$submitted && form.title.$error" class="help-block">
         <div data-ng-message="required">
           - The <b>title</b> is required.
@@ -114,8 +108,8 @@
     </div>
 
     <div class="form-group">
-      <label class="control-label" for="description"><span class="glyphicon glyphicon-book"></span> Description <sup style="color: red;">*</sup></label>
-      <textarea redactor name="description" ng-model="model.description" required class="form-control" placeholder="" id="description"></textarea>
+      <label class="control-label"><span class="glyphicon glyphicon-book"></span> Description <sup style="color: red;">*</sup></label>
+      <textarea redactor name="description" ng-model="model.description" required class="form-control" placeholder=""></textarea>
       <div data-ng-messages="form.$submitted && form.description.$error" class="help-block">
         <div data-ng-message="required" >
           - The <b>description</b> is required.
@@ -126,10 +120,10 @@
     <div class="form-group">
       <div class="row">
         <div class="col-xs-4">
-          <label class="control-label" for="price"><span class="glyphicon glyphicon-tag"></span> Price <sup style="color: red;">*</sup></label>
+          <label class="control-label"><span class="glyphicon glyphicon-tag"></span> Price <sup style="color: red;">*</sup></label>
           <div class="input-group">
             <div class="input-group-addon">$</div>
-            <input name="price" ng-model="model.price" required class="form-control" placeholder="Eje: 1000" type="number" id="price">
+            <input name="price" ng-model="model.price" required class="form-control" placeholder="Eje: 1000" type="number">
           </div>
           <div data-ng-messages="form.$submitted && form.price.$error" class="help-block">
             <div data-ng-message="required">
@@ -143,10 +137,10 @@
     <div class="form-group">
       <div class="row">
         <div class="col-xs-4">
-          <label class="control-label" for="quantity"><i class="fa fa-cubes"></i> Quantity in stock <sup style="color: red;">*</sup></label>
+          <label class="control-label"><i class="fa fa-cubes"></i> Quantity in stock <sup style="color: red;">*</sup></label>
           <div class="input-group">
             <div class="input-group-addon">Units</div>
-            <input name="quantity" ng-model="model.quantity" required class="form-control" placeholder="Eje: 100" type="number" id="quantity">
+            <input name="quantity" ng-model="model.quantity" required class="form-control" placeholder="Eje: 100" type="number">
           </div>
           <div data-ng-messages="form.$submitted && form.quantity.$error" class="help-block">
             <div data-ng-message="required">
@@ -160,35 +154,29 @@
     <div class="form-group">
       <div class="row">
         <div class="col-xs-4">
-          <label for="barcode"><i class="fa fa-barcode"></i> Barcode</label>
-          <input name="barcode" ng-model="model.barcode" class="form-control" placeholder="" type="text" id="barcode">
+          <label><i class="fa fa-barcode"></i> Barcode</label>
+          <input name="barcode" ng-model="model.barcode" class="form-control" placeholder="" type="text">
         </div>
       </div>
     </div>
 
     <div class="form-group">
-      <label class="control-label" for="warranty"><i class="fa fa-certificate"></i> Warranty <sup style="color: red;">*</sup></label>
-      <textarea redactor name="warranty" ng-model="model.warranty" required class="form-control" placeholder="" id="warranty"></textarea>
+      <label class="control-label"><i class="fa fa-certificate"></i> Warranty <sup style="color: red;">*</sup></label>
+      <textarea redactor name="warranty" ng-model="model.warranty" required class="form-control" placeholder=""></textarea>
       <div data-ng-messages="form.$submitted && form.description.$error" class="help-block">
         <div data-ng-message="required" >
           - The <b>Warranty</b> is required.
         </div>
       </div>
     </div>
-
   </form>
-
-
 </script>
 
 <script type="text/ng-template" id="jobs.html">
-  <h3>Jobs</h3>
-
-  <form id="form" name="form" novalidate="" ng-submit="submit()">
-
+  <form id="jobs" name="form" novalidate="" ng-submit="submit()">
     <div class="form-group">
-      <label class="control-label" for="title"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>
-      <input type="text" name="title" ng-model="model.title" required minlength="7" class="form-control" placeholder="" id="title">
+      <label class="control-label"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>
+      <input type="text" name="title" ng-model="model.title" required minlength="7" class="form-control" placeholder="">
       <div data-ng-messages="form.$submitted && form.title.$error" class="help-block">
         <div data-ng-message="required">
           - The <b>title</b> is required.
@@ -200,8 +188,8 @@
     </div>
 
     <div class="form-group">
-      <label class="control-label" for="description"><span class="glyphicon glyphicon-book"></span> Description <sup style="color: red;">*</sup></label>
-      <textarea redactor name="description" ng-model="model.description" required class="form-control" placeholder="" id="description"></textarea>
+      <label class="control-label"><span class="glyphicon glyphicon-book"></span> Description <sup style="color: red;">*</sup></label>
+      <textarea redactor name="description" ng-model="model.description" required class="form-control" placeholder=""></textarea>
       <div data-ng-messages="form.$submitted && form.description.$error" class="help-block">
         <div data-ng-message="required" >
           - The <b>description</b> is required.
@@ -212,15 +200,10 @@
     <div class="form-group">
       <div class="row">
         <div class="col-xs-4">
-          <label for="barcode"><i class="fa fa-barcode"></i> Barcode</label>
-          <input name="barcode" ng-model="model.barcode" class="form-control" placeholder="" type="text" id="barcode">
+          <label><i class="fa fa-barcode"></i> Barcode</label>
+          <input name="barcode" ng-model="model.barcode" class="form-control" placeholder="" type="text">
         </div>
       </div>
     </div>
-
-
   </form>
-
-
-
 </script>

@@ -94,7 +94,7 @@ angular.module('fileUpload',[])
      * Copy of files object, used for return the file object to its original state, which it is an empty object '{}'.
      * @type {object}
      * */
-    var filesCopy = angular.copy(files);
+    //var filesCopy = angular.copy(files);
 
     /**
      * insert custom made file object in files object
@@ -254,9 +254,9 @@ angular.module('fileUpload',[])
         }
         return deferred.promise;
       },
-      setFireBaseUniqueIdentifier:function(uniqueIdentifier){
-
-      },
+      //setFireBaseUniqueIdentifier:function(uniqueIdentifier){
+      //
+      //},
       upload: function (fileObject,reference) {
         var deferred = $q.defer();
 

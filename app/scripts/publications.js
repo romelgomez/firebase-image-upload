@@ -85,13 +85,6 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
       },
       link:function(scope,element){
 
-        //if(typeof scope.publications ===  'undefined'){
-        //  throw { message: 'attrs data is not defined' };
-        //}
-        //if(typeof scope.type ===  'undefined'){
-        //  throw { message: 'attrs type is not defined' };
-        //}
-
         scope.$watch('modelType', function(){
           var template = '';
           switch(scope.modelType) {
