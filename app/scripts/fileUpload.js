@@ -1,88 +1,7 @@
 'use strict';
 
-/******* FireBase Data Base Structure  *******
-
- Publications Path:
- publications/fireBaseUniqueIdentifier/images/uuid/isDeleted
- publications/fireBaseUniqueIdentifier/images/uuid/name
-
- publications:{
-              fireBaseUniqueIdentifier:{
-                title:'publication title',
-                description:'publication description',
-                images:{
-                  uuid:{
-                    name:'file name',
-                    isDeleted:false
-                  },
-                  uuid:{
-                    name:'file name',
-                    isDeleted:false
-                  },
-                  uuid:{
-                    name:'file name',
-                    isDeleted:true
-                  }
-                }
-              }
-            }
-
- Images Paths:
- images/uuid/thumbnails/w200xh200
- images/uuid/thumbnails/w600xh600
-
- images:{
-              uuid:{
-                thumbnails:{
-                  w200xh200:{
-                    reference: uuid,
-                    base64: 'base64 string'
-                  },
-                  w600xh600:{
-                    reference: uuid,
-                    base64: 'base64 string'
-                  }
-                }
-              }
-            }
-
- **/
-
 angular.module('fileUpload',[])
-  .controller('FileUploadController', ['$scope','$q','fileService',function ($scope,$q,fileService) {
-
-    fileService.files().then(function(_files_) {
-      $scope.files  = _files_;
-    });
-
-    $scope.filesLength  = function(){
-      return fileService.filesLength();
-    };
-
-    $scope.queueFiles = function(){
-      return fileService.queueFiles();
-    };
-
-    $scope.progressInstances = {};
-
-    $scope.uploadFiles = function(){
-      fileService.files().then(function(files) {
-        angular.forEach(files,function(fileObject,reference){
-          if(fileObject.inServer === false){
-            $scope.progressInstances[reference] = $q.when(fileService.upload(fileObject,reference));
-          }
-        });
-      });
-    };
-
-    fileService.filesInServer();
-
-  }])
-  .factory('fileService',['$q','rfc4122','FireRef','$firebaseObject',function($q,rfc4122,FireRef,$firebaseObject){
-
-    var fixedFireBaseUniqueIdentifier = '-Juqip8bcmF7u3z97fbe';
-    var publicationImagesReference = FireRef.child('publications').child(fixedFireBaseUniqueIdentifier).child('images');
-    var publicationImages = $firebaseObject(publicationImagesReference);
+  .factory('fileService',['$q','rfc4122','FireRef','$firebaseObject','publicationsService',function($q,rfc4122,FireRef,$firebaseObject,publicationsService){
 
     /**
      * The ALL files, in queue to upload and those already in server.
@@ -242,21 +161,25 @@ angular.module('fileUpload',[])
         var fileName = files[reference].fileName;
         var message = 'The file: '+ fileName +', has been removed successfully.';
         if(files[reference].inServer){
-          var imageObject = $firebaseObject(publicationImagesReference.child(reference));
-          imageObject.isDeleted = true;
-          imageObject.$save().then(function(){
-            delete files[reference];
-            deferred.resolve(message);
-          });
+          var ref = FireRef.child('publications').child(publicationsService.publicationId).child('images').child(reference);
+
+          ref.update({
+            isDeleted:true
+          },function(error){
+            if(error){
+              deferred.reject(error);
+            }else{
+              delete files[reference];
+              deferred.resolve(message);
+            }
+          })
+
         }else{
           delete files[reference];
           deferred.resolve(message);
         }
         return deferred.promise;
       },
-      //setFireBaseUniqueIdentifier:function(uniqueIdentifier){
-      //
-      //},
       upload: function (fileObject,reference) {
         var deferred = $q.defer();
 
@@ -284,16 +207,17 @@ angular.module('fileUpload',[])
           imageObj.thumbnails.w600xh600.reference = reference;
           imageObj.thumbnails.w600xh600.base64     = the.w600xh600Thumbnail;
 
-          publicationImages[reference]           = {};
-          publicationImages[reference].name      = fileName;
-          publicationImages[reference].isDeleted = false;
+          var ref = FireRef.child('publications').child(publicationsService.publicationId).child('images');
+          var imageInfoObject = $firebaseObject(ref.child(reference));
+          imageInfoObject.name      = fileName;
+          imageInfoObject.isDeleted = false;
 
           $q.all({
             inImages: imageObj.$save().then(function(ref) {
               var reference = ref.key();
               updateFileObj(reference,{inServer:true});
             }),
-            inPublications: publicationImages.$save()
+            inPublications: imageInfoObject.$save()
           }).then(function(){
             deferred.resolve();
           });
@@ -302,25 +226,25 @@ angular.module('fileUpload',[])
         return deferred.promise;
       },
       filesInServer: function(){
-        publicationImages.$watch(function() {
-          angular.forEach(publicationImages,function(fileObj,reference){
-            if(!fileObj.isDeleted){
-              if(!angular.isDefined(files[reference])){
-                var file = {
-                  fileName: fileObj.name,
-                  preview:  'images/loading.jpeg',
-                  inServer: true
-                };
-                insertFile(reference,file);
-                var w200xh200ThumbnailReference = FireRef.child('images').child(reference).child('thumbnails').child('w200xh200');
-                var imageObj  = $firebaseObject(w200xh200ThumbnailReference);
-                imageObj.$loaded(function(thumbnailObject){
-                  updateFileObj(thumbnailObject.reference,{preview:thumbnailObject.base64});
-                });
-              }
-            }
-          });
-        });
+        //publicationImages.$watch(function() {
+        //  angular.forEach(publicationImages,function(fileObj,reference){
+        //    if(!fileObj.isDeleted){
+        //      if(!angular.isDefined(files[reference])){
+        //        var file = {
+        //          fileName: fileObj.name,
+        //          preview:  'images/loading.jpeg',
+        //          inServer: true
+        //        };
+        //        insertFile(reference,file);
+        //        var w200xh200ThumbnailReference = FireRef.child('images').child(reference).child('thumbnails').child('w200xh200');
+        //        var imageObj  = $firebaseObject(w200xh200ThumbnailReference);
+        //        imageObj.$loaded(function(thumbnailObject){
+        //          updateFileObj(thumbnailObject.reference,{preview:thumbnailObject.base64});
+        //        });
+        //      }
+        //    }
+        //  });
+        //});
       }
     };
 
