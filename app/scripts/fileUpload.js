@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('fileUpload',[])
-  .factory('fileService',['$q','rfc4122','FireRef','$firebaseObject','publicationsService',function($q,rfc4122,FireRef,$firebaseObject,publicationsService){
+  .factory('fileService',['$q','rfc4122','FireRef','$firebaseObject','publicationsService','$log',function($q,rfc4122,FireRef,$firebaseObject,publicationsService,$log){
 
     /**
      * The ALL files, in queue to upload and those already in server.
@@ -13,7 +13,7 @@ angular.module('fileUpload',[])
      * Copy of files object, used for return the file object to its original state, which it is an empty object '{}'.
      * @type {object}
      * */
-    //var filesCopy = angular.copy(files);
+    var filesCopy = angular.copy(files);
 
     /**
      * insert custom made file object in files object
@@ -140,6 +140,13 @@ angular.module('fileUpload',[])
         return deferred.promise;
       },
       updateFileObj : updateFileObj,
+      /**
+       Remove ALL files
+       @return Promise.<String>
+       **/
+      removeAllFiles : function () {
+        angular.copy(filesCopy, files);
+      },
       /**
        Remove ALL queue files to upload.
        @return Promise.<String>

@@ -26,7 +26,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
   };
 
   }])
-  .controller('PublicationsController',['$scope','$q','treeService','publicationsService','notificationService','$filter','fileService',function($scope,$q,treeService,publicationsService,notificationService,$filter,fileService){
+  .controller('PublicationsController',['$scope','$q','treeService','publicationsService','notificationService','$filter','fileService','$log',function($scope,$q,treeService,publicationsService,notificationService,$filter,fileService,$log){
 
     //Main Categories [market, jobs] // realEstate, vehicles, boats, planes, stockMarket
 
@@ -107,5 +107,8 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
     $scope.queueFiles = function(){
       return fileService.queueFiles();
     };
+
+    publicationsService.publicationId = '';
+    fileService.removeAllFiles();
 
   }]);
