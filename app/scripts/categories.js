@@ -42,6 +42,9 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
     return {
+      treeRef:function(){
+        return treeRef();
+      },
       nodes:function(){
         return $firebaseArray(treeRef().orderByChild('left'));
       },
@@ -235,12 +238,27 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         };
         process(nodeId);
         return $filter('reverse')(path);
+      },
+      nodeSelected: {},
+      updateNode:function(node){
+        var deferred = $q.defer();
+        var promise = deferred.promise;
+        var nodeRef = treeRef().child(node.id);
+        nodeRef.update({
+          name:node.name
+        },function(error){
+          if(error){
+            deferred.reject(error);
+          }else{
+            deferred.resolve();
+          }
+        });
+        return promise
       }
     };
 
-
   }])
-  .directive('tree',['$templateCache','$compile','treeService','$log',function($templateCache,$compile,treeService,$log){
+  .directive('tree',['$templateCache','$compile','treeService',function($templateCache,$compile,treeService){
 
     return {
       restrict:'E',
@@ -298,7 +316,16 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
          * Observing the select event
          */
         element.bind('tree.select',function(event) {
-            $log.log('event.node',event.node);
+            var result = {
+              status:false,
+              node:{}
+            };
+            if(event.node !== null){
+              result.node = event.node;
+              result.status = true;
+            }
+            treeService.nodeSelected = result;
+            scope.$apply();
           }
         );
 
@@ -366,6 +393,23 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
       });
     };
 
+    $scope.editNode = function(node){
+      var modalInstance = $modal.open({
+        templateUrl: 'editNode.html',
+        controller: 'EditNodeController',
+        resolve: {
+          node: function () {
+            return node;
+          }
+        }
+      });
+      modalInstance.result.then(function(){
+        notificationService.success('Se modifico.');
+      }, function (error) {
+        notificationService.error(error);
+      });
+    };
+
     $scope.submit = function () {
       if($scope.form.$valid){
 
@@ -403,6 +447,13 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
       $scope.httpRequestPromise = treeService.updateAllTree(newTree);
     };
 
+    $scope.nodeSelected = treeService.nodeSelected;
+
+    $scope.$watch(function () {
+      return treeService.nodeSelected;
+    },function () {
+      $scope.nodeSelected = treeService.nodeSelected;
+    });
 
   }])
   .controller('DeleteNodeController',['$scope','$modalInstance','node',function($scope,$modalInstance,node){
@@ -415,6 +466,30 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
     $scope.confirm  = function () {
       $modalInstance.close($scope.model.branch);
+    };
+
+    $scope.cancel   = function () {
+      $modalInstance.dismiss('this has be cancel');
+    };
+
+  }])
+  .controller('EditNodeController',['$scope','$modalInstance','node','treeService',function($scope,$modalInstance,node,treeService){
+
+    $scope.model = {
+      name: node.name,
+      id: node.id
+    };
+
+    $scope.confirm  = function () {
+      if($scope.editNodeForm.$valid){
+        $scope.httpRequestPromise = treeService.updateNode($scope.model)
+          .then(function(){
+            treeService.nodeSelected = {};
+            $modalInstance.close();
+          },function(error){
+            $modalInstance.dismiss(error);
+          });
+      }
     };
 
     $scope.cancel   = function () {

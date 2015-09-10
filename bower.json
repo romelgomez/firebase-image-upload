@@ -31,7 +31,9 @@
     "ui.bootstrap": "0.13.0",
     "jqtree": "1.1.0",
     "angular-redactor": "~1.1.5",
-    "ngprogress": "~1.1.2"
+    "ngprogress": "~1.1.2",
+    "ng-file-upload": "~7.0.17",
+    "ng-file-upload-shim": "~7.0.17"
   },
   "devDependencies": {
     "mockfirebase": "0.11.0",

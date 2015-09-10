@@ -8,7 +8,7 @@
       <form id="form" name="form" novalidate="" ng-submit="submit()">
         <div class="form-group">
           <label>New category</label>
-          <input type="text" name="category" ng-model="model.node" required no-special-chars class="form-control" placeholder="Laptops">
+          <input type="text" name="category" ng-model="model.node" required no-special-chars class="form-control" placeholder="Laptops" tabindex="1">
           <div data-ng-messages="form.$submitted && form.category.$error" class="help-block">
             <div data-ng-message="required">
               - The <b>category</b> is required.
@@ -29,7 +29,18 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title" style="line-height: 30px;">Categories     <button ng-click="deleteTree()" type="button" class="btn btn-danger pull-right" style="line-height: normal;">Delete All Categories</button></h3>
+      <h3 class="panel-title" style="line-height: 30px;">Categories
+
+        <div class="btn-group pull-right" role="group" aria-label="..." ng-show="!nodeSelected.status" >
+          <button ng-click="deleteTree()" type="button" class="btn btn-danger">Delete All Categories</button>
+        </div>
+
+        <div class="btn-group pull-right" role="group" aria-label="..." ng-show="nodeSelected.status">
+          <button ng-click="editNode(nodeSelected.node)" type="button" class="btn btn-default">Edit</button>
+          <button ng-click="deleteTree()" type="button" class="btn btn-danger">Delete All Categories</button>
+        </div>
+
+      </h3>
     </div>
     <div class="panel-body">
       <tabset justified="true">
@@ -92,7 +103,7 @@
 
     <h3 class="text-danger" style="margin-top: 0; margin-bottom: 0;">{{node.name | capitalizeFirstChar}}</h3>
 
-    <form id="deleteBranchForm" name="form" novalidate="" ng-submit="confirm()">
+    <form id="deleteBranchForm" name="deleteBranchForm" novalidate="" ng-submit="confirm()">
       <div ng-show="branchCheckBox">
         <div class="checkbox">
           <label>
@@ -107,5 +118,38 @@
   <div class="modal-footer">
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     <button form="deleteBranchForm" class="btn btn-primary" type="submit">Confirm</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="editNode.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Edit category</h3>
+  </div>
+  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
+  <!--<div class="modal-body">-->
+
+    <h3 class="text-danger" style="margin-top: 0; margin-bottom: 0;">{{node.name | capitalizeFirstChar}}</h3>
+
+    <form id="editNodeForm" name="editNodeForm" novalidate="" ng-submit="confirm()">
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" name="category" ng-model="model.name" required no-special-chars class="form-control" placeholder="Laptops" tabindex="1">
+        <div data-ng-messages="editNodeForm.$submitted && editNodeForm.category.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>category</b> is required.
+          </div>
+          <div data-ng-message="noSpecialChars">
+            - La <b>category</b> must not have special characters.
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!--{{editNodeForm | json }}-->
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button form="editNodeForm" class="btn btn-primary" type="submit">Confirm</button>
   </div>
 </script>

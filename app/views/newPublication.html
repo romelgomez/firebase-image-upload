@@ -1,4 +1,4 @@
-<section ng-controller="PublicationsController" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
+<section cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
   <div class="panel panel-default" style="display: none;">
     <div class="panel-heading">Debug</div>
@@ -30,8 +30,6 @@
           <li>Seleccionar una categoría específica es preferible ya que permitirá al usuario filtrar con mayor eficacia las publicaciones, sin embargo si la categoría específica no está disponible, seleccione una categoría general.</li>
         </ul>
       </small>
-
-      <!--<pre>{{treeNodes | json }}</pre>-->
 
     </div>
     <div class="panel-footer" style="text-align: right;">

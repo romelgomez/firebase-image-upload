@@ -60,6 +60,8 @@ module.exports = function(config) {
       'bower_components/uri.js/src/URI.fragmentURI.js',
       'bower_components/jqtree/tree.jquery.js',
       'bower_components/angular-redactor/angular-redactor.js',
+      'bower_components/ng-file-upload/ng-file-upload.js',
+      'bower_components/ng-file-upload-shim/ng-file-upload-shim.js',
       'bower_components/mockfirebase/browser/mockfirebase.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
