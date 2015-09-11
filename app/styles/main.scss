@@ -100,9 +100,18 @@ ul.jqtree-tree span.jqtree-border {
   color: #a94442;
 }
 
+
+.alert-xs {
+  padding: 1px 5px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
+
 /* FileUpload START */
 .file-name{
   white-space: nowrap;
+  font-weight: bold;
 }
 .file-name:not(:hover) {
   overflow: hidden;
@@ -112,7 +121,9 @@ ul.jqtree-tree span.jqtree-border {
   padding-top: 10px;
 }
 .img-preview{
-  border: inherit;
+  height:100px;
+  max-height: 250px;
+  margin-bottom: 5px;
 }
 .file-input{
   visibility: hidden;

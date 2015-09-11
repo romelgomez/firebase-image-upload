@@ -115,7 +115,6 @@ angular.module('fileUpload',[])
           file:     file,
           fileName: file.name,
           fileSize: file.size,
-          preview:  'images/loading.jpeg',
           inServer: false
         };
         return $q.when(uuid);
