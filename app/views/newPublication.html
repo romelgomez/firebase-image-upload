@@ -138,55 +138,140 @@
             </div>
           </div>
         </div>
-      </form>
-
-      <hr>
-
-      <button file-upload-trigger class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images from the computer</button>
-
-      <file-upload></file-upload>
-
-      <div ng-show="filesLength() > 0">
-        <div ng-show="queueFiles()">
-          <hr>
-          <div class="btn-toolbar" role="toolbar" aria-label="...">
-            <div class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-danger" remove-queue-files><span class="glyphicon glyphicon-trash"></span> Remove All Queue Images</button>
-            </div>
-            <div class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-primary" ng-click="uploadFiles()"><span class="glyphicon glyphicon-upload"></span> Start Upload Images</button>
-            </div>
-          </div>
-        </div>
 
         <hr>
 
-        <table class="table">
-          <caption>Queue length: -</caption>
-          <thead>
-          <tr>
-            <th width="50%">Name</th>
-            <th>Size</th>
-            <th>Progress</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr ng-repeat="(key, value) in files" cg-busy="{promise:progressInstances[key],message:'Just a moment'}">
-            <td>
-              <div class="file-name" style="width: 200px">{{value.fileName}}</div>
-              <div><img class="img-thumbnail img-preview" ng-src="{{value.preview || '/images/loading.jpeg'}}" alt="{{value.fileName}}"></div>
-            </td>
-            <td><div >{{value.fileSize | bytes}}</div></td>
-            <td>-</td>
-            <td><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></td>
-            <td><button remove-file="{{key}}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove</button></td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="btn-group" role="group" aria-label="..." ng-show="!inQueue() > 0" >
+          <button class="btn btn-primary" ngf-select ng-model="model.files" name="files" ngf-multiple="true" accept="image/*" ngf-keep="true" ngf-keep-distinct="true" ngf-max-size="10MB" ngf-min-height="200" ngf-min-width="200" ngf-validate-force="true" required><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images from the computer</button>
+        </div>
 
-      </div>
+        <div class="btn-group" role="group" aria-label="..." ng-show="inQueue() > 0">
+          <button class="btn btn-primary" ngf-select ng-model="model.files" name="files" ngf-multiple="true" accept="image/*" ngf-keep="true" ngf-keep-distinct="true" ngf-max-size="10MB" ngf-min-height="200" ngf-min-width="200" ngf-validate-force="true" required><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images from the computer</button>
+          <button type="button" class="btn btn-danger" ng-click="model.files = []"><span class="glyphicon glyphicon-trash"></span> Remove All Queue Images</button>
+        </div>
+
+        <div data-ng-messages="form.$submitted && form.files.$error" class="help-block">
+          <div data-ng-message="required" >
+          - The <b>Images</b> are required.
+          </div>
+        </div>
+
+        <!--Todo:  Delete from the queue -->
+
+        <div ng-show="model.files.length > 0">
+          <table class="table">
+            <caption>Images in queue to upload: {{inQueue()}}</caption>
+            <thead>
+            <tr>
+              <th width="50%">Name</th>
+              <th>Size</th>
+              <th>Progress</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="(key, value) in model.files">
+              <td>
+                <div class="file-name">{{value.name}}</div>
+                <div><img class="img-thumbnail img-preview" ng-src="{{value.blobUrl || '/images/loading.jpeg'}}" alt="{{value.name}}"></div>
+              </td>
+              <td><div>{{value.size | bytes}}</div></td>
+              <td>{{ value.$error }}</td>
+              <td><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></td>
+              <td><button class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove  -- key: {{key}} -- </button></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <!--<button ngf-select ng-model="file7" name="file7" accept="image/*" ngf-keep="true" ngf-max-size="10MB" ngf-min-height="200" ngf-min-width="200" ngf-validate-force="true" required>Upload one file</button>-->
+
+        <!--<li ng-repeat="(key, value) in file7">-->
+            <!--{{key}} - {{value}}-->
+          <!--<img ngf-src="value.blobUrl || 'images/loading.jpeg'">-->
+        <!--</li>-->
+
+
+
+        <!--Image thumbnail: <img ngf-src="file7 || 'images/loading.jpeg'">-->
+
+        <!--<div data-ng-messages="form.$submitted && form.file7.$error" class="help-block">-->
+          <!--<div data-ng-message="required" >-->
+            <!--- The <b>Imagen</b> is required.-->
+          <!--</div>-->
+        <!--</div>-->
+
+        <!--<input type="file" ngf-select ng-model="picFile" name="file" accept="image/*" ngf-max-size="2MB" required>-->
+        <!--<img ng-show="form.file.$valid" ngf-src="!picFile.$error && picFile" class="thumb">-->
+
+        <!--<h1>myFile</h1>-->
+        <!--<input type="file" ngf-select ng-model="myFile" name="myFile" accept="image/*" ngf-max-size="2MB" required>-->
+        <!--<img ng-show="form.myFile.$valid" ngf-src="!myFile.$error && myFile" class="thumb">-->
+
+        <!--<hr>-->
+
+        <!--<button type="file" ngf-select ng-model="fileTest" name="fileTest" accept="image/*" ngf-max-size="10MB" ngf-min-height="200" ngf-min-width="200" ngf-validate-force="true" required>Upload one file</button>-->
+        <!--<img ng-show="form.fileTest.$valid" ngf-src="!fileTest.$error && fileTest" class="thumb">-->
+
+        <!--<div>Name: {{fileTest.name}}</div>-->
+        <!--<div>Size: {{fileTest.size}}</div>-->
+
+        <!--<hr>-->
+
+      </form>
+
+      <!--<pre>{{model | json}}</pre>-->
+      <!--<pre>{{form | json}}</pre>-->
+
+      <!--<hr>-->
+
+      <!--<button file-upload-trigger class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images from the computer</button>-->
+
+      <!--<file-upload></file-upload>-->
+
+      <!--<div ng-show="filesLength() > 0">-->
+        <!--<div ng-show="queueFiles()">-->
+          <!--<hr>-->
+          <!--<div class="btn-toolbar" role="toolbar" aria-label="...">-->
+            <!--<div class="btn-group" role="group" aria-label="...">-->
+              <!--<button type="button" class="btn btn-danger" remove-queue-files><span class="glyphicon glyphicon-trash"></span> Remove All Queue Images</button>-->
+            <!--</div>-->
+            <!--<div class="btn-group" role="group" aria-label="...">-->
+              <!--<button type="button" class="btn btn-primary" ng-click="uploadFiles()"><span class="glyphicon glyphicon-upload"></span> Start Upload Images</button>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+
+        <!--<hr>-->
+
+        <!--<table class="table">-->
+          <!--<caption>Queue length: -</caption>-->
+          <!--<thead>-->
+          <!--<tr>-->
+            <!--<th width="50%">Name</th>-->
+            <!--<th>Size</th>-->
+            <!--<th>Progress</th>-->
+            <!--<th>Status</th>-->
+            <!--<th>Actions</th>-->
+          <!--</tr>-->
+          <!--</thead>-->
+          <!--<tbody>-->
+          <!--<tr ng-repeat="(key, value) in files">-->
+            <!--<td cg-busy="{promise:progressInstances[key],message:'Just a moment'}">-->
+              <!--<div class="file-name" style="width: 200px">{{value.fileName}}</div>-->
+              <!--<div><img class="img-thumbnail img-preview" ng-src="{{value.preview || '/images/loading.jpeg'}}" alt="{{value.fileName}}"></div>-->
+            <!--</td>-->
+            <!--<td><div >{{value.fileSize | bytes}}</div></td>-->
+            <!--<td>-</td>-->
+            <!--<td><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></td>-->
+            <!--<td><button remove-file="{{key}}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove</button></td>-->
+          <!--</tr>-->
+          <!--</tbody>-->
+        <!--</table>-->
+
+      <!--</div>-->
 
       <hr>
       <div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>

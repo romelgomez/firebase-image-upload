@@ -2,6 +2,7 @@ angular.module('NgFileUploadTest',['ngFileUpload'])
   .controller('NgFileUploadTestController',['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout){
 
     $scope.uploadPic = function(file) {
+
       file.upload = Upload.upload({
         url: 'https://angular-file-upload-cors-srv.appspot.com/upload',
         method: 'POST',
@@ -18,8 +19,9 @@ angular.module('NgFileUploadTest',['ngFileUpload'])
           file.result = response.data;
         });
       }, function (response) {
-        if (response.status > 0)
+        if (response.status > 0) {
           $scope.errorMsg = response.status + ': ' + response.data;
+        }
       });
 
       file.upload.progress(function (evt) {

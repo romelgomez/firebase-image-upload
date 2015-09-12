@@ -2,7 +2,7 @@
 
 // añadir soporte a otro tipo de publicación
 
-angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular-redactor'])
+angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular-redactor','ngFileUpload'])
   .factory('publicationsService',['$q','$window','rfc4122','FireRef','$firebaseArray',function($q,$window,rfc4122,FireRef,$firebaseArray){
 
     var publications = $firebaseArray(FireRef.child('publications'));
@@ -26,7 +26,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
   };
 
   }])
-  .controller('PublicationsController',['$scope','$q','treeService','publicationsService','notificationService','$filter','fileService','$log',function($scope,$q,treeService,publicationsService,notificationService,$filter,fileService,$log){
+  .controller('PublicationsController',['$scope','$q','treeService','publicationsService','notificationService','$filter','fileService','Upload','$log',function($scope,$q,treeService,publicationsService,notificationService,$filter,fileService,Upload,$log){
 
     //Main Categories [market, jobs] // realEstate, vehicles, boats, planes, stockMarket
 
@@ -36,7 +36,8 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
     $scope.model = {
       userId:       '1',
       categoryId:   '',
-      type:         ''
+      type:         '',
+      files:        []
     };
 
     $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
@@ -72,43 +73,53 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
       }
     };
 
-    $scope.progressInstances = {};
-
-    var uploadFiles = function () {
-      fileService.files().then(function(files) {
-        angular.forEach(files,function(fileObject,reference){
-          if(fileObject.inServer === false){
-            $scope.progressInstances[reference] = $q.when(fileService.upload(fileObject,reference));
-          }
-        });
+    $scope.inQueue = function(){
+      var queue = 0;
+      angular.forEach($scope.model.files,function(value){
+        if(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error)){
+          queue += 1;
+        }
       });
+      return queue;
     };
 
-    $scope.uploadFiles = function(){
-      if(publicationsService.publicationId !== ''){
-        uploadFiles();
-      }else{
-        $scope.httpRequestPromise = publicationsService.newPublicationId()
-          .then(function(ref){
-            publicationsService.publicationId = ref.key();
-            uploadFiles();
-          });
-      }
-    };
-
-    fileService.files().then(function(_files_) {
-      $scope.files  = _files_;
-    });
-
-    $scope.filesLength  = function(){
-      return fileService.filesLength();
-    };
-
-    $scope.queueFiles = function(){
-      return fileService.queueFiles();
-    };
-
-    publicationsService.publicationId = '';
-    fileService.removeAllFiles();
+    //$scope.progressInstances = {};
+    //
+    //var uploadFiles = function () {
+    //  fileService.files().then(function(files) {
+    //    angular.forEach(files,function(fileObject,reference){
+    //      if(fileObject.inServer === false){
+    //        $scope.progressInstances[reference] = $q.when(fileService.upload(fileObject,reference));
+    //      }
+    //    });
+    //  });
+    //};
+    //
+    //$scope.uploadFiles = function(){
+    //  if(publicationsService.publicationId !== ''){
+    //    uploadFiles();
+    //  }else{
+    //    publicationsService.newPublicationId()
+    //      .then(function(ref){
+    //        publicationsService.publicationId = ref.key();
+    //        uploadFiles();
+    //      });
+    //  }
+    //};
+    //
+    //fileService.files().then(function(_files_) {
+    //  $scope.files  = _files_;
+    //});
+    //
+    //$scope.filesLength  = function(){
+    //  return fileService.filesLength();
+    //};
+    //
+    //$scope.queueFiles = function(){
+    //  return fileService.queueFiles();
+    //};
+    //
+    //publicationsService.publicationId = '';
+    //fileService.removeAllFiles();
 
   }]);
