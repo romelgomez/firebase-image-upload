@@ -147,7 +147,7 @@
 
         <div class="btn-group" role="group" aria-label="..." ng-show="inQueue() > 0">
           <button class="btn btn-primary" ngf-select ng-model="model.files" name="files" ngf-multiple="true" accept="image/*" ngf-keep="true" ngf-keep-distinct="true" ngf-max-size="10MB" ngf-min-height="200" ngf-min-width="200" ngf-validate-force="true" required><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images from the computer</button>
-          <button type="button" class="btn btn-danger" ng-click="model.files = []"><span class="glyphicon glyphicon-trash"></span> Remove All Queue Images</button>
+          <button type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove All Queue Images</button>
         </div>
 
         <div data-ng-messages="form.$submitted && form.files.$error" class="help-block">
@@ -156,7 +156,7 @@
           </div>
         </div>
 
-        <!--Todo:  Delete from the queue -->
+        <!--Todo:  Delete from the queue , rename the form -->
 
         <div ng-show="model.files.length > 0">
           <table class="table">
@@ -179,7 +179,7 @@
               <td><div>{{value.size | bytes}}</div></td>
               <td>{{ value.$error }}</td>
               <td><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></td>
-              <td><button class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove  -- key: {{key}} -- </button></td>
+              <td><button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(key)" ><span class="glyphicon glyphicon-trash"></span> Remove</button></td>
             </tr>
             </tbody>
           </table>
@@ -281,7 +281,7 @@
 
 
   <!--<pre>{{model.type | json}}</pre>-->
-  <!--<pre>{{model | json}}</pre>-->
+  <pre>{{model | json}}</pre>
   <!--<pre>{{form | json}}</pre>-->
 
 </section>
