@@ -84,12 +84,14 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
     };
 
     $scope.removeAllQueueFiles = function () {
+      // TODO REMOVE ONLY THE QUEUE FILES AND THE INVALIDS
         angular.copy([],$scope.model.files);
     };
 
     $scope.removeFile = function(index){
       $log.info('index:  ',index);
       $log.info('$scope.model.files[index]: ',$scope.model.files[index]);
+      // TODO check if the file as in the server
       $scope.model.files.splice(index,1);
     };
 

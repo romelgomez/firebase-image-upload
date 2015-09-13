@@ -111,9 +111,9 @@ ul.jqtree-tree span.jqtree-border {
 /* FileUpload START */
 .file-name{
   white-space: nowrap;
-  font-weight: bold;
-  width: 200px;
-  margin-bottom: 5px;
+  //font-weight: bold;
+  width: 300px;
+  margin-bottom: 2px;
 }
 .file-name:not(:hover) {
   overflow: hidden;
@@ -137,6 +137,11 @@ ul.jqtree-tree span.jqtree-border {
   width: 0;
 }
 /* FileUpload END */
+
+.hr-xs{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 
 .redactor-box {
   margin-bottom: 0;
