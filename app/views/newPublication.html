@@ -1,17 +1,8 @@
 <section cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
-  <div class="panel panel-default" style="display: none;">
-    <div class="panel-heading">Debug</div>
-    <div class="panel-body">
-
-
-    </div>
-  </div>
-
-
   <div class="panel panel-default" ng-show="categoryExpected === false">
     <div class="panel-heading">
-      <h3 class="panel-title">Seleccione una categoría:</h3>
+      <h3 class="panel-title">Select a category:</h3>
     </div>
     <div class="list-group">
       <button type="button" class="list-group-item" ng-click="setCategory(node.$id)" ng-repeat="node in treeNodes | filter:{parentId: (model.categoryId) ? model.categoryId: ''}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{node.name | capitalizeFirstChar}}</button>
@@ -23,17 +14,11 @@
         <li ng-repeat="node in path" ng-click="setCategory(node.$id)" ng-class="{'a-link': !$last}"> {{node.name | capitalizeFirstChar}} </li>
       </ol>
 
-      <small>
-        NOTAS:
-        <ul>
-          <li>Seleccione la categoría que mejor se adapte a la publicación. No importa si es muy general o específica, lo importante es que seleccione una.</li>
-          <li>Seleccionar una categoría específica es preferible ya que permitirá al usuario filtrar con mayor eficacia las publicaciones, sin embargo si la categoría específica no está disponible, seleccione una categoría general.</li>
-        </ul>
-      </small>
+      <div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: Select the category that best suits to the publication. No matter if it is too general or specific, the important thing is to select one.</div>
 
     </div>
     <div class="panel-footer" style="text-align: right;">
-      <button ng-click="categoryExpected = true" type="button" class="btn btn-primary" ng-disabled="model.categoryId ===''" >Confirm selection</button>
+      <input ng-click="categoryExpected = true" type="button" class="btn btn-primary" ng-disabled="model.categoryId ===''" value="Confirm selection" >
     </div>
   </div>
 
@@ -48,26 +33,18 @@
         <li ng-repeat="node in path"> {{node.name | capitalizeFirstChar}} </li>
       </ol>
 
-      <button ng-click="categoryExpected = false; model.categoryId =''; path =[];" type="button" class="btn btn-default"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit category</button>
-      <button form="form" class="btn btn-primary"	type="submit" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Publish</button>
-      <button class="btn btn-warning"	type="button" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Discard</button>
+      <form name="publicationForm" novalidate="" ng-submit="submit()">
 
-      <hr>
+        <button ng-click="categoryExpected = false; model.categoryId =''; path =[];" type="button" class="btn btn-default"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit category</button>
+        <button class="btn btn-primary"	type="submit" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Publish</button>
+        <button class="btn btn-warning"	type="button" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Discard</button>
 
-      <!--<button id="update"   type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Update</button>-->
-      <!--<button type="button" class="btn btn-default publication-status-button"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause</button>-->
-      <!--<button type="button" class="btn btn-default publication-status-button"><span class="glyphicon glyphicon-play"></span> Enable</button>-->
-      <!--<button id="delete"   class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Delete</button>-->
+        <hr>
 
-      <!--<button  class="btn btn-primary" type="submit">Enviar</button>-->
-      <!--<div id="debugTime" style="padding-top: 10px; ">The publication was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>-->
-      <!--<div id="debugTime" style="padding-top: 10px; ">The draft was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>-->
-
-      <form id="form" name="form" novalidate="" ng-submit="submit()">
         <div class="form-group">
           <label class="control-label"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>
           <input type="text" name="title" ng-model="model.title" required minlength="7" class="form-control" placeholder="">
-          <div data-ng-messages="form.$submitted && form.title.$error" class="help-block">
+          <div data-ng-messages="publicationForm.$submitted && publicationForm.title.$error" class="help-block">
             <div data-ng-message="required">
               - The <b>title</b> is required.
             </div>
@@ -79,8 +56,8 @@
 
         <div class="form-group">
           <label class="control-label"><span class="glyphicon glyphicon-book"></span> Description <sup style="color: red;">*</sup></label>
-          <textarea redactor name="description" ng-model="model.description" required class="form-control" placeholder=""></textarea>
-          <div data-ng-messages="form.$submitted && form.description.$error" class="help-block">
+          <textarea redactor name="description" data-ng-model="model.description" required class="form-control" placeholder=""></textarea>
+          <div data-ng-messages="publicationForm.$submitted && publicationForm.description.$error" class="help-block">
             <div data-ng-message="required" >
               - The <b>description</b> is required.
             </div>
@@ -95,7 +72,7 @@
                 <div class="input-group-addon">$</div>
                 <input name="price" ng-model="model.price" required class="form-control" placeholder="Eje: 1000" type="number">
               </div>
-              <div data-ng-messages="form.$submitted && form.price.$error" class="help-block">
+              <div data-ng-messages="publicationForm.$submitted && publicationForm.price.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>price</b> is required.
                 </div>
@@ -112,7 +89,7 @@
                 <div class="input-group-addon">Units</div>
                 <input name="quantity" ng-model="model.quantity" required class="form-control" placeholder="Eje: 100" type="number">
               </div>
-              <div data-ng-messages="form.$submitted && form.quantity.$error" class="help-block">
+              <div data-ng-messages="publicationForm.$submitted && publicationForm.quantity.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>quantity</b> is required.
                 </div>
@@ -132,8 +109,8 @@
 
         <div class="form-group" ng-if="model.type === 'market'">
           <label class="control-label"><i class="fa fa-certificate"></i> Warranty <sup style="color: red;">*</sup></label>
-          <textarea redactor name="warranty" ng-model="model.warranty" required class="form-control" placeholder=""></textarea>
-          <div data-ng-messages="form.$submitted && form.description.$error" class="help-block">
+          <textarea redactor name="warranty" data-ng-model="model.warranty" required class="form-control" placeholder=""></textarea>
+          <div data-ng-messages="publicationForm.$submitted && publicationForm.warranty.$error" class="help-block">
             <div data-ng-message="required" >
               - The <b>Warranty</b> is required.
             </div>
@@ -142,26 +119,48 @@
 
         <hr class="hr-xs">
 
-        <div class="btn-group" role="group" aria-label="..." ng-show="!inQueue() > 0" >
-          <button class="btn btn-primary" ngf-select ng-model="model.files" name="files" ngf-multiple="true" accept="image/*" ngf-keep="true" ngf-keep-distinct="true" ngf-max-size="10MB" ngf-min-height="500" ngf-min-width="500" ngf-validate-force="true" required><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images</button>
+        <div class="btn-group" role="group" aria-label="...">
+          <button class="btn btn-primary" ngf-select data-ng-model="model.files" name="files" data-ngf-multiple="true" data-accept="image/*" data-ngf-keep="true" data-ngf-keep-distinct="true" data-ngf-max-size="10MB" data-ngf-min-height="500" data-ngf-min-width="500" ngf-validate-force="true" required><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images</button>
+          <button ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove in queue</button>
+          <button ng-show="imagesInfo().inServer > 0" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
+          <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove invalid</button>
         </div>
 
-        <div class="btn-group" role="group" aria-label="..." ng-show="inQueue() > 0">
-          <button class="btn btn-primary" ngf-select ng-model="model.files" name="files" ngf-multiple="true" accept="image/*" ngf-keep="true" ngf-keep-distinct="true" ngf-max-size="10MB" ngf-min-height="500" ngf-min-width="500" ngf-validate-force="true" required><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images</button>
-          <button type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove All Queue Images</button>
-        </div>
-
-        <div data-ng-messages="form.$submitted && form.files.$error" class="help-block">
+        <div data-ng-messages="publicationForm.$submitted && publicationForm.files.$error" class="help-block">
           <div data-ng-message="required" >
           - The <b>Images</b> are required.
           </div>
         </div>
 
-        <!--Todo:  Delete from the queue , rename the form -->
+        <div data-ng-messages="publicationForm.files.$error" class="help-block">
+          <div data-ng-message="minHeight" >
+          - Some image(s) not meet the minimum specs.
+          </div>
+          <div data-ng-message="minWidth" >
+          - Some image(s) not meet the minimum specs.
+          </div>
+          <div data-ng-message="maxSize" >
+          - Some image(s) exceeds the Maximum Size of 10MB.
+          </div>
+        </div>
+
+        <!--<ul>-->
+          <!--<li>publicationForm.files.$error: {{publicationForm.files.$error | json}}</li>-->
+          <!--<li>publicationForm.files.$error.required: {{publicationForm.files.$error.required | json}}</li>-->
+          <!--<li>inQueue: {{imagesInfo().inQueue}}</li>-->
+          <!--<li>inServer: {{imagesInfo().inServer}}</li>-->
+          <!--<li>invalid: {{imagesInfo().invalid}}</li>-->
+        <!--</ul>-->
+
+        <!--Todo:  Delete from the queue , -->
 
         <div ng-show="model.files.length > 0">
           <div>
-            <caption>Images in queue to upload: {{inQueue()}}</caption>
+            <ul>
+              <li>Images in queue to upload: <span class="badge">{{imagesInfo().inQueue}}</span></li>
+              <li>Images in server: <span class="badge">{{imagesInfo().inServer}}</span></li>
+              <li>Images invalid: <span class="badge">{{imagesInfo().invalid}}</span></li>
+            </ul>
           </div>
           <div ng-repeat="(key, value) in model.files">
 
@@ -198,9 +197,6 @@
 
       </form>
 
-      <!--<pre>{{model | json}}</pre>-->
-      <!--<pre>{{form | json}}</pre>-->
-
       <hr class="hr-xs">
       <div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
 
@@ -210,6 +206,6 @@
 
   <!--<pre>{{model.type | json}}</pre>-->
   <pre>{{model | json}}</pre>
-  <!--<pre>{{form | json}}</pre>-->
+  <pre>{{publicationForm | json}}</pre>
 
 </section>

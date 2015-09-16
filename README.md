@@ -12,6 +12,54 @@ Run `grunt` for building and `grunt serve` for preview.
 Running `grunt test` will run the unit tests with karma.
 
 
+var model = {
+  name:'',
+  lastName:''
+}
+
+
+
+
+        <div ng-show="model.files.length > 0">
+          <div>
+            Images in queue to upload: {{inQueue()}}
+          </div>
+          <div ng-repeat="file in model.files">
+
+            <hr class="hr-xs">
+
+            <div ng-show="!file.$error">
+              <div><img class="img-thumbnail img-preview" ng-src="{{file.blobUrl || '/images/loading.jpeg'}}" alt="{{file.name}}"></div>
+              <div class="file-name"><b>Name: </b>{{file.name}}</div>
+              <div><b>Size: </b>{{file.size | bytes}}</div>
+              <div style="margin-bottom: 5px;"><b>Status: </b><span class="label label-default" ng-class="{'label-primary':(file.inServer)}">{{file.inServer ? 'In server' : 'In queue' }}</span></div>
+              <div><button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(file)" ><span class="glyphicon glyphicon-trash"></span> Remove</button></div>
+            </div>
+
+            <div ng-show="file.$error" class="bg-warning" style="padding: 7px;">
+              <div><img class="img-thumbnail img-preview" ng-src="{{file.blobUrl || '/images/loading.jpeg'}}" alt="{{file.name}}"></div>
+              <h3 class="text-warning" style="margin-bottom: 0; margin-top: 4px">Invalid image</h3>
+              <div class="file-name">
+                <b>Name: </b>{{file.name}}
+              </div>
+              <div style="margin-bottom: 3px;"><b>Reason: </b>
+                <span ng-switch="file.$error">
+                  <span ng-switch-when="minHeight">Does not meet the minimum height of 500px.</span>
+                  <span ng-switch-when="minWidth">Does not meet the minimum width of 500px.</span>
+                  <span ng-switch-when="maxSize">Exceeds the Maximum Size of 10MB.</span>
+                  <span ng-switch-default>Undefined</span>
+                </span>
+              </div>
+              <div style="margin-bottom: 3px"><b>Size:</b> {{file.size | bytes}}</div>
+              <button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(file)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
+            </div>
+
+          </div>
+        </div>
+
+
+
+
 
 /******* FireBase Data Base Structure  *******
 
@@ -602,3 +650,14 @@ Make sure that you provide upload and CORS post to your bucket at AWS -> S3 -> b
 For IE8-9 flash polyfill you need to have a crossdomain.xml file at the root of you S3 bucket. Make sure the content-type of crossdomain.xml is text/xml and you provide read access to this file in your bucket policy.
 
 You can also have a look at https://github.com/nukulb/s3-angular-file-upload for another example with this fix.
+
+
+
+      <!--<button id="update"   type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Update</button>-->
+      <!--<button type="button" class="btn btn-default publication-status-button"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause</button>-->
+      <!--<button type="button" class="btn btn-default publication-status-button"><span class="glyphicon glyphicon-play"></span> Enable</button>-->
+      <!--<button id="delete"   class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Delete</button>-->
+
+      <!--<button  class="btn btn-primary" type="submit">Enviar</button>-->
+      <!--<div id="debugTime" style="padding-top: 10px; ">The publication was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>-->
+      <!--<div id="debugTime" style="padding-top: 10px; ">The draft was updated at <span id="lastTimeSave"></span> (Minutes <span id="minutesElapsed">0</span> ago)</div>-->

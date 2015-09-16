@@ -60,39 +60,72 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
     };
 
     $scope.submit = function(){
-      if($scope.form.$valid){
-        if(publicationsService.publicationId !== ''){
-          $scope.httpRequestPromise = updateRecord();
-        }else{
-          $scope.httpRequestPromise = publicationsService.newPublicationId()
-            .then(function(ref){
-              publicationsService.publicationId = ref.key();
-              return updateRecord();
-            });
-        }
+      if($scope.publicationForm.$valid){
+
+         $log.info('submit the form');
+
+        //if(publicationsService.publicationId !== ''){
+        //  $scope.httpRequestPromise = updateRecord();
+        //}else{
+        //  $scope.httpRequestPromise = publicationsService.newPublicationId()
+        //    .then(function(ref){
+        //      publicationsService.publicationId = ref.key();
+        //      return updateRecord();
+        //    });
+        //}
+
+      }else{
+        $log.info('something missing')
       }
     };
 
     $scope.inQueue = function(){
       var queue = 0;
       angular.forEach($scope.model.files,function(value){
+
+        $log.info('value.$error',value.$error);
+
         if(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error)){
           queue += 1;
         }
+
       });
       return queue;
     };
 
-    $scope.removeAllQueueFiles = function () {
-      // TODO REMOVE ONLY THE QUEUE FILES AND THE INVALIDS
-        angular.copy([],$scope.model.files);
+    $scope.imagesInfo = function(){
+      var info = {
+        'inQueue':0,
+        'inServer':0,
+        'invalid':0
+      };
+      angular.forEach($scope.model.files,function(value){
+        if(angular.isDefined(value.inServer)){
+          info.inServer += 1;
+        }
+        if(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error)){
+          info.inQueue += 1;
+        }else{
+          info.invalid += 1;
+        }
+      });
+      return info;
     };
 
-    $scope.removeFile = function(index){
-      $log.info('index:  ',index);
-      $log.info('$scope.model.files[index]: ',$scope.model.files[index]);
-      // TODO check if the file as in the server
-      $scope.model.files.splice(index,1);
+    $scope.removeInvalidFiles = function(){
+      $scope.model.files = $filter('filter')($scope.model.files, function(value) { return !angular.isDefined(value.$error);});
+    };
+
+    $scope.removeAllQueueFiles = function () {
+      $scope.model.files = $filter('filter')($scope.model.files, function(value) {
+        return !(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error));
+      });
+    };
+
+    $scope.removeFile = function(fileIndex){
+      // TODO check with the fileIndex, the object, if the file It's in the server. to delete first front the server before deleting from the array
+      //$log.info('fileIndex',fileIndex);
+      $scope.model.files = $filter('filter')($scope.model.files, function(value, index) { return index !== fileIndex;});
     };
 
 
