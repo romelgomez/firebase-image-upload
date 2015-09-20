@@ -12,52 +12,35 @@ Run `grunt` for building and `grunt serve` for preview.
 Running `grunt test` will run the unit tests with karma.
 
 
-var model = {
-  name:'',
-  lastName:''
+
+
+{
+   "public_id":"publications/836bdf53-94bc-4c66-a91f-d2dadb64ae5d",
+   "version":1442619005,
+   "signature":"9cb01f2573361104ddb4430f13e3b85de4866758",
+   "width":1200,
+   "height":1200,
+   "format":"jpg",
+   "resource_type":"image",
+   "created_at":"2015-09-18T23:30:05Z",
+   "tags":[
+
+   ],
+   "bytes":95036,
+   "type":"upload",
+   "etag":"042010539ba219221e2d43a34ac16bf1",
+   "url":"http://res.cloudinary.com/berlin/image/upload/v1442619005/publications/836bdf53-94bc-4c66-a91f-d2dadb64ae5d.jpg",
+   "secure_url":"https://res.cloudinary.com/berlin/image/upload/v1442619005/publications/836bdf53-94bc-4c66-a91f-d2dadb64ae5d.jpg",
+   "context":{
+      "custom":{
+         "alt":"06G-P4-3799-KR_XL_6.jpg",
+         "caption":"06G-P4-3799-KR_XL_6.jpg",
+         "photo":"06G-P4-3799-KR_XL_6.jpg"
+      }
+   },
+   "existing":false,
+   "original_filename":"06G-P4-3799-KR_XL_6"
 }
-
-
-
-
-        <div ng-show="model.files.length > 0">
-          <div>
-            Images in queue to upload: {{inQueue()}}
-          </div>
-          <div ng-repeat="file in model.files">
-
-            <hr class="hr-xs">
-
-            <div ng-show="!file.$error">
-              <div><img class="img-thumbnail img-preview" ng-src="{{file.blobUrl || '/images/loading.jpeg'}}" alt="{{file.name}}"></div>
-              <div class="file-name"><b>Name: </b>{{file.name}}</div>
-              <div><b>Size: </b>{{file.size | bytes}}</div>
-              <div style="margin-bottom: 5px;"><b>Status: </b><span class="label label-default" ng-class="{'label-primary':(file.inServer)}">{{file.inServer ? 'In server' : 'In queue' }}</span></div>
-              <div><button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(file)" ><span class="glyphicon glyphicon-trash"></span> Remove</button></div>
-            </div>
-
-            <div ng-show="file.$error" class="bg-warning" style="padding: 7px;">
-              <div><img class="img-thumbnail img-preview" ng-src="{{file.blobUrl || '/images/loading.jpeg'}}" alt="{{file.name}}"></div>
-              <h3 class="text-warning" style="margin-bottom: 0; margin-top: 4px">Invalid image</h3>
-              <div class="file-name">
-                <b>Name: </b>{{file.name}}
-              </div>
-              <div style="margin-bottom: 3px;"><b>Reason: </b>
-                <span ng-switch="file.$error">
-                  <span ng-switch-when="minHeight">Does not meet the minimum height of 500px.</span>
-                  <span ng-switch-when="minWidth">Does not meet the minimum width of 500px.</span>
-                  <span ng-switch-when="maxSize">Exceeds the Maximum Size of 10MB.</span>
-                  <span ng-switch-default>Undefined</span>
-                </span>
-              </div>
-              <div style="margin-bottom: 3px"><b>Size:</b> {{file.size | bytes}}</div>
-              <button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(file)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
-            </div>
-
-          </div>
-        </div>
-
-
 
 
 

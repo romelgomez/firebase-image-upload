@@ -120,7 +120,18 @@
         <hr class="hr-xs">
 
         <div class="btn-group" role="group" aria-label="...">
-          <button class="btn btn-primary" ngf-select data-ng-model="model.files" name="files" data-ngf-multiple="true" data-accept="image/*" data-ngf-keep="true" data-ngf-keep-distinct="true" data-ngf-max-size="10MB" data-ngf-min-height="500" data-ngf-min-width="500" ngf-validate-force="true" required><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images</button>
+          <button class="btn btn-primary"
+                  ngf-select data-ng-model="model.files"
+                  name="files"
+                  data-ngf-multiple="true"
+                  data-accept="image/*"
+                  data-ngf-keep="true"
+                  data-ngf-keep-distinct="true"
+                  data-ngf-validate="{size: {max: '10MB'}, width: {min: 500, max:5000}, height: {min: 500, max: 5000}}"
+                  data-ngf-validate-force="true"
+                  required>
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images</button>
+
           <button ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove in queue</button>
           <button ng-show="imagesInfo().inServer > 0" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
           <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove invalid</button>
@@ -136,7 +147,13 @@
           <div data-ng-message="minHeight" >
           - Some image(s) not meet the minimum specs.
           </div>
+          <div data-ng-message="maxHeight" >
+          - Some image(s) not meet the minimum specs.
+          </div>
           <div data-ng-message="minWidth" >
+          - Some image(s) not meet the minimum specs.
+          </div>
+          <div data-ng-message="maxWidth" >
           - Some image(s) not meet the minimum specs.
           </div>
           <div data-ng-message="maxSize" >
@@ -165,6 +182,9 @@
           <div ng-repeat="(key, value) in model.files">
 
             <hr class="hr-xs">
+            <pre>{{value | json}}</pre>
+
+            <hr class="hr-xs">
 
             <div ng-show="!value.$error">
               <div><img class="img-thumbnail img-preview" ng-src="{{value.blobUrl || '/images/loading.jpeg'}}" alt="{{value.name}}"></div>
@@ -183,7 +203,9 @@
               <div style="margin-bottom: 3px;"><b>Reason: </b>
                 <span ng-switch="value.$error">
                   <span ng-switch-when="minHeight">Does not meet the minimum height of 500px.</span>
+                  <span ng-switch-when="maxHeight">Does not meet the maximum height of 5000px.</span>
                   <span ng-switch-when="minWidth">Does not meet the minimum width of 500px.</span>
+                  <span ng-switch-when="maxWidth">Does not meet the maximum width of 5000px.</span>
                   <span ng-switch-when="maxSize">Exceeds the Maximum Size of 10MB.</span>
                   <span ng-switch-default>Undefined</span>
                 </span>
@@ -206,6 +228,6 @@
 
   <!--<pre>{{model.type | json}}</pre>-->
   <pre>{{model | json}}</pre>
-  <pre>{{publicationForm | json}}</pre>
+  <!--<pre>{{publicationForm | json}}</pre>-->
 
 </section>
