@@ -66,10 +66,6 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'views/categories.html',
         controller: 'TreeController'
       })
-      .when('/ng-file-upload-test', {
-        templateUrl: 'views/ngFileUploadTest.html',
-        controller: 'NgFileUploadTestController'
-      })
       .when('/new-publication', {
         templateUrl: 'views/newPublication.html',
         controller: 'PublicationsController'

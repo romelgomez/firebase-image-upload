@@ -12,18 +12,12 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
       updateRecord: function (publicationId,model){
         var record = publications.$getRecord(publicationId);
         angular.forEach(model,function(value,key){
-          if(key === 'releaseDate'){
-            record[key] = (record[key]) ? record[key] : $window.Firebase.ServerValue.TIMESTAMP;
-          }else{
-            record[key] = value;
-          }
+          record[key] = value;
         });
         return publications.$save(record);
       },
-      newPublicationId: function(){
-        return publications.$add({uuid:rfc4122.v4()});
-      },
       newPublication: function(publication){
+        publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
         return publications.$add(publication);
       }
   };
@@ -36,6 +30,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
     $scope.treeNodes          = treeService.nodes();
     $scope.categoryExpected   = false;
     $scope.path               = [];
+    $scope.reference          = '';
     $scope.model = {
       userId:       '1',
       categoryId:   '',
@@ -62,61 +57,49 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
         });
     };
 
-    var uplodadFile = function(file,reference){
+    var uploadFile = function(file,reference){
       var deferred = $q.defer();
 
-      $log.info('file:',file);
+      //$log.info('file:',file);
 
       file.upload = $upload.upload({
         url: "https://api.cloudinary.com/v1_1/berlin/upload",
         fields: {
           public_id: 'publications/'+reference,
           upload_preset: 'ebdyaimw',
-          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name
+          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|reference=' + reference
         },
         file: file
       }).progress(function (e) {
-
         file.progress = Math.round((e.loaded * 100.0) / e.total);
         file.status = "Uploading... " + file.progress + "%";
-
-      }).success(function (data, status, headers, config) {
-
-        $log.info('success - data - to json',angular.toJson(data));
-
+      }).success(function (data) {
+        //$log.info('success - data - to json',angular.toJson(data));
         file.inServer = true;
-
-        // isDeleted
-        // name
-
+        file.details  = data;
         deferred.resolve({
           isDeleted:false,
-          public_id:data.public_id
+          details:data
         });
-
-        //$rootScope.photos = $rootScope.photos || [];
-        //data.context = {custom: {photo: $scope.title}};
-        //file.result = data;
-        //$rootScope.photos.push(data);
-
-      }).error(function (data, status, headers, config) {
-
-        $log.info('error - data',data);
+      }).error(function (data) {
         deferred.reject(error);
-
         //file.result = data;
-
       });
 
       return deferred.promise;
     };
 
-    // Todo filtar los archivos, evitar re-enviar, enviar uno invalido, ...
     var uploadFiles = function(files){
       var _files = {};
       angular.forEach(files,function(file){
-        var reference = rfc4122.v4();
-        _files[reference] = uplodadFile(file,reference);
+        if(angular.isDefined(file.inServer)){
+          _files[file.details.context.custom.reference] = {};
+          _files[file.details.context.custom.reference].isDeleted = false;
+          _files[file.details.context.custom.reference].details   = file.details;
+        }else{
+          var reference = rfc4122.v4();
+          _files[reference] = uploadFile(file,reference);
+        }
       });
       return $q.all(_files);
     };
@@ -137,33 +120,25 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
               }
             });
 
-            return publicationsService.newPublication(publication);
-          }).then(function () {
+            // Todo ¿como viene files luego de actualizar ... ?
+            if($scope.reference === ''){
+              return publicationsService.newPublication(publication);
+            }else{
+              return publicationsService.updateRecord($scope.reference,publication);
+            }
+
+          }).then(function (ref) {
+            $scope.reference = ref.key();
             notificationService.success('Data has been save');
             deferred.resolve();
           },function(error){
             notificationService.error(error);
           });
 
-
         $scope.httpRequestPromise = deferred.promise;
       }else{
-        notificationService.error('something missing');
+        notificationService.error('Something is missing');
       }
-    };
-
-    $scope.inQueue = function(){
-      var queue = 0;
-      angular.forEach($scope.model.files,function(value){
-
-        $log.info('value.$error',value.$error);
-
-        if(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error)){
-          queue += 1;
-        }
-
-      });
-      return queue;
     };
 
     $scope.imagesInfo = function(){
