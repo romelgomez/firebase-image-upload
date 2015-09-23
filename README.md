@@ -13,35 +13,51 @@ Running `grunt test` will run the unit tests with karma.
 
 
 
+// Sin guardar 
 
 {
-   "public_id":"publications/836bdf53-94bc-4c66-a91f-d2dadb64ae5d",
-   "version":1442619005,
-   "signature":"9cb01f2573361104ddb4430f13e3b85de4866758",
-   "width":1200,
-   "height":1200,
-   "format":"jpg",
-   "resource_type":"image",
-   "created_at":"2015-09-18T23:30:05Z",
-   "tags":[
-
-   ],
-   "bytes":95036,
-   "type":"upload",
-   "etag":"042010539ba219221e2d43a34ac16bf1",
-   "url":"http://res.cloudinary.com/berlin/image/upload/v1442619005/publications/836bdf53-94bc-4c66-a91f-d2dadb64ae5d.jpg",
-   "secure_url":"https://res.cloudinary.com/berlin/image/upload/v1442619005/publications/836bdf53-94bc-4c66-a91f-d2dadb64ae5d.jpg",
-   "context":{
-      "custom":{
-         "alt":"06G-P4-3799-KR_XL_6.jpg",
-         "caption":"06G-P4-3799-KR_XL_6.jpg",
-         "photo":"06G-P4-3799-KR_XL_6.jpg"
-      }
-   },
-   "existing":false,
-   "original_filename":"06G-P4-3799-KR_XL_6"
+   "blobUrl":"blob:http%3A//localhost%3A9000/521c0e62-6ad0-4dd8-8f50-bd11b97c27c7",
+   "width":1000,
+   "height":1500
 }
 
+// Una vez guardada 
+
+{
+  "blobUrl": "blob:http%3A//localhost%3A9000/ef950667-1e83-416d-9456-9e1940cd1841",
+  "width": 1500,
+  "height": 938,
+  "upload": {},
+  "progress": 100,
+  "status": "Uploading... 100%",
+  "inServer": true,
+  "details": {
+    "public_id": "publications/d7c0e58a-1941-4822-a5c7-308a9321fd97",
+    "version": 1442940800,
+    "signature": "2728b526b03e9ea32043f188603934ffa5f66119",
+    "width": 1500,
+    "height": 938,
+    "format": "jpg",
+    "resource_type": "image",
+    "created_at": "2015-09-22T16:53:20Z",
+    "tags": [],
+    "bytes": 300740,
+    "type": "upload",
+    "etag": "9fa662eb40c7b25740ed05105528e8a6",
+    "url": "http://res.cloudinary.com/berlin/image/upload/v1442940800/publications/d7c0e58a-1941-4822-a5c7-308a9321fd97.jpg",
+    "secure_url": "https://res.cloudinary.com/berlin/image/upload/v1442940800/publications/d7c0e58a-1941-4822-a5c7-308a9321fd97.jpg",
+    "context": {
+      "custom": {
+        "alt": "redheads_30.jpg",
+        "caption": "redheads_30.jpg",
+        "photo": "redheads_30.jpg",
+        "reference": "d7c0e58a-1941-4822-a5c7-308a9321fd97"
+      }
+    },
+    "existing": false,
+    "original_filename": "redheads_30"
+  }
+}
 
 
 /******* FireBase Data Base Structure  *******

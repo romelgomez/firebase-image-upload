@@ -2,14 +2,27 @@
 
 // añadir soporte a otro tipo de publicación
 
-angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular-redactor','ngFileUpload'])
+angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar'])
   .factory('publicationsService',['$q','$window','rfc4122','FireRef','$firebaseArray',function($q,$window,rfc4122,FireRef,$firebaseArray){
 
     var publications = $firebaseArray(FireRef.child('publications'));
 
     return {
-      publicationId:'',
-      updateRecord: function (publicationId,model){
+      deletePublicationImage: function(publicationId,imageId){
+        var deferred = $q.defer();
+        var image = FireRef.child('publications').child(publicationId).child('images').child(imageId);
+        image.update({
+          isDeleted: true
+        }, function (error) {
+          if(error){
+            deferred.reject(error);
+          }else{
+            deferred.resolve();
+          }
+        });
+        return deferred.promise;
+      },
+      updatePublication: function (publicationId,model){
         var record = publications.$getRecord(publicationId);
         angular.forEach(model,function(value,key){
           record[key] = value;
@@ -48,14 +61,14 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
       $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
     };
 
-    var updateRecord = function () {
-      return publicationsService.updateRecord(publicationsService.publicationId,$scope.model)
-        .then(function() {
-          notificationService.success('Data has been save to our Firebase database');
-        },function(error){
-          notificationService.error(error);
-        });
-    };
+    //var updatePublication = function () {
+    //  return publicationsService.updatePublication(publicationsService.publicationId,$scope.model)
+    //    .then(function() {
+    //      notificationService.success('Data has been save to our Firebase database');
+    //    },function(error){
+    //      notificationService.error(error);
+    //    });
+    //};
 
     var uploadFile = function(file,reference){
       var deferred = $q.defer();
@@ -72,7 +85,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
         file: file
       }).progress(function (e) {
         file.progress = Math.round((e.loaded * 100.0) / e.total);
-        file.status = "Uploading... " + file.progress + "%";
+        //file.status = "Uploading... " + file.progress + "%";
       }).success(function (data) {
         //$log.info('success - data - to json',angular.toJson(data));
         file.inServer = true;
@@ -82,8 +95,8 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
           details:data
         });
       }).error(function (data) {
-        deferred.reject(error);
-        //file.result = data;
+        file.details  = data;
+        deferred.reject({});
       });
 
       return deferred.promise;
@@ -124,7 +137,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
             if($scope.reference === ''){
               return publicationsService.newPublication(publication);
             }else{
-              return publicationsService.updateRecord($scope.reference,publication);
+              return publicationsService.updatePublication($scope.reference,publication);
             }
 
           }).then(function (ref) {
@@ -175,10 +188,22 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
       });
     };
 
-    $scope.removeFile = function(fileIndex){
-      // TODO check with the fileIndex, the object, if the file It's in the server. to delete first front the server before deleting from the array
-      //$log.info('fileIndex',fileIndex);
-      $scope.model.files = $filter('filter')($scope.model.files, function(value, index) { return index !== fileIndex;});
+    $scope.removeFile = function(fileIndex,file){
+      var removeFile = function(){
+        $scope.model.files = $filter('filter')($scope.model.files, function(value, index) { return index !== fileIndex;});
+        notificationService.success('The file as been delete.');
+      };
+
+      if(angular.isDefined(file.inServer)){
+          publicationsService.deletePublicationImage($scope.reference,file.details.context.custom.reference)
+            .then(function(){
+              removeFile();
+            },function(error){
+              notificationService.error(error);
+            });
+      }else{
+        removeFile();
+      }
     };
 
 

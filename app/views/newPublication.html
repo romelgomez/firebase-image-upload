@@ -183,7 +183,7 @@
           <div ng-repeat="(key, value) in model.files">
 
             <hr class="hr-xs">
-            <pre>{{value | json}}</pre>
+            <!--<pre>{{value | json}}</pre>-->
 
             <hr class="hr-xs">
 
@@ -192,7 +192,7 @@
               <div class="file-name"><b>Name: </b>{{value.name}}</div>
               <div><b>Size: </b>{{value.size | bytes}}</div>
               <div style="margin-bottom: 5px;"><b>Status: </b><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
-              <div><button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(key)" ><span class="glyphicon glyphicon-trash"></span> Remove</button></div>
+              <div><button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button></div>
             </div>
 
             <div ng-show="value.$error" class="bg-warning" style="padding: 7px;">
@@ -212,7 +212,7 @@
                 </span>
               </div>
               <div style="margin-bottom: 3px"><b>Size:</b> {{value.size | bytes}}</div>
-              <button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(key)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
+              <button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
             </div>
 
           </div>
@@ -228,7 +228,7 @@
 
 
   <!--<pre>{{model.type | json}}</pre>-->
-  <pre>{{model | json}}</pre>
+  <!--<pre>{{model | json}}</pre>-->
   <!--<pre>{{publicationForm | json}}</pre>-->
 
 </section>

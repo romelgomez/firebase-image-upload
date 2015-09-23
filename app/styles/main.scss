@@ -147,6 +147,16 @@ ul.jqtree-tree span.jqtree-border {
   margin-bottom: 0;
 }
 
+#loading-bar .bar {
+  background: #FF0000;
+  height: 2px;
+}
+
+#loading-bar-spinner .spinner-icon {
+  border-top-color: #FF0000;
+  border-left-color: #FF0000;
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {
