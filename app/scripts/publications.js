@@ -22,17 +22,30 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
         });
         return deferred.promise;
       },
-      updatePublication: function (publicationId,model){
-        var record = publications.$getRecord(publicationId);
-        angular.forEach(model,function(value,key){
-          record[key] = value;
-        });
-        return publications.$save(record);
-      },
-      newPublication: function(publication){
-        publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
-        return publications.$add(publication);
+      //updatePublication: function (publicationId,model){
+      //  var record = publications.$getRecord(publicationId);
+      //  angular.forEach(model,function(value,key){
+      //    record[key] = value;
+      //  });
+      //  return publications.$save(record);
+      //},
+      //newPublication: function(publication){
+      //  publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
+      //  return publications.$add(publication);
+      //},
+      publication: function (publication,id) {
+        if(angular.isDefined(id) && id !== ''){
+          var record = publications.$getRecord(id);
+          angular.forEach(publication,function(value,key){
+            record[key] = value;
+          });
+          return publications.$save(record);
+        }else{
+          publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
+          return publications.$add(publication);
+        }
       }
+
   };
 
   }])
@@ -105,11 +118,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
     var uploadFiles = function(files){
       var _files = {};
       angular.forEach(files,function(file){
-        if(angular.isDefined(file.inServer)){
-          _files[file.details.context.custom.reference] = {};
-          _files[file.details.context.custom.reference].isDeleted = false;
-          _files[file.details.context.custom.reference].details   = file.details;
-        }else{
+        if(!angular.isDefined(file.inServer)){
           var reference = rfc4122.v4();
           _files[reference] = uploadFile(file,reference);
         }
@@ -124,26 +133,33 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
 
         uploadFiles($scope.model.files)
           .then(function (files) {
+            // In this point i save in FireBase
 
             angular.forEach($scope.model, function (value,key) {
-              if(key === 'files'){
-                publication.images = files;
-              }else{
+              if(key !== 'files'){
                 publication[key] = value;
               }
             });
 
-            // Todo ¿como viene files luego de actualizar ... ?
-            if($scope.reference === ''){
-              return publicationsService.newPublication(publication);
-            }else{
-              return publicationsService.updatePublication($scope.reference,publication);
-            }
+            return $q.all({
+              'publication': publicationsService.publication(publication,$scope.reference),
+              'files':files
+            });
 
-          }).then(function (ref) {
-            $scope.reference = ref.key();
+          }).then(function (the) {
+
+            //if(Object.keys(the.files).length > 0){
+            //  $scope.reference = angular.isDefined($scope.reference) ? $scope.reference : ref.key();
+            //
+            //}else{
+            //
+            //}
+            //
+            //$scope.reference = angular.isDefined($scope.reference) ? $scope.reference : ref.key();
+
             notificationService.success('Data has been save');
             deferred.resolve();
+
           },function(error){
             notificationService.error(error);
           });
