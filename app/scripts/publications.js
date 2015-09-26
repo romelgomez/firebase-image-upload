@@ -48,6 +48,11 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
         });
         return deferred.promise;
       },
+      deletePublication: function(publicationId){
+        var record = publications.$getRecord(publicationId);
+        record.isDeleted = true;
+        return publications.$save(record);
+      },
       publicationFiles: function(files,publicationId){
         var deferred = $q.defer();
 
@@ -61,11 +66,12 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
               obj[key] = value;
             });
 
-            obj.$save().then(function() {
-              deferred.resolve();
-            }, function(error) {
-              deferred.reject(error);
-            });
+            obj.$save()
+              .then(function() {
+                deferred.resolve();
+              }, function(error) {
+                deferred.reject(error);
+              });
 
           })
           .catch(function(error) {
@@ -82,6 +88,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
           });
           return publications.$save(record);
         }else{
+          publication.isDeleted = false;
           publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
           return publications.$add(publication);
         }
@@ -90,7 +97,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
   };
 
   }])
-  .controller('PublicationsController',['$scope','$q','rfc4122','treeService','publicationsService','notificationService','$filter','fileService','Upload','$log',function($scope,$q,rfc4122,treeService,publicationsService,notificationService,$filter,fileService,$upload,$log){
+  .controller('PublicationsController',['$scope','$q','$window','rfc4122','treeService','publicationsService','notificationService','$filter','fileService','Upload','$log',function($scope,$q,$window,rfc4122,treeService,publicationsService,notificationService,$filter,fileService,$upload,$log){
 
     //Main Categories [market, jobs] // realEstate, vehicles, boats, planes, stockMarket
 
@@ -212,6 +219,21 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
         }
       });
       return info;
+    };
+
+    $scope.discard = function(){
+      if($scope.reference !== ''){
+        publicationsService.deletePublication($scope.reference)
+          .then(function(){
+            notificationService.success('The publication has been deleted');
+            $window.location = '#/'
+          }, function (error) {
+            notificationService.error(error);
+          });
+      }else{
+        notificationService.success('The publication has been deleted.');
+        $window.location = '#/'
+      }
     };
 
     $scope.deleteAllPublicationImages = function () {
