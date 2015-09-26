@@ -8,6 +8,32 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
     var publications = $firebaseArray(FireRef.child('publications'));
 
     return {
+      deleteAllPublicationImages: function (publicationId) {
+        var deferred = $q.defer();
+
+        var imagesRef = FireRef.child('publications').child(publicationId).child('images');
+
+        var images = $firebaseObject(imagesRef);
+        images.$loaded()
+          .then(function(obj) {
+
+            angular.forEach(obj, function (value, key) {
+              obj[key].isDeleted = true;
+            });
+
+            obj.$save().then(function() {
+              deferred.resolve();
+            }, function(error) {
+              deferred.reject(error);
+            });
+
+          })
+          .catch(function(error) {
+            deferred.reject(error);
+          });
+
+        return deferred.promise;
+      },
       deletePublicationImage: function(publicationId,imageId){
         var deferred = $q.defer();
         var image = FireRef.child('publications').child(publicationId).child('images').child(imageId);
@@ -72,12 +98,12 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
     $scope.categoryExpected   = false;
     $scope.path               = [];
     $scope.reference          = '';
-    $scope.model = {
+    var original = angular.copy($scope.model = {
       userId:       '1',
       categoryId:   '',
       type:         '',
       files:        []
-    };
+    });
 
     $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
       notificationService.error(error);
@@ -152,8 +178,7 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
             if(Object.keys(the.files).length > 0){
               return publicationsService.publicationFiles(the.files,$scope.reference);
             }else{
-              notificationService.success('Data has been save');
-              deferred.resolve();
+              return $q.when(true);
             }
           })
           .then(function () {
@@ -189,8 +214,14 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
       return info;
     };
 
-    $scope.removeFilesInServer = function () {
-
+    $scope.deleteAllPublicationImages = function () {
+         publicationsService.deleteAllPublicationImages($scope.reference)
+           .then(function(){
+             angular.copy(original.files,$scope.model.files);
+             notificationService.success('The images has been deleted');
+           },function(error){
+             notificationService.error(error);
+           });
     };
 
     $scope.removeInvalidFiles = function(){
