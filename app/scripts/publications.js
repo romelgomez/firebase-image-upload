@@ -3,7 +3,7 @@
 // añadir soporte a otro tipo de publicación
 
 angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar'])
-  .factory('publicationsService',['$q','$window','rfc4122','FireRef','$firebaseArray',function($q,$window,rfc4122,FireRef,$firebaseArray){
+  .factory('publicationsService',['$q','$window','rfc4122','FireRef','$firebaseArray','$firebaseObject',function($q,$window,rfc4122,FireRef,$firebaseArray,$firebaseObject){
 
     var publications = $firebaseArray(FireRef.child('publications'));
 
@@ -22,17 +22,32 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
         });
         return deferred.promise;
       },
-      //updatePublication: function (publicationId,model){
-      //  var record = publications.$getRecord(publicationId);
-      //  angular.forEach(model,function(value,key){
-      //    record[key] = value;
-      //  });
-      //  return publications.$save(record);
-      //},
-      //newPublication: function(publication){
-      //  publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
-      //  return publications.$add(publication);
-      //},
+      publicationFiles: function(files,publicationId){
+        var deferred = $q.defer();
+
+        var imagesRef = FireRef.child('publications').child(publicationId).child('images');
+
+        var images = $firebaseObject(imagesRef);
+        images.$loaded()
+          .then(function(obj) {
+
+            angular.forEach(files, function (value, key) {
+              obj[key] = value;
+            });
+
+            obj.$save().then(function() {
+              deferred.resolve();
+            }, function(error) {
+              deferred.reject(error);
+            });
+
+          })
+          .catch(function(error) {
+            deferred.reject(error);
+          });
+
+        return deferred.promise;
+      },
       publication: function (publication,id) {
         if(angular.isDefined(id) && id !== ''){
           var record = publications.$getRecord(id);
@@ -74,19 +89,8 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
       $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
     };
 
-    //var updatePublication = function () {
-    //  return publicationsService.updatePublication(publicationsService.publicationId,$scope.model)
-    //    .then(function() {
-    //      notificationService.success('Data has been save to our Firebase database');
-    //    },function(error){
-    //      notificationService.error(error);
-    //    });
-    //};
-
     var uploadFile = function(file,reference){
       var deferred = $q.defer();
-
-      //$log.info('file:',file);
 
       file.upload = $upload.upload({
         url: "https://api.cloudinary.com/v1_1/berlin/upload",
@@ -133,33 +137,28 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
 
         uploadFiles($scope.model.files)
           .then(function (files) {
-            // In this point i save in FireBase
-
             angular.forEach($scope.model, function (value,key) {
               if(key !== 'files'){
                 publication[key] = value;
               }
             });
-
             return $q.all({
               'publication': publicationsService.publication(publication,$scope.reference),
               'files':files
             });
-
-          }).then(function (the) {
-
-            //if(Object.keys(the.files).length > 0){
-            //  $scope.reference = angular.isDefined($scope.reference) ? $scope.reference : ref.key();
-            //
-            //}else{
-            //
-            //}
-            //
-            //$scope.reference = angular.isDefined($scope.reference) ? $scope.reference : ref.key();
-
+          })
+          .then(function (the) {
+            $scope.reference = $scope.reference !== '' ? $scope.reference : the.publication.key();
+            if(Object.keys(the.files).length > 0){
+              return publicationsService.publicationFiles(the.files,$scope.reference);
+            }else{
+              notificationService.success('Data has been save');
+              deferred.resolve();
+            }
+          })
+          .then(function () {
             notificationService.success('Data has been save');
             deferred.resolve();
-
           },function(error){
             notificationService.error(error);
           });
@@ -221,45 +220,5 @@ angular.module('publications',['tree','moreFilters','uuid','ngMessages','angular
         removeFile();
       }
     };
-
-
-    //$scope.progressInstances = {};
-    //
-    //var uploadFiles = function () {
-    //  fileService.files().then(function(files) {
-    //    angular.forEach(files,function(fileObject,reference){
-    //      if(fileObject.inServer === false){
-    //        $scope.progressInstances[reference] = $q.when(fileService.upload(fileObject,reference));
-    //      }
-    //    });
-    //  });
-    //};
-    //
-    //$scope.uploadFiles = function(){
-    //  if(publicationsService.publicationId !== ''){
-    //    uploadFiles();
-    //  }else{
-    //    publicationsService.newPublicationId()
-    //      .then(function(ref){
-    //        publicationsService.publicationId = ref.key();
-    //        uploadFiles();
-    //      });
-    //  }
-    //};
-    //
-    //fileService.files().then(function(_files_) {
-    //  $scope.files  = _files_;
-    //});
-    //
-    //$scope.filesLength  = function(){
-    //  return fileService.filesLength();
-    //};
-    //
-    //$scope.queueFiles = function(){
-    //  return fileService.queueFiles();
-    //};
-    //
-    //publicationsService.publicationId = '';
-    //fileService.removeAllFiles();
 
   }]);
