@@ -1,37 +1,179 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Login Page</h3>
+  </div>
+  <div class="panel-body">
 
-<h2>Login Page</h2>
+    <!--<fieldset>-->
+    <!--<legend>Oauth</legend>-->
+    <!--<p>-->
+    <!--<button  class="btn btn-primary" ng-click="oauthLogin('facebook')">Facebook</button>-->
+    <!--<button  class="btn btn-primary" ng-click="oauthLogin('google')">Google</button>-->
+    <!--<button  class="btn btn-primary" ng-click="oauthLogin('twitter')">Twitter</button>-->
+    <!--<button  class="btn btn-primary" ng-click="oauthLogin('github')">GitHub</button>-->
+    <!--</p>-->
+    <!--</fieldset>-->
 
-<fieldset>
-  <legend>Oauth</legend>
-  <p>
-    <button  class="btn btn-primary" ng-click="oauthLogin('facebook')">Facebook</button>
-    <button  class="btn btn-primary" ng-click="oauthLogin('google')">Google</button>
-    <button  class="btn btn-primary" ng-click="oauthLogin('twitter')">Twitter</button>
-    <button  class="btn btn-primary" ng-click="oauthLogin('github')">GitHub</button>
-  </p>
-</fieldset>
 
-<form role="form">
-  <p class="form-group">
-    <label for="loginEmail">email</label>
-    <input id="loginEmail" required name="email" type="email" ng-model="email" class="form-control" />
-  </p>
-  <p class="form-group">
-    <label for="loginPass">password</label>
-    <input id="loginPass" required name="pass" type="password" ng-model="pass" class="form-control" />
-  </p>
-  <p class="form-group" ng-cloak ng-show="createMode">
-    <label for="loginConfirm">confirm pass</label>
-    <input id="loginConfirm" required name="confirm" type="password" ng-model="confirm" class="form-control" />
-  </p>
+    <tabset>
+      <tab heading="I'm a returning customer">
 
-  <p>
-    <button  class="btn btn-primary" ng-click="passwordLogin(email, pass)" ng-hide="createMode">Log In</button>
-    <button  class="btn btn-default" ng-click="createMode = true" ng-hide="createMode">Register</button>
-    <button  class="btn btn-primary" ng-cloak ng-show="createMode"
-            ng-click="createAccount(email, pass, confirm)">Create Account</button>
-    <button  class="btn btn-default" ng-cloak ng-show="createMode" ng-click="createMode = false">Cancel</button>
-  </p>
-</form>
-<p ng-show="err" class="bg-danger">{{err}}</p>
+        <div style="margin-top: 10px;">
+
+          <form name="signInForm" novalidate="" ng-submit="signIn()">
+
+            <div class="form-group">
+              <label class="control-label"><i class="fa fa-envelope"></i> Email <sup style="color: red;">*</sup></label>
+              <input type="email" name="email" ng-model="model.signIn.email" required class="form-control" placeholder="">
+              <div data-ng-messages="signInForm.$submitted && signInForm.email.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>email</b> is required.
+                </div>
+                <div data-ng-message="email">
+                  - The <b>email</b> must be valid.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label"><i class="fa fa-key"></i> Password <sup style="color: red;">*</sup></label>
+              <input type="password" name="password" ng-model="model.signIn.password" required class="form-control" placeholder="">
+              <div data-ng-messages="signInForm.$submitted && signInForm.password.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>password</b> is required.
+                </div>
+              </div>
+            </div>
+
+            <button  class="btn btn-primary" type="submit"> Sign in </button>
+
+            <div class="alert alert-info alert-xs" style="margin-bottom: 10px; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
+
+          </form>
+
+          <!--<form role="form">-->
+          <!--<p class="form-group">-->
+          <!--<label for="loginEmail">email</label>-->
+          <!--<input id="loginEmail" required name="email" type="email" ng-model="email" class="form-control" />-->
+          <!--</p>-->
+          <!--<p class="form-group">-->
+          <!--<label for="loginPass">password</label>-->
+          <!--<input id="loginPass" required name="pass" type="password" ng-model="pass" class="form-control" />-->
+          <!--</p>-->
+          <!--<p class="form-group" ng-cloak ng-show="createMode">-->
+          <!--<label for="loginConfirm">confirm pass</label>-->
+          <!--<input id="loginConfirm" required name="confirm" type="password" ng-model="confirm" class="form-control" />-->
+          <!--</p>-->
+
+          <!--<p>-->
+          <!--<button  class="btn btn-primary" ng-click="passwordLogin(email, pass)" ng-hide="createMode"> Sign in </button>-->
+          <!--<button  class="btn btn-default" ng-click="createMode = true" ng-hide="createMode" type="button">Register</button>-->
+          <!--<button  class="btn btn-primary" ng-cloak ng-show="createMode" ng-click="createAccount(email, pass, confirm)" type="submit">Create Account</button>-->
+          <!--<button  class="btn btn-default" ng-cloak ng-show="createMode" ng-click="createMode = false" type="button">Cancel</button>-->
+          <!--</p>-->
+          <!--</form>-->
+          <!--<p ng-show="err" class="bg-danger">{{err}}</p>-->
+
+
+          <div class="text-center">OR</div>
+          <hr style="margin-top: 0;">
+
+          <a class="btn btn-block btn-social btn-facebook" >
+            <i class="fa fa-facebook"></i> Sign in with Facebook
+          </a>
+
+          <a class="btn btn-block btn-social btn-twitter">
+            <i class="fa fa-twitter"></i> Sign in with Twitter
+          </a>
+
+        </div>
+
+      </tab>
+      <tab heading="Register">
+
+        <div style="margin-top: 10px;">
+
+          <form name="registerForm" novalidate="" ng-submit="register()">
+
+            <div class="form-group">
+              <label class="control-label"> Name <sup style="color: red;">*</sup></label>
+              <input type="text" name="name" ng-model="model.registerForm.name" required class="form-control" placeholder="">
+              <div data-ng-messages="registerForm.$submitted && registerForm.name.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>name</b> is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label"> Last Name <sup style="color: red;">*</sup></label>
+              <input type="text" name="lastName" ng-model="model.registerForm.lastName" required class="form-control" placeholder="">
+              <div data-ng-messages="registerForm.$submitted && registerForm.lastName.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>Last Name</b> is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label"><i class="fa fa-envelope"></i> Email <sup style="color: red;">*</sup></label>
+              <input type="email" name="email" ng-model="model.registerForm.email" required class="form-control" placeholder="">
+              <div data-ng-messages="registerForm.$submitted && registerForm.email.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>email</b> is required.
+                </div>
+                <div data-ng-message="email">
+                  - The <b>email</b> must be valid.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label"><i class="fa fa-key"></i> Password <sup style="color: red;">*</sup></label>
+              <input type="password" name="password" ng-model="model.registerForm.password" required class="form-control" placeholder="">
+              <div data-ng-messages="registerForm.$submitted && registerForm.password.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>password</b> is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label"><i class="fa fa-key"></i> Same Password <sup style="color: red;">*</sup></label>
+              <input type="password" name="samePassword" ng-model="model.registerForm.samePassword" required match="model.registerForm.password" class="form-control" placeholder="">
+              <div data-ng-messages="registerForm.$submitted && registerForm.samePassword.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>same password</b> is required.
+                </div>
+                <div data-ng-message="match">
+                  - The <b>passwords</b> do not match!.
+                </div>
+              </div>
+            </div>
+
+            <button  class="btn btn-warning" type="button" ng-click="resetRegisterForm()"> Reset the form </button>
+            <button  class="btn btn-primary" type="submit"> Sign in </button>
+
+            <div class="alert alert-info alert-xs" style="margin-bottom: 10px; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
+
+          </form>
+
+
+          <!--<pre>{{registerForm | json }}</pre>-->
+
+
+        </div>
+
+      </tab>
+    </tabset>
+
+
+
+
+
+
+
+  </div>
+</div>
+
 

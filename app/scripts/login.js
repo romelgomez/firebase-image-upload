@@ -1,8 +1,44 @@
 'use strict';
 
-angular.module('login',[])
-  .controller('LoginController', function ($scope, FireAuth, $location, $q, FireRef, $timeout) {
+angular.module('login',['ngMessages','moreFilters','angular-loading-bar','validation.match'])
+  .controller('LoginController', ['$scope','FireAuth','$location','$q','FireRef','$timeout','$log',function ($scope, FireAuth, $location, $q, FireRef, $timeout, $log) {
     // Manages authentication to any active providers.
+
+    var original = angular.copy($scope.model = {
+      signIn:{
+        'email':'',
+        'password':''
+      },
+      registerForm:{
+        'name':'',
+        'lastName':'',
+        'email':'',
+        'password':'',
+        'samePassword':''
+      }
+    });
+
+    $scope.resetRegisterForm = function(){
+      angular.copy(original.registerForm,$scope.model.registerForm);
+      $scope.registerForm.$setUntouched();
+      $scope.registerForm.$setPristine();
+
+    };
+
+    //$scope.reset = function(){
+    //  $scope.model = angular.copy(original);
+    //  $scope.form.$setUntouched();
+    //  $scope.form.$setPristine();
+    //};
+
+
+    $scope.register = function(){
+      $log.info($scope.registerForm);
+      //if($scope.okForm.$valid){
+      //  $log.info('ok fromJson', angular.fromJson($scope.model.registerForm));
+      //  $log.info('ok toJson', angular.toJson($scope.model.registerForm));
+      //}
+    };
 
     $scope.oauthLogin = function(provider) {
       $scope.err = null;
@@ -77,4 +113,4 @@ angular.module('login',[])
     }
 
 
-  });
+  }]);
