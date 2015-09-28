@@ -22,15 +22,13 @@ angular.module('login',['ngMessages','moreFilters','angular-loading-bar','valida
       angular.copy(original.registerForm,$scope.model.registerForm);
       $scope.registerForm.$setUntouched();
       $scope.registerForm.$setPristine();
-
     };
 
-    //$scope.reset = function(){
-    //  $scope.model = angular.copy(original);
-    //  $scope.form.$setUntouched();
-    //  $scope.form.$setPristine();
-    //};
-
+    $scope.resetSignInForm = function(){
+      angular.copy(original.signIn,$scope.model.signIn);
+      $scope.signIn.$setUntouched();
+      $scope.signIn.$setPristine();
+    };
 
     $scope.register = function(){
       $log.info($scope.registerForm);

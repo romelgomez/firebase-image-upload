@@ -22,9 +22,10 @@
 
           <form name="signInForm" novalidate="" ng-submit="signIn()">
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{'has-success has-feedback': (signInForm.$submitted && signInForm.email.$valid),'has-error has-feedback': (signInForm.$submitted && signInForm.email.$invalid) }">
               <label class="control-label"><i class="fa fa-envelope"></i> Email <sup style="color: red;">*</sup></label>
               <input type="email" name="email" ng-model="model.signIn.email" required class="form-control" placeholder="">
+              <span ng-show="signInForm.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (signInForm.email.$valid),'glyphicon-remove': ( signInForm.email.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="signInForm.$submitted && signInForm.email.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>email</b> is required.
@@ -35,17 +36,26 @@
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{'has-success has-feedback': (signInForm.$submitted && signInForm.password.$valid),'has-error has-feedback': (signInForm.$submitted && signInForm.password.$invalid) }">
               <label class="control-label"><i class="fa fa-key"></i> Password <sup style="color: red;">*</sup></label>
-              <input type="password" name="password" ng-model="model.signIn.password" required class="form-control" placeholder="">
+              <input type="{{showpassword ? 'text' : 'password'}}" name="password" ng-model="model.signIn.password" required minlength="7" class="form-control" placeholder="">
+              <span ng-show="signInForm.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (signInForm.password.$valid),'glyphicon-remove': ( signInForm.password.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="signInForm.$submitted && signInForm.password.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>password</b> is required.
                 </div>
+                <div data-ng-message="minlength" >
+                  - The <b>password</b> must be at least 7 characters long.
+                </div>
               </div>
             </div>
 
-            <button  class="btn btn-primary" type="submit"> Sign in </button>
+            <div style="margin-bottom: 10px;">
+              <input type="checkbox" ng-model="showpassword"> Remember me
+            </div>
+
+             <button  class="btn btn-warning" type="button" ng-click="resetSignInForm()"> Reset the form </button>
+             <button  class="btn btn-primary" type="submit"> Sign in </button>
 
             <div class="alert alert-info alert-xs" style="margin-bottom: 10px; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
 
@@ -95,9 +105,10 @@
 
           <form name="registerForm" novalidate="" ng-submit="register()">
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{'has-success has-feedback': (registerForm.$submitted && registerForm.name.$valid),'has-error has-feedback': (registerForm.$submitted && registerForm.name.$invalid) }">
               <label class="control-label"> Name <sup style="color: red;">*</sup></label>
               <input type="text" name="name" ng-model="model.registerForm.name" required class="form-control" placeholder="">
+              <span ng-show="registerForm.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (registerForm.name.$valid),'glyphicon-remove': ( registerForm.name.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="registerForm.$submitted && registerForm.name.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>name</b> is required.
@@ -105,9 +116,10 @@
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{'has-success has-feedback': (registerForm.$submitted && registerForm.lastName.$valid),'has-error has-feedback': (registerForm.$submitted && registerForm.lastName.$invalid) }">
               <label class="control-label"> Last Name <sup style="color: red;">*</sup></label>
               <input type="text" name="lastName" ng-model="model.registerForm.lastName" required class="form-control" placeholder="">
+              <span ng-show="registerForm.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (registerForm.lastName.$valid),'glyphicon-remove': ( registerForm.lastName.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="registerForm.$submitted && registerForm.lastName.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>Last Name</b> is required.
@@ -115,9 +127,10 @@
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{'has-success has-feedback': (registerForm.$submitted && registerForm.email.$valid),'has-error has-feedback': (registerForm.$submitted && registerForm.email.$invalid) }">
               <label class="control-label"><i class="fa fa-envelope"></i> Email <sup style="color: red;">*</sup></label>
               <input type="email" name="email" ng-model="model.registerForm.email" required class="form-control" placeholder="">
+              <span ng-show="registerForm.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (registerForm.email.$valid),'glyphicon-remove': ( registerForm.email.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="registerForm.$submitted && registerForm.email.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>email</b> is required.
@@ -128,19 +141,24 @@
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{'has-success has-feedback': (registerForm.$submitted && registerForm.password.$valid),'has-error has-feedback': (registerForm.$submitted && registerForm.password.$invalid) }">
               <label class="control-label"><i class="fa fa-key"></i> Password <sup style="color: red;">*</sup></label>
-              <input type="password" name="password" ng-model="model.registerForm.password" required class="form-control" placeholder="">
+              <input type="password" name="password" ng-model="model.registerForm.password" required minlength="7" class="form-control" placeholder="">
+              <span ng-show="registerForm.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (registerForm.password.$valid),'glyphicon-remove': ( registerForm.password.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="registerForm.$submitted && registerForm.password.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>password</b> is required.
                 </div>
+                <div data-ng-message="minlength" >
+                  - The <b>password</b> must be at least 7 characters long.
+                </div>
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{'has-success has-feedback': (registerForm.$submitted && registerForm.samePassword.$valid),'has-error has-feedback': (registerForm.$submitted && registerForm.samePassword.$invalid) }">
               <label class="control-label"><i class="fa fa-key"></i> Same Password <sup style="color: red;">*</sup></label>
-              <input type="password" name="samePassword" ng-model="model.registerForm.samePassword" required match="model.registerForm.password" class="form-control" placeholder="">
+              <input type="password" name="samePassword" ng-model="model.registerForm.samePassword" required match="model.registerForm.password" minlength="7" class="form-control" placeholder="">
+              <span ng-show="registerForm.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (registerForm.password.$valid),'glyphicon-remove': ( registerForm.password.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="registerForm.$submitted && registerForm.samePassword.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>same password</b> is required.
@@ -148,8 +166,12 @@
                 <div data-ng-message="match">
                   - The <b>passwords</b> do not match!.
                 </div>
+                <div data-ng-message="minlength" >
+                  - The <b>password</b> must be at least 7 characters long.
+                </div>
               </div>
             </div>
+
 
             <button  class="btn btn-warning" type="button" ng-click="resetRegisterForm()"> Reset the form </button>
             <button  class="btn btn-primary" type="submit"> Sign in </button>
