@@ -1,0 +1,221 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Login Page</h3>
+  </div>
+  <div class="panel-body">
+
+    <!--<fieldset>-->
+    <!--<legend>Oauth</legend>-->
+    <!--<p>-->
+    <!--<button  class="btn btn-primary" ng-click="oauthLogin('facebook')">Facebook</button>-->
+    <!--<button  class="btn btn-primary" ng-click="oauthLogin('google')">Google</button>-->
+    <!--<button  class="btn btn-primary" ng-click="oauthLogin('twitter')">Twitter</button>-->
+    <!--<button  class="btn btn-primary" ng-click="oauthLogin('github')">GitHub</button>-->
+    <!--</p>-->
+    <!--</fieldset>-->
+
+
+    <tabset>
+      <tab heading="I'm a returning customer">
+
+        <div style="margin-top: 10px;">
+
+          <div ng-form="forms.signIn" style="margin-top: 10px;">
+
+            <div class="form-group" ng-class="{'has-success has-feedback': (forms.signIn.$submitted && forms.signIn.email.$valid),'has-error has-feedback': (forms.signIn.$submitted && forms.signIn.email.$invalid) }">
+              <label class="control-label"><i class="fa fa-envelope"></i> Email <sup style="color: red;">*</sup></label>
+              <input type="email" name="email" ng-model="model.signIn.email" required class="form-control" placeholder="">
+              <span ng-show="forms.signIn.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.signIn.email.$valid),'glyphicon-remove': ( forms.signIn.email.$invalid) }" aria-hidden="true"></span>
+              <div data-ng-messages="forms.signIn.$submitted && forms.signIn.email.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>email</b> is required.
+                </div>
+                <div data-ng-message="email">
+                  - The <b>email</b> must be valid.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-success has-feedback': (forms.signIn.$submitted && forms.signIn.password.$valid),'has-error has-feedback': (forms.signIn.$submitted && forms.signIn.password.$invalid) }">
+              <label class="control-label"><i class="fa fa-key"></i> Password <sup style="color: red;">*</sup></label>
+              <input type="{{showPassword ? 'text' : 'password'}}" name="password" ng-model="model.signIn.password" required minlength="7" class="form-control" placeholder="">
+              <span ng-show="forms.signIn.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.signIn.password.$valid),'glyphicon-remove': ( forms.signIn.password.$invalid) }" aria-hidden="true"></span>
+              <div data-ng-messages="forms.signIn.$submitted && forms.signIn.password.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>password</b> is required.
+                </div>
+                <div data-ng-message="minlength" >
+                  - The <b>password</b> must be at least 7 characters long.
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+              <input type="checkbox" ng-model="model.signIn.rememberMe"> Remember me
+            </div>
+
+             <button  class="btn btn-warning" type="button" ng-click="resetSignInForm()"> Reset the form </button>
+             <button  class="btn btn-primary" type="submit" ng-click="signIn()"> Sign in </button>
+
+          </div>
+
+          <!--<form role="form">-->
+          <!--<p class="form-group">-->
+          <!--<label for="loginEmail">email</label>-->
+          <!--<input id="loginEmail" required name="email" type="email" ng-model="email" class="form-control" />-->
+          <!--</p>-->
+          <!--<p class="form-group">-->
+          <!--<label for="loginPass">password</label>-->
+          <!--<input id="loginPass" required name="pass" type="password" ng-model="pass" class="form-control" />-->
+          <!--</p>-->
+          <!--<p class="form-group" ng-cloak ng-show="createMode">-->
+          <!--<label for="loginConfirm">confirm pass</label>-->
+          <!--<input id="loginConfirm" required name="confirm" type="password" ng-model="confirm" class="form-control" />-->
+          <!--</p>-->
+
+          <!--<p>-->
+          <!--<button  class="btn btn-primary" ng-click="passwordLogin(email, pass)" ng-hide="createMode"> Sign in </button>-->
+          <!--<button  class="btn btn-default" ng-click="createMode = true" ng-hide="createMode" type="button">Register</button>-->
+          <!--<button  class="btn btn-primary" ng-cloak ng-show="createMode" ng-click="createAccount(email, pass, confirm)" type="submit">Create Account</button>-->
+          <!--<button  class="btn btn-default" ng-cloak ng-show="createMode" ng-click="createMode = false" type="button">Cancel</button>-->
+          <!--</p>-->
+          <!--</form>-->
+          <!--<p ng-show="err" class="bg-danger">{{err}}</p>-->
+
+
+          <div class="text-center">OR</div>
+          <hr style="margin-top: 0;">
+
+          <a class="btn btn-block btn-social btn-facebook" >
+            <i class="fa fa-facebook"></i> Sign in with Facebook
+          </a>
+
+          <a class="btn btn-block btn-social btn-twitter">
+            <i class="fa fa-twitter"></i> Sign in with Twitter
+          </a>
+
+          <hr>
+          <div class="alert alert-info alert-xs" style="margin-bottom: 10px; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
+
+
+        </div>
+
+      </tab>
+      <tab heading="Register">
+
+        <div style="margin-top: 10px;">
+
+          <div ng-form="forms.register">
+
+            <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.name.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.name.$invalid) }">
+              <label class="control-label"> Name <sup style="color: red;">*</sup></label>
+              <input type="text" name="name" ng-model="model.register.name" required class="form-control" placeholder="">
+              <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.name.$valid),'glyphicon-remove': ( forms.register.name.$invalid) }" aria-hidden="true"></span>
+              <div data-ng-messages="forms.register.$submitted && forms.register.name.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>name</b> is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.lastName.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.lastName.$invalid) }">
+              <label class="control-label"> Last Name <sup style="color: red;">*</sup></label>
+              <input type="text" name="lastName" ng-model="model.register.lastName" required class="form-control" placeholder="">
+              <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.lastName.$valid),'glyphicon-remove': ( forms.register.lastName.$invalid) }" aria-hidden="true"></span>
+              <div data-ng-messages="forms.register.$submitted && forms.register.lastName.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>Last Name</b> is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.email.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.email.$invalid) }">
+              <label class="control-label"><i class="fa fa-envelope"></i> Email <sup style="color: red;">*</sup></label>
+              <input type="email" name="email" ng-model="model.register.email" required class="form-control" placeholder="">
+              <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.email.$valid),'glyphicon-remove': ( forms.register.email.$invalid) }" aria-hidden="true"></span>
+              <div data-ng-messages="forms.register.$submitted && forms.register.email.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>email</b> is required.
+                </div>
+                <div data-ng-message="email">
+                  - The <b>email</b> must be valid.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.password.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.password.$invalid) }">
+              <label class="control-label"><i class="fa fa-key"></i> Password <sup style="color: red;">*</sup></label>
+              <input type="password" name="password" ng-model="model.register.password" required minlength="7" class="form-control" placeholder="">
+              <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.password.$valid),'glyphicon-remove': ( forms.register.password.$invalid) }" aria-hidden="true"></span>
+              <div data-ng-messages="forms.register.$submitted && forms.register.password.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>password</b> is required.
+                </div>
+                <div data-ng-message="minlength" >
+                  - The <b>password</b> must be at least 7 characters long.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.samePassword.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.samePassword.$invalid) }">
+              <label class="control-label"><i class="fa fa-key"></i> Same Password <sup style="color: red;">*</sup></label>
+              <input type="password" name="samePassword" ng-model="model.register.samePassword" required match="model.register.password" minlength="7" class="form-control" placeholder="">
+              <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.password.$valid),'glyphicon-remove': ( forms.register.password.$invalid) }" aria-hidden="true"></span>
+              <div data-ng-messages="forms.register.$submitted && forms.register.samePassword.$error" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>same password</b> is required.
+                </div>
+                <div data-ng-message="match">
+                  - The <b>passwords</b> do not match!.
+                </div>
+                <div data-ng-message="minlength" >
+                  - The <b>password</b> must be at least 7 characters long.
+                </div>
+              </div>
+            </div>
+
+
+            <button  class="btn btn-warning" type="button" ng-click="resetRegisterForm()"> Reset the form </button>
+            <button  class="btn btn-primary" type="submit" ng-click="register()"> Sign in </button>
+
+
+          </div>
+
+          <hr>
+          <div class="alert alert-info alert-xs" style="margin-bottom: 10px; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
+
+        </div>
+
+      </tab>
+      <tab heading="Recover account">
+        <div ng-form="forms.recoverAccount" style="margin-top: 10px;">
+          <div class="form-group" ng-class="{'has-success has-feedback': (forms.recoverAccount.$submitted && forms.recoverAccount.email.$valid),'has-error has-feedback': (forms.recoverAccount.$submitted && forms.recoverAccount.email.$invalid) }">
+            <label class="control-label"><i class="fa fa-envelope"></i> Email <sup style="color: red;">*</sup></label>
+            <input type="email" name="email" ng-model="model.recoverAccount.email" required class="form-control" placeholder="">
+            <span ng-show="forms.recoverAccount.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.recoverAccount.email.$valid),'glyphicon-remove': ( forms.recoverAccount.email.$invalid) }" aria-hidden="true"></span>
+            <div data-ng-messages="forms.recoverAccount.$submitted && forms.recoverAccount.email.$error" class="help-block">
+              <div data-ng-message="required">
+                - The <b>email</b> is required.
+              </div>
+              <div data-ng-message="email">
+                - The <b>email</b> must be valid.
+              </div>
+            </div>
+          </div>
+        </div>
+        <button  class="btn btn-primary" type="submit" ng-click="recover()"> Recover </button>
+        <hr>
+        <div class="alert alert-info alert-xs" style="margin-bottom: 10px; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
+      </tab>
+    </tabset>
+
+
+
+
+
+
+
+  </div>
+</div>
+
+
