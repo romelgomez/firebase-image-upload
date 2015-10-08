@@ -10,8 +10,8 @@ angular.module('login',['ngMessages','angular-loading-bar','validation.match'])
         'password':''
       },
       register:{
-        'name':'',
-        'lastName':'',
+        'names':'',
+        'lastNames':'',
         'email':'',
         'password':'',
         'samePassword':''
@@ -39,9 +39,118 @@ angular.module('login',['ngMessages','angular-loading-bar','validation.match'])
       $scope.forms.signIn.$setPristine();
     };
 
-    $scope.register = function(){
+      var redirect = function(){
+        $location.path('/#/new-publication')
+      };
+
+      var showError = function(error) {
+
+        $log.info('showError var error: ',error);
+
+        switch (error.code) {
+          case "EMAIL_TAKEN":
+            console.log("The new user account cannot be created because the email is already in use.");
+            break;
+          case "INVALID_EMAIL":
+            console.log("The specified email is not a valid email.");
+            break;
+          default:
+            console.log("Error creating user:", error);
+        }
+
+      };
+
+      var createProfile = function (user) {
+        $log.info('createProfile var user: ', user);
+
+        var ref = FireRef.child('users', user.uid), def = $q.defer();
+
+        ref.set({
+          email: email,
+          names: $scope.model.register.names,
+          lastNames: $scope.model.register.lastNames
+        }, function(error) {
+          if(error){
+            def.reject(error);
+          }else {
+            def.resolve(ref);
+          }
+        });
+
+        return def.promise;
+      };
+
+      $scope.register = function(){
       $scope.forms.register.$setSubmitted(true);
       if($scope.forms.register.$valid){
+
+            FireAuth.$createUser({email: $scope.model.register.email, password: $scope.model.register.password})
+              .then(function () {
+                // Authenticate so we have permission to write to FireBase
+                return FireAuth.$authWithPassword({email: $scope.model.register.email, password: $scope.model.register.password}, {rememberMe: true});
+              })
+              .then(createProfile)
+              .then(redirect, showError);
+
+
+        //$scope.authObj.$createUser({
+        //  email: "my@email.com",
+        //  password: "mypassword"
+        //}).then(function(userData) {
+        //  console.log("User " + userData.uid + " created successfully!");
+        //
+        //  return $scope.authObj.$authWithPassword({
+        //    email: "my@email.com",
+        //    password: "mypassword"
+        //  });
+        //}).then(function(authData) {
+        //  console.log("Logged in as:", authData.uid);
+        //}).catch(function(error) {
+        //  console.error("Error: ", error);
+        //});
+
+        //var ref = new Firebase("https://<YOUR-FIREBASE-APP>.firebaseio.com");
+        //ref.authWithPassword({
+        //  "email": "bobtony@firebase.com",
+        //  "password": "correcthorsebatterystaple"
+        //}, function(error, authData) {
+        //  if (error) {
+        //    console.log("Login Failed!", error);
+        //  } else {
+        //    console.log("Authenticated successfully with payload:", authData);
+        //  }
+        //});
+
+        //var ref = new Firebase("https://<YOUR-FIREBASE-APP>.firebaseio.com");
+        //ref.createUser({
+        //  email: "bobtony@firebase.com",
+        //  password: "correcthorsebatterystaple"
+        //}, function(error, userData) {
+        //  if (error) {
+        //    switch (error.code) {
+        //      case "EMAIL_TAKEN":
+        //        console.log("The new user account cannot be created because the email is already in use.");
+        //        break;
+        //      case "INVALID_EMAIL":
+        //        console.log("The specified email is not a valid email.");
+        //        break;
+        //      default:
+        //        console.log("Error creating user:", error);
+        //    }
+        //  } else {
+        //    console.log("Successfully created user account with uid:", userData.uid);
+        //  }
+        //});
+
+        //$scope.authObj.$authWithPassword({
+        //  email: "my@email.com",
+        //  password: "mypassword"
+        //}).then(function(authData) {
+        //  console.log("Logged in as:", authData.uid);
+        //}).catch(function(error) {
+        //  console.error("Authentication failed:", error);
+        //});
+
         $log.info('ok fromJson', angular.fromJson($scope.model.register));
         $log.info('ok toJson', angular.toJson($scope.model.register));
       }
