@@ -66,13 +66,9 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'assets/views/categories.html',
         controller: 'TreeController'
       })
-      .when('/new-publication', {
+      .whenAuthenticated('/new-publication', {
         templateUrl: 'assets/views/newPublication.html',
         controller: 'PublicationsController'
-      })
-      .when('/chat', {
-        templateUrl: 'assets/views/chat.html',
-        controller: 'ChatController'
       })
       .when('/login', {
         templateUrl: 'assets/views/login.html',
@@ -117,4 +113,5 @@ angular.module('routes',['ngRoute'])
   ])
 
   // used by route security
-  .constant('SECURED_ROUTES', {});
+  .constant('SECURED_ROUTES', {})
+  .constant('LOGIN_REDIRECT_PATH', '/login');

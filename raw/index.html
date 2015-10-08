@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="assets/styles/main.css">
     <!-- endbuild -->
   </head>
-  <body>
+  <body ng-controller="AppController">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -49,14 +49,12 @@
           </div>
 
           <div class="collapse navbar-collapse" id="js-navbar-collapse">
-
             <ul class="nav navbar-nav">
-              <li><a ng-href="#/categories">Categories</a></li>
-              <li><a ng-href="#/new-publication">New Publication</a></li>
-              <li>
-                <a ng-hide-auth="" ng-href="#/login">Log in</a>
-                <a ng-show-auth="" ng-href="#/account">Account</a>
-              </li>
+              <li ng-show-auth="" ><a ng-href="#/categories">Categories</a></li>
+              <li ng-show-auth=""><a ng-href="#/new-publication" style="color: #337ab7;">New Publication</a></li>
+              <li ng-show-auth="" ><a ng-href="#/account">Account</a></li>
+              <li ng-hide-auth="" ><a ng-href="#/login" style="color: #337ab7;" >Log in</a></li>
+              <li ng-show-auth="" ><a ng-click="logout()" style="cursor: pointer; color: red;" >logout</a></li>
             </ul>
           </div>
         </div>

@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
   <div class="panel-heading">
     <h3 class="panel-title">Login Page</h3>
   </div>
@@ -108,7 +108,7 @@
           <div ng-form="forms.register">
 
             <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.names.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.names.$invalid) }">
-              <label class="control-label"> Name <sup style="color: red;">*</sup></label>
+              <label class="control-label"> Names <sup style="color: red;">*</sup></label>
               <input type="text" name="names" ng-model="model.register.names" required class="form-control" placeholder="">
               <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.names.$valid),'glyphicon-remove': ( forms.register.names.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="forms.register.$submitted && forms.register.names.$error" class="help-block">

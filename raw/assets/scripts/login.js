@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('login',['ngMessages','angular-loading-bar','validation.match'])
-  .controller('LoginController', ['$scope','FireAuth','$location','$q','FireRef','$timeout','$log',function ($scope, FireAuth, $location, $q, FireRef, $timeout, $log) {
+angular.module('login',['ngMessages','angular-loading-bar','validation.match','angular-loading-bar'])
+  .controller('LoginController', ['$scope','FireAuth','$location','$q','FireRef','notificationService','$log',function ($scope, FireAuth, $location, $q, FireRef, notificationService, $log) {
     // Manages authentication to any active providers.
 
     var original = angular.copy($scope.model = {
@@ -39,128 +39,161 @@ angular.module('login',['ngMessages','angular-loading-bar','validation.match'])
       $scope.forms.signIn.$setPristine();
     };
 
-      var redirect = function(){
-        $location.path('/#/new-publication')
-      };
+    var redirect = function(){
+      $location.path('/#/new-publication');
+    };
 
-      var showError = function(error) {
+    /**
+     * show error
+     * @param {Object} error
+     **/
+    var showError = function(error) {
 
-        $log.info('showError var error: ',error);
+      switch (error.code) {
+        case "AUTHENTICATION_DISABLED":
+          notificationService.error('The requested authentication provider is disabled for this Firebase application.');
+          break;
+        case "EMAIL_TAKEN":
+          notificationService.error('The new user account cannot be created because the email is already in use.');
+          break;
+        case "INVALID_ARGUMENTS":
+          notificationService.error('The specified credentials are malformed or incomplete. Please refer to the error message, error details, and Firebase documentation for the required arguments for authenticating with this provider.');
+          break;
+        case "INVALID_CONFIGURATION":
+          notificationService.error('The requested authentication provider is misconfigured, and the request cannot complete. Please confirm that the provider \'s client ID and secret are correct in your App Dashboard and the app is properly set up on the provider \'s website.');
+          break;
+        case "INVALID_CREDENTIALS":
+          notificationService.error('The requested authentication provider is misconfigured, and the request cannot complete. Please confirm that the provider \'s client ID and secret are correct in your App Dashboard and the app is properly set up on the provider \'s website.');
+          break;
+        case "INVALID_EMAIL":
+          notificationService.error('The specified email is not a valid email.');
+          break;
+        case "INVALID_ORIGIN":
+          notificationService.error('A security error occurred while processing the authentication request. The web origin for the request is not in your list of approved request origins. To approve this origin, visit the Login & Auth tab in your App Dashboard.');
+          break;
+        case "INVALID_PASSWORD":
+          notificationService.error('The specified user account password is incorrect.');
+          break;
+        case "INVALID_PROVIDER":
+          notificationService.error('The requested authentication provider does not exist. Please consult the Firebase Authentication documentation for a list of supported providers.');
+          break;
+        case "INVALID_TOKEN":
+          notificationService.error('The specified authentication token is invalid. This can occur when the token is malformed, expired, or the Firebase app secret that was used to generate it has been revoked.');
+          break;
+        case "INVALID_USER":
+          notificationService.error('The specified user account does not exist.');
+          break;
+        case "NETWORK_ERROR":
+          notificationService.error('An error occurred while attempting to contact the authentication server.');
+          break;
+        case "PROVIDER_ERROR":
+          notificationService.error('A third-party provider error occurred. Please refer to the error message and error details for more information.');
+          break;
+        case "TRANSPORT_UNAVAILABLE":
+          notificationService.error('The requested login method is not available in the user\'s browser environment. Popups are not available in Chrome for iOS, iOS Preview Panes, or local, file:// URLs. Redirects are not available in PhoneGap / Cordova, or local, file:// URLs.');
+          break;
+        case "UNKNOWN_ERROR":
+          notificationService.error('An unknown error occurred. Please refer to the error message and error details for more information.');
+          break;
+        case "USER_CANCELLED":
+          notificationService.error('The current authentication request was cancelled by the user.');
+          break;
+        case "USER_DENIED":
+          notificationService.error('The user did not authorize the application. This error can occur when the user has cancelled an OAuth authentication request.');
+          break;
+        default:
+          notificationService.error('Undefined Error: ',error);
+      }
 
-        switch (error.code) {
-          case "EMAIL_TAKEN":
-            console.log("The new user account cannot be created because the email is already in use.");
-            break;
-          case "INVALID_EMAIL":
-            console.log("The specified email is not a valid email.");
-            break;
-          default:
-            console.log("Error creating user:", error);
-        }
+    };
 
-      };
+    /**
+     * create the profile
+     * @param {Object} user
+     **/
+    var createProfile = function (user) {
+      var reference = FireRef.child('users').child(user.uid);
 
-      var createProfile = function (user) {
-        $log.info('createProfile var user: ', user);
+      // TODO AÑADIR DATOS RELEVANTES AL PERFIL DEL USUARIO
+      $log.info('createProfile var user: ', user);
 
-        var ref = FireRef.child('users', user.uid), def = $q.defer();
+      return reference.set({
+        email: $scope.model.register.email,
+        names: $scope.model.register.names,
+        lastNames: $scope.model.register.lastNames
+      });
 
-        ref.set({
-          email: email,
-          names: $scope.model.register.names,
-          lastNames: $scope.model.register.lastNames
-        }, function(error) {
-          if(error){
-            def.reject(error);
-          }else {
-            def.resolve(ref);
-          }
-        });
+    };
 
-        return def.promise;
-      };
+    /**
+     * create the user
+     * */
+    var createUser = function(){
+      var deferred  = $q.defer();
 
-      $scope.register = function(){
+      FireAuth.$createUser({email: $scope.model.register.email, password: $scope.model.register.password})
+          .then(function () {
+            // Authenticate so we have permission to write to FireBase
+            return FireAuth.$authWithPassword({email: $scope.model.register.email, password: $scope.model.register.password}, {rememberMe: true});
+          })
+          .then(createProfile)
+          .then(function(){
+            deferred.resolve();
+          }, function(error){
+            deferred.reject(error);
+          });
+
+      return deferred.promise;
+    };
+
+    $scope.register = function(){
       $scope.forms.register.$setSubmitted(true);
       if($scope.forms.register.$valid){
 
-            FireAuth.$createUser({email: $scope.model.register.email, password: $scope.model.register.password})
-              .then(function () {
-                // Authenticate so we have permission to write to FireBase
-                return FireAuth.$authWithPassword({email: $scope.model.register.email, password: $scope.model.register.password}, {rememberMe: true});
-              })
-              .then(createProfile)
-              .then(redirect, showError);
+        $scope.httpRequestPromise = createUser()
+            .then(function(){
+              redirect();
+            },function(error){
+              showError(error);
+            });
 
-
-        //$scope.authObj.$createUser({
-        //  email: "my@email.com",
-        //  password: "mypassword"
-        //}).then(function(userData) {
-        //  console.log("User " + userData.uid + " created successfully!");
-        //
-        //  return $scope.authObj.$authWithPassword({
-        //    email: "my@email.com",
-        //    password: "mypassword"
-        //  });
-        //}).then(function(authData) {
-        //  console.log("Logged in as:", authData.uid);
-        //}).catch(function(error) {
-        //  console.error("Error: ", error);
-        //});
-
-        //var ref = new Firebase("https://<YOUR-FIREBASE-APP>.firebaseio.com");
-        //ref.authWithPassword({
-        //  "email": "bobtony@firebase.com",
-        //  "password": "correcthorsebatterystaple"
-        //}, function(error, authData) {
-        //  if (error) {
-        //    console.log("Login Failed!", error);
-        //  } else {
-        //    console.log("Authenticated successfully with payload:", authData);
-        //  }
-        //});
-
-        //var ref = new Firebase("https://<YOUR-FIREBASE-APP>.firebaseio.com");
-        //ref.createUser({
-        //  email: "bobtony@firebase.com",
-        //  password: "correcthorsebatterystaple"
-        //}, function(error, userData) {
-        //  if (error) {
-        //    switch (error.code) {
-        //      case "EMAIL_TAKEN":
-        //        console.log("The new user account cannot be created because the email is already in use.");
-        //        break;
-        //      case "INVALID_EMAIL":
-        //        console.log("The specified email is not a valid email.");
-        //        break;
-        //      default:
-        //        console.log("Error creating user:", error);
-        //    }
-        //  } else {
-        //    console.log("Successfully created user account with uid:", userData.uid);
-        //  }
-        //});
-
-        //$scope.authObj.$authWithPassword({
-        //  email: "my@email.com",
-        //  password: "mypassword"
-        //}).then(function(authData) {
-        //  console.log("Logged in as:", authData.uid);
-        //}).catch(function(error) {
-        //  console.error("Authentication failed:", error);
-        //});
-
-        $log.info('ok fromJson', angular.fromJson($scope.model.register));
-        $log.info('ok toJson', angular.toJson($scope.model.register));
+        //$log.info('ok fromJson', angular.fromJson($scope.model.register));
+        //$log.info('ok toJson', angular.toJson($scope.model.register));
       }
+    };
+
+
+    // TODO https://www.firebase.com/docs/web/guide/login/password.html  TO ADD 'remember' Optional Settings
+    var signIn  = function(){
+      var deferred  = $q.defer();
+
+      FireAuth.$authWithPassword({email: $scope.model.signIn.email, password: $scope.model.signIn.password})
+          .then(function(authData){
+
+            $log.info('authData', authData);
+
+            deferred.resolve();
+          },function(error){
+            deferred.reject(error);
+          });
+
+      return deferred.promise;
     };
 
     $scope.signIn = function(){
       $scope.forms.signIn.$setSubmitted(true);
       if($scope.forms.signIn.$valid){
+
+        $scope.httpRequestPromise = signIn()
+            .then(function(){
+              redirect();
+            },function(error){
+              showError(error);
+            });
+
         $log.info('ok fromJson', angular.fromJson($scope.model.signIn));
         $log.info('ok toJson', angular.toJson($scope.model.signIn));
+
       }
     };
 

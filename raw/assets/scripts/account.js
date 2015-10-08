@@ -5,9 +5,13 @@ angular.module('account',[])
     // Provides rudimentary account management functions.
 
     $scope.user = user;
+
     $scope.logout = function() { FireAuth.$unauth(); };
+
     $scope.messages = [];
+
     var profile = $firebaseObject(FireRef.child('users/'+user.uid));
+
     profile.$bindTo($scope, 'profile');
 
 
