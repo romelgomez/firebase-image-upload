@@ -54,43 +54,21 @@
               <input type="checkbox" ng-model="model.signIn.rememberMe"> Remember me
             </div>
 
+            <!--<pre>{{model.signIn | json}}</pre>-->
+
              <button  class="btn btn-warning" type="button" ng-click="resetSignInForm()"> Reset the form </button>
              <button  class="btn btn-primary" type="submit" ng-click="signIn()"> Sign in </button>
 
           </div>
 
-          <!--<form role="form">-->
-          <!--<p class="form-group">-->
-          <!--<label for="loginEmail">email</label>-->
-          <!--<input id="loginEmail" required name="email" type="email" ng-model="email" class="form-control" />-->
-          <!--</p>-->
-          <!--<p class="form-group">-->
-          <!--<label for="loginPass">password</label>-->
-          <!--<input id="loginPass" required name="pass" type="password" ng-model="pass" class="form-control" />-->
-          <!--</p>-->
-          <!--<p class="form-group" ng-cloak ng-show="createMode">-->
-          <!--<label for="loginConfirm">confirm pass</label>-->
-          <!--<input id="loginConfirm" required name="confirm" type="password" ng-model="confirm" class="form-control" />-->
-          <!--</p>-->
-
-          <!--<p>-->
-          <!--<button  class="btn btn-primary" ng-click="passwordLogin(email, pass)" ng-hide="createMode"> Sign in </button>-->
-          <!--<button  class="btn btn-default" ng-click="createMode = true" ng-hide="createMode" type="button">Register</button>-->
-          <!--<button  class="btn btn-primary" ng-cloak ng-show="createMode" ng-click="createAccount(email, pass, confirm)" type="submit">Create Account</button>-->
-          <!--<button  class="btn btn-default" ng-cloak ng-show="createMode" ng-click="createMode = false" type="button">Cancel</button>-->
-          <!--</p>-->
-          <!--</form>-->
-          <!--<p ng-show="err" class="bg-danger">{{err}}</p>-->
-
-
           <div class="text-center">OR</div>
           <hr style="margin-top: 0;">
 
-          <a class="btn btn-block btn-social btn-facebook" >
+          <a class="btn btn-block btn-social btn-facebook" ng-click="oauthLogin('facebook')" >
             <i class="fa fa-facebook"></i> Sign in with Facebook
           </a>
 
-          <a class="btn btn-block btn-social btn-twitter">
+          <a class="btn btn-block btn-social btn-twitter" ng-click="oauthLogin('twitter')" >
             <i class="fa fa-twitter"></i> Sign in with Twitter
           </a>
 

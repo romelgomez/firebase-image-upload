@@ -1,4 +1,21 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Account</h3>
+  </div>
+  <div class="panel-body">
+
+    <div class="photo">
+      <img ng-src="{{user.password.profileImageURL}}" alt="avatar">
+    </div>
+
+
+
+  </div>
+</div>
+
+
 <pre>{{user | json}}</pre>
+<pre>{{user.password.profileImageURL}}</pre>
 
 <div class="row-fluid">
 <div class="{{user.provider === 'password'? 'col-md-4' : 'col-md-12'}}">
