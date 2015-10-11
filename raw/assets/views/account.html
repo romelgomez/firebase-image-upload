@@ -5,9 +5,8 @@
   <div class="panel-body">
 
 
-    <tabset>
-      <tab heading="Profile">
-
+    <uib-tabset>
+      <uib-tab heading="Profile">
 
         <div class="panel panel-default" style="margin-top: 50px; margin-bottom: 0; " >
           <div class="panel-body">
@@ -23,9 +22,9 @@
             <hr style="margin-top: 10px; margin-bottom: 10px;">
 
             <div class="list-group" style="margin-bottom: 0;">
-              <button type="button" class="list-group-item">Extend or Change Profile Details</button>
-              <button type="button" class="list-group-item">Change Password</button>
-              <button type="button" class="list-group-item">Change Email</button>
+              <button type="button" class="list-group-item" ng-click="changeProfileDetails()">Extend or Change Profile Details</button>
+              <button type="button" class="list-group-item" ng-click="changePassword()">Change Password</button>
+              <button type="button" class="list-group-item" ng-click="changeEmail()">Change Email</button>
             </div>
 
           </div>
@@ -34,18 +33,59 @@
           </div>
         </div>
 
-
-
-      </tab>
-      <tab heading="Billing">
+      </uib-tab>
+      <uib-tab heading="Billing">
         <div style="margin-top: 10px;">
           $$$$
         </div>
-      </tab>
-
+      </uib-tab>
+    </uib-tabset>
 
   </div>
 </div>
+
+<script type="text/ng-template" id="changeProfileDetailsModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Extend or Change Profile Details</h3>
+  </div>
+  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
+
+    <form id="profileDetails" name="forms.profileDetails" novalidate="" ng-submit="submit()">
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.names.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.names.$invalid) }">
+        <label class="control-label"> Names <sup style="color: red;">*</sup></label>
+        <input type="text" name="names" ng-model="model.register.names" required class="form-control" placeholder="">
+        <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.names.$valid),'glyphicon-remove': ( forms.register.names.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.register.$submitted && forms.register.names.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>names</b> are required.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.lastNames.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.lastNames.$invalid) }">
+        <label class="control-label"> Last Names <sup style="color: red;">*</sup></label>
+        <input type="text" name="lastNames" ng-model="model.register.lastNames" required class="form-control" placeholder="">
+        <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.lastNames.$valid),'glyphicon-remove': ( forms.register.lastNames.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.register.$submitted && forms.register.lastNames.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>Last Names</b> are required.
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <pre>{{}}</pre>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button form="profileDetails" class="btn btn-primary" type="submit">Save</button>
+  </div>
+</script>
+
+
 
 
 <pre>{{user | json}}</pre>

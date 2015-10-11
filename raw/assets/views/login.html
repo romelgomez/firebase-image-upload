@@ -15,8 +15,8 @@
     <!--</fieldset>-->
 
 
-    <tabset>
-      <tab heading="I'm a returning customer">
+    <uib-tabset>
+      <uib-tab heading="I'm a returning customer">
 
         <div style="margin-top: 10px;">
 
@@ -78,8 +78,8 @@
 
         </div>
 
-      </tab>
-      <tab heading="Register">
+      </uib-tab>
+      <uib-tab heading="Register">
 
         <div style="margin-top: 10px;">
 
@@ -164,8 +164,8 @@
 
         </div>
 
-      </tab>
-      <tab heading="Recover account">
+      </uib-tab>
+      <uib-tab heading="Recover account">
         <div ng-form="forms.recoverAccount" style="margin-top: 10px;">
           <div class="form-group" ng-class="{'has-success has-feedback': (forms.recoverAccount.$submitted && forms.recoverAccount.email.$valid),'has-error has-feedback': (forms.recoverAccount.$submitted && forms.recoverAccount.email.$invalid) }">
             <label class="control-label"><i class="fa fa-envelope"></i> Email <sup style="color: red;">*</sup></label>
@@ -184,13 +184,8 @@
         <button  class="btn btn-primary" type="submit" ng-click="recover()"> Recover </button>
         <hr>
         <div class="alert alert-info alert-xs" style="margin-bottom: 10px; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
-      </tab>
-    </tabset>
-
-
-
-
-
+      </uib-tab>
+    </uib-tabset>
 
 
   </div>
