@@ -1,30 +1,30 @@
 'use strict';
 
-angular.module('account',[])
+angular.module('account',['trTrustpass','ngPasswordStrength'])
   .controller('AccountController',['$scope','user', '$uibModal', function ($scope, user, $uibModal) {
 
     $scope.user = user;
 
     $scope.changeProfileDetails = function(size){
       $uibModal.open({
-        templateUrl: 'changeProfileDetailsModal.html',
-        controller: 'ChangeProfileDetailsController',
+        templateUrl: 'profileDetailsModal.html',
+        controller: 'ProfileDetailsController',
         size: size
       });
     };
 
     $scope.changePassword = function(size){
       $uibModal.open({
-        templateUrl: 'changePasswordModal.html',
-        controller: 'ChangeAccountPasswordController',
+        templateUrl: 'accountPasswordModal.html',
+        controller: 'AccountPasswordController',
         size: size
       });
     };
 
     $scope.changeEmail = function(size){
       $uibModal.open({
-        templateUrl: 'changeEmailModal.html',
-        controller: 'ChangeEmailAccountController',
+        templateUrl: 'emailAccountModal.html',
+        controller: 'EmailAccountController',
         size: size
       });
     };
@@ -83,42 +83,57 @@ angular.module('account',[])
     //}
 
   }])
-  .controller('ChangeProfileDetailsController',['$scope','$modalInstance',function($scope,$modalInstance){
+  .controller('ProfileDetailsController',['$scope','$modalInstance',function($scope,$modalInstance){
 
-    //var original = angular.copy($scope.model = {
-    //  signIn:{
-    //    email:'',
-    //    password:'',
-    //    rememberMe: false
-    //  },
-    //  register:{
-    //    names:'',
-    //    lastNames:'',
-    //    email:'',
-    //    password:'',
-    //    samePassword:''
-    //  },
-    //  recoverAccount:{
-    //    email:''
-    //  }
-    //});
+    $scope.forms = {
+      profileDetails: {}
+    };
 
+    var original = angular.copy($scope.model = {
+      profileDetails:{
+        names:'',
+        lastNames:'',
+        mobilePhone:'',
+        landLineTelephone:''
+      }
+    });
 
     $scope.cancel = function () {
       $modalInstance.dismiss();
     };
 
   }])
-  .controller('ChangeAccountPasswordController',['$scope',function($scope){
+  .controller('AccountPasswordController',['$scope','$modalInstance',function($scope,$modalInstance){
 
+    $scope.forms = {
+      accountPassword: {}
+    };
+
+    var original = angular.copy($scope.model = {
+      accountPassword:{
+        oldPassword:'',
+        newPassword:'',
+        sameNewPassword:''
+      }
+    });
 
     $scope.cancel = function () {
       $modalInstance.dismiss();
     };
 
   }])
-  .controller('ChangeEmailAccountController',['$scope',function($scope){
+  .controller('EmailAccountController',['$scope','$modalInstance',function($scope,$modalInstance){
 
+    $scope.forms = {
+      emailAccount: {}
+    };
+
+    var original = angular.copy($scope.model = {
+      emailAccount:{
+        newEmail:'',
+        password:''
+      }
+    });
 
     $scope.cancel = function () {
       $modalInstance.dismiss();

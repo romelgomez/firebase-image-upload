@@ -44,7 +44,7 @@
   </div>
 </div>
 
-<script type="text/ng-template" id="changeProfileDetailsModal.html">
+<script type="text/ng-template" id="profileDetailsModal.html">
   <div class="modal-header">
     <h3 class="modal-title">Extend or Change Profile Details</h3>
   </div>
@@ -52,22 +52,44 @@
 
     <form id="profileDetails" name="forms.profileDetails" novalidate="" ng-submit="submit()">
 
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.names.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.names.$invalid) }">
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.names.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.names.$invalid) }">
         <label class="control-label"> Names <sup style="color: red;">*</sup></label>
-        <input type="text" name="names" ng-model="model.register.names" required class="form-control" placeholder="">
-        <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.names.$valid),'glyphicon-remove': ( forms.register.names.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.register.$submitted && forms.register.names.$error" class="help-block">
+        <input type="text" name="names" ng-model="model.profileDetails.names" required class="form-control" placeholder="">
+        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.names.$valid),'glyphicon-remove': ( forms.profileDetails.names.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.names.$error" class="help-block">
           <div data-ng-message="required">
             - The <b>names</b> are required.
           </div>
         </div>
       </div>
 
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.lastNames.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.lastNames.$invalid) }">
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.lastNames.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.lastNames.$invalid) }">
         <label class="control-label"> Last Names <sup style="color: red;">*</sup></label>
-        <input type="text" name="lastNames" ng-model="model.register.lastNames" required class="form-control" placeholder="">
-        <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.lastNames.$valid),'glyphicon-remove': ( forms.register.lastNames.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.register.$submitted && forms.register.lastNames.$error" class="help-block">
+        <input type="text" name="lastNames" ng-model="model.profileDetails.lastNames" required class="form-control" placeholder="">
+        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.lastNames.$valid),'glyphicon-remove': ( forms.profileDetails.lastNames.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.lastNames.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>Last Names</b> are required.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$invalid) }">
+        <label class="control-label"> Mobile phone <sup style="color: red;">*</sup></label>
+        <input type="text" name="mobilePhone" ng-model="model.profileDetails.mobilePhone" required class="form-control" placeholder="">
+        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.mobilePhone.$valid),'glyphicon-remove': ( forms.profileDetails.mobilePhone.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>Last Names</b> are required.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$invalid) }">
+        <label class="control-label"> Landline Telephone <sup style="color: red;">*</sup></label>
+        <input type="text" name="landLineTelephone" ng-model="model.profileDetails.landLineTelephone" required class="form-control" placeholder="">
+        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.landLineTelephone.$valid),'glyphicon-remove': ( forms.profileDetails.landLineTelephone.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$error" class="help-block">
           <div data-ng-message="required">
             - The <b>Last Names</b> are required.
           </div>
@@ -76,7 +98,7 @@
 
     </form>
 
-    <pre>{{}}</pre>
+    <pre>{{model.profileDetails | json}}</pre>
 
   </div>
   <div class="modal-footer">
@@ -85,82 +107,262 @@
   </div>
 </script>
 
+<script type="text/ng-template" id="accountPasswordModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Change Password</h3>
+  </div>
+  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
+
+    <form id="accountPassword" name="forms.accountPassword" novalidate="" ng-submit="submit()">
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.oldPassword.$valid),'has-error has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.oldPassword.$invalid) }">
+        <label class="control-label"><i class="fa fa-key"></i> Old Password <sup style="color: red;">*</sup></label>
+        <input type="password" name="oldPassword" ng-model="model.accountPassword.oldPassword" required minlength="7" class="form-control" placeholder="">
+        <span ng-show="forms.accountPassword.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.accountPassword.oldPassword.$valid),'glyphicon-remove': ( forms.accountPassword.oldPassword.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.accountPassword.$submitted && forms.accountPassword.oldPassword.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>old password</b> is required.
+          </div>
+          <div data-ng-message="minlength" >
+            - The <b>old password</b> must be at least 7 characters long.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.newPassword.$valid),'has-error has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.newPassword.$invalid) }">
+        <label class="control-label"><i class="fa fa-key"></i> New Password <sup style="color: red;">*</sup></label>
+        <input
+          class="form-control"
+          type="password"
+          name="newPassword"
+          ng-model="model.accountPassword.newPassword"
+          required
+          minlength="7"
+          maxlength="50"
+          placeholder=""
+          tr-trustpass="{
+										maximum: true,
+										messageGuide: 'Make sure your password meets these requirements:',
+									 	messageDone:'¡Excellent! Your password is acceptable.',
+									 	lowercaseLabel:'One lowercase character.',
+									 	uppercaseLabel:'One uppercase character.',
+									 	numberLabel:'One number.',
+									 	specialLabel:'One special character.',
+									 	minimumLabel:'Minimum characters:',
+									 	maximumLabel:'Maximum characters:'
+									}"
+          >
+        <span ng-show="forms.accountPassword.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.accountPassword.newPassword.$valid),'glyphicon-remove': ( forms.accountPassword.newPassword.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.accountPassword.$submitted && forms.accountPassword.newPassword.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>new password</b> is required.
+          </div>
+          <div data-ng-message="minlength" >
+            - The <b>new password</b> must be at least 7 characters long.
+          </div>
+          <div data-ng-message="trustpass" >
+            - Make sure you meet the minimum requirements described above.
+          </div>
+        </div>
+
+        <div>Password strength: {{passStrength}}%</div>
+        <div ng-password-strength="model.accountPassword.newPassword" strength="passStrength" inner-class="progress-bar" inner-class-prefix="progress-bar-"></div>
+      </div>
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.sameNewPassword.$valid),'has-error has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.sameNewPassword.$invalid) }">
+        <label class="control-label"><i class="fa fa-key"></i> Same New Password <sup style="color: red;">*</sup></label>
+        <input type="password" name="sameNewPassword" ng-model="model.accountPassword.sameNewPassword" required match="model.accountPassword.newPassword" minlength="7" class="form-control" placeholder="">
+        <span ng-show="forms.accountPassword.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.accountPassword.sameNewPassword.$valid),'glyphicon-remove': ( forms.accountPassword.sameNewPassword.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.accountPassword.$submitted && forms.accountPassword.sameNewPassword.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>same new password</b> is required.
+          </div>
+          <div data-ng-message="match">
+            - The <b>(new password) and (the same new password)</b> do not match!
+          </div>
+          <div data-ng-message="minlength">
+            - The <b>same new password</b> must be at least 7 characters long.
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <pre>{{model.accountPassword | json}}</pre>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button form="accountPassword" class="btn btn-primary" type="submit">Save</button>
+  </div>
+</script>
 
 
 
-<pre>{{user | json}}</pre>
-<pre>{{user.password.profileImageURL}}</pre>
+<script type="text/ng-template" id="emailAccountModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Change Email</h3>
+  </div>
+  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
 
-<div class="row-fluid">
-<div class="{{user.provider === 'password'? 'col-md-4' : 'col-md-12'}}">
-  <h3>Profile</h3>
+    <form id="emailAccount" name="forms.emailAccount" novalidate="" ng-submit="submit()">
 
-  <form role="form">
-    <p class="form-group">
-      <label>Account ID</label>
-      <br />{{user.uid}}
-    </p>
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.newEmail.$valid),'has-error has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.newEmail.$invalid) }">
+        <label class="control-label"><i class="fa fa-key"></i> New Email <sup style="color: red;">*</sup></label>
+        <input type="email" name="newEmail" ng-model="model.emailAccount.newEmail" required minlength="7" class="form-control" placeholder="">
+        <span ng-show="forms.emailAccount.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.emailAccount.newEmail.$valid),'glyphicon-remove': ( forms.emailAccount.newEmail.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.emailAccount.$submitted && forms.emailAccount.newEmail.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>new email</b> is required.
+          </div>
+          <div data-ng-message="email">
+            - The <b>email</b> must be valid.
+          </div>
+        </div>
+      </div>
 
-    <p class="form-group">
-      <label>Name:</label>
-      <input type="text" name="name" ng-model="profile.name" class="form-control" />
-    </p>
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.password.$valid),'has-error has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.password.$invalid) }">
+        <label class="control-label"><i class="fa fa-key"></i> Password <sup style="color: red;">*</sup></label>
+        <input type="password" name="password" ng-model="model.emailAccount.password" required minlength="7" class="form-control" placeholder="">
+        <span ng-show="forms.emailAccount.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.emailAccount.password.$valid),'glyphicon-remove': ( forms.emailAccount.password.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.emailAccount.$submitted && forms.emailAccount.password.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>password</b> is required.
+          </div>
+          <div data-ng-message="minlength" >
+            - The <b>password</b> must be at least 7 characters long.
+          </div>
+        </div>
+      </div>
 
-    <p class="form-group">
-      <label>Email:</label>
-      <br />{{profile.email}}
-    </p>
-  </form>
+    </form>
 
-  <p>
-    <button role="button" ng-click="logout()" class="btn btn-danger">Log Out</button>
-  </p>
-</div>
+    <pre>{{model.emailAccount | json}}</pre>
 
-<div class="col-md-4" ng-show="{{user.provider === 'password'}}">
-<form role="form">
-  <h3>Change Password</h3>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button form="emailAccount" class="btn btn-primary" type="submit">Save</button>
+  </div>
+</script>
 
-  <p class="form-group">
-    <label>Old Password:</label>
-    <input type="password" ng-keypress="clear()" ng-model="oldpass" class="form-control" />
-  </p>
 
-  <p class="form-group">
-    <label>New Password:</label>
-    <input type="password" ng-keypress="clear()" ng-model="newpass" class="form-control" />
-  </p>
 
-  <p class="form-group">
-    <label>Confirm New Password:</label>
-    <input type="password" ng-keypress="clear()" ng-model="confirm" class="form-control" />
-  </p>
 
-  <button class="btn btn-primary" ng-click="changePassword(oldpass, newpass, confirm)">change password</button>
 
-  <p class="error" ng-show="err">{{err}}</p>
-  <p class="good" ng-show="msg">{{msg}}</p>
-</form>
-</div>
 
-<div class="col-md-4" ng-show="{{user.provider === 'password'}}">
-<form>
-  <h3>Change Email</h3>
 
-  <p class="form-group">
-    <label>New Email:</label>
-    <input type="text" ng-keypress="clear()" ng-model="newEmail" class="form-control" />
-  </p>
 
-  <p class="form-group">
-    <label>Password:</label>
-    <input type="password" ng-keypress="clear()" ng-model="pass" class="form-control" />
-  </p>
 
-  <button class="btn btn-primary" ng-click="changeEmail(pass, newEmail)">update email</button>
-</form>
-</div>
 
-</div>
-<p class="clearfix"></p>
-<div ng-repeat="message in messages" class="alert alert-{{message.type}}">{{message.text}}</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section>
+  <pre>{{user | json}}</pre>
+  <pre>{{user.password.profileImageURL}}</pre>
+
+  <div class="row-fluid">
+    <div class="{{user.provider === 'password'? 'col-md-4' : 'col-md-12'}}">
+      <h3>Profile</h3>
+
+      <form role="form">
+        <p class="form-group">
+          <label>Account ID</label>
+          <br />{{user.uid}}
+        </p>
+
+        <p class="form-group">
+          <label>Name:</label>
+          <input type="text" name="name" ng-model="profile.name" class="form-control" />
+        </p>
+
+        <p class="form-group">
+          <label>Email:</label>
+          <br />{{profile.email}}
+        </p>
+      </form>
+
+      <p>
+        <button role="button" ng-click="logout()" class="btn btn-danger">Log Out</button>
+      </p>
+    </div>
+
+    <div class="col-md-4" ng-show="{{user.provider === 'password'}}">
+      <form role="form">
+        <h3>Change Password</h3>
+
+        <p class="form-group">
+          <label>Old Password:</label>
+          <input type="password" ng-keypress="clear()" ng-model="oldpass" class="form-control" />
+        </p>
+
+        <p class="form-group">
+          <label>New Password:</label>
+          <input type="password" ng-keypress="clear()" ng-model="newpass" class="form-control" />
+        </p>
+
+        <p class="form-group">
+          <label>Confirm New Password:</label>
+          <input type="password" ng-keypress="clear()" ng-model="confirm" class="form-control" />
+        </p>
+
+        <button class="btn btn-primary" ng-click="changePassword(oldpass, newpass, confirm)">change password</button>
+
+        <p class="error" ng-show="err">{{err}}</p>
+        <p class="good" ng-show="msg">{{msg}}</p>
+      </form>
+    </div>
+
+    <div class="col-md-4" ng-show="{{user.provider === 'password'}}">
+      <form>
+        <h3>Change Email</h3>
+
+        <p class="form-group">
+          <label>New Email:</label>
+          <input type="text" ng-keypress="clear()" ng-model="newEmail" class="form-control" />
+        </p>
+
+        <p class="form-group">
+          <label>Password:</label>
+          <input type="password" ng-keypress="clear()" ng-model="pass" class="form-control" />
+        </p>
+
+        <button class="btn btn-primary" ng-click="changeEmail(pass, newEmail)">update email</button>
+      </form>
+    </div>
+
+  </div>
+  <p class="clearfix"></p>
+  <div ng-repeat="message in messages" class="alert alert-{{message.type}}">{{message.text}}</div>
+</section>
+
+
