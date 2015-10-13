@@ -47,6 +47,6 @@
     "underscore": "1.8.3",
     "angular-trustpass": "~0.2.0",
     "ng-password-strength": "~0.2.1",
-    "angular-trustpass": "~0.2.0"
+    "intl-tel-input": "~6.3.1"
   }
 }

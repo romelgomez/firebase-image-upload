@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('account',['trTrustpass','ngPasswordStrength'])
-  .controller('AccountController',['$scope','user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log',function ($scope, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
+  .controller('AccountController',['$scope','user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', function ($scope, user, $uibModal, FireRef, $firebaseObject, notificationService) {
 
     $scope.user = user;
 
@@ -10,6 +10,22 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     $scope.httpRequestPromise = $scope.profile.$loaded(null,function(error){
       notificationService.error(error);
     });
+
+    var modalErrors = function(error){
+      switch(error) {
+        case 'escape key press':
+          notificationService.notice('This action was canceled by the user');
+          break;
+        case undefined:
+          notificationService.notice('This action was canceled by the user');
+          break;
+        case 'backdrop click':
+          notificationService.notice('This action was canceled by the user');
+          break;
+        default:
+          notificationService.error(error);
+      }
+    };
 
     $scope.changeProfileDetails = function(size){
       var modalInstance = $uibModal.open({
@@ -26,93 +42,50 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
       modalInstance.result.then(function () {
         notificationService.success('The profile has been updated.');
       }, function (error) {
-        switch(error) {
-          case 'escape key press':
-            notificationService.notice('This action was canceled by the user');
-            break;
-          case undefined:
-            notificationService.notice('This action was canceled by the user');
-            break;
-          case 'backdrop click':
-            notificationService.notice('This action was canceled by the user');
-            break;
-          default:
-            notificationService.error(error);
-        }
+        modalErrors(error);
       });
     };
 
     $scope.changePassword = function(size){
-      $uibModal.open({
+      var modalInstance = $uibModal.open({
         templateUrl: 'accountPasswordModal.html',
         controller: 'AccountPasswordController',
-        size: size
+        size: size,
+        resolve: {
+          profile: function () {
+            return $scope.profile;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+        notificationService.success('The password has been updated.');
+      }, function (error) {
+        modalErrors(error);
       });
     };
 
     $scope.changeEmail = function(size){
-      $uibModal.open({
+      var modalInstance = $uibModal.open({
         templateUrl: 'emailAccountModal.html',
         controller: 'EmailAccountController',
-        size: size
+        size: size,
+        resolve: {
+          profile: function () {
+            return $scope.profile;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+        notificationService.success('The email has been updated.');
+      }, function (error) {
+        modalErrors(error);
       });
     };
 
-    // Provides rudimentary account management functions.
-    //$scope.logout = function() { FireAuth.$unauth(); };
-    //
-    //$scope.messages = [];
-    //
-    //var profile = $firebaseObject(FireRef.child('users/'+user.uid));
-    //
-    //profile.$bindTo($scope, 'profile');
-    //
-    //
-    //$scope.changePassword = function(oldPass, newPass, confirm) {
-    //  $scope.err = null;
-    //  if( !oldPass || !newPass ) {
-    //    error('Please enter all fields');
-    //  }
-    //  else if( newPass !== confirm ) {
-    //    error('Passwords do not match');
-    //  }
-    //  else {
-    //    FireAuth.$changePassword({email: profile.email, oldPassword: oldPass, newPassword: newPass})
-    //      .then(function() {
-    //        success('Password changed');
-    //      }, error);
-    //  }
-    //};
-    //
-    //$scope.changeEmail = function(pass, newEmail) {
-    //  $scope.err = null;
-    //  FireAuth.$changeEmail({password: pass, newEmail: newEmail, oldEmail: profile.email})
-    //    .then(function() {
-    //      profile.email = newEmail;
-    //      profile.$save();
-    //      success('Email changed');
-    //    })
-    //    .catch(error);
-    //};
-    //
-    //function error(err) {
-    //  alert(err, 'danger');
-    //}
-    //
-    //function success(msg) {
-    //  alert(msg, 'success');
-    //}
-    //
-    //function alert(msg, type) {
-    //  var obj = {text: msg+'', type: type};
-    //  $scope.messages.unshift(obj);
-    //  $timeout(function() {
-    //    $scope.messages.splice($scope.messages.indexOf(obj), 1);
-    //  }, 10000);
-    //}
-
   }])
-  .controller('ProfileDetailsController',['$scope','$modalInstance', 'profile', '$log',function($scope, $modalInstance, profile, $log){
+  .controller('ProfileDetailsController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
 
     $scope.forms = {
       profileDetails: {}
@@ -134,15 +107,13 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
         profile.lastNames         = $scope.model.profileDetails.lastNames;
         profile.mobilePhone       = $scope.model.profileDetails.mobilePhone;
         profile.landLineTelephone = $scope.model.profileDetails.landLineTelephone;
-        profile.$save()
+        $scope.httpRequestPromise = profile.$save()
           .then(function() {
             $modalInstance.close();
           }, function(error) {
             $modalInstance.dismiss(error);
           });
 
-        $log.info('ok fromJson', angular.fromJson($scope.model.profileDetails));
-        $log.info('ok toJson', angular.toJson($scope.model.profileDetails));
       }
     };
 
@@ -151,7 +122,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     };
 
   }])
-  .controller('AccountPasswordController',['$scope','$modalInstance',function($scope,$modalInstance){
+  .controller('AccountPasswordController',['$scope','$modalInstance','FireAuth','profile',function($scope, $modalInstance, FireAuth, profile){
 
     $scope.forms = {
       accountPassword: {}
@@ -168,6 +139,13 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     $scope.submit = function(){
       if($scope.forms.accountPassword.$valid){
 
+        $scope.httpRequestPromise = FireAuth.$changePassword({email: profile.email, oldPassword: $scope.model.accountPassword.oldPassword, newPassword: $scope.model.accountPassword.newPassword})
+          .then(function() {
+            $modalInstance.close();
+          }, function(error){
+            $modalInstance.dismiss(error);
+          });
+
       }
     };
 
@@ -176,7 +154,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     };
 
   }])
-  .controller('EmailAccountController',['$scope','$modalInstance',function($scope,$modalInstance){
+  .controller('EmailAccountController',['$q', '$scope', '$modalInstance', 'FireAuth', 'profile',function( $q, $scope, $modalInstance, FireAuth, profile){
 
     $scope.forms = {
       emailAccount: {}
@@ -191,6 +169,21 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
 
     $scope.submit = function(){
       if($scope.forms.emailAccount.$valid){
+        var deferred  = $q.defer();
+        $scope.httpRequestPromise = deferred.promise;
+
+        FireAuth.$changeEmail({password: $scope.model.emailAccount.password, newEmail: $scope.model.emailAccount.newEmail, oldEmail: profile.email})
+          .then(function() {
+            profile.email = $scope.model.emailAccount.newEmail;
+            return profile.$save();
+          })
+          .then(function() {
+            $modalInstance.close();
+            deferred.resolve();
+          }, function(error){
+            $modalInstance.dismiss(error);
+            deferred.reject(error);
+          });
 
       }
     };
