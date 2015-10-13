@@ -43,16 +43,16 @@
       </h3>
     </div>
     <div class="panel-body">
-      <tabset justified="true">
-        <tab heading="JqTree">
+      <uib-tabset justified="true">
+        <uib-tab heading="JqTree">
           <br>
           <tree></tree>
-        </tab>
-        <tab heading="JqTree RAW DATA">
+        </uib-tab>
+        <uib-tab heading="JqTree RAW DATA">
           <br>
           <pre>{{asJqTreeData | json }}</pre>
-        </tab>
-        <tab heading="Pretty HTML">
+        </uib-tab>
+        <uib-tab heading="Pretty HTML">
           <br>
           <section ng-if="nodes.length > 0">
             <div class="panel panel-default" ng-repeat="node in nodes">
@@ -82,12 +82,12 @@
           <section ng-if="nodes.length === 0">
             <h2>There is no categories</h2>
           </section>
-        </tab>
-        <tab heading="Pretty JSON">
+        </uib-tab>
+        <uib-tab heading="Pretty JSON">
           <br>
           <pre>{{nodes | json}}</pre>
-        </tab>
-      </tabset>
+        </uib-tab>
+      </uib-tabset>
 
     </div>
   </div>

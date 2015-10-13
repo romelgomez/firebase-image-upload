@@ -345,7 +345,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
   }])
-  .controller('TreeController',['$scope','notificationService','treeService','$modal',function($scope,notificationService,treeService,$modal){
+  .controller('TreeController',['$scope','notificationService','treeService','$uibModal',function($scope,notificationService,treeService,$uibModal){
 
     $scope.nodes = treeService.nodes();
 
@@ -374,7 +374,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
     $scope.deleteNode = function(node){
-      var modalInstance = $modal.open({
+      var modalInstance = $uibModal.open({
         templateUrl: 'deleteNode.html',
         controller: 'DeleteNodeController',
         resolve: {
