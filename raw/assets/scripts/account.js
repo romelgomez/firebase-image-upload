@@ -1,15 +1,44 @@
 'use strict';
 
 angular.module('account',['trTrustpass','ngPasswordStrength'])
-  .controller('AccountController',['$scope','user', '$uibModal', function ($scope, user, $uibModal) {
+  .controller('AccountController',['$scope','user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log',function ($scope, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
 
     $scope.user = user;
 
+    $scope.profile = $firebaseObject(FireRef.child('users/'+user.uid));
+
+    $scope.httpRequestPromise = $scope.profile.$loaded(null,function(error){
+      notificationService.error(error);
+    });
+
     $scope.changeProfileDetails = function(size){
-      $uibModal.open({
+      var modalInstance = $uibModal.open({
         templateUrl: 'profileDetailsModal.html',
         controller: 'ProfileDetailsController',
-        size: size
+        size: size,
+        resolve: {
+          profile: function () {
+            return $scope.profile;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+        notificationService.success('The profile has been updated.');
+      }, function (error) {
+        switch(error) {
+          case 'escape key press':
+            notificationService.notice('This action was canceled by the user');
+            break;
+          case undefined:
+            notificationService.notice('This action was canceled by the user');
+            break;
+          case 'backdrop click':
+            notificationService.notice('This action was canceled by the user');
+            break;
+          default:
+            notificationService.error(error);
+        }
       });
     };
 
@@ -83,7 +112,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     //}
 
   }])
-  .controller('ProfileDetailsController',['$scope','$modalInstance',function($scope,$modalInstance){
+  .controller('ProfileDetailsController',['$scope','$modalInstance', 'profile', '$log',function($scope, $modalInstance, profile, $log){
 
     $scope.forms = {
       profileDetails: {}
@@ -91,12 +120,31 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
 
     var original = angular.copy($scope.model = {
       profileDetails:{
-        names:'',
-        lastNames:'',
-        mobilePhone:'',
-        landLineTelephone:''
+        names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
+        lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
+        mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
+        landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : ''
       }
     });
+
+    $scope.submit = function(){
+      if($scope.forms.profileDetails.$valid){
+
+        profile.names             = $scope.model.profileDetails.names;
+        profile.lastNames         = $scope.model.profileDetails.lastNames;
+        profile.mobilePhone       = $scope.model.profileDetails.mobilePhone;
+        profile.landLineTelephone = $scope.model.profileDetails.landLineTelephone;
+        profile.$save()
+          .then(function() {
+            $modalInstance.close();
+          }, function(error) {
+            $modalInstance.dismiss(error);
+          });
+
+        $log.info('ok fromJson', angular.fromJson($scope.model.profileDetails));
+        $log.info('ok toJson', angular.toJson($scope.model.profileDetails));
+      }
+    };
 
     $scope.cancel = function () {
       $modalInstance.dismiss();
@@ -117,6 +165,12 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
       }
     });
 
+    $scope.submit = function(){
+      if($scope.forms.accountPassword.$valid){
+
+      }
+    };
+
     $scope.cancel = function () {
       $modalInstance.dismiss();
     };
@@ -134,6 +188,18 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
         password:''
       }
     });
+
+    $scope.submit = function(){
+      if($scope.forms.emailAccount.$valid){
+
+      }
+    };
+
+    $scope.resetForm = function(){
+      angular.copy(original.emailAccount,$scope.model.emailAccount);
+      $scope.forms.emailAccount.$setUntouched();
+      $scope.forms.emailAccount.$setPristine();
+    };
 
     $scope.cancel = function () {
       $modalInstance.dismiss();

@@ -1,9 +1,8 @@
-<div class="panel panel-default">
+<div class="panel panel-default" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
   <div class="panel-heading">
     <h3 class="panel-title">Account</h3>
   </div>
   <div class="panel-body">
-
 
     <uib-tabset>
       <uib-tab heading="Profile">
@@ -16,7 +15,7 @@
                 <img ng-src="{{user.password.profileImageURL}}" alt="avatar">
               </div>
               <div>
-                Hi <span style="color: #F0563D;">Romel Gomez</span>
+                Hi <span style="color: #F0563D;">{{profile.names | capitalize}} {{profile.lastNames | capitalize}}</span>
               </div>
             </div>
             <hr style="margin-top: 10px; margin-bottom: 10px;">
@@ -45,7 +44,7 @@
 </div>
 
 <script type="text/ng-template" id="profileDetailsModal.html">
-  <div class="modal-header">
+  <div class="modal-header" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
     <h3 class="modal-title">Extend or Change Profile Details</h3>
   </div>
   <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
@@ -54,46 +53,42 @@
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.names.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.names.$invalid) }">
         <label class="control-label"> Names <sup style="color: red;">*</sup></label>
-        <input type="text" name="names" ng-model="model.profileDetails.names" required class="form-control" placeholder="">
+        <input type="text" name="names" ng-model="model.profileDetails.names" ng-trim no-special-chars required capitalize class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.names.$valid),'glyphicon-remove': ( forms.profileDetails.names.$invalid) }" aria-hidden="true"></span>
         <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.names.$error" class="help-block">
           <div data-ng-message="required">
             - The <b>names</b> are required.
+          </div>
+          <div data-ng-message="noSpecialChars">
+            - Not allowed to use special characters.
           </div>
         </div>
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.lastNames.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.lastNames.$invalid) }">
         <label class="control-label"> Last Names <sup style="color: red;">*</sup></label>
-        <input type="text" name="lastNames" ng-model="model.profileDetails.lastNames" required class="form-control" placeholder="">
+        <input type="text" name="lastNames" ng-model="model.profileDetails.lastNames" ng-trim no-special-chars required capitalize class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.lastNames.$valid),'glyphicon-remove': ( forms.profileDetails.lastNames.$invalid) }" aria-hidden="true"></span>
         <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.lastNames.$error" class="help-block">
           <div data-ng-message="required">
-            - The <b>Last Names</b> are required.
+            - The <b>last names</b> are required.
+          </div>
+          <div data-ng-message="noSpecialChars">
+            - Not allowed to use special characters.
           </div>
         </div>
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$invalid) }">
         <label class="control-label"> Mobile phone <sup style="color: red;">*</sup></label>
-        <input type="text" name="mobilePhone" ng-model="model.profileDetails.mobilePhone" required class="form-control" placeholder="">
+        <input type="text" name="mobilePhone" ng-model="model.profileDetails.mobilePhone" class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.mobilePhone.$valid),'glyphicon-remove': ( forms.profileDetails.mobilePhone.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$error" class="help-block">
-          <div data-ng-message="required">
-            - The <b>Last Names</b> are required.
-          </div>
-        </div>
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$invalid) }">
         <label class="control-label"> Landline Telephone <sup style="color: red;">*</sup></label>
-        <input type="text" name="landLineTelephone" ng-model="model.profileDetails.landLineTelephone" required class="form-control" placeholder="">
+        <input type="text" name="landLineTelephone" ng-model="model.profileDetails.landLineTelephone" class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.landLineTelephone.$valid),'glyphicon-remove': ( forms.profileDetails.landLineTelephone.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$error" class="help-block">
-          <div data-ng-message="required">
-            - The <b>Last Names</b> are required.
-          </div>
-        </div>
       </div>
 
     </form>
@@ -108,7 +103,7 @@
 </script>
 
 <script type="text/ng-template" id="accountPasswordModal.html">
-  <div class="modal-header">
+  <div class="modal-header" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
     <h3 class="modal-title">Change Password</h3>
   </div>
   <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
@@ -197,10 +192,8 @@
   </div>
 </script>
 
-
-
 <script type="text/ng-template" id="emailAccountModal.html">
-  <div class="modal-header">
+  <div class="modal-header" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
     <h3 class="modal-title">Change Email</h3>
   </div>
   <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
@@ -241,6 +234,7 @@
 
   </div>
   <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="resetForm()">Reset Form</button>
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     <button form="emailAccount" class="btn btn-primary" type="submit">Save</button>
   </div>
@@ -287,82 +281,103 @@
 
 
 <section>
-  <pre>{{user | json}}</pre>
-  <pre>{{user.password.profileImageURL}}</pre>
 
-  <div class="row-fluid">
-    <div class="{{user.provider === 'password'? 'col-md-4' : 'col-md-12'}}">
-      <h3>Profile</h3>
-
-      <form role="form">
-        <p class="form-group">
-          <label>Account ID</label>
-          <br />{{user.uid}}
-        </p>
-
-        <p class="form-group">
-          <label>Name:</label>
-          <input type="text" name="name" ng-model="profile.name" class="form-control" />
-        </p>
-
-        <p class="form-group">
-          <label>Email:</label>
-          <br />{{profile.email}}
-        </p>
-      </form>
-
-      <p>
-        <button role="button" ng-click="logout()" class="btn btn-danger">Log Out</button>
-      </p>
+  <div class="panel panel-default">
+    <div class="panel-heading">Profile</div>
+    <div class="panel-body">
+      <pre>{{profile | json}}</pre>
     </div>
-
-    <div class="col-md-4" ng-show="{{user.provider === 'password'}}">
-      <form role="form">
-        <h3>Change Password</h3>
-
-        <p class="form-group">
-          <label>Old Password:</label>
-          <input type="password" ng-keypress="clear()" ng-model="oldpass" class="form-control" />
-        </p>
-
-        <p class="form-group">
-          <label>New Password:</label>
-          <input type="password" ng-keypress="clear()" ng-model="newpass" class="form-control" />
-        </p>
-
-        <p class="form-group">
-          <label>Confirm New Password:</label>
-          <input type="password" ng-keypress="clear()" ng-model="confirm" class="form-control" />
-        </p>
-
-        <button class="btn btn-primary" ng-click="changePassword(oldpass, newpass, confirm)">change password</button>
-
-        <p class="error" ng-show="err">{{err}}</p>
-        <p class="good" ng-show="msg">{{msg}}</p>
-      </form>
-    </div>
-
-    <div class="col-md-4" ng-show="{{user.provider === 'password'}}">
-      <form>
-        <h3>Change Email</h3>
-
-        <p class="form-group">
-          <label>New Email:</label>
-          <input type="text" ng-keypress="clear()" ng-model="newEmail" class="form-control" />
-        </p>
-
-        <p class="form-group">
-          <label>Password:</label>
-          <input type="password" ng-keypress="clear()" ng-model="pass" class="form-control" />
-        </p>
-
-        <button class="btn btn-primary" ng-click="changeEmail(pass, newEmail)">update email</button>
-      </form>
-    </div>
-
   </div>
-  <p class="clearfix"></p>
-  <div ng-repeat="message in messages" class="alert alert-{{message.type}}">{{message.text}}</div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">user</div>
+    <div class="panel-body">
+      <pre>{{user | json}}</pre>
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Old code</div>
+    <div class="panel-body">
+
+      <div class="row-fluid">
+        <div class="{{user.provider === 'password'? 'col-md-4' : 'col-md-12'}}">
+          <h3>Profile</h3>
+
+          <form role="form">
+            <p class="form-group">
+              <label>Account ID</label>
+              <br />{{user.uid}}
+            </p>
+
+            <p class="form-group">
+              <label>Name:</label>
+              <input type="text" name="name" ng-model="profile.name" class="form-control" />
+            </p>
+
+            <p class="form-group">
+              <label>Email:</label>
+              <br />{{profile.email}}
+            </p>
+          </form>
+
+          <p>
+            <button role="button" ng-click="logout()" class="btn btn-danger">Log Out</button>
+          </p>
+        </div>
+
+        <div class="col-md-4" ng-show="{{user.provider === 'password'}}">
+          <form role="form">
+            <h3>Change Password</h3>
+
+            <p class="form-group">
+              <label>Old Password:</label>
+              <input type="password" ng-keypress="clear()" ng-model="oldpass" class="form-control" />
+            </p>
+
+            <p class="form-group">
+              <label>New Password:</label>
+              <input type="password" ng-keypress="clear()" ng-model="newpass" class="form-control" />
+            </p>
+
+            <p class="form-group">
+              <label>Confirm New Password:</label>
+              <input type="password" ng-keypress="clear()" ng-model="confirm" class="form-control" />
+            </p>
+
+            <button class="btn btn-primary" ng-click="changePassword(oldpass, newpass, confirm)">change password</button>
+
+            <p class="error" ng-show="err">{{err}}</p>
+            <p class="good" ng-show="msg">{{msg}}</p>
+          </form>
+        </div>
+
+        <div class="col-md-4" ng-show="{{user.provider === 'password'}}">
+          <form>
+            <h3>Change Email</h3>
+
+            <p class="form-group">
+              <label>New Email:</label>
+              <input type="text" ng-keypress="clear()" ng-model="newEmail" class="form-control" />
+            </p>
+
+            <p class="form-group">
+              <label>Password:</label>
+              <input type="password" ng-keypress="clear()" ng-model="pass" class="form-control" />
+            </p>
+
+            <button class="btn btn-primary" ng-click="changeEmail(pass, newEmail)">update email</button>
+          </form>
+        </div>
+
+      </div>
+      <p class="clearfix"></p>
+      <div ng-repeat="message in messages" class="alert alert-{{message.type}}">{{message.text}}</div>
+
+    </div>
+  </div>
+
 </section>
 
 
