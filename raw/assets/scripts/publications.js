@@ -97,7 +97,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
   };
 
   }])
-  .controller('PublicationsController',['$scope','$q','$window','rfc4122','treeService','publicationsService','notificationService','$filter','fileService','Upload','$log',function($scope,$q,$window,rfc4122,treeService,publicationsService,notificationService,$filter,fileService,$upload,$log){
+  .controller('PublicationsController',['$scope','$q','$window','rfc4122','treeService','publicationsService','notificationService','$filter','fileService','Upload', 'user','$log',function($scope,$q,$window,rfc4122,treeService,publicationsService,notificationService,$filter,fileService,$upload, user,$log){
 
     //Main Categories [market, jobs] // realEstate, vehicles, boats, planes, stockMarket
 
@@ -106,7 +106,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     $scope.path               = [];
     $scope.reference          = '';
     var original = angular.copy($scope.model = {
-      userId:       '1',
+      userId:       user.uid,
       categoryId:   '',
       type:         '',
       files:        []

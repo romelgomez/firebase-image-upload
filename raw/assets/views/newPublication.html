@@ -48,7 +48,7 @@
 
         <div class="form-group">
           <label class="control-label"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>
-          <input type="text" name="title" ng-model="model.title" required minlength="7" class="form-control" placeholder="">
+          <input type="text" name="title" ng-model="model.title" required minlength="7" capitalize class="form-control" placeholder="">
           <div data-ng-messages="publicationForm.$submitted && publicationForm.title.$error" class="help-block">
             <div data-ng-message="required">
               - The <b>title</b> is required.
