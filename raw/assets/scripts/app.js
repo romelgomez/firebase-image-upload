@@ -6,7 +6,6 @@ angular.module('app',[
         'firebase',
         'fire',
         'routes',
-        'main',
         'tree',
         'publications',
         'login',
@@ -18,5 +17,7 @@ angular.module('app',[
 
         $scope.logout = function() { FireAuth.$unauth(); };
 
-    }]);
+        $scope.inProduction = false;
+
+  }]);
 

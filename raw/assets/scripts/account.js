@@ -91,12 +91,15 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
       profileDetails: {}
     };
 
+    $scope.profile = profile;
+
     var original = angular.copy($scope.model = {
       profileDetails:{
         names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
         lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
         mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
-        landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : ''
+        landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : '',
+        email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : ''
       }
     });
 
@@ -107,6 +110,11 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
         profile.lastNames         = $scope.model.profileDetails.lastNames;
         profile.mobilePhone       = $scope.model.profileDetails.mobilePhone;
         profile.landLineTelephone = $scope.model.profileDetails.landLineTelephone;
+
+        if(profile.provider !== 'password'){
+          profile.email = angular.isDefined($scope.model.profileDetails.email) ? $scope.model.profileDetails.email : '';
+        }
+
         $scope.httpRequestPromise = profile.$save()
           .then(function() {
             $modalInstance.close();

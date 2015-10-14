@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('login',['ngMessages','angular-loading-bar','validation.match','angular-loading-bar'])
+angular.module('login',['ngMessages','angular-loading-bar','validation.match','angular-loading-bar','trTrustpass','ngPasswordStrength'])
   .controller('LoginController', ['$scope','FireAuth','$location','$q','FireRef','notificationService','$window','$log',function ($scope, FireAuth, $location, $q, FireRef, notificationService, $window, $log) {
     // Manages authentication to any active providers.
 
@@ -113,17 +113,58 @@ angular.module('login',['ngMessages','angular-loading-bar','validation.match','a
      * @param {Object} user
      **/
     var createProfile = function (user) {
+      var deferred  = $q.defer();
+
       var reference = FireRef.child('users').child(user.uid);
 
-      // TODO AÑADIR DATOS RELEVANTES AL PERFIL DEL USUARIO
-      $log.info('createProfile var user: ', user);
+      var profile = {};
 
-      return reference.set({
-        email: $scope.model.register.email,
-        names: $scope.model.register.names,
-        lastNames: $scope.model.register.lastNames
+      reference.once('value', function(snapshot) {
+        var exists = (snapshot.val() !== null);
+
+        if(!exists){
+          switch(user.provider) {
+            case 'facebook':
+              profile.names     = user['facebook'].displayName;
+              profile.provider  = user.provider;
+              break;
+            case 'twitter':
+              profile.names     = user['twitter'].displayName;
+              profile.provider  = user.provider;
+              break;
+            case 'password':
+              profile.email     = $scope.model.register.email;
+              profile.names     = $scope.model.register.names;
+              profile.lastNames = $scope.model.register.lastNames;
+              profile.provider  = user.provider;
+              break;
+          }
+
+          reference.set(profile, function(error) {
+            if (error) {
+              deferred.reject(error);
+            } else {
+              deferred.resolve();
+            }
+          });
+
+        }else{
+          deferred.resolve();
+        }
+
       });
 
+      //// TODO AÑADIR DATOS RELEVANTES AL PERFIL DEL USUARIO
+      //$log.info('createProfile var user: ', user);
+      //
+      //return reference.set({
+      //  email: $scope.model.register.email,
+      //  names: $scope.model.register.names,
+      //  lastNames: $scope.model.register.lastNames,
+      //  provider:user.provider
+      //});
+
+      return deferred.promise;
     };
 
     /**
@@ -230,8 +271,8 @@ angular.module('login',['ngMessages','angular-loading-bar','validation.match','a
 
     $scope.oauthLogin = function(provider) {
       FireAuth.$authWithOAuthPopup(provider, {rememberMe: true})
-          .then(function(data){
-            $log.info('oauthLogin user data',data);
+          .then(function(user){
+            return createProfile(user);
           })
           .then(redirect, showError);
     };

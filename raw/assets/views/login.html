@@ -87,22 +87,28 @@
 
             <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.names.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.names.$invalid) }">
               <label class="control-label"> Names <sup style="color: red;">*</sup></label>
-              <input type="text" name="names" ng-model="model.register.names" required class="form-control" placeholder="">
+              <input type="text" name="names" ng-model="model.register.names" ng-trim no-special-chars required capitalize class="form-control" placeholder="">
               <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.names.$valid),'glyphicon-remove': ( forms.register.names.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="forms.register.$submitted && forms.register.names.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>names</b> are required.
+                </div>
+                <div data-ng-message="noSpecialChars">
+                  - Not allowed to use special characters.
                 </div>
               </div>
             </div>
 
             <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.lastNames.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.lastNames.$invalid) }">
               <label class="control-label"> Last Names <sup style="color: red;">*</sup></label>
-              <input type="text" name="lastNames" ng-model="model.register.lastNames" required class="form-control" placeholder="">
+              <input type="text" name="lastNames" ng-model="model.register.lastNames" ng-trim no-special-chars required capitalize class="form-control" placeholder="">
               <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.lastNames.$valid),'glyphicon-remove': ( forms.register.lastNames.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="forms.register.$submitted && forms.register.lastNames.$error" class="help-block">
                 <div data-ng-message="required">
                   - The <b>Last Names</b> are required.
+                </div>
+                <div data-ng-message="noSpecialChars">
+                  - Not allowed to use special characters.
                 </div>
               </div>
             </div>
@@ -123,17 +129,45 @@
 
             <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.password.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.password.$invalid) }">
               <label class="control-label"><i class="fa fa-key"></i> Password <sup style="color: red;">*</sup></label>
-              <input type="password" name="password" ng-model="model.register.password" required minlength="7" class="form-control" placeholder="">
+              <input
+                class="form-control"
+                type="password"
+                name="password"
+                ng-model="model.register.password"
+                required
+                minlength="7"
+                maxlength="50"
+                placeholder=""
+                tr-trustpass="{
+										maximum: true,
+										messageGuide: 'Make sure your password meets these requirements:',
+									 	messageDone:'¡Excellent! Your password is acceptable.',
+									 	lowercaseLabel:'One lowercase character.',
+									 	uppercaseLabel:'One uppercase character.',
+									 	numberLabel:'One number.',
+									 	specialLabel:'One special character.',
+									 	minimumLabel:'Minimum characters:',
+									 	maximumLabel:'Maximum characters:'
+									}"
+                >
               <span ng-show="forms.register.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.register.password.$valid),'glyphicon-remove': ( forms.register.password.$invalid) }" aria-hidden="true"></span>
               <div data-ng-messages="forms.register.$submitted && forms.register.password.$error" class="help-block">
                 <div data-ng-message="required">
-                  - The <b>password</b> is required.
+                  - The <b>new password</b> is required.
                 </div>
                 <div data-ng-message="minlength" >
-                  - The <b>password</b> must be at least 7 characters long.
+                  - The <b>new password</b> must be at least 7 characters long.
+                </div>
+                <div data-ng-message="trustpass" >
+                  - Make sure you meet the minimum requirements described above.
                 </div>
               </div>
+
+              <div>Password strength: {{passStrength}}%</div>
+              <div ng-password-strength="model.register.password" strength="passStrength" inner-class="progress-bar" inner-class-prefix="progress-bar-"></div>
             </div>
+            
+            
 
             <div class="form-group" ng-class="{'has-success has-feedback': (forms.register.$submitted && forms.register.samePassword.$valid),'has-error has-feedback': (forms.register.$submitted && forms.register.samePassword.$invalid) }">
               <label class="control-label"><i class="fa fa-key"></i> Same Password <sup style="color: red;">*</sup></label>

@@ -12,7 +12,7 @@
 
             <div style="text-align: center; margin-top: -60px;">
               <div class="photo" style="padding: 4px; border: solid 1px #A0A0A0; background: #FFFFFF;">
-                <img ng-src="{{user.password.profileImageURL}}" alt="avatar">
+                <img ng-src="{{user[user.provider].profileImageURL}}" alt="avatar">
               </div>
               <div>
                 Hi <span style="color: #F0563D;">{{profile.names | capitalize}} {{profile.lastNames | capitalize}}</span>
@@ -22,12 +22,12 @@
 
             <div class="list-group" style="margin-bottom: 0;">
               <button type="button" class="list-group-item" ng-click="changeProfileDetails()">Extend or Change Profile Details</button>
-              <button type="button" class="list-group-item" ng-click="changePassword()">Change Password</button>
-              <button type="button" class="list-group-item" ng-click="changeEmail()">Change Email</button>
+              <button type="button" class="list-group-item" ng-click="changePassword()" ng-show="user.provider === 'password'">Change Password</button>
+              <button type="button" class="list-group-item" ng-click="changeEmail()" ng-show="user.provider === 'password'">Change Email</button>
             </div>
 
           </div>
-          <div class="panel-footer">
+          <div class="panel-footer" ng-show="user.provider === 'password'">
             <b>NOTE:</b> Change the Profile Image in <a href="http://www.gravatar.com/" target="_blank">Gravatar.com</a>
           </div>
         </div>
@@ -44,7 +44,7 @@
 </div>
 
 <!--
-Profile Details Modal
+################################################################# Profile Details Modal #################################################################
 -->
 <script type="text/ng-template" id="profileDetailsModal.html">
   <div class="modal-header">
@@ -83,20 +83,31 @@ Profile Details Modal
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$invalid) }">
-        <label class="control-label"> Mobile phone <sup style="color: red;">*</sup></label>
+        <label class="control-label"><i class="fa fa-mobile-phone"></i> Mobile phone</label>
         <input type="text" name="mobilePhone" ng-model="model.profileDetails.mobilePhone" class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.mobilePhone.$valid),'glyphicon-remove': ( forms.profileDetails.mobilePhone.$invalid) }" aria-hidden="true"></span>
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$invalid) }">
-        <label class="control-label"> Landline Telephone <sup style="color: red;">*</sup></label>
+        <label class="control-label"><i class="fa fa-phone"></i> Landline Telephone</label>
         <input type="text" name="landLineTelephone" ng-model="model.profileDetails.landLineTelephone" class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.landLineTelephone.$valid),'glyphicon-remove': ( forms.profileDetails.landLineTelephone.$invalid) }" aria-hidden="true"></span>
       </div>
 
+      <div ng-show="profile.provider !== 'password'" class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.email.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.email.$invalid) }">
+        <label class="control-label"><i class="fa fa-envelope"></i> Email</label>
+        <input type="email" name="email" ng-model="model.profileDetails.email" class="form-control" placeholder="">
+        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.email.$valid),'glyphicon-remove': ( forms.profileDetails.email.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.emailAccount.$submitted && forms.emailAccount.email.$error" class="help-block">
+          <div data-ng-message="email">
+            - The <b>email</b> must be valid.
+          </div>
+        </div>
+      </div>
+
     </form>
 
-    <pre>{{model.profileDetails | json}}</pre>
+    <div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, input field is required.</div>
 
   </div>
   <div class="modal-footer">
@@ -107,7 +118,7 @@ Profile Details Modal
 
 
 <!--
-  Account Password Modal
+#################################################################  Account Password Modal #################################################################
 -->
 <script type="text/ng-template" id="accountPasswordModal.html">
   <div class="modal-header">
@@ -190,7 +201,7 @@ Profile Details Modal
 
     </form>
 
-    <pre>{{model.accountPassword | json}}</pre>
+    <div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, input field is required.</div>
 
   </div>
   <div class="modal-footer">
@@ -201,7 +212,7 @@ Profile Details Modal
 
 
 <!--
-  Email Account Modal
+#################################################################  Email Account Modal #################################################################
 -->
 <script type="text/ng-template" id="emailAccountModal.html">
   <div class="modal-header">
@@ -212,8 +223,8 @@ Profile Details Modal
     <form id="emailAccount" name="forms.emailAccount" novalidate="" ng-submit="submit()">
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.newEmail.$valid),'has-error has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.newEmail.$invalid) }">
-        <label class="control-label"><i class="fa fa-key"></i> New Email <sup style="color: red;">*</sup></label>
-        <input type="email" name="newEmail" ng-model="model.emailAccount.newEmail" required minlength="7" class="form-control" placeholder="">
+        <label class="control-label"><i class="fa fa-envelope"></i> New Email <sup style="color: red;">*</sup></label>
+        <input type="email" name="newEmail" ng-model="model.emailAccount.newEmail" required class="form-control" placeholder="">
         <span ng-show="forms.emailAccount.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.emailAccount.newEmail.$valid),'glyphicon-remove': ( forms.emailAccount.newEmail.$invalid) }" aria-hidden="true"></span>
         <div data-ng-messages="forms.emailAccount.$submitted && forms.emailAccount.newEmail.$error" class="help-block">
           <div data-ng-message="required">
@@ -241,7 +252,7 @@ Profile Details Modal
 
     </form>
 
-    <pre>{{model.emailAccount | json}}</pre>
+    <div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, input field is required.</div>
 
   </div>
   <div class="modal-footer">
@@ -250,22 +261,3 @@ Profile Details Modal
     <button form="emailAccount" class="btn btn-primary" type="submit">Save</button>
   </div>
 </script>
-
-
-<section>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">Profile</div>
-    <div class="panel-body">
-      <pre>{{profile | json}}</pre>
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">user</div>
-    <div class="panel-body">
-      <pre>{{user | json}}</pre>
-    </div>
-  </div>
-
-</section>
