@@ -104,7 +104,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     $scope.treeNodes          = treeService.nodes();
     $scope.categoryExpected   = false;
     $scope.path               = [];
-    $scope.reference          = '';
+    $scope.publicationId      = '';
     var original = angular.copy($scope.model = {
       userId:       user.uid,
       categoryId:   '',
@@ -122,15 +122,15 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
     };
 
-    var uploadFile = function(file,reference){
+    var uploadFile = function(file,fileId){
       var deferred = $q.defer();
 
       file.upload = $upload.upload({
         url: "https://api.cloudinary.com/v1_1/berlin/upload",
         fields: {
-          public_id: 'publications/'+reference,
+          public_id: 'publications/'+fileId,
           upload_preset: 'ebdyaimw',
-          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|reference=' + reference
+          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|fileId=' + fileId
         },
         file: file
       }).progress(function (e) {
@@ -156,8 +156,8 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       var _files = {};
       angular.forEach(files,function(file){
         if(!angular.isDefined(file.inServer)){
-          var reference = rfc4122.v4();
-          _files[reference] = uploadFile(file,reference);
+          var fileId = rfc4122.v4();
+          _files[fileId] = uploadFile(file,fileId);
         }
       });
       return $q.all(_files);
@@ -176,14 +176,14 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
               }
             });
             return $q.all({
-              'publication': publicationsService.publication(publication,$scope.reference),
+              'publication': publicationsService.publication(publication,$scope.publicationId),
               'files':files
             });
           })
           .then(function (the) {
-            $scope.reference = $scope.reference !== '' ? $scope.reference : the.publication.key();
+            $scope.publicationId = $scope.publicationId !== '' ? $scope.publicationId : the.publication.key();
             if(Object.keys(the.files).length > 0){
-              return publicationsService.publicationFiles(the.files,$scope.reference);
+              return publicationsService.publicationFiles(the.files,$scope.publicationId);
             }else{
               return $q.when(true);
             }
@@ -193,6 +193,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
             deferred.resolve();
           },function(error){
             notificationService.error(error);
+            deferred.reject(error);
           });
 
         $scope.httpRequestPromise = deferred.promise;
@@ -222,8 +223,8 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     };
 
     $scope.discard = function(){
-      if($scope.reference !== ''){
-        publicationsService.deletePublication($scope.reference)
+      if($scope.publicationId !== ''){
+        publicationsService.deletePublication($scope.publicationId)
           .then(function(){
             notificationService.success('The publication has been deleted');
             $window.location = '#/'
@@ -237,7 +238,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     };
 
     $scope.deleteAllPublicationImages = function () {
-         publicationsService.deleteAllPublicationImages($scope.reference)
+         publicationsService.deleteAllPublicationImages($scope.publicationId)
            .then(function(){
              angular.copy(original.files,$scope.model.files);
              notificationService.success('The images has been deleted');
@@ -263,7 +264,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       };
 
       if(angular.isDefined(file.inServer)){
-          publicationsService.deletePublicationImage($scope.reference,file.details.context.custom.reference)
+          publicationsService.deletePublicationImage($scope.publicationId,file.details.context.custom.fileId)
             .then(function(){
               removeFile();
             },function(error){
