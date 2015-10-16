@@ -70,6 +70,10 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'assets/views/newPublication.html',
         controller: 'PublicationsController'
       })
+      .whenAuthenticated('/test-publication', {
+        templateUrl: 'assets/views/testPublication.html',
+        controller: 'PublicationsController'
+      })
       .when('/login', {
         templateUrl: 'assets/views/login.html',
         controller: 'LoginController'
