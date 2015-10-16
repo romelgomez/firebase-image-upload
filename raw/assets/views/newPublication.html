@@ -2,7 +2,7 @@
 
   <div class="panel panel-default" ng-show="categoryExpected === false">
     <div class="panel-heading">
-      <h3 class="panel-title">Select a category:</h3>
+      <h3 class="panel-title">New Publication - Select a category:</h3>
     </div>
     <div class="list-group">
       <button type="button" class="list-group-item" ng-click="setCategory(node.$id)" ng-repeat="node in treeNodes | filter:{parentId: (model.categoryId) ? model.categoryId: ''}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{node.name | capitalizeFirstChar}}</button>

@@ -394,7 +394,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
     $scope.editNode = function(node){
-      var modalInstance = $modal.open({
+      var modalInstance = $uibModal.open({
         templateUrl: 'editNode.html',
         controller: 'EditNodeController',
         resolve: {
