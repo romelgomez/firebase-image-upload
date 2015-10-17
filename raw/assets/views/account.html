@@ -10,12 +10,23 @@
           Publications <i class="fa fa-files-o"></i>
         </tab-heading>
 
+
         <div style="margin-top: 10px; margin-bottom: 0; ">
           <uib-tabset>
             <uib-tab>
               <tab-heading>
                 Market <i class="fa fa-shopping-cart"></i>
               </tab-heading>
+
+              <div style="margin-top: 10px; margin-bottom: 0; ">
+                <div class="well well-sm" style="margin-bottom: 10px;">
+                  <li>Categories</li>
+                  <li>Location</li>
+                  <li>Price range</li>
+                  <li>O refined by 'características de la publicación'</li>
+                </div>
+              </div>
+
             </uib-tab>
             <uib-tab>
               <tab-heading>
@@ -24,7 +35,14 @@
 
               <div style="margin-top: 10px; margin-bottom: 0; ">
 
-                <div class="well well-sm" style="margin-bottom: 10px;">Filters</div>
+                <div class="well well-sm" style="margin-bottom: 10px;">
+
+                  <li>Categories</li>
+                  <li>Location</li>
+                  <li>Salaries </li>
+                  <li>O refined by 'características de la publicación'</li>
+
+                </div>
                 <input type="text" class="form-control" placeholder="Search">
                 <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" style="margin-bottom: 5px; margin-top: 10px;"></uib-pagination>
 
