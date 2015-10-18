@@ -7,6 +7,12 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
 
     $scope.profile = $firebaseObject(FireRef.child('users/'+user.uid));
 
+  }])
+  .controller('AccountPublicationsController',['$scope', function($scope){
+
+  }])
+  .controller('AccountProfileController',['$scope', '$uibModal','notificationService',function($scope, $uibModal, notificationService){
+
     $scope.httpRequestPromise = $scope.profile.$loaded(null,function(error){
       notificationService.error(error);
     });
@@ -30,7 +36,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     $scope.changeProfileDetails = function(size){
       var modalInstance = $uibModal.open({
         templateUrl: 'accountProfileDetailsModal.html',
-        controller: 'AccountProfileDetailsController',
+        controller: 'AccountProfileDetailsModalController',
         size: size,
         resolve: {
           profile: function () {
@@ -49,7 +55,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     $scope.changePassword = function(size){
       var modalInstance = $uibModal.open({
         templateUrl: 'accountProfilePasswordModal.html',
-        controller: 'AccountProfilePasswordController',
+        controller: 'AccountProfilePasswordModalController',
         size: size,
         resolve: {
           profile: function () {
@@ -68,7 +74,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     $scope.changeEmail = function(size){
       var modalInstance = $uibModal.open({
         templateUrl: 'accountProfileEmailModal.html',
-        controller: 'AccountProfileEmailController',
+        controller: 'AccountProfileEmailModalController',
         size: size,
         resolve: {
           profile: function () {
@@ -84,17 +90,12 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
       });
     };
 
-  }])
-  .controller('AccountPublicationsController',['$scope', function($scope){
-
-  }])
-  .controller('AccountProfileController',['$scope', function($scope){
 
   }])
   .controller('AccountBillingController',['$scope', function($scope){
 
   }])
-  .controller('AccountProfileDetailsController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
+  .controller('AccountProfileDetailsModalController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
 
     $scope.forms = {
       profileDetails: {}
@@ -139,7 +140,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     };
 
   }])
-  .controller('AccountProfilePasswordController',['$scope','$modalInstance','FireAuth','profile',function($scope, $modalInstance, FireAuth, profile){
+  .controller('AccountProfilePasswordModalController',['$scope','$modalInstance','FireAuth','profile',function($scope, $modalInstance, FireAuth, profile){
 
     $scope.forms = {
       accountPassword: {}
@@ -171,7 +172,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     };
 
   }])
-  .controller('AccountProfileEmailController',['$q', '$scope', '$modalInstance', 'FireAuth', 'profile',function( $q, $scope, $modalInstance, FireAuth, profile){
+  .controller('AccountProfileEmailModalController',['$q', '$scope', '$modalInstance', 'FireAuth', 'profile',function( $q, $scope, $modalInstance, FireAuth, profile){
 
     $scope.forms = {
       emailAccount: {}
