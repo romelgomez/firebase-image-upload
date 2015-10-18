@@ -5,126 +5,13 @@
   <div class="panel-body">
 
     <uib-tabset>
+      <!-- Publications -->
       <uib-tab>
         <tab-heading>
           Publications <i class="fa fa-files-o"></i>
         </tab-heading>
 
-
-        <div style="margin-top: 10px; margin-bottom: 0; ">
-          <uib-tabset>
-            <uib-tab>
-              <tab-heading>
-                Market <i class="fa fa-shopping-cart"></i>
-              </tab-heading>
-
-              <div style="margin-top: 10px; margin-bottom: 0; ">
-                <div class="well well-sm" style="margin-bottom: 10px;">
-                  <li>Categories</li>
-                  <li>Location</li>
-                  <li>Price range</li>
-                  <li>O refined by 'características de la publicación'</li>
-                </div>
-              </div>
-
-            </uib-tab>
-            <uib-tab>
-              <tab-heading>
-                Jobs <i class="fa fa-briefcase"></i>
-              </tab-heading>
-
-              <div style="margin-top: 10px; margin-bottom: 0; ">
-
-                <div class="well well-sm" style="margin-bottom: 10px;">
-
-                  <li>Categories</li>
-                  <li>Location</li>
-                  <li>Salaries </li>
-                  <li>O refined by 'características de la publicación'</li>
-
-                </div>
-                <input type="text" class="form-control" placeholder="Search">
-                <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" style="margin-bottom: 5px; margin-top: 10px;"></uib-pagination>
-
-                <div class="panel panel-default" style="margin-bottom: 10px;">
-                  <div class="panel-heading">
-                    Front End Developer / JavaScript Developer (Angular.js jQuery TDD) for an award winning fintech start-up that has been revolutionising business lending. £60-£70K
-                  </div>
-                  <div class="panel-body" style="padding: 10px">
-
-                    <div class="row">
-                      <div class="col-xs-4">
-                        <a href="#" class="thumbnail" style="margin-bottom: 0;" >
-                          <img src="assets/images/nasa.png" alt="...">
-                        </a>
-                      </div>
-                      <div class="col-xs-8">
-                        <div class="caption">
-                          <p>
-                            As a skilled Front End Developer you will use JavaScript, Angular.js and semantic HTML to design and develop clear, concise and user friendly interfaces for the core web based product.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="panel-footer">
-                    <a href="#" class="btn btn-warning" role="button">Edit</a>
-                    <a href="#" class="btn btn-primary" role="button">View</a>
-                  </div>
-                </div>
-
-                <div class="panel panel-default" style="margin-bottom: 10px;">
-                  <div class="panel-heading">
-                    Front End Developer / JavaScript Developer (Angular.js jQuery TDD) for an award winning fintech start-up that has been revolutionising business lending. £60-£70K
-                  </div>
-                  <div class="panel-body" style="display: none;">
-
-                    <div class="row">
-                      <div class="col-xs-4">
-                        <a href="#" class="thumbnail" style="margin-bottom: 0;" >
-                          <img src="assets/images/nasa.png" alt="...">
-                        </a>
-                      </div>
-                      <div class="col-xs-8">
-                        <div class="caption">
-                          <p>
-                            As a skilled Front End Developer you will use JavaScript, Angular.js and semantic HTML to design and develop clear, concise and user friendly interfaces for the core web based product.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="panel-footer">
-                    <a href="#" class="btn btn-warning" role="button">Edit</a>
-                    <a href="#" class="btn btn-primary" role="button">View</a>
-                  </div>
-                </div>
-
-                <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" style="margin: 0;"></uib-pagination>
-
-              </div>
-
-            </uib-tab>
-            <uib-tab>
-              <tab-heading>
-                Real Estate <i class="fa fa-home"></i>
-              </tab-heading>
-
-            </uib-tab>
-            <uib-tab>
-              <tab-heading>
-                Transport <i class="fa fa-rocket"></i>
-              </tab-heading>
-
-            </uib-tab>
-            <uib-tab>
-              <tab-heading>
-                Services <i class="fa fa-gavel"></i>
-              </tab-heading>
-
-            </uib-tab>
-          </uib-tabset>
-        </div>
+        <ng-include src="'assets/views/account/publications.html'"></ng-include>
 
       </uib-tab>
       <uib-tab>
@@ -132,30 +19,7 @@
           Profile <i class="fa fa-user"></i>
         </tab-heading>
 
-        <div class="panel panel-default" style="margin-top: 50px; margin-bottom: 0; " >
-          <div class="panel-body">
-
-            <div style="text-align: center; margin-top: -60px;">
-              <div class="photo" style="padding: 4px; border: solid 1px #A0A0A0; background: #FFFFFF;">
-                <img ng-src="{{user[user.provider].profileImageURL}}" alt="avatar">
-              </div>
-              <div>
-                Hi <span style="color: #F0563D;">{{profile.names | capitalize}} {{profile.lastNames | capitalize}}</span>
-              </div>
-            </div>
-            <hr style="margin-top: 10px; margin-bottom: 10px;">
-
-            <div class="list-group" style="margin-bottom: 0;">
-              <button type="button" class="list-group-item" ng-click="changeProfileDetails()">Extend or Change Profile Details</button>
-              <button type="button" class="list-group-item" ng-click="changePassword()" ng-show="user.provider === 'password'">Change Password</button>
-              <button type="button" class="list-group-item" ng-click="changeEmail()" ng-show="user.provider === 'password'">Change Email</button>
-            </div>
-
-          </div>
-          <div class="panel-footer" ng-show="user.provider === 'password'">
-            <b>NOTE:</b> Change the Profile Image in <a href="http://www.gravatar.com/" target="_blank">Gravatar.com</a>
-          </div>
-        </div>
+        <ng-include src="'assets/views/account/profile.html'"></ng-include>
 
       </uib-tab>
       <uib-tab >
@@ -163,232 +27,18 @@
           Billing <i class="fa fa-gbp"></i>
         </tab-heading>
 
+        <ng-include src="'assets/views/account/billing.html'"></ng-include>
 
-
-        <div style="margin-top: 10px;">
-          $$$$
-        </div>
       </uib-tab>
     </uib-tabset>
 
   </div>
 </div>
 
-<!--
-################################################################# Profile Details Modal #################################################################
--->
-<script type="text/ng-template" id="profileDetailsModal.html">
-  <div class="modal-header">
-    <h3 class="modal-title">Extend or Change Profile Details</h3>
-  </div>
-  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
+<!--<ng-include src=""></ng-include>-->
 
-    <form id="profileDetails" name="forms.profileDetails" novalidate="" ng-submit="submit()">
-
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.names.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.names.$invalid) }">
-        <label class="control-label"> Names <sup style="color: red;">*</sup></label>
-        <input type="text" name="names" ng-model="model.profileDetails.names" ng-trim no-special-chars required capitalize class="form-control" placeholder="">
-        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.names.$valid),'glyphicon-remove': ( forms.profileDetails.names.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.names.$error" class="help-block">
-          <div data-ng-message="required">
-            - The <b>names</b> are required.
-          </div>
-          <div data-ng-message="noSpecialChars">
-            - Not allowed to use special characters.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.lastNames.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.lastNames.$invalid) }">
-        <label class="control-label"> Last Names <sup style="color: red;">*</sup></label>
-        <input type="text" name="lastNames" ng-model="model.profileDetails.lastNames" ng-trim no-special-chars required capitalize class="form-control" placeholder="">
-        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.lastNames.$valid),'glyphicon-remove': ( forms.profileDetails.lastNames.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.lastNames.$error" class="help-block">
-          <div data-ng-message="required">
-            - The <b>last names</b> are required.
-          </div>
-          <div data-ng-message="noSpecialChars">
-            - Not allowed to use special characters.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$invalid) }">
-        <label class="control-label"><i class="fa fa-mobile-phone"></i> Mobile phone</label>
-        <input type="text" name="mobilePhone" ng-model="model.profileDetails.mobilePhone" class="form-control" placeholder="">
-        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.mobilePhone.$valid),'glyphicon-remove': ( forms.profileDetails.mobilePhone.$invalid) }" aria-hidden="true"></span>
-      </div>
-
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$invalid) }">
-        <label class="control-label"><i class="fa fa-phone"></i> Landline Telephone</label>
-        <input type="text" name="landLineTelephone" ng-model="model.profileDetails.landLineTelephone" class="form-control" placeholder="">
-        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.landLineTelephone.$valid),'glyphicon-remove': ( forms.profileDetails.landLineTelephone.$invalid) }" aria-hidden="true"></span>
-      </div>
-
-      <div ng-show="profile.provider !== 'password'" class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.email.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.email.$invalid) }">
-        <label class="control-label"><i class="fa fa-envelope"></i> Email</label>
-        <input type="email" name="email" ng-model="model.profileDetails.email" class="form-control" placeholder="">
-        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.email.$valid),'glyphicon-remove': ( forms.profileDetails.email.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.emailAccount.$submitted && forms.emailAccount.email.$error" class="help-block">
-          <div data-ng-message="email">
-            - The <b>email</b> must be valid.
-          </div>
-        </div>
-      </div>
-
-    </form>
-
-    <div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, input field is required.</div>
-
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    <button form="profileDetails" class="btn btn-primary" type="submit">Save</button>
-  </div>
-</script>
+<ng-include src="'assets/views/account/modals/accountProfileDetailsModal.html'"></ng-include>
+<ng-include src="'assets/views/account/modals/accountProfilePasswordModal.html'"></ng-include>
+<ng-include src="'assets/views/account/modals/accountProfileEmailModal.html'"></ng-include>
 
 
-<!--
-#################################################################  Account Password Modal #################################################################
--->
-<script type="text/ng-template" id="accountPasswordModal.html">
-  <div class="modal-header">
-    <h3 class="modal-title">Change Password</h3>
-  </div>
-  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
-
-    <form id="accountPassword" name="forms.accountPassword" novalidate="" ng-submit="submit()">
-
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.oldPassword.$valid),'has-error has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.oldPassword.$invalid) }">
-        <label class="control-label"><i class="fa fa-key"></i> Old Password <sup style="color: red;">*</sup></label>
-        <input type="password" name="oldPassword" ng-model="model.accountPassword.oldPassword" required minlength="7" class="form-control" placeholder="">
-        <span ng-show="forms.accountPassword.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.accountPassword.oldPassword.$valid),'glyphicon-remove': ( forms.accountPassword.oldPassword.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.accountPassword.$submitted && forms.accountPassword.oldPassword.$error" class="help-block">
-          <div data-ng-message="required">
-            - The <b>old password</b> is required.
-          </div>
-          <div data-ng-message="minlength" >
-            - The <b>old password</b> must be at least 7 characters long.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.newPassword.$valid),'has-error has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.newPassword.$invalid) }">
-        <label class="control-label"><i class="fa fa-key"></i> New Password <sup style="color: red;">*</sup></label>
-        <input
-          class="form-control"
-          type="password"
-          name="newPassword"
-          ng-model="model.accountPassword.newPassword"
-          required
-          minlength="7"
-          maxlength="50"
-          placeholder=""
-          tr-trustpass="{
-										maximum: true,
-										messageGuide: 'Make sure your password meets these requirements:',
-									 	messageDone:'¡Excellent! Your password is acceptable.',
-									 	lowercaseLabel:'One lowercase character.',
-									 	uppercaseLabel:'One uppercase character.',
-									 	numberLabel:'One number.',
-									 	specialLabel:'One special character.',
-									 	minimumLabel:'Minimum characters:',
-									 	maximumLabel:'Maximum characters:'
-									}"
-          >
-        <span ng-show="forms.accountPassword.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.accountPassword.newPassword.$valid),'glyphicon-remove': ( forms.accountPassword.newPassword.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.accountPassword.$submitted && forms.accountPassword.newPassword.$error" class="help-block">
-          <div data-ng-message="required">
-            - The <b>new password</b> is required.
-          </div>
-          <div data-ng-message="minlength" >
-            - The <b>new password</b> must be at least 7 characters long.
-          </div>
-          <div data-ng-message="trustpass" >
-            - Make sure you meet the minimum requirements described above.
-          </div>
-        </div>
-
-        <div>Password strength: {{passStrength}}%</div>
-        <div ng-password-strength="model.accountPassword.newPassword" strength="passStrength" inner-class="progress-bar" inner-class-prefix="progress-bar-"></div>
-      </div>
-
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.sameNewPassword.$valid),'has-error has-feedback': (forms.accountPassword.$submitted && forms.accountPassword.sameNewPassword.$invalid) }">
-        <label class="control-label"><i class="fa fa-key"></i> Same New Password <sup style="color: red;">*</sup></label>
-        <input type="password" name="sameNewPassword" ng-model="model.accountPassword.sameNewPassword" required match="model.accountPassword.newPassword" minlength="7" class="form-control" placeholder="">
-        <span ng-show="forms.accountPassword.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.accountPassword.sameNewPassword.$valid),'glyphicon-remove': ( forms.accountPassword.sameNewPassword.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.accountPassword.$submitted && forms.accountPassword.sameNewPassword.$error" class="help-block">
-          <div data-ng-message="required">
-            - The <b>same new password</b> is required.
-          </div>
-          <div data-ng-message="match">
-            - The <b>(new password) and (the same new password)</b> do not match!
-          </div>
-          <div data-ng-message="minlength">
-            - The <b>same new password</b> must be at least 7 characters long.
-          </div>
-        </div>
-      </div>
-
-    </form>
-
-    <div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, input field is required.</div>
-
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    <button form="accountPassword" class="btn btn-primary" type="submit">Save</button>
-  </div>
-</script>
-
-
-<!--
-#################################################################  Email Account Modal #################################################################
--->
-<script type="text/ng-template" id="emailAccountModal.html">
-  <div class="modal-header">
-    <h3 class="modal-title">Change Email</h3>
-  </div>
-  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
-
-    <form id="emailAccount" name="forms.emailAccount" novalidate="" ng-submit="submit()">
-
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.newEmail.$valid),'has-error has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.newEmail.$invalid) }">
-        <label class="control-label"><i class="fa fa-envelope"></i> New Email <sup style="color: red;">*</sup></label>
-        <input type="email" name="newEmail" ng-model="model.emailAccount.newEmail" required class="form-control" placeholder="">
-        <span ng-show="forms.emailAccount.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.emailAccount.newEmail.$valid),'glyphicon-remove': ( forms.emailAccount.newEmail.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.emailAccount.$submitted && forms.emailAccount.newEmail.$error" class="help-block">
-          <div data-ng-message="required">
-            - The <b>new email</b> is required.
-          </div>
-          <div data-ng-message="email">
-            - The <b>email</b> must be valid.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group" ng-class="{'has-success has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.password.$valid),'has-error has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.password.$invalid) }">
-        <label class="control-label"><i class="fa fa-key"></i> Password <sup style="color: red;">*</sup></label>
-        <input type="password" name="password" ng-model="model.emailAccount.password" required minlength="7" class="form-control" placeholder="">
-        <span ng-show="forms.emailAccount.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.emailAccount.password.$valid),'glyphicon-remove': ( forms.emailAccount.password.$invalid) }" aria-hidden="true"></span>
-        <div data-ng-messages="forms.emailAccount.$submitted && forms.emailAccount.password.$error" class="help-block">
-          <div data-ng-message="required">
-            - The <b>password</b> is required.
-          </div>
-          <div data-ng-message="minlength" >
-            - The <b>password</b> must be at least 7 characters long.
-          </div>
-        </div>
-      </div>
-
-    </form>
-
-    <div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, input field is required.</div>
-
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="resetForm()">Reset Form</button>
-    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    <button form="emailAccount" class="btn btn-primary" type="submit">Save</button>
-  </div>
-</script>

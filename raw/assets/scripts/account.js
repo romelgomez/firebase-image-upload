@@ -29,8 +29,8 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
 
     $scope.changeProfileDetails = function(size){
       var modalInstance = $uibModal.open({
-        templateUrl: 'profileDetailsModal.html',
-        controller: 'ProfileDetailsController',
+        templateUrl: 'accountProfileDetailsModal.html',
+        controller: 'AccountProfileDetailsController',
         size: size,
         resolve: {
           profile: function () {
@@ -48,8 +48,8 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
 
     $scope.changePassword = function(size){
       var modalInstance = $uibModal.open({
-        templateUrl: 'accountPasswordModal.html',
-        controller: 'AccountPasswordController',
+        templateUrl: 'accountProfilePasswordModal.html',
+        controller: 'AccountProfilePasswordController',
         size: size,
         resolve: {
           profile: function () {
@@ -67,8 +67,8 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
 
     $scope.changeEmail = function(size){
       var modalInstance = $uibModal.open({
-        templateUrl: 'emailAccountModal.html',
-        controller: 'EmailAccountController',
+        templateUrl: 'accountProfileEmailModal.html',
+        controller: 'AccountProfileEmailController',
         size: size,
         resolve: {
           profile: function () {
@@ -85,7 +85,16 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     };
 
   }])
-  .controller('ProfileDetailsController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
+  .controller('AccountPublicationsController',['$scope', function($scope){
+
+  }])
+  .controller('AccountProfileController',['$scope', function($scope){
+
+  }])
+  .controller('AccountBillingController',['$scope', function($scope){
+
+  }])
+  .controller('AccountProfileDetailsController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
 
     $scope.forms = {
       profileDetails: {}
@@ -130,7 +139,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     };
 
   }])
-  .controller('AccountPasswordController',['$scope','$modalInstance','FireAuth','profile',function($scope, $modalInstance, FireAuth, profile){
+  .controller('AccountProfilePasswordController',['$scope','$modalInstance','FireAuth','profile',function($scope, $modalInstance, FireAuth, profile){
 
     $scope.forms = {
       accountPassword: {}
@@ -162,7 +171,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     };
 
   }])
-  .controller('EmailAccountController',['$q', '$scope', '$modalInstance', 'FireAuth', 'profile',function( $q, $scope, $modalInstance, FireAuth, profile){
+  .controller('AccountProfileEmailController',['$q', '$scope', '$modalInstance', 'FireAuth', 'profile',function( $q, $scope, $modalInstance, FireAuth, profile){
 
     $scope.forms = {
       emailAccount: {}
@@ -206,20 +215,4 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
       $modalInstance.dismiss();
     };
 
-  }])
-  .controller('CarouselDemoCtrl', function ($scope) {
-    $scope.myInterval = 5000;
-    $scope.noWrapSlides = false;
-    var slides = $scope.slides = [];
-    $scope.addSlide = function() {
-      var newWidth = 600 + slides.length + 1;
-      slides.push({
-        image: '//placekitten.com/' + newWidth + '/300',
-        text: ['More','Extra','Lots of','Surplus'][slides.length % 4] + ' ' +
-        ['Cats', 'Kittys', 'Felines', 'Cutes'][slides.length % 4]
-      });
-    };
-    for (var i=0; i<4; i++) {
-      $scope.addSlide();
-    }
-  });
+  }]);
