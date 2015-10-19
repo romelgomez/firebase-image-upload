@@ -8,7 +8,15 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
     $scope.profile = $firebaseObject(FireRef.child('users/'+user.uid));
 
   }])
-  .controller('AccountPublicationsController',['$scope', function($scope){
+  .controller('AccountPublicationsController',['$scope', 'FireRef', function($scope, FireRef){
+
+    //var publicationsRef = FireRef.child('publications');
+    //
+    //$scope.snapshot = {};
+    //
+    //publicationsRef.orderByChild('releaseDate').limitToLast(10).on("value", function(snapshot) {
+    //  $scope.snapshot = snapshot;
+    //});
 
   }])
   .controller('AccountProfileController',['$scope', '$uibModal','notificationService',function($scope, $uibModal, notificationService){
