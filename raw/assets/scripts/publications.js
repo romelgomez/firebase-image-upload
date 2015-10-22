@@ -1,7 +1,5 @@
 'use strict';
 
-// añadir soporte a otro tipo de publicación
-
 angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar'])
   .factory('publicationsService',['$q','$window','rfc4122','FireRef','$firebaseArray','$firebaseObject',function($q,$window,rfc4122,FireRef,$firebaseArray,$firebaseObject){
 
@@ -99,7 +97,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
   }])
   .controller('PublicationsController',['$scope','$q','$window','rfc4122','treeService','publicationsService','notificationService','$filter','fileService','Upload', 'user','$log',function($scope,$q,$window,rfc4122,treeService,publicationsService,notificationService,$filter,fileService,$upload, user,$log){
 
-    //Main Categories [market, jobs] // realEstate, vehicles, boats, planes, stockMarket
+    // Main Categories [Market, Jobs, RealEstate, Transport, Services]
 
     $scope.treeNodes          = treeService.nodes();
     $scope.categoryExpected   = false;
