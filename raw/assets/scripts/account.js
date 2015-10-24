@@ -1,27 +1,39 @@
 'use strict';
 
 angular.module('account',['trTrustpass','ngPasswordStrength'])
-  .controller('AccountController',['$scope','user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', function ($scope, user, $uibModal, FireRef, $firebaseObject, notificationService) {
+  .controller('AccountController',['$scope', '$q', 'user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log', function ($scope, $q, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
 
-    $scope.user = user;
-
-    $scope.profile = $firebaseObject(FireRef.child('users/'+user.uid));
+    $scope.account = {
+      user:user,
+      profile: $firebaseObject(FireRef.child('users/'+user.uid)),
+      publications: {}
+    };
 
   }])
-  .controller('AccountPublicationsController',['$scope', 'FireRef', function($scope, FireRef){
+  .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$timeout', function( $scope, $q, FireRef, $firebaseObject, $timeout){
 
-    //var publicationsRef = FireRef.child('publications');
-    //
-    //$scope.snapshot = {};
-    //
-    //publicationsRef.orderByChild('releaseDate').limitToLast(10).on("value", function(snapshot) {
-    //  $scope.snapshot = snapshot;
-    //});
+    var publications = function(){
+      var deferred = $q.defer();
+
+      var userPublicationsRef = FireRef.child('publications').child($scope.account.user.uid);
+      userPublicationsRef.orderByChild('releaseDate').on('value', function(snapshot) {
+        deferred.resolve(snapshot.val());
+      },function(error){
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    };
+
+    $scope.account.httpRequestPromise = publications()
+      .then(function(publications){
+        $scope.account.publications = publications;
+      });
 
   }])
   .controller('AccountProfileController',['$scope', '$uibModal','notificationService',function($scope, $uibModal, notificationService){
 
-    $scope.httpRequestPromise = $scope.profile.$loaded(null,function(error){
+    $scope.account.httpRequestPromise = $scope.account.profile.$loaded(null,function(error){
       notificationService.error(error);
     });
 
@@ -48,7 +60,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
         size: size,
         resolve: {
           profile: function () {
-            return $scope.profile;
+            return $scope.account.profile;
           }
         }
       });
@@ -67,7 +79,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
         size: size,
         resolve: {
           profile: function () {
-            return $scope.profile;
+            return $scope.account.profile;
           }
         }
       });
@@ -86,7 +98,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength'])
         size: size,
         resolve: {
           profile: function () {
-            return $scope.profile;
+            return $scope.account.profile;
           }
         }
       });

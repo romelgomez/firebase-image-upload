@@ -1,44 +1,98 @@
-<div style="margin-top: 10px; margin-bottom: 0; ">
-  <uib-tabset>
-    <uib-tab>
-      <tab-heading>
-        Market <i class="fa fa-shopping-cart"></i>
-      </tab-heading>
+<div style="margin-top: 10px; margin-bottom: 0; " ng-controller="AccountPublicationsController">
 
-      <ng-include src="'assets/views/account/publicationsType/market.html'"></ng-include>
+<pre>{{account.publications | json}}</pre>
 
-    </uib-tab>
-    <uib-tab>
-      <tab-heading>
-        Jobs <i class="fa fa-briefcase"></i>
-      </tab-heading>
+  <ul>
+    <li>
+      Market - Price range <i class="fa fa-shopping-cart"></i>
+    </li>
+    <li>
+      Jobs - Salaries <i class="fa fa-briefcase"></i>
+    </li>
+    <li>
+      Real Estate - Price range <i class="fa fa-home"></i>
+    </li>
+    <li>
+      Transport - Price range <i class="fa fa-rocket"></i>
+    </li>
+    <li>
+      Services<i class="fa fa-gavel"></i>
+    </li>
+  </ul>
 
-      <ng-include src="'assets/views/account/publicationsType/jobs.html'"></ng-include>
+  <div class="well well-sm" style="margin-bottom: 10px;">
 
-    </uib-tab>
-    <uib-tab>
-      <tab-heading>
-        Real Estate <i class="fa fa-home"></i>
-      </tab-heading>
+    <li>Categories</li>
+    <li>Location</li>
+    <li>Salaries </li>
+    <li>O refined by 'características de la publicación'</li>
 
-      <ng-include src="'assets/views/account/publicationsType/realEstate.html'"></ng-include>
+  </div>
+  <div class="well well-sm" style="margin-bottom: 10px;">
+    <li>Categories</li>
+    <li>Location</li>
+    <li>Price range</li>
+    <li>O refined by 'características de la publicación'</li>
+  </div>
 
-    </uib-tab>
-    <uib-tab>
-      <tab-heading>
-        Transport <i class="fa fa-rocket"></i>
-      </tab-heading>
+  <input type="text" class="form-control" placeholder="Search">
+  <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" style="margin-bottom: 5px; margin-top: 10px;"></uib-pagination>
 
-      <ng-include src="'assets/views/account/publicationsType/transport.html'"></ng-include>
+  <div class="panel panel-default" style="margin-bottom: 10px;">
+    <div class="panel-heading">
+      Front End Developer / JavaScript Developer (Angular.js jQuery TDD) for an award winning fintech start-up that has been revolutionising business lending. £60-£70K
+    </div>
+    <div class="panel-body" style="padding: 10px">
 
-    </uib-tab>
-    <uib-tab>
-      <tab-heading>
-        Services <i class="fa fa-gavel"></i>
-      </tab-heading>
+      <div class="row">
+        <div class="col-xs-4">
+          <a href="#" class="thumbnail" style="margin-bottom: 0;" >
+            <img src="assets/images/nasa.png" alt="...">
+          </a>
+        </div>
+        <div class="col-xs-8">
+          <div class="caption">
+            <p>
+              As a skilled Front End Developer you will use JavaScript, Angular.js and semantic HTML to design and develop clear, concise and user friendly interfaces for the core web based product.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <a href="#" class="btn btn-warning" role="button">Edit</a>
+      <a href="#" class="btn btn-primary" role="button">View</a>
+    </div>
+  </div>
 
-      <ng-include src="'assets/views/account/publicationsType/services.html'"></ng-include>
+  <div class="panel panel-default" style="margin-bottom: 10px;">
+    <div class="panel-heading">
+      Front End Developer / JavaScript Developer (Angular.js jQuery TDD) for an award winning fintech start-up that has been revolutionising business lending. £60-£70K
+    </div>
+    <div class="panel-body" style="display: none;">
 
-    </uib-tab>
-  </uib-tabset>
+      <div class="row">
+        <div class="col-xs-4">
+          <a href="#" class="thumbnail" style="margin-bottom: 0;" >
+            <img src="assets/images/nasa.png" alt="...">
+          </a>
+        </div>
+        <div class="col-xs-8">
+          <div class="caption">
+            <p>
+              As a skilled Front End Developer you will use JavaScript, Angular.js and semantic HTML to design and develop clear, concise and user friendly interfaces for the core web based product.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <a href="#" class="btn btn-warning" role="button">Edit</a>
+      <a href="#" class="btn btn-primary" role="button">View</a>
+    </div>
+  </div>
+
+  <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" style="margin: 0;"></uib-pagination>
+
+
 </div>
