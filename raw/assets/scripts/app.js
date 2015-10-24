@@ -11,7 +11,6 @@ angular.module('app',[
         'login',
         'account',
         'ui.bootstrap',
-        'fileUpload',
         'main'
     ])
     .controller('AppController',['$scope','FireAuth',function($scope,FireAuth){

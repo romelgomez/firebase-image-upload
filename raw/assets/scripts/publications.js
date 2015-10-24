@@ -1,101 +1,113 @@
 'use strict';
 
 angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar'])
-  .factory('publicationsService',['$q','$window','rfc4122','FireRef','$firebaseArray','$firebaseObject',function($q,$window,rfc4122,FireRef,$firebaseArray,$firebaseObject){
+  .controller('PublicationsController',[
+    '$scope',
+    '$q',
+    '$window',
+    '$filter',
+    'FireRef',
+    '$firebaseArray',
+    '$firebaseObject',
+    'rfc4122',
+    'treeService',
+    'notificationService',
+    'Upload',
+    'user',
+    '$log',function($scope, $q, $window, $filter, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $log){
 
-    var publications = $firebaseArray(FireRef.child('publications'));
+    var userPublicationsRef = FireRef.child('publications').child(user.uid);
+    var userPublications = $firebaseArray(userPublicationsRef);
 
-    return {
-      deleteAllPublicationImages: function (publicationId) {
-        var deferred = $q.defer();
+    var deleteAllPublicationImages = function (publicationId) {
+      var deferred = $q.defer();
 
-        var imagesRef = FireRef.child('publications').child(publicationId).child('images');
+      var imagesRef = userPublicationsRef.child(publicationId).child('images');
 
-        var images = $firebaseObject(imagesRef);
-        images.$loaded()
-          .then(function(obj) {
+      var images = $firebaseObject(imagesRef);
+      images.$loaded()
+        .then(function(obj) {
 
-            angular.forEach(obj, function (value, key) {
-              obj[key].isDeleted = true;
-            });
+          angular.forEach(obj, function (value, key) {
+            obj[key].isDeleted = true;
+          });
 
-            obj.$save().then(function() {
+          obj.$save().then(function() {
+            deferred.resolve();
+          }, function(error) {
+            deferred.reject(error);
+          });
+
+        })
+        .catch(function(error) {
+          deferred.reject(error);
+        });
+
+      return deferred.promise;
+    };
+
+    var deletePublicationImage = function(publicationId,imageId){
+      var deferred = $q.defer();
+      var image = userPublicationsRef.child(publicationId).child('images').child(imageId);
+      image.update({
+        isDeleted: true
+      }, function (error) {
+        if(error){
+          deferred.reject(error);
+        }else{
+          deferred.resolve();
+        }
+      });
+      return deferred.promise;
+    };
+
+    var deletePublication = function(publicationId){
+      var record = userPublications.$getRecord(publicationId);
+      record.isDeleted = true;
+      return userPublications.$save(record);
+    };
+
+    var savePublicationFiles = function(files,publicationId){
+      var deferred = $q.defer();
+
+      var imagesRef = userPublicationsRef.child(publicationId).child('images');
+
+      var images = $firebaseObject(imagesRef);
+      images.$loaded()
+        .then(function(obj) {
+
+          angular.forEach(files, function (value, key) {
+            obj[key] = value;
+          });
+
+          obj.$save()
+            .then(function() {
               deferred.resolve();
             }, function(error) {
               deferred.reject(error);
             });
 
-          })
-          .catch(function(error) {
-            deferred.reject(error);
-          });
-
-        return deferred.promise;
-      },
-      deletePublicationImage: function(publicationId,imageId){
-        var deferred = $q.defer();
-        var image = FireRef.child('publications').child(publicationId).child('images').child(imageId);
-        image.update({
-          isDeleted: true
-        }, function (error) {
-          if(error){
-            deferred.reject(error);
-          }else{
-            deferred.resolve();
-          }
+        })
+        .catch(function(error) {
+          deferred.reject(error);
         });
-        return deferred.promise;
-      },
-      deletePublication: function(publicationId){
-        var record = publications.$getRecord(publicationId);
-        record.isDeleted = true;
-        return publications.$save(record);
-      },
-      publicationFiles: function(files,publicationId){
-        var deferred = $q.defer();
 
-        var imagesRef = FireRef.child('publications').child(publicationId).child('images');
+      return deferred.promise;
+    };
 
-        var images = $firebaseObject(imagesRef);
-        images.$loaded()
-          .then(function(obj) {
-
-            angular.forEach(files, function (value, key) {
-              obj[key] = value;
-            });
-
-            obj.$save()
-              .then(function() {
-                deferred.resolve();
-              }, function(error) {
-                deferred.reject(error);
-              });
-
-          })
-          .catch(function(error) {
-            deferred.reject(error);
-          });
-
-        return deferred.promise;
-      },
-      publication: function (publication,id) {
-        if(angular.isDefined(id) && id !== ''){
-          var record = publications.$getRecord(id);
-          angular.forEach(publication,function(value,key){
-            record[key] = value;
-          });
-          return publications.$save(record);
-        }else{
-          publication.isDeleted = false;
-          publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
-          return publications.$add(publication);
-        }
+    var savePublication = function (publication,id) {
+      if(angular.isDefined(id) && id !== ''){
+        var record = userPublications.$getRecord(id);
+        angular.forEach(publication,function(value,key){
+          record[key] = value;
+        });
+        return userPublications.$save(record);
+      }else{
+        publication.isDeleted = false;
+        publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
+        return userPublications.$add(publication);
       }
-
-  };
-
-  }])
-  .controller('PublicationsController',['$scope','$q','$window','rfc4122','treeService','publicationsService','notificationService','$filter','fileService','Upload', 'user','$log',function($scope,$q,$window,rfc4122,treeService,publicationsService,notificationService,$filter,fileService,$upload, user,$log){
+    };
 
     // Main Categories [Market, Jobs, RealEstate, Transport, Services]
 
@@ -174,14 +186,14 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
               }
             });
             return $q.all({
-              'publication': publicationsService.publication(publication,$scope.publicationId),
+              'publication': savePublication(publication,$scope.publicationId),
               'files':files
             });
           })
           .then(function (the) {
             $scope.publicationId = $scope.publicationId !== '' ? $scope.publicationId : the.publication.key();
             if(Object.keys(the.files).length > 0){
-              return publicationsService.publicationFiles(the.files,$scope.publicationId);
+              return savePublicationFiles(the.files,$scope.publicationId);
             }else{
               return $q.when(true);
             }
@@ -222,7 +234,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
 
     $scope.discard = function(){
       if($scope.publicationId !== ''){
-        publicationsService.deletePublication($scope.publicationId)
+        deletePublication($scope.publicationId)
           .then(function(){
             notificationService.success('The publication has been deleted');
             $window.location = '#/'
@@ -236,7 +248,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     };
 
     $scope.deleteAllPublicationImages = function () {
-         publicationsService.deleteAllPublicationImages($scope.publicationId)
+         deleteAllPublicationImages($scope.publicationId)
            .then(function(){
              angular.copy(original.files,$scope.model.files);
              notificationService.success('The images has been deleted');
@@ -262,7 +274,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       };
 
       if(angular.isDefined(file.inServer)){
-          publicationsService.deletePublicationImage($scope.publicationId,file.details.context.custom.fileId)
+          deletePublicationImage($scope.publicationId,file.details.context.custom.fileId)
             .then(function(){
               removeFile();
             },function(error){
