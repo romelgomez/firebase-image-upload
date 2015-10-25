@@ -146,4 +146,13 @@ angular.module('filters',[])
         number = Math.floor(Math.log(bytes) / Math.log(1024));
       return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
     };
-  }]);
+  }])
+/**
+ * @Description Output plain text instead of html
+ * Source: http://stackoverflow.com/a/17315483/2513972
+ */
+  .filter('htmlToPlaintext', function() {
+    return function(text) {
+      return  text ? String(text).replace(/<[^>]+>/gm, '') : '';
+    };
+  });
