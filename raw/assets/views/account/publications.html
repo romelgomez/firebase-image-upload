@@ -13,14 +13,19 @@
           <div>
             <a href="#" class="thumbnail" style="margin-bottom: 0;">
               <img src="assets/images/subaru.jpg" alt="...">
+
+              <cl-image public-id="{some_public_id}" class="thumbnail inline" angle="20" format="jpg">
+                <cl-transformation height="150" width="150" crop="fill" gravity="north" effect="sepia" radius="20"/>
+              </cl-image>
+
             </a>
           </div>
           <div ng-switch="publicationDetails.type" style="margin-top: 2px;">
-            <span ng-switch-when="market" class="label label-info">Market - <i class="fa fa-shopping-cart"></i></span>
+            <span ng-switch-when="market" class="label label-info">Product Market - <i class="fa fa-shopping-cart"></i></span>
             <span ng-switch-when="jobs" class="label label-info">Job - <i class="fa fa-briefcase"></i></span>
             <span ng-switch-when="realEstate" class="label label-info">Real Estate - <i class="fa fa-home"></i></span>
             <span ng-switch-when="transport" class="label label-info">Transport - <i class="fa fa-rocket"></i></span>
-            <span ng-switch-when="services" class="label label-info">Services - <i class="fa fa-wrench"></i></span>
+            <span ng-switch-when="services" class="label label-info">Service - <i class="fa fa-wrench"></i></span>
           </div>
         </div>
         <div class="col-xs-8 col-md-10" style="padding-left: 0;">
@@ -40,29 +45,7 @@
     </div>
   </div>
 
-  <div class="list-group">
-    <a href="#" class="list-group-item">
-      <span class="badge">Market - <i class="fa fa-shopping-cart"></i></span>
-      Dapibus ac facilisis in Dapibus ac facilisis in in Dapibus ac facilisis in in Dapibus ac facilisis in in Dapibus ac facilisis in in Dapibus ac facilisis in in Dapibus ac facilisis in in Dapibus ac facilisis in in Dapibus ac facilisis in
-
-    </a>
-    <a href="#" class="list-group-item">
-      <span class="badge">Real Estate - <i class="fa fa-home"></i></span>
-
-      Porta ac consectetur ac
-    </a>
-    <a href="#" class="list-group-item">
-      <span class="badge">Transport - <i class="fa fa-rocket"></i></span>
-      Vestibulum at eros
-    </a>
-  </div>
-  <div ng-repeat="(publicationId, publicationDetails) in account.publications">
-    <pre>{{publicationId}}</pre>
-    <pre>{{publicationDetails.title}}</pre>
-    <pre>{{publicationDetails | json}}</pre>
-  </div>
-
-  <!--<pre>{{account.publications | json}}</pre>-->
+  <pre>{{account.publications | json}}</pre>
 
 
 
