@@ -165,26 +165,26 @@
           </div>
         </div>
 
-        <!--<ul>-->
-          <!--<li>publicationForm.files.$error: {{publicationForm.files.$error | json}}</li>-->
-          <!--<li>publicationForm.files.$error.required: {{publicationForm.files.$error.required | json}}</li>-->
-          <!--<li>inQueue: {{imagesInfo().inQueue}}</li>-->
-          <!--<li>inServer: {{imagesInfo().inServer}}</li>-->
-          <!--<li>invalid: {{imagesInfo().invalid}}</li>-->
-        <!--</ul>-->
-
-        <!--Todo:  Delete from the queue , -->
-
         <!--<pre>{{model | json}}</pre>-->
 
         <div ng-show="model.files.length > 0">
-          <div>
-            <ul>
-              <li>Images in queue to upload: <span class="badge">{{imagesInfo().inQueue}}</span></li>
-              <li>Images in server: <span class="badge">{{imagesInfo().inServer}}</span></li>
-              <li>Images invalid: <span class="badge">{{imagesInfo().invalid}}</span></li>
-            </ul>
-          </div>
+
+          <ul class="list-group" style="margin-bottom: 10px;">
+            <li class="list-group-item">
+              <span class="badge">{{imagesInfo().inQueue}}</span>
+              Images in queue to upload:
+            </li>
+            <li class="list-group-item">
+              <span class="badge">{{imagesInfo().inServer}}</span>
+              Images in server:
+            </li>
+            <li class="list-group-item">
+              <span class="badge">{{imagesInfo().invalid}}</span>
+              Images invalid:
+            </li>
+          </ul>
+
+          <hr class="hr-xs">
 
           <div class="panel panel-default" ng-repeat="(key, value) in model.files" style="margin-bottom: 10px;">
             <div class="panel-body" style="padding: 5px;">
@@ -193,10 +193,10 @@
                   <div>
                     <img class="img-thumbnail img-preview" ng-src="{{value.blobUrl || '/images/loading.jpeg'}}" alt="{{value.name}}">
                   </div>
-                  <div style="margin-bottom: 5px;"><b>Status: </b><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
-                  <span ng-show="model.mainFile === value.details.context.custom.fileId" class="label label-info">Main</span>
+                  <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
+                  <div style="margin-bottom: 5px;"><span ng-show="model.mainFile === value.details.context.custom.fileId" class="label label-info">Main</span></div>
                 </div>
-                <div class="col-xs-8 col-md-10" style="padding-left: 0;">
+                <div class="col-xs-8 col-md-10" style="padding-left: 5px;">
                   <div class="file-name">
                     {{value.name}}
                   </div>
@@ -204,10 +204,7 @@
                   <div>
 
                     <div ng-show="!value.$error">
-                      <!--<div class="file-name"><b>Name: </b>{{value.name}}</div>-->
                       <div><b>Size: </b>{{value.size | bytes}}</div>
-                      <!--<span ng-show="model.mainFile === value.details.context.custom.fileId" class="label label-info">Main</span>-->
-                      <!--<div><button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button></div>-->
                     </div>
 
                     <div ng-show="value.$error" class="bg-warning" style="padding: 7px;">
@@ -223,7 +220,6 @@
                         </span>
                       </div>
                       <div style="margin-bottom: 3px"><b>Size:</b> {{value.size | bytes}}</div>
-                      <!--<button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>-->
                     </div>
 
                   </div>
