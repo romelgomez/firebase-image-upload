@@ -119,6 +119,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       userId:       user.uid,
       categoryId:   '',
       type:         '',
+      mainFile:     '',
       files:        []
     });
 
@@ -167,6 +168,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       angular.forEach(files,function(file){
         if(!angular.isDefined(file.inServer)){
           var fileId = rfc4122.v4();
+          if($scope.model.mainFile === ''){ $scope.model.mainFile = fileId; }
           _files[fileId] = uploadFile(file,fileId);
         }
       });
