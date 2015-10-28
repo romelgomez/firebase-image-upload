@@ -134,7 +134,7 @@
                 data-ngf-validate="{size: {max: '10MB'}, width: {min: 500, max:5000}, height: {min: 500, max: 5000}}"
                 data-ngf-validate-force="true"
                 required>
-          <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Select the images</button>
+          <i class="fa fa-picture-o"></i> Select the images</button>
 
         <button ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove in queue</button>
         <button ng-show="imagesInfo().inServer > 0" type="button" class="btn btn-danger" ng-click="deleteAllPublicationImages()"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
@@ -194,7 +194,7 @@
                     <img class="img-thumbnail img-preview" ng-src="{{value.blobUrl || '/images/loading.jpeg'}}" alt="{{value.name}}">
                   </div>
                   <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
-                  <div style="margin-bottom: 5px;"><span ng-show="model.mainFile === value.details.context.custom.fileId" class="label label-info">Main</span></div>
+                  <div style="margin-bottom: 5px;"><span ng-show="model.mainFile === value.details.context.custom.fileId" class="label label-info">Primary image</span></div>
                 </div>
                 <div class="col-xs-8 col-md-10" style="padding-left: 5px;">
                   <div class="file-name">
@@ -227,8 +227,8 @@
               </div>
             </div>
             <div class="panel-footer" style="padding: 5px; text-align: right">
+              <button ng-show="value.inServer && model.mainFile !== '' && model.mainFile !== value.details.context.custom.fileId " type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(value.details.context.custom.fileId)" ><i class="fa fa-thumb-tack"></i> Set as primary image</button>
               <button type="button" class="btn btn-danger btn-xs" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
-              <!--<button type="button" class="btn btn-primary btn-xs">View</button>-->
             </div>
           </div>
 

@@ -287,4 +287,15 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       }
     };
 
+    $scope.setAsPrimaryImage = function(imageId){
+      var record = userPublications.$getRecord($scope.publicationId);
+      record.mainFile = imageId;
+      $scope.httpRequestPromise = userPublications.$save(record)
+        .then(function(){
+          $scope.model.mainFile = imageId;
+          notificationService.success('The file as been selected as primary image.');
+        });
+    }
+
+
   }]);
