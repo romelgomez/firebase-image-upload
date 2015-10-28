@@ -1,6 +1,9 @@
 'use strict';
 
-angular.module('account',['trTrustpass','ngPasswordStrength'])
+$.cloudinary.config().cloud_name = 'berlin';
+
+
+angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
   .controller('AccountController',['$scope', '$q', 'user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log', function ($scope, $q, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
 
     $scope.account = {
