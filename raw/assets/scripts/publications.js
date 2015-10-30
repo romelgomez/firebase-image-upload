@@ -50,12 +50,12 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     $scope.categoryExpected   = false;
     $scope.path               = [];
     $scope.publicationId      = '';
+    $scope.files              = [];
     var original = angular.copy($scope.model = {
       userId:       user.uid,
       categoryId:   '',
       type:         '',
-      mainFile:     '',
-      files:        []
+      mainFile:     ''
     });
 
     $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
@@ -68,8 +68,11 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
     };
 
-    var uploadFile = function(file,fileId){
+    var uploadFile = function(file,publicationId){
       var deferred = $q.defer();
+      var fileId = rfc4122.v4();
+      var imagesRef = publicationImagesRef.child(publicationId);
+      var images = $firebaseArray(imagesRef);
 
       file.upload = $upload.upload({
         url: "https://api.cloudinary.com/v1_1/berlin/upload",
@@ -86,7 +89,15 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         //$log.info('success - data - to json',angular.toJson(data));
         file.inServer = true;
         file.details  = data;
-        deferred.resolve({
+
+
+          images.$add({
+
+          });
+
+
+
+          deferred.resolve({
           isDeleted:false,
           details:data
         });
@@ -103,17 +114,38 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       angular.forEach(files,function(file){
         if(!angular.isDefined(file.inServer)){
           var fileId = rfc4122.v4();
-          if($scope.model.mainFile === ''){ $scope.model.mainFile = fileId; }
+          //if($scope.model.mainFile === ''){ $scope.model.mainFile = fileId; } // el ID del registro en firebase es proporcionado
           _files[fileId] = uploadFile(file,fileId);
         }
       });
       return $q.all(_files);
     };
 
+    var saveFiles = function(files, publicationId){
+        var deferred = $q.defer();
+
+        uploadFiles(files)
+            .then(function(){
+
+            });
+
+        return deferred.promise;
+    };
+
     $scope.submit = function(){
       if($scope.publicationForm.$valid){
         var deferred    = $q.defer();
         var publication = {};
+
+        savePublication( $scope.model, $scope.publicationId)
+            .then(function(the){
+                $scope.publicationId = $scope.publicationId !== '' ? $scope.publicationId : the.publication.key();
+                return saveFiles( $scope.files, $scope.publicationId)
+            });
+
+
+
+
 
         uploadFiles($scope.model.files)
           .then(function (files) {
