@@ -50,7 +50,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     $scope.categoryExpected   = false;
     $scope.path               = [];
     $scope.publicationId      = '';
-    $scope.files              = [];
+    $scope.images              = [];
     var original = angular.copy($scope.model = {
       userId:       user.uid,
       categoryId:   '',
@@ -68,11 +68,8 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
     };
 
-    var uploadFile = function(file,publicationId){
+    var uploadFile = function(file,fileId){
       var deferred = $q.defer();
-      var fileId = rfc4122.v4();
-      var imagesRef = publicationImagesRef.child(publicationId);
-      var images = $firebaseArray(imagesRef);
 
       file.upload = $upload.upload({
         url: "https://api.cloudinary.com/v1_1/berlin/upload",
@@ -88,102 +85,108 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       }).success(function (data) {
         //$log.info('success - data - to json',angular.toJson(data));
         file.inServer = true;
-        file.details  = data;
+        file.fileId  = data.context.custom.fileId;
 
-
-          images.$add({
-
-          });
-
-
-
-          deferred.resolve({
-          isDeleted:false,
-          details:data
+        deferred.resolve({
+          'fileId':data.context.custom.fileId
         });
+
       }).error(function (data) {
         file.details  = data;
-        deferred.reject({});
+        deferred.reject();
       });
 
       return deferred.promise;
     };
 
-    var uploadFiles = function(files){
-      var _files = {};
-      angular.forEach(files,function(file){
-        if(!angular.isDefined(file.inServer)){
-          var fileId = rfc4122.v4();
-          //if($scope.model.mainFile === ''){ $scope.model.mainFile = fileId; } // el ID del registro en firebase es proporcionado
-          _files[fileId] = uploadFile(file,fileId);
-        }
-      });
-      return $q.all(_files);
-    };
+    //var uploadFiles = function(files){
+    //  var _files = {};
+    //  angular.forEach(files,function(file){
+    //    if(!angular.isDefined(file.inServer)){
+    //      var fileId = rfc4122.v4();
+    //      //if($scope.model.mainFile === ''){ $scope.model.mainFile = fileId; } // el ID del registro en firebase es proporcionado
+    //      _files[fileId] = uploadFile(file,fileId);
+    //    }
+    //  });
+    //  return $q.all(_files);
+    //};
 
     var saveFiles = function(files, publicationId){
-        var deferred = $q.defer();
-
-        uploadFiles(files)
-            .then(function(){
-
+      var imagesRef = publicationImagesRef.child(publicationId);
+      var filesPromises = {};
+      var filesReferences = {};
+      angular.forEach(files,function(file){
+        if(!angular.isDefined(file.inServer)){
+          var imageRef = imagesRef.push();
+          filesReferences[imageRef.key()] = imageRef;
+          filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key())
+            .then(function(the){
+              return filesReferences[the.fileId].set({isDeleted:false})
             });
-
-        return deferred.promise;
+        }
+      });
+      return $q.all(filesPromises);
     };
 
     $scope.submit = function(){
       if($scope.publicationForm.$valid){
         var deferred    = $q.defer();
-        var publication = {};
 
         savePublication( $scope.model, $scope.publicationId)
             .then(function(the){
-                $scope.publicationId = $scope.publicationId !== '' ? $scope.publicationId : the.publication.key();
-                return saveFiles( $scope.files, $scope.publicationId)
-            });
-
-
-
-
-
-        uploadFiles($scope.model.files)
-          .then(function (files) {
-            angular.forEach($scope.model, function (value,key) {
-              if(key !== 'files'){
-                publication[key] = value;
-              }
-            });
-            return $q.all({
-              'publication': savePublication(publication,$scope.publicationId),
-              'files':files
-            });
-          })
-          .then(function (the) {
-            $scope.publicationId = $scope.publicationId !== '' ? $scope.publicationId : the.publication.key();
-            if(Object.keys(the.files).length > 0){
-              return savePublicationFiles(the.files,$scope.publicationId);
-            }else{
-              return $q.when(true);
-            }
-          })
-          .then(function (filesPromisesObject) {
-
-            // TODO existen dos IDs el UUID local, y el de fireBase.
-            angular.forEach(filesPromisesObject, function(filesPromise, fileUID){
-              //$scope.model.files[fileUID].fileFireID = filesPromise.key();
-              $log.info('filesPromise.key() : ',filesPromise.key());
-              $log.info('fileUID :',fileUID);
-            });
-
-            $log.info('$scope.model.files :', $scope.model.files);
+                $scope.publicationId = $scope.publicationId !== '' ? $scope.publicationId : the.key();
+                $log.info('$scope.publicationId',$scope.publicationId);
+                return saveFiles( $scope.images, $scope.publicationId)
+            })
+          .then(function () {
 
             notificationService.success('Data has been save');
             deferred.resolve();
+
           },function(error){
+
             notificationService.error(error);
             deferred.reject(error);
+
           });
+
+        //uploadFiles($scope.model.files)
+        //  .then(function (files) {
+        //    angular.forEach($scope.model, function (value,key) {
+        //      if(key !== 'files'){
+        //        publication[key] = value;
+        //      }
+        //    });
+        //    return $q.all({
+        //      'publication': savePublication(publication,$scope.publicationId),
+        //      'files':files
+        //    });
+        //  })
+        //  .then(function (the) {
+        //    $scope.publicationId = $scope.publicationId !== '' ? $scope.publicationId : the.publication.key();
+        //    if(Object.keys(the.files).length > 0){
+        //      return savePublicationFiles(the.files,$scope.publicationId);
+        //    }else{
+        //      return $q.when(true);
+        //    }
+        //  })
+        //  .then(function (filesPromisesObject) {
+        //
+        //    // TODO existen dos IDs el UUID local, y el de fireBase.
+        //    angular.forEach(filesPromisesObject, function(filesPromise, fileUID){
+        //      //$scope.model.files[fileUID].fileFireID = filesPromise.key();
+        //      $log.info('filesPromise.key() : ',filesPromise.key());
+        //      $log.info('fileUID :',fileUID);
+        //    });
+        //
+        //    $log.info('$scope.model.files :', $scope.model.files);
+        //
+        //    notificationService.success('Data has been save');
+        //    deferred.resolve();
+        //  },function(error){
+        //    notificationService.error(error);
+        //    deferred.reject(error);
+        //  });
 
         $scope.httpRequestPromise = deferred.promise;
       }else{
