@@ -20,30 +20,6 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     var userPublications      = $firebaseArray(userPublicationsRef);
     var publicationImagesRef  = FireRef.child('images');
 
-    var savePublicationFiles = function(files,publicationId){
-      var imagesRef = publicationImagesRef.child(publicationId);
-      var images = $firebaseArray(imagesRef);
-      var filesPromisesObject = {};
-      angular.forEach(files, function(file,fileId){
-        filesPromisesObject[fileId] = images.$add(file);
-      });
-      return $q.all(filesPromisesObject);
-    };
-
-    var savePublication = function (publication,id) {
-      if(angular.isDefined(id) && id !== ''){
-        var record = userPublications.$getRecord(id);
-        angular.forEach(publication,function(value,key){
-          record[key] = value;
-        });
-        return userPublications.$save(record);
-      }else{
-        publication.isDeleted = false;
-        publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
-        return userPublications.$add(publication);
-      }
-    };
-
     // Main Categories [Market, Jobs, RealEstate, Transport, Services]
 
     $scope.treeNodes          = treeService.nodes();
@@ -128,6 +104,20 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return $q.all(filesPromises);
     };
 
+    var savePublication = function (publication,id) {
+      if(angular.isDefined(id) && id !== ''){
+        var record = userPublications.$getRecord(id);
+        angular.forEach(publication,function(value,key){
+          record[key] = value;
+        });
+        return userPublications.$save(record);
+      }else{
+        publication.isDeleted = false;
+        publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
+        return userPublications.$add(publication);
+      }
+    };
+
     $scope.submit = function(){
       if($scope.publicationForm.$valid){
         var deferred    = $q.defer();
@@ -135,7 +125,6 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         savePublication( $scope.model, $scope.publicationId)
             .then(function(the){
                 $scope.publicationId = $scope.publicationId !== '' ? $scope.publicationId : the.key();
-                $log.info('$scope.publicationId',$scope.publicationId);
                 return saveFiles( $scope.images, $scope.publicationId)
             })
           .then(function () {
@@ -150,44 +139,6 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
 
           });
 
-        //uploadFiles($scope.model.files)
-        //  .then(function (files) {
-        //    angular.forEach($scope.model, function (value,key) {
-        //      if(key !== 'files'){
-        //        publication[key] = value;
-        //      }
-        //    });
-        //    return $q.all({
-        //      'publication': savePublication(publication,$scope.publicationId),
-        //      'files':files
-        //    });
-        //  })
-        //  .then(function (the) {
-        //    $scope.publicationId = $scope.publicationId !== '' ? $scope.publicationId : the.publication.key();
-        //    if(Object.keys(the.files).length > 0){
-        //      return savePublicationFiles(the.files,$scope.publicationId);
-        //    }else{
-        //      return $q.when(true);
-        //    }
-        //  })
-        //  .then(function (filesPromisesObject) {
-        //
-        //    // TODO existen dos IDs el UUID local, y el de fireBase.
-        //    angular.forEach(filesPromisesObject, function(filesPromise, fileUID){
-        //      //$scope.model.files[fileUID].fileFireID = filesPromise.key();
-        //      $log.info('filesPromise.key() : ',filesPromise.key());
-        //      $log.info('fileUID :',fileUID);
-        //    });
-        //
-        //    $log.info('$scope.model.files :', $scope.model.files);
-        //
-        //    notificationService.success('Data has been save');
-        //    deferred.resolve();
-        //  },function(error){
-        //    notificationService.error(error);
-        //    deferred.reject(error);
-        //  });
-
         $scope.httpRequestPromise = deferred.promise;
       }else{
         notificationService.error('Something is missing');
@@ -200,7 +151,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         'inServer':0,
         'invalid':0
       };
-      angular.forEach($scope.model.files,function(value){
+      angular.forEach($scope.images,function(value){
         if(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error)){
           info.inQueue += 1;
         }else{
@@ -261,7 +212,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     //$scope.deleteAllPublicationImages = function () {
     //   deleteAllPublicationImages($scope.publicationId)
     //     .then(function(){
-    //       angular.copy(original.files,$scope.model.files);
+    //       angular.copy(original.files,$scope.images);
     //       notificationService.success('The images has been deleted');
     //     },function(error){
     //       notificationService.error(error);
@@ -269,11 +220,11 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     //};
 
     $scope.removeInvalidFiles = function(){
-      $scope.model.files = $filter('filter')($scope.model.files, function(value) { return !angular.isDefined(value.$error);});
+      $scope.images = $filter('filter')($scope.images, function(value) { return !angular.isDefined(value.$error);});
     };
 
     $scope.removeAllQueueFiles = function () {
-      $scope.model.files = $filter('filter')($scope.model.files, function(value) {
+      $scope.images = $filter('filter')($scope.images, function(value) {
         return !(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error));
       });
     };
@@ -295,7 +246,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
 
     //$scope.removeFile = function(fileIndex,file){
     //  var removeFile = function(){
-    //    $scope.model.files = $filter('filter')($scope.model.files, function(value, index) { return index !== fileIndex;});
+    //    $scope.images = $filter('filter')($scope.images, function(value, index) { return index !== fileIndex;});
     //    notificationService.success('The file as been delete.');
     //  };
     //
