@@ -203,10 +203,11 @@
                   <hr style="margin-top: 5px; margin-bottom: 5px;">
                   <div>
 
-                    <pre>{{value}}</pre>
+                    <!--<pre>{{value}}</pre>-->
 
                     <div ng-show="!value.$error">
                       <div><b>Size: </b>{{value.size | bytes}}</div>
+                      <uib-progressbar class="progress-striped active" value="value.progress ? value.progress : 0" type="{{  value.progress < 100 ? 'info' : 'success' }}">{{value.progress}}%</uib-progressbar>
                     </div>
 
                     <div ng-show="value.$error" class="bg-warning" style="padding: 7px;">
