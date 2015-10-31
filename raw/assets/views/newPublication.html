@@ -229,49 +229,10 @@
               </div>
             </div>
             <div class="panel-footer" style="padding: 5px; text-align: right">
-              <button ng-show="value.inServer && model.mainFile !== '' && model.mainFile !== value.details.context.custom.fileId " type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(value.details.context.custom.fileId)" ><i class="fa fa-thumb-tack"></i> Set as primary image</button>
+              <button ng-show="value.inServer && model.mainFile !== '' && model.mainFile !== value.fileId " type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(value.fileId)" ><i class="fa fa-thumb-tack"></i> Set as primary image</button>
               <button type="button" class="btn btn-danger btn-xs" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
             </div>
           </div>
-
-
-          <!--<div ng-repeat="(key, value) in images">-->
-
-            <!--&lt;!&ndash;<pre>{{value | json}}</pre>&ndash;&gt;-->
-
-            <!--<hr class="hr-xs">-->
-
-            <!--<div ng-show="!value.$error">-->
-              <!--<div><img class="img-thumbnail img-preview" ng-src="{{value.blobUrl || '/images/loading.jpeg'}}" alt="{{value.name}}"></div>-->
-              <!--<div class="file-name"><b>Name: </b>{{value.name}}</div>-->
-              <!--<div><b>Size: </b>{{value.size | bytes}}</div>-->
-              <!--<div style="margin-bottom: 5px;"><b>Status: </b><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>-->
-              <!--<span ng-show="model.mainFile === value.details.context.custom.fileId" class="label label-info">Main</span>-->
-              <!--<div><button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button></div>-->
-            <!--</div>-->
-
-            <!--<div ng-show="value.$error" class="bg-warning" style="padding: 7px;">-->
-              <!--<div><img class="img-thumbnail img-preview" ng-src="{{value.blobUrl || '/images/loading.jpeg'}}" alt="{{value.name}}"></div>-->
-              <!--<h3 class="text-warning" style="margin-bottom: 0; margin-top: 4px">Invalid image</h3>-->
-              <!--<div class="file-name">-->
-                <!--<b>Name: </b>{{value.name}}-->
-              <!--</div>-->
-              <!--<div style="margin-bottom: 3px;"><b>Reason: </b>-->
-                <!--<span ng-switch="value.$error">-->
-                  <!--<span ng-switch-when="minHeight">Does not meet the minimum height of 500px.</span>-->
-                  <!--<span ng-switch-when="maxHeight">Does not meet the maximum height of 5000px.</span>-->
-                  <!--<span ng-switch-when="minWidth">Does not meet the minimum width of 500px.</span>-->
-                  <!--<span ng-switch-when="maxWidth">Does not meet the maximum width of 5000px.</span>-->
-                  <!--<span ng-switch-when="maxSize">Exceeds the Maximum Size of 10MB.</span>-->
-                  <!--<span ng-switch-default>Undefined</span>-->
-                <!--</span>-->
-              <!--</div>-->
-              <!--<div style="margin-bottom: 3px"><b>Size:</b> {{value.size | bytes}}</div>-->
-              <!--<button class="btn btn-danger btn-xs" type="button" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>-->
-            <!--</div>-->
-
-          <!--</div>-->
-
 
         </div>
 

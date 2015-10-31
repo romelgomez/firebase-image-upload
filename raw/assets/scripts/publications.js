@@ -75,18 +75,6 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return deferred.promise;
     };
 
-    //var uploadFiles = function(files){
-    //  var _files = {};
-    //  angular.forEach(files,function(file){
-    //    if(!angular.isDefined(file.inServer)){
-    //      var fileId = rfc4122.v4();
-    //      //if($scope.model.mainFile === ''){ $scope.model.mainFile = fileId; } // el ID del registro en firebase es proporcionado
-    //      _files[fileId] = uploadFile(file,fileId);
-    //    }
-    //  });
-    //  return $q.all(_files);
-    //};
-
     var saveFiles = function(files, publicationId){
       var imagesRef = publicationImagesRef.child(publicationId);
       var filesPromises = {};
@@ -108,7 +96,9 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       if(angular.isDefined(id) && id !== ''){
         var record = userPublications.$getRecord(id);
         angular.forEach(publication,function(value,key){
-          record[key] = value;
+          if(key !== 'releaseDate'){
+            record[key] = value;
+          }
         });
         return userPublications.$save(record);
       }else{
@@ -182,42 +172,74 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       }
     };
 
-    //var deleteAllPublicationImages = function (publicationId) {
-    //  var deferred = $q.defer();
-    //
-    //  var imagesRef = userPublicationsRef.child(publicationId).child('images');
-    //
-    //  var images = $firebaseObject(imagesRef);
-    //  images.$loaded()
-    //    .then(function(obj) {
-    //
-    //      angular.forEach(obj, function (value, key) {
-    //        obj[key].isDeleted = true;
-    //      });
-    //
-    //      obj.$save().then(function() {
-    //        deferred.resolve();
-    //      }, function(error) {
-    //        deferred.reject(error);
-    //      });
-    //
-    //    })
-    //    .catch(function(error) {
-    //      deferred.reject(error);
-    //    });
-    //
-    //  return deferred.promise;
-    //};
-    //
-    //$scope.deleteAllPublicationImages = function () {
-    //   deleteAllPublicationImages($scope.publicationId)
-    //     .then(function(){
-    //       angular.copy(original.files,$scope.images);
-    //       notificationService.success('The images has been deleted');
-    //     },function(error){
-    //       notificationService.error(error);
-    //     });
-    //};
+    var deleteAllPublicationImages = function (publicationId) {
+      var deferred = $q.defer();
+
+      var imagesRef = publicationImagesRef.child(publicationId);
+
+      var images = $firebaseObject(imagesRef);
+      images.$loaded()
+        .then(function(obj) {
+
+          angular.forEach(obj, function (value, key) {
+            obj[key].isDeleted = true;
+          });
+
+          obj.$save().then(function() {
+            deferred.resolve();
+          }, function(error) {
+            deferred.reject(error);
+          });
+
+        },function(error) {
+          deferred.reject(error);
+        });
+
+      return deferred.promise;
+    };
+
+    $scope.deleteAllPublicationImages = function () {
+       deleteAllPublicationImages($scope.publicationId)
+         .then(function(){
+           angular.copy(original.files,$scope.images);
+           notificationService.success('The images has been deleted');
+         },function(error){
+           notificationService.error(error);
+         });
+    };
+
+    var deletePublicationImage = function(publicationId,imageId){
+      var deferred = $q.defer();
+      var imagesRef = publicationImagesRef.child(publicationId).child(imageId);
+      imagesRef.update({
+        isDeleted: true
+      }, function (error) {
+        if(error){
+          deferred.reject(error);
+        }else{
+          deferred.resolve();
+        }
+      });
+      return deferred.promise;
+    };
+
+    $scope.removeFile = function(fileIndex,file){
+      var removeFile = function(){
+        $scope.images = $filter('filter')($scope.images, function(value, index) { return index !== fileIndex;});
+        notificationService.success('The file as been delete.');
+      };
+
+      if(angular.isDefined(file.inServer)){
+        deletePublicationImage($scope.publicationId,file.fileId)
+          .then(function(){
+            removeFile();
+          },function(error){
+            notificationService.error(error);
+          });
+      }else{
+        removeFile();
+      }
+    };
 
     $scope.removeInvalidFiles = function(){
       $scope.images = $filter('filter')($scope.images, function(value) { return !angular.isDefined(value.$error);});
@@ -229,42 +251,6 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       });
     };
 
-    //var deletePublicationImage = function(publicationId,imageId){
-    //  var deferred = $q.defer();
-    //  var imagesRef = publicationImagesRef.child(publicationId).child(imageId);
-    //  imagesRef.update({
-    //    isDeleted: true
-    //  }, function (error) {
-    //    if(error){
-    //      deferred.reject(error);
-    //    }else{
-    //      deferred.resolve();
-    //    }
-    //  });
-    //  return deferred.promise;
-    //};
-
-    //$scope.removeFile = function(fileIndex,file){
-    //  var removeFile = function(){
-    //    $scope.images = $filter('filter')($scope.images, function(value, index) { return index !== fileIndex;});
-    //    notificationService.success('The file as been delete.');
-    //  };
-    //
-    //  if(angular.isDefined(file.inServer)){
-    //
-    //    $log.info('file.details.context.custom.fileId: ',file.details.context.custom.fileId);
-    //
-    //      //deletePublicationImage($scope.publicationId,file.details.context.custom.fileId)
-    //      //  .then(function(){
-    //      //    removeFile();
-    //      //  },function(error){
-    //      //    notificationService.error(error);
-    //      //  });
-    //  }else{
-    //    removeFile();
-    //  }
-    //};
-
     $scope.setAsPrimaryImage = function(imageId){
       var record = userPublications.$getRecord($scope.publicationId);
       record.mainFile = imageId;
@@ -274,6 +260,5 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
           notificationService.success('The file as been selected as primary image.');
         });
     }
-
 
   }]);
