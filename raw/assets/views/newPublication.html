@@ -194,7 +194,7 @@
                     <img class="img-thumbnail img-preview" ng-src="{{value.blobUrl || '/images/loading.jpeg'}}" alt="{{value.name}}">
                   </div>
                   <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
-                  <div style="margin-bottom: 5px;"><span ng-show="model.mainFile === value.fileId" class="label label-info">Primary image</span></div>
+                  <div style="margin-bottom: 5px;"><span ng-show="model.featuredImageId === value.fileId" class="label label-info">Primary image</span></div>
                 </div>
                 <div class="col-xs-8 col-md-10" style="padding-left: 5px;">
                   <div class="file-name">
@@ -229,7 +229,7 @@
               </div>
             </div>
             <div class="panel-footer" style="padding: 5px; text-align: right">
-              <button ng-show="value.inServer && model.mainFile !== value.fileId" type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(value.fileId)" ><i class="fa fa-thumb-tack"></i> Set as primary image</button>
+              <button ng-show="value.inServer && model.featuredImageId !== value.fileId && imagesInfo().inServer > 1" type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(value.fileId)" ><i class="fa fa-thumb-tack"></i> Set as featured Image</button>
               <button type="button" class="btn btn-danger btn-xs" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
             </div>
           </div>

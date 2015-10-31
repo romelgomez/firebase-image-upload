@@ -31,7 +31,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       userId:       user.uid,
       categoryId:   '',
       type:         '',
-      mainFile:     ''
+      featuredImageId:     ''
     });
 
     $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
@@ -223,21 +223,48 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return deferred.promise;
     };
 
-    $scope.removeFile = function(fileIndex,file){
-      var removeFile = function(){
-        $scope.images = $filter('filter')($scope.images, function(value, index) { return index !== fileIndex;});
-        notificationService.success('The file as been delete.');
-      };
+   var featuredImage = function(imageId){
+      var record = userPublications.$getRecord($scope.publicationId);
+      if(angular.isDefined(imageId) && imageId!==''){
+        record.featuredImageId = imageId;
+      }else{
+        record.featuredImageId = '';
+      }
+      return userPublications.$save(record);
+    };
 
+    $scope.setAsPrimaryImage = function(imageId){
+      $scope.httpRequestPromise = featuredImage(imageId)
+        .then(function(){
+          $scope.model.featuredImageId = imageId;
+          notificationService.success('The file as been selected as featured imagen.');
+        });
+    };
+
+    var removeFile = function(fileIndex){
+      $scope.images = $filter('filter')($scope.images, function(value, index) { return index !== fileIndex;});
+      notificationService.success('The file as been delete.');
+    };
+
+    $scope.removeFile = function(fileIndex,file){
       if(angular.isDefined(file.inServer)){
-        deletePublicationImage($scope.publicationId,file.fileId)
+        var tasksToDo = {};
+        if(file.fileId === $scope.model.featuredImageId){
+          tasksToDo.blankFeaturedImage = featuredImage().
+            then(function(){
+              $scope.model.featuredImageId = '';
+            });
+        }
+        tasksToDo.deleteImage = deletePublicationImage($scope.publicationId,file.fileId)
           .then(function(){
-            removeFile();
+            removeFile(fileIndex);
           },function(error){
             notificationService.error(error);
           });
+
+        $scope.httpRequestPromise = $q.all(tasksToDo);
       }else{
-        removeFile();
+        removeFile(fileIndex);
       }
     };
 
@@ -250,15 +277,5 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         return !(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error));
       });
     };
-
-    $scope.setAsPrimaryImage = function(imageId){
-      var record = userPublications.$getRecord($scope.publicationId);
-      record.mainFile = imageId;
-      $scope.httpRequestPromise = userPublications.$save(record)
-        .then(function(){
-          $scope.model.mainFile = imageId;
-          notificationService.success('The file as been selected as primary image.');
-        });
-    }
 
   }]);
