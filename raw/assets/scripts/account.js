@@ -13,14 +13,30 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
     };
 
   }])
-  .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$timeout', function( $scope, $q, FireRef, $firebaseObject, $timeout){
+  .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $log){
+
+    var publicationImagesRef  = FireRef.child('images');
 
     var publications = function(){
       var deferred = $q.defer();
 
+      var publications = {};
+      var images = {};
+
       var userPublicationsRef = FireRef.child('publications').child($scope.account.user.uid);
       userPublicationsRef.orderByChild('releaseDate').on('value', function(snapshot) {
-        deferred.resolve(snapshot.val());
+        publications = {};
+
+        angular.forEach(snapshot.val(), function(publication, publicationId){
+
+          if(!publication.isDeleted){
+            publications[publicationId] = publication
+          }
+
+          $log.info('publication',publication);
+        });
+
+        deferred.resolve({});
       },function(error){
         deferred.reject(error);
       });
@@ -28,10 +44,14 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       return deferred.promise;
     };
 
-    $scope.account.httpRequestPromise = publications()
-      .then(function(publications){
-        $scope.account.publications = publications;
-      });
+    //$scope.account.httpRequestPromise = publications()
+    //  .then(function(publications){
+    //    //$log.info('publications', angular.toJson(publications));
+    //    //$scope.account.publications = publications;
+    //
+    //
+    //
+    //  });
 
   }])
   .controller('AccountProfileController',['$scope', '$uibModal','notificationService',function($scope, $uibModal, notificationService){
