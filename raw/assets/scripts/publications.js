@@ -14,7 +14,8 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     'notificationService',
     'Upload',
     'user',
-    '$log',function($scope, $q, $window, $filter, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $log){
+    '$uibModal',
+    '$log',function($scope, $q, $window, $filter, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, $log){
 
     var userPublicationsRef   = FireRef.child('publications').child(user.uid);
     var userPublications      = $firebaseArray(userPublicationsRef);
@@ -158,19 +159,23 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return info;
     };
 
-    $scope.discard = function(){
-      if($scope.publicationId !== ''){
-        var publication  = userPublications.$getRecord($scope.publicationId);
-        var imagesRef       = publicationImagesRef.child($scope.publicationId);
+    var removePublication = function(){
+        var publication                 = userPublications.$getRecord($scope.publicationId);
+        var imagesToDeleteRef           = publicationImagesRef.child($scope.publicationId);
+        var imagesToDelete              = $firebaseArray(imagesToDeleteRef);
+        var imagesInQueueToDeleteRef    = FireRef.child('imagesInQueueToDelete');
+        var imagesInQueueToDelete       = $firebaseArray(imagesInQueueToDeleteRef);
 
-        imagesRef.on('value',function(snapshot){
-          $log.info('snapshot.val()',angular.toJson(snapshot.val()));
-        });
+        var tasksToDo = {};
 
-        $scope.images = $firebaseArray(imagesRef);
+        //imagesRef.on('value',function(snapshot){
+        //    $log.info('snapshot.val()',angular.toJson(snapshot.val()));
+        //});
 
-        $scope.images.$loaded(function() {
-          $log.info('fireBaseArray :  ',angular.toJson($scope.images));
+        imagesToDelete.$loaded(function(){
+            angular.forEach(imagesToDelete,function(value){
+                $log.info('value', angular.toJson(value));
+            });
         });
 
         //userPublications.$remove(publication);
@@ -190,10 +195,31 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         //  }, function (error) {
         //    notificationService.error(error);
         //  });
-      }else{
-        notificationService.success('The publication has been deleted.');
-        $window.location = '#/'
-      }
+
+    };
+
+    $scope.discard = function(){
+        var modalInstance = $uibModal.open({
+            templateUrl: 'discardPublication.html',
+            controller: 'DiscardPublicationController',
+            resolve: {
+                publicationId:function(){
+                  return $scope.publicationId !== '';
+                },
+                title: function () {
+                    return $scope.model.title !== '' ? $scope.model.title : 'Untitled';
+                }
+            }
+        });
+        modalInstance.result.then(function(){
+            if($scope.publicationId !== ''){
+            }else{
+                notificationService.success('The publication has been deleted.');
+                $window.location = '#/'
+            }
+        }, function (error) {
+            notificationService.error(error);
+        });
     };
 
     var deleteAllPublicationImages = function (publicationId) {
