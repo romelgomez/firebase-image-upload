@@ -157,15 +157,27 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
 
     $scope.discard = function(){
       if($scope.publicationId !== ''){
-        var record = userPublications.$getRecord(publicationId);
-        record.isDeleted = true;
-        userPublications.$save(record)
-          .then(function(){
-            notificationService.success('The publication has been deleted');
-            $window.location = '#/'
-          }, function (error) {
-            notificationService.error(error);
-          });
+        //var publication  = userPublications.$getRecord($scope.publicationId);
+        //var images       = publicationImagesRef.child($scope.publicationId);
+
+        //userPublications.$remove(publication);
+
+
+        //.then(function(){
+        //  notificationService.success('The publication has been deleted');
+        //  $window.location = '#/'
+        //},function(error){
+        //  notificationService.error(error);
+        //});
+
+        //record.isDeleted = true;
+        //userPublications.$save(record)
+        //  .then(function(){
+        //    notificationService.success('The publication has been deleted');
+        //    $window.location = '#/'
+        //  }, function (error) {
+        //    notificationService.error(error);
+        //  });
       }else{
         notificationService.success('The publication has been deleted.');
         $window.location = '#/'
