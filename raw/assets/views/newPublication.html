@@ -191,7 +191,7 @@
               <div class="row">
                 <div class="col-xs-4 col-md-2" style="padding-right: 5px;">
                   <div>
-                    <img class="img-thumbnail img-preview" ng-src="{{value.blobUrl || '/images/loading.jpeg'}}" alt="{{value.name}}">
+                    <img class="img-thumbnail img-preview" ng-src="{{value.blobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">
                   </div>
                   <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
                   <div style="margin-bottom: 5px;"><span ng-show="model.featuredImageId === value.fileId" class="label label-info">Primary image</span></div>

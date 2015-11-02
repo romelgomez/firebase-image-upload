@@ -85,7 +85,10 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
           filesReferences[imageRef.key()] = imageRef;
           filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key())
             .then(function(the){
-              return filesReferences[the.fileId].set({isDeleted:false})
+              return filesReferences[the.fileId].set({
+                name:file.name,
+                addedDate: $window.Firebase.ServerValue.TIMESTAMP
+              })
             });
         }
       });
@@ -157,11 +160,20 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
 
     $scope.discard = function(){
       if($scope.publicationId !== ''){
-        //var publication  = userPublications.$getRecord($scope.publicationId);
-        //var images       = publicationImagesRef.child($scope.publicationId);
+        var publication  = userPublications.$getRecord($scope.publicationId);
+        var imagesRef       = publicationImagesRef.child($scope.publicationId);
+
+        imagesRef.on('value',function(snapshot){
+          $log.info('snapshot.val()',angular.toJson(snapshot.val()));
+        });
+
+        $scope.images = $firebaseArray(imagesRef);
+
+        $scope.images.$loaded(function() {
+          $log.info('fireBaseArray :  ',angular.toJson($scope.images));
+        });
 
         //userPublications.$remove(publication);
-
 
         //.then(function(){
         //  notificationService.success('The publication has been deleted');
