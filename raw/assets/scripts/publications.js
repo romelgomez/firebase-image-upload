@@ -328,4 +328,18 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       });
     };
 
+  }])
+  .controller('DiscardPublicationController',['$scope', '$modalInstance', 'publicationId', 'title',function($scope,$modalInstance,publicationId, title){
+
+    $scope.publicationId           = publicationId;
+    $scope.title           = title;
+
+    $scope.confirm  = function () {
+      $modalInstance.close();
+    };
+
+    $scope.cancel   = function () {
+      $modalInstance.dismiss('This has be cancel');
+    };
+
   }]);
