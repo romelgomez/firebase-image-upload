@@ -110,7 +110,6 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         });
         return userPublications.$save(record);
       }else{
-        publication.isDeleted = false;
         publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
         return userPublications.$add(publication);
       }
