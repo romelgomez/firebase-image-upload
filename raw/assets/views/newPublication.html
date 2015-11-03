@@ -255,7 +255,7 @@
 <script type="text/ng-template" id="discardPublication.html">
     <div class="modal-header">
         <h3 ng-switch="publicationId" class="modal-title">
-           <span ng-switch-when="true" >Do you <b>Really</b> want to <b>Delete</b> this publication?</span>
+           <span ng-switch-when="true" >Do you <b>really</b> want to <b>Delete</b> this publication?</span>
            <span ng-switch-when="false" >Do you want to discard this publication?</span>
         </h3>
     </div>
@@ -263,14 +263,14 @@
 
         <h3 class="text-danger" style="margin-top: 0; margin-bottom: 0;">{{title | capitalize}}</h3>
 
-        <div ng-switch="publicationId" class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">
-            <span ng-switch-when="true" >NOTE: This action can not be undone. <b>This information will be permanently removed</b>.</span>
-            <span ng-switch-when="false" >NOTE: This action can not be undone.</span>
+        <div ng-switch="publicationId" class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">
+            <span ng-switch-when="true" >NOTE: This action cannot be undone. <b>This information will be permanently removed</b>.</span>
+            <span ng-switch-when="false" >NOTE: This action cannot be undone..</span>
         </div>
 
     </div>
     <div class="modal-footer">
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        <button ng-click="confirm()" type="submit">Confirm</button>
+        <button class="btn btn-primary" ng-click="confirm()" type="submit">Confirm</button>
     </div>
 </script>

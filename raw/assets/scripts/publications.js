@@ -159,43 +159,38 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return info;
     };
 
-    var removePublication = function(){
-        var publication                 = userPublications.$getRecord($scope.publicationId);
-        var imagesToDeleteRef           = publicationImagesRef.child($scope.publicationId);
-        var imagesToDelete              = $firebaseArray(imagesToDeleteRef);
-        var imagesInQueueToDeleteRef    = FireRef.child('imagesInQueueToDelete');
-        var imagesInQueueToDelete       = $firebaseArray(imagesInQueueToDeleteRef);
+   var removePublication = function(){
+     var deferred                            = $q.defer();
+     var publication                         = userPublications.$getRecord($scope.publicationId);
+     var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
+     var imagesToDelete                      = $firebaseArray(imagesToDeleteRef);
+     var imagesInQueueToDeleteRef            = FireRef.child('imagesInQueueToDelete');
+     var imagesInQueueToDelete               = $firebaseArray(imagesInQueueToDeleteRef);
+     var tasksToDo                           = {};
+     tasksToDo.imagesInQueueToDeletePromises = {};
 
-        var tasksToDo = {};
+     tasksToDo.imagesToDeleteLoadedPromise = imagesToDelete.$loaded(function(){
+       angular.forEach(imagesToDelete,function(value){
+         tasksToDo.imagesInQueueToDeletePromises[value.$id] = imagesInQueueToDelete.$add({
+           id:value.$id
+         });
+       });
+     });
 
-        //imagesRef.on('value',function(snapshot){
-        //    $log.info('snapshot.val()',angular.toJson(snapshot.val()));
-        //});
+     tasksToDo.userPublicationsRemovePromise = userPublications.$remove(publication);
 
-        imagesToDelete.$loaded(function(){
-            angular.forEach(imagesToDelete,function(value){
-                $log.info('value', angular.toJson(value));
-            });
-        });
+     $q.all(tasksToDo)
+       .then(function(){
+          imagesToDeleteRef.remove(function(error){
+            if (error) {
+              deferred.reject(error);
+            } else {
+              deferred.resolve();
+            }
+          })
+       });
 
-        //userPublications.$remove(publication);
-
-        //.then(function(){
-        //  notificationService.success('The publication has been deleted');
-        //  $window.location = '#/'
-        //},function(error){
-        //  notificationService.error(error);
-        //});
-
-        //record.isDeleted = true;
-        //userPublications.$save(record)
-        //  .then(function(){
-        //    notificationService.success('The publication has been deleted');
-        //    $window.location = '#/'
-        //  }, function (error) {
-        //    notificationService.error(error);
-        //  });
-
+      return deferred.promise;
     };
 
     $scope.discard = function(){
@@ -213,8 +208,14 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         });
         modalInstance.result.then(function(){
             if($scope.publicationId !== ''){
+              $log.info('the publication will be delete.');
+              $scope.httpRequestPromise = removePublication()
+                .then(function(){
+                  notificationService.success('The publication has been deleted.');
+                  $window.location = '#/'
+                });
             }else{
-                notificationService.success('The publication has been deleted.');
+                notificationService.success('The publication has been discard.');
                 $window.location = '#/'
             }
         }, function (error) {
