@@ -162,13 +162,14 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return info;
     };
 
+   var imagesInQueueToDeleteRef            = FireRef.child('imagesInQueueToDelete');
+   var imagesInQueueToDelete               = $firebaseArray(imagesInQueueToDeleteRef);
+
    var removePublication = function(){
      var deferred                            = $q.defer();
      var publication                         = userPublications.$getRecord($scope.publicationId);
      var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
      var imagesToDelete                      = $firebaseArray(imagesToDeleteRef);
-     var imagesInQueueToDeleteRef            = FireRef.child('imagesInQueueToDelete');
-     var imagesInQueueToDelete               = $firebaseArray(imagesInQueueToDeleteRef);
      var tasksToDo                           = {};
      tasksToDo.imagesInQueueToDeletePromises = {};
 
@@ -225,34 +226,37 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         });
     };
 
-    var deleteAllPublicationImages = function (publicationId) {
-      var deferred = $q.defer();
+    var deleteAllPublicationImages = function () {
+      var deferred                            = $q.defer();
+      var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
+      var imagesToDelete                      = $firebaseArray(imagesToDeleteRef);
+      var tasksToDo                           = {};
+      tasksToDo.imagesInQueueToDeletePromises = {};
 
-      var imagesRef = publicationImagesRef.child(publicationId);
-
-      var images = $firebaseObject(imagesRef);
-      images.$loaded()
-        .then(function(obj) {
-
-          angular.forEach(obj, function (value, key) {
-            obj[key].isDeleted = true;
+      tasksToDo.imagesToDeleteLoadedPromise = imagesToDelete.$loaded(function(){
+        angular.forEach(imagesToDelete,function(value){
+          tasksToDo.imagesInQueueToDeletePromises[value.$id] = imagesInQueueToDelete.$add({
+            id:value.$id
           });
+        });
+      });
 
-          obj.$save().then(function() {
-            deferred.resolve();
-          }, function(error) {
-            deferred.reject(error);
-          });
-
-        },function(error) {
-          deferred.reject(error);
+      $q.all(tasksToDo)
+        .then(function(){
+          imagesToDeleteRef.remove(function(error){
+            if (error) {
+              deferred.reject(error);
+            } else {
+              deferred.resolve();
+            }
+          })
         });
 
       return deferred.promise;
     };
 
     $scope.deleteAllPublicationImages = function () {
-       deleteAllPublicationImages($scope.publicationId)
+       deleteAllPublicationImages()
          .then(function(){
            angular.copy(original.files,$scope.images);
            notificationService.success('The images has been deleted');
@@ -261,18 +265,26 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
          });
     };
 
-    var deletePublicationImage = function(publicationId,imageId){
+    var deletePublicationImage = function(imageId){
       var deferred = $q.defer();
-      var imagesRef = publicationImagesRef.child(publicationId).child(imageId);
-      imagesRef.update({
-        isDeleted: true
-      }, function (error) {
-        if(error){
-          deferred.reject(error);
-        }else{
-          deferred.resolve();
-        }
+      var imageToDeleteRef    = publicationImagesRef.child($scope.publicationId).child(imageId);
+      var tasksToDo           = {};
+
+      tasksToDo.imagesInQueueToDeletePromise = imagesInQueueToDelete.$add({
+        id:imageId
       });
+
+      $q.all(tasksToDo)
+        .then(function(){
+          imageToDeleteRef.remove(function(error){
+            if (error) {
+              deferred.reject(error);
+            } else {
+              deferred.resolve();
+            }
+          })
+        });
+
       return deferred.promise;
     };
 
@@ -308,7 +320,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
               $scope.model.featuredImageId = '';
             });
         }
-        tasksToDo.deleteImage = deletePublicationImage($scope.publicationId,file.fileId)
+        tasksToDo.deleteImage = deletePublicationImage(file.fileId)
           .then(function(){
             removeFile(fileIndex);
           },function(error){
