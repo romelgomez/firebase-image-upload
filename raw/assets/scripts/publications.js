@@ -23,17 +23,21 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
 
     // Main Categories [Market, Jobs, RealEstate, Transport, Services]
 
-    $scope.treeNodes          = treeService.nodes();
-    $scope.categoryExpected   = false;
-    $scope.path               = [];
-    $scope.publicationId      = '';
-    $scope.images              = [];
+    $scope.treeNodes            = treeService.nodes();
+    $scope.categoryExpected     = false;
+    $scope.path                 = [];
+    $scope.publicationId        = '';
+    $scope.images               = [];
     var original = angular.copy($scope.model = {
       userId:       user.uid,
       categoryId:   '',
       type:         '',
       featuredImageId:     ''
     });
+
+    $scope.publicationIdStatus = function(){
+      return $scope.publicationId !== '';
+    };
 
     $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
       notificationService.error(error);
@@ -202,13 +206,12 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
                   return $scope.publicationId !== '';
                 },
                 title: function () {
-                    return $scope.model.title !== '' ? $scope.model.title : 'Untitled';
+                  return $scope.model.title !== '' && $scope.model.title !== undefined  ? $scope.model.title : 'Untitled';
                 }
             }
         });
         modalInstance.result.then(function(){
             if($scope.publicationId !== ''){
-              $log.info('the publication will be delete.');
               $scope.httpRequestPromise = removePublication()
                 .then(function(){
                   notificationService.success('The publication has been deleted.');
@@ -332,7 +335,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
   }])
   .controller('DiscardPublicationController',['$scope', '$modalInstance', 'publicationId', 'title',function($scope,$modalInstance,publicationId, title){
 
-    $scope.publicationId           = publicationId;
+    $scope.publicationId   = publicationId;
     $scope.title           = title;
 
     $scope.confirm  = function () {
