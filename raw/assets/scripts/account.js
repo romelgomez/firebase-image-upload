@@ -37,7 +37,10 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       var publicationImages    = $firebaseArray(publicationImagesRef);
 
       publicationImages.$loaded(function(){
-        deferred.resolve(publicationImages);
+        deferred.resolve({
+          publicationId: publicationId,
+          publicationImages: publicationImages
+        });
       },function(error){
         deferred.reject(error);
       });
@@ -59,17 +62,14 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
 
             angular.forEach(publications, function(publication, publicationId){
               tasksToDo.publicationsImagesPromises[publicationId] = publicationImages(publicationId)
+                  .then(function(the){
+                    $scope.account.publicationsImages[the.publicationId] = the.publicationImages;
+                  })
             });
 
           });
 
       $q.all(tasksToDo)
-          .then(function(the){
-            angular.forEach(the.publicationsImagesPromises, function(publicationImages, publicationId){
-              $log.info('publicationImages:', publicationImages); // TODO ESTO ES UNA PROMESA, DEBE SER UN ARRAY
-              $scope.account.publicationsImages[publicationId] = publicationImages;
-            })
-          })
           .then(function(){
             deferred.resolve();
           },function(error){
