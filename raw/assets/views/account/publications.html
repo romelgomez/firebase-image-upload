@@ -5,6 +5,8 @@
     <!--<a ng-repeat="(publicationId, publication) in account.publications"  href="#" class="list-group-item">{{publication.title}}</a>-->
   <!--</div>-->
 
+  <pre>{{account | json}}</pre>
+
 
   <div class="panel panel-default" ng-repeat="(publicationId, publicationDetails) in account.publications" style="margin-bottom: 10px;">
     <div class="panel-body" style="padding: 5px;">

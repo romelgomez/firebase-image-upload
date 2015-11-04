@@ -9,41 +9,20 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
     $scope.account = {
       user:user,
       profile: $firebaseObject(FireRef.child('users/'+user.uid)),
-      publications: {}
+      publications: {},
+      publicationsImages: {}
     };
 
   }])
   .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $log){
 
-    //var publicationImagesRef  = ;
-
     var publications = function(){
       var deferred = $q.defer();
-
-      var publications = {};
-      var images = {};
-
-      var TasksToDo = {};
 
       var userPublicationsRef = FireRef.child('publications').child($scope.account.user.uid);
 
       userPublicationsRef.orderByChild('releaseDate').on('value', function(snapshot) {
-        publications = {};
-        images       = {};
-
-        angular.forEach(snapshot.val(), function(publication, publicationId){
-
-          var publicationImagesRef  = FireRef.child('images').child(publicationId);
-          var publicationImages     = $firebaseArray(publicationImagesRef);
-
-          if(!publication.isDeleted){
-            publications[publicationId] = publication
-          }
-
-          $log.info('publication',publication);
-        });
-
-        deferred.resolve({});
+        deferred.resolve(snapshot.val());
       },function(error){
         deferred.reject(error);
       });
@@ -51,14 +30,56 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       return deferred.promise;
     };
 
-    //$scope.account.httpRequestPromise = publications()
-    //  .then(function(publications){
-    //    //$log.info('publications', angular.toJson(publications));
-    //    //$scope.account.publications = publications;
-    //
-    //
-    //
-    //  });
+    var publicationImages = function(publicationId){
+      var deferred = $q.defer();
+
+      var publicationImagesRef = FireRef.child('images').child(publicationId);
+      var publicationImages    = $firebaseArray(publicationImagesRef);
+
+      publicationImages.$loaded(function(){
+        deferred.resolve(publicationImages);
+      },function(error){
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    };
+
+    var accountPublications = function(){
+      var deferred = $q.defer();
+
+      var tasksToDo = {
+        publicationsImagesPromises: {}
+      };
+
+      tasksToDo.publicationsPromise = publications()
+          .then(function(publications){
+
+            $scope.account.publications = publications;
+
+            angular.forEach(publications, function(publication, publicationId){
+              tasksToDo.publicationsImagesPromises[publicationId] = publicationImages(publicationId)
+            });
+
+          });
+
+      $q.all(tasksToDo)
+          .then(function(the){
+            angular.forEach(the.publicationsImagesPromises, function(publicationImages, publicationId){
+              $log.info('publicationImages:', publicationImages); // TODO ESTO ES UNA PROMESA, DEBE SER UN ARRAY
+              $scope.account.publicationsImages[publicationId] = publicationImages;
+            })
+          })
+          .then(function(){
+            deferred.resolve();
+          },function(error){
+            deferred.reject(error);
+          });
+
+      return deferred.promise;
+    };
+
+    $scope.httpRequestPromise = accountPublications();
 
   }])
   .controller('AccountProfileController',['$scope', '$uibModal','notificationService',function($scope, $uibModal, notificationService){
