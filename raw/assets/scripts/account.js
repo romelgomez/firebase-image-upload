@@ -15,7 +15,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
   }])
   .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $log){
 
-    var publicationImagesRef  = FireRef.child('images');
+    //var publicationImagesRef  = ;
 
     var publications = function(){
       var deferred = $q.defer();
@@ -23,11 +23,18 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       var publications = {};
       var images = {};
 
+      var TasksToDo = {};
+
       var userPublicationsRef = FireRef.child('publications').child($scope.account.user.uid);
+
       userPublicationsRef.orderByChild('releaseDate').on('value', function(snapshot) {
         publications = {};
+        images       = {};
 
         angular.forEach(snapshot.val(), function(publication, publicationId){
+
+          var publicationImagesRef  = FireRef.child('images').child(publicationId);
+          var publicationImages     = $firebaseArray(publicationImagesRef);
 
           if(!publication.isDeleted){
             publications[publicationId] = publication
