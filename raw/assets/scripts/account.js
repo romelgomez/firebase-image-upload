@@ -48,6 +48,33 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       return deferred.promise;
     };
 
+
+   var addPublicationsImagesToScope = function(_publications_){
+     var deferred = $q.defer();
+
+     var publicationsImagesPromises = {};
+     var publicationsImages  = {};
+
+     angular.forEach(_publications_, function(publication, publicationId){
+       publicationsImagesPromises[publicationId] = publicationImages(publicationId)
+           .then(function(the){
+             $log.info('1');
+             return publicationsImages[the.publicationId] = the.publicationImages;
+           })
+     });
+
+     $q.all(publicationsImagesPromises)
+         .then(function(){
+           $log.info('2');
+           deferred.resolve(publicationsImages);
+         },function(error){
+           deferred.reject(error);
+         });
+
+     return deferred.promise;
+   };
+
+
     var accountPublications = function(){
       var deferred = $q.defer();
 
@@ -61,12 +88,17 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       tasksToDo.publicationsPromise = getPublications()
           .then(function(_publications_){
             publications = _publications_;
-            angular.forEach(_publications_, function(publication, publicationId){
-              tasksToDo.publicationsImagesPromises[publicationId] = publicationImages(publicationId)
-                  .then(function(the){
-                    tasksToDo.addPublicationsImages[the.publicationId] = $q.when($scope.account.publicationsImages[the.publicationId] = the.publicationImages)
-                  })
-            });
+
+
+            tasksToDo.addPublicationsImagesToScope = addPublicationsImagesToScope(_publications_);
+
+            //angular.forEach(_publications_, function(publication, publicationId){
+            //  tasksToDo.publicationsImagesPromises[publicationId] = publicationImages(publicationId)
+            //      .then(function(the){
+            //        tasksToDo.test = $q.when($log.info('1'));
+            //        tasksToDo.addPublicationsImages[the.publicationId] = $q.when($scope.account.publicationsImages[the.publicationId] = the.publicationImages)
+            //      })
+            //});
 
           });
 
