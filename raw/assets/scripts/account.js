@@ -16,7 +16,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
   }])
   .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $log){
 
-    var publications = function(){
+    var getPublications = function(){
       var deferred = $q.defer();
 
       var userPublicationsRef = FireRef.child('publications').child($scope.account.user.uid);
@@ -52,18 +52,19 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       var deferred = $q.defer();
 
       var tasksToDo = {
-        publicationsImagesPromises: {}
+        publicationsImagesPromises: {},
+        addPublicationsImages: {}
       };
 
-      tasksToDo.publicationsPromise = publications()
-          .then(function(publications){
+      var publications = {};
 
-            $scope.account.publications = publications;
-
-            angular.forEach(publications, function(publication, publicationId){
+      tasksToDo.publicationsPromise = getPublications()
+          .then(function(_publications_){
+            publications = _publications_;
+            angular.forEach(_publications_, function(publication, publicationId){
               tasksToDo.publicationsImagesPromises[publicationId] = publicationImages(publicationId)
                   .then(function(the){
-                    $scope.account.publicationsImages[the.publicationId] = the.publicationImages;
+                    tasksToDo.addPublicationsImages[the.publicationId] = $q.when($scope.account.publicationsImages[the.publicationId] = the.publicationImages)
                   })
             });
 
@@ -71,6 +72,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
 
       $q.all(tasksToDo)
           .then(function(){
+            $scope.account.publications = publications;
             deferred.resolve();
           },function(error){
             deferred.reject(error);
