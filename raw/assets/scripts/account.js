@@ -37,10 +37,8 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       var publicationImages    = $firebaseArray(publicationImagesRef);
 
       publicationImages.$loaded(function(){
-        deferred.resolve({
-          publicationId: publicationId,
-          publicationImages: publicationImages
-        });
+        $scope.account.publicationsImages[publicationId] = publicationImages;
+        deferred.resolve();
       },function(error){
         deferred.reject(error);
       });
@@ -48,67 +46,32 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       return deferred.promise;
     };
 
+    var getPublicationsImages = function(publications){
+      var publicationsImagesPromises = {};
 
-   var addPublicationsImagesToScope = function(_publications_){
-     var deferred = $q.defer();
+      angular.forEach(publications, function(publication, publicationId){
+        publicationsImagesPromises[publicationId] = publicationImages(publicationId)
+      });
 
-     var publicationsImagesPromises = {};
-     var publicationsImages  = {};
-
-     angular.forEach(_publications_, function(publication, publicationId){
-       publicationsImagesPromises[publicationId] = publicationImages(publicationId)
-           .then(function(the){
-             $log.info('1');
-             return publicationsImages[the.publicationId] = the.publicationImages;
-           })
-     });
-
-     $q.all(publicationsImagesPromises)
-         .then(function(){
-           $log.info('2');
-           deferred.resolve(publicationsImages);
-         },function(error){
-           deferred.reject(error);
-         });
-
-     return deferred.promise;
-   };
-
+      return $q.all(publicationsImagesPromises);
+    };
 
     var accountPublications = function(){
       var deferred = $q.defer();
 
-      var tasksToDo = {
-        publicationsImagesPromises: {},
-        addPublicationsImages: {}
-      };
-
       var publications = {};
 
-      tasksToDo.publicationsPromise = getPublications()
-          .then(function(_publications_){
-            publications = _publications_;
-
-
-            tasksToDo.addPublicationsImagesToScope = addPublicationsImagesToScope(_publications_);
-
-            //angular.forEach(_publications_, function(publication, publicationId){
-            //  tasksToDo.publicationsImagesPromises[publicationId] = publicationImages(publicationId)
-            //      .then(function(the){
-            //        tasksToDo.test = $q.when($log.info('1'));
-            //        tasksToDo.addPublicationsImages[the.publicationId] = $q.when($scope.account.publicationsImages[the.publicationId] = the.publicationImages)
-            //      })
-            //});
-
-          });
-
-      $q.all(tasksToDo)
-          .then(function(){
-            $scope.account.publications = publications;
-            deferred.resolve();
-          },function(error){
-            deferred.reject(error);
-          });
+      getPublications()
+        .then(function(_publications_){
+          publications = _publications_;
+          return getPublicationsImages(_publications_);
+        })
+        .then(function(){
+          $scope.account.publications = publications;
+          deferred.resolve();
+        },function(error){
+          deferred.reject(error);
+        });
 
       return deferred.promise;
     };
