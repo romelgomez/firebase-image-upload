@@ -62,7 +62,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         fields: {
           public_id: 'publications/'+fileId,
           upload_preset: 'ebdyaimw',
-          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|fileId=' + fileId
+          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId
         },
         file: file
       }).progress(function (e) {
@@ -71,10 +71,10 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       }).success(function (data) {
         //$log.info('success - data - to json',angular.toJson(data));
         file.inServer = true;
-        file.fileId  = data.context.custom.fileId;
+        file.$id  = data.context.custom.$id;
 
         deferred.resolve({
-          'fileId':data.context.custom.fileId
+          '$id':data.context.custom.$id
         });
 
       }).error(function (data) {
@@ -95,7 +95,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
           filesReferences[imageRef.key()] = imageRef;
           filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key())
             .then(function(the){
-              return filesReferences[the.fileId].set({
+              return filesReferences[the.$id].set({
                 name:file.name,
                 size:file.size,
                 type:file.type,
@@ -324,13 +324,13 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     $scope.removeFile = function(fileIndex,file){
       if(angular.isDefined(file.inServer)){
         var tasksToDo = {};
-        if(file.fileId === $scope.model.featuredImageId){
+        if(file.$id === $scope.model.featuredImageId){
           tasksToDo.blankFeaturedImage = featuredImage().
             then(function(){
               $scope.model.featuredImageId = '';
             });
         }
-        tasksToDo.deleteImage = deletePublicationImage(file.fileId)
+        tasksToDo.deleteImage = deletePublicationImage(file.$id)
           .then(function(){
             removeFile(fileIndex);
           },function(error){
