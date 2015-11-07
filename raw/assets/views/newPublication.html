@@ -24,7 +24,10 @@
 
   <div class="panel panel-default" ng-show="categoryExpected">
     <div class="panel-heading">
-      <h3 class="panel-title">New Publication</h3>
+      <h3 class="panel-title" ng-switch="isEditing">
+        <span ng-switch-when="false" >New Publication</span>
+        <span ng-switch-when="true">Edit Publication</span>
+      </h3>
     </div>
     <div class="panel-body">
 
@@ -191,12 +194,15 @@
 
           <hr class="hr-xs">
 
+          <button ng-click="logImages()" class="btn btn-warning" type="button">······· logImages ·······</button>
+
+
           <div class="panel panel-default" ng-repeat="(key, value) in images" style="margin-bottom: 10px;">
             <div class="panel-body" style="padding: 5px;">
               <div class="row">
                 <div class="col-xs-4 col-md-2" style="padding-right: 5px;">
                   <div>
-                    <img class="img-thumbnail img-preview" ng-src="{{value.blobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">
+                    <img class="img-thumbnail img-preview img-responsive" ng-src="{{value.blobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">
                   </div>
                   <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
                   <div style="margin-bottom: 5px;"><span ng-show="model.featuredImageId === value.fileId" class="label label-info">Primary image</span></div>
@@ -208,11 +214,11 @@
                   <hr style="margin-top: 5px; margin-bottom: 5px;">
                   <div>
 
-                    <!--<pre>{{value}}</pre>-->
+                    <pre>{{value}}</pre>
 
                     <div ng-show="!value.$error">
                       <div><b>Size: </b>{{value.size | bytes}}</div>
-                      <uib-progressbar class="progress-striped active" value="value.progress ? value.progress : 0" type="{{  value.progress < 100 ? 'info' : 'success' }}">{{value.progress}}%</uib-progressbar>
+                      <!--<uib-progressbar class="progress-striped active" value="value.progress ? value.progress : 0" type="{{  value.progress < 100 ? 'info' : 'success' }}">{{value.progress}}%</uib-progressbar>-->
                     </div>
 
                     <div ng-show="value.$error" class="bg-warning" style="padding: 7px;">

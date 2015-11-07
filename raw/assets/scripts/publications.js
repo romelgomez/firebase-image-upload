@@ -33,8 +33,8 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     $scope.path                 = [];
     $scope.publicationId        = '';
     $scope.images               = [];
+    $scope.isEditing            = false;
     var original = angular.copy($scope.model = {
-      userId:       user.uid,
       categoryId:   '',
       type:         '',
       featuredImageId:     ''
@@ -97,6 +97,11 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
             .then(function(the){
               return filesReferences[the.fileId].set({
                 name:file.name,
+                size:file.size,
+                type:file.type,
+                width:file.width,
+                height:file.height,
+                inServer:true,
                 addedDate: $window.Firebase.ServerValue.TIMESTAMP
               })
             });
@@ -379,20 +384,66 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return deferred.promise;
     };
 
+    $scope.logImages =  function(){
+      $log.info('');
+      $log.info('######################################################');
+      $log.info('');
+      $log.info($scope.images);
+      $log.info('');
+      $log.info(angular.toJson($scope.images));
+      $log.info('');
+      $log.info('######################################################');
+      $log.info('');
+    };
+
     var setPublication = function(publicationId){
       var deferred   = $q.defer();
 
-       var loadPublicationPromise = loadPublication(publicationId)
-          .then(function(publication){
-            $log.info('publication',publication);
+      var loadPublicationPromise = loadPublication(publicationId);
+      var loadPublicationImagesPromise = loadPublicationImages(publicationId);
+
+      $q.all({
+        publication: loadPublicationPromise,
+        publicationImages:loadPublicationImagesPromise
+      })
+        .then(function (the) {
+          $log.info('publication',the.publication);
+          $log.info('JSON publication',angular.toJson(the.publication));
+
+          $log.info('');
+          angular.forEach(the.publication, function ( value, key) {
+            $log.info('publication.%s',key,' : ', value);
+            if(key !== 'releaseDate'){
+              $scope.model[key] = value;
+            }
           });
+          $log.info('');
+/*
+          {
+            "$id":"-K2AWCN-fYAWc4AlafMT",
+            "$priority":null,
+            "categoryId":"-K0mwcnvIP3bThk_-4RX",
+            "description":"<p>dasdadasasd</p>",
+            "featuredImageId":"",
+            "isDeleted":false,
+            "releaseDate":1446523491970,
+            "title":"Dasdasdasdas",
+            "type":"realEstate",
+            "userId":"facebook:10204911533563856"
+          }
+*/
+          $log.info('publicationImages',the.publicationImages);
 
-       var loadPublicationImagesPromise = loadPublicationImages(publicationId)
-        .then(function(publicationImages){
-           $log.info('publicationImages',publicationImages);
-         });
+          $scope.images = the.publicationImages;
 
-      //$q.all()
+
+        })
+        .then(function(){
+          $scope.publicationId      = publicationId;
+          $scope.categoryExpected   = true;
+          $scope.isEditing          = true;
+          deferred.resolve();
+        });
 
       return deferred.promise;
     };
