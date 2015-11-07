@@ -6,6 +6,8 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     '$q',
     '$window',
     '$filter',
+    '$routeParams',
+    '$location',
     'FireRef',
     '$firebaseArray',
     '$firebaseObject',
@@ -15,13 +17,16 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     'Upload',
     'user',
     '$uibModal',
-    '$log',function($scope, $q, $window, $filter, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, $log){
+    '$log',function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, $log){
 
     var userPublicationsRef   = FireRef.child('publications').child(user.uid);
     var userPublications      = $firebaseArray(userPublicationsRef);
     var publicationImagesRef  = FireRef.child('images');
 
     // Main Categories [Market, Jobs, RealEstate, Transport, Services]
+    $log.info('$routeParams',$routeParams);
+    // {publicationId: "-K2AWCN-fYAWc4AlafMT"}
+    // {}
 
     $scope.treeNodes            = treeService.nodes();
     $scope.categoryExpected     = false;
@@ -162,10 +167,10 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return info;
     };
 
-   var imagesInQueueToDeleteRef            = FireRef.child('imagesInQueueToDelete');
-   var imagesInQueueToDelete               = $firebaseArray(imagesInQueueToDeleteRef);
+    var imagesInQueueToDeleteRef            = FireRef.child('imagesInQueueToDelete');
+    var imagesInQueueToDelete               = $firebaseArray(imagesInQueueToDeleteRef);
 
-   var removePublication = function(){
+    var removePublication = function(){
      var deferred                            = $q.defer();
      var publication                         = userPublications.$getRecord($scope.publicationId);
      var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
@@ -215,11 +220,11 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
               $scope.httpRequestPromise = removePublication()
                 .then(function(){
                   notificationService.success('The publication has been deleted.');
-                  $window.location = '#/'
+                  $location.path('/');
                 });
             }else{
-                notificationService.success('The publication has been discard.');
-                $window.location = '#/'
+              notificationService.success('The publication has been discard.');
+              $location.path('/');
             }
         }, function (error) {
             notificationService.error(error);
@@ -288,7 +293,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return deferred.promise;
     };
 
-   var featuredImage = function(imageId){
+    var featuredImage = function(imageId){
       var record = userPublications.$getRecord($scope.publicationId);
       if(angular.isDefined(imageId) && imageId!==''){
         record.featuredImageId = imageId;
@@ -342,6 +347,59 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         return !(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error));
       });
     };
+
+    var loadPublication  = function (publicationId) {
+      var deferred   = $q.defer();
+
+      var publicationRef = userPublicationsRef.child(publicationId);
+      var publication = $firebaseObject(publicationRef);
+
+      publication.$loaded(function(){
+        deferred.resolve(publication);
+      }, function (error) {
+        deferred.reject(error);
+      });
+
+
+      return deferred.promise;
+    };
+
+    var loadPublicationImages = function (publicationId) {
+      var deferred   = $q.defer();
+
+      var imagesRef = publicationImagesRef.child(publicationId);
+      var images = $firebaseArray(imagesRef);
+
+      images.$loaded(function(){
+        deferred.resolve(images);
+      }, function (error) {
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    };
+
+    var setPublication = function(publicationId){
+      var deferred   = $q.defer();
+
+       var loadPublicationPromise = loadPublication(publicationId)
+          .then(function(publication){
+            $log.info('publication',publication);
+          });
+
+       var loadPublicationImagesPromise = loadPublicationImages(publicationId)
+        .then(function(publicationImages){
+           $log.info('publicationImages',publicationImages);
+         });
+
+      //$q.all()
+
+      return deferred.promise;
+    };
+
+    if(angular.isDefined($routeParams.publicationId)){
+      $scope.httpRequestPromise = setPublication($routeParams.publicationId);
+    }
 
   }])
   .controller('DiscardPublicationController',['$scope', '$modalInstance', 'publicationId', 'title',function($scope,$modalInstance,publicationId, title){

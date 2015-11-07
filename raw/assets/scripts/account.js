@@ -14,7 +14,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
     };
 
   }])
-  .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $log){
+  .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$location', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, $log){
 
     var getPublications = function(){
       var deferred = $q.defer();
@@ -77,6 +77,14 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
     };
 
     $scope.httpRequestPromise = accountPublications();
+
+    $scope.editPublication = function (publicationId) {
+      $location.path('/edit-publication/'+publicationId);
+    };
+
+    $scope.viewPublication = function (publicationId) {
+      $location.path('/view-publication/'+publicationId);
+    };
 
   }])
   .controller('AccountProfileController',['$scope', '$uibModal','notificationService',function($scope, $uibModal, notificationService){
