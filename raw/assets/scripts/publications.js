@@ -24,16 +24,17 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     var publicationImagesRef  = FireRef.child('images');
 
     // Main Categories [Market, Jobs, RealEstate, Transport, Services]
-    $log.info('$routeParams',$routeParams);
+    //$log.info('$routeParams',$routeParams);
     // {publicationId: "-K2AWCN-fYAWc4AlafMT"}
     // {}
 
-    $scope.treeNodes            = treeService.nodes();
-    $scope.categoryExpected     = false;
-    $scope.path                 = [];
-    $scope.publicationId        = '';
-    $scope.images               = [];
-    $scope.isEditing            = false;
+    $scope.treeNodes              = treeService.nodes();
+    $scope.categoryExpected       = false;
+    $scope.path                   = [];
+    $scope.publicationId          = '';
+    $scope.images                 = [];
+    $scope.isEditing              = false;
+    $scope.thePublicationIsReady  = false;
     var original = angular.copy($scope.model = {
       categoryId:   '',
       type:         '',
@@ -44,7 +45,9 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return $scope.publicationId !== '';
     };
 
-    $scope.httpRequestPromise = $scope.treeNodes.$loaded(null,function(error){
+    var configTasks = {};
+
+    configTasks.treeNodes = $scope.treeNodes.$loaded(null,function(error){
       notificationService.error(error);
     });
 
@@ -384,18 +387,6 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return deferred.promise;
     };
 
-    $scope.logImages =  function(){
-      $log.info('');
-      $log.info('######################################################');
-      $log.info('');
-      $log.info($scope.images);
-      $log.info('');
-      $log.info(angular.toJson($scope.images));
-      $log.info('');
-      $log.info('######################################################');
-      $log.info('');
-    };
-
     var setPublication = function(publicationId){
       var deferred   = $q.defer();
 
@@ -407,50 +398,34 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         publicationImages:loadPublicationImagesPromise
       })
         .then(function (the) {
-          $log.info('publication',the.publication);
-          $log.info('JSON publication',angular.toJson(the.publication));
-
-          $log.info('');
           angular.forEach(the.publication, function ( value, key) {
-            $log.info('publication.%s',key,' : ', value);
             if(key !== 'releaseDate'){
               $scope.model[key] = value;
             }
           });
-          $log.info('');
-/*
-          {
-            "$id":"-K2AWCN-fYAWc4AlafMT",
-            "$priority":null,
-            "categoryId":"-K0mwcnvIP3bThk_-4RX",
-            "description":"<p>dasdadasasd</p>",
-            "featuredImageId":"",
-            "isDeleted":false,
-            "releaseDate":1446523491970,
-            "title":"Dasdasdasdas",
-            "type":"realEstate",
-            "userId":"facebook:10204911533563856"
-          }
-*/
-          $log.info('publicationImages',the.publicationImages);
-
           $scope.images = the.publicationImages;
-
-
         })
         .then(function(){
           $scope.publicationId      = publicationId;
           $scope.categoryExpected   = true;
           $scope.isEditing          = true;
           deferred.resolve();
+        },function(error){
+          deferred.reject(error);
         });
 
       return deferred.promise;
     };
 
     if(angular.isDefined($routeParams.publicationId)){
-      $scope.httpRequestPromise = setPublication($routeParams.publicationId);
+      configTasks.publication = setPublication($routeParams.publicationId);
     }
+
+    $scope.httpRequestPromise = $q.all(configTasks)
+      .then(function () {
+        $scope.thePublicationIsReady = true;
+      });
+
 
   }])
   .controller('DiscardPublicationController',['$scope', '$modalInstance', 'publicationId', 'title',function($scope,$modalInstance,publicationId, title){

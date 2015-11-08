@@ -1,8 +1,16 @@
-<section cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
+<section cg-busy="{promise: httpRequestPromise, message:'Just a moment'}">
 
-  <div class="panel panel-default" ng-show="categoryExpected === false">
+  <div class="panel panel-default ukFlagBackground" ng-show="!thePublicationIsReady" style="height: 300px;">
+    <div class="panel-body">
+    </div>
+  </div>
+
+  <div class="panel panel-default" ng-show="categoryExpected === false && thePublicationIsReady">
     <div class="panel-heading">
-      <h3 class="panel-title">New Publication - Select a category:</h3>
+      <h3 class="panel-title" ng-switch="isEditing">
+        <span ng-switch-when="false" >New Publication - Select a category:</span>
+        <span ng-switch-when="true">Edit Publication</span>
+      </h3>
     </div>
     <div class="list-group">
       <button type="button" class="list-group-item" ng-click="setCategory(node.$id)" ng-repeat="node in treeNodes | filter:{parentId: (model.categoryId) ? model.categoryId: ''}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{node.name | capitalizeFirstChar}}</button>
@@ -22,7 +30,7 @@
     </div>
   </div>
 
-  <div class="panel panel-default" ng-show="categoryExpected">
+  <div class="panel panel-default" ng-show="categoryExpected && thePublicationIsReady">
     <div class="panel-heading">
       <h3 class="panel-title" ng-switch="isEditing">
         <span ng-switch-when="false" >New Publication</span>
@@ -194,9 +202,6 @@
 
           <hr class="hr-xs">
 
-          <button ng-click="logImages()" class="btn btn-warning" type="button">······· logImages ·······</button>
-
-
           <div class="panel panel-default" ng-repeat="(key, value) in images" style="margin-bottom: 10px;">
             <div class="panel-body" style="padding: 5px;">
               <div class="row">
@@ -223,7 +228,7 @@
                   <hr style="margin-top: 5px; margin-bottom: 5px;">
                   <div>
 
-                    <pre>{{value}}</pre>
+                    <!--<pre>{{value}}</pre>-->
 
                     <div ng-show="!value.$error">
                       <div><b>Size: </b>{{value.size | bytes}}</div>

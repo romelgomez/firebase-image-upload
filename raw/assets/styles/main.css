@@ -173,6 +173,14 @@ ul.jqtree-tree span.jqtree-border {
   border-radius: 50%;
 }
 
+.ukFlagBackground{
+  background-size:     cover;
+  background: url('/assets/images/uk.svg');
+  background-size:     cover;                      /* <------ */
+  background-repeat:   no-repeat;
+  background-position: center center;
+}
+
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
