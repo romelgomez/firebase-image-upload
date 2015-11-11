@@ -1,6 +1,11 @@
 <div style="margin-top: 10px; margin-bottom: 0; " ng-controller="AccountPublicationsController">
 
 
+  <pre>
+
+    <a href="https://www.firebase.com/docs/web/libraries/angular/guide/synchronized-arrays.html#section-overview" target="_blank">https://www.firebase.com/docs/web/libraries/angular/guide/synchronized-arrays.html#section-overview</a>
+
+  </pre>
   <!--<div class="list-group">-->
     <!--<a ng-repeat="(publicationId, publication) in account.publications"  href="#" class="list-group-item">{{publication.title}}</a>-->
   <!--</div>-->
@@ -9,6 +14,8 @@
 
 
   <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" style="margin-bottom: 5px; margin-top: 10px;"></uib-pagination>
+
+  <!--<pre>Object.keys(account.publications).length : {{Object.keys(account.publications).length}}</pre>-->
 
   <div class="panel panel-default" ng-repeat="(publicationId, publicationDetails) in account.publications" style="margin-bottom: 10px;">
     <div class="panel-body" style="padding: 5px;">
@@ -40,7 +47,8 @@
           <hr style="margin-top: 5px; margin-bottom: 5px;">
           <div>
             {{publicationDetails.description | htmlToPlaintext}}
-            <!--{{Object.keys(publicationDetails.images)}}-->
+
+            <pre>{{publicationDetails}}</pre>
 
           </div>
         </div>
