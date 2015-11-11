@@ -8,6 +8,8 @@
   <!--<pre>{{account | json}}</pre>-->
 
 
+  <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" style="margin-bottom: 5px; margin-top: 10px;"></uib-pagination>
+
   <div class="panel panel-default" ng-repeat="(publicationId, publicationDetails) in account.publications" style="margin-bottom: 10px;">
     <div class="panel-body" style="padding: 5px;">
       <div class="row">
@@ -90,6 +92,7 @@
    </div>
 
    <input type="text" class="form-control" placeholder="Search">
+
    <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" style="margin-bottom: 5px; margin-top: 10px;"></uib-pagination>
 
    <div class="panel panel-default" style="margin-bottom: 10px;">
