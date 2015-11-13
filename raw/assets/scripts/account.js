@@ -21,10 +21,12 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
 
       var userPublicationsRef = FireRef.child('publications').child($scope.account.user.uid);
 
-      userPublicationsRef.orderByChild('releaseDate').on('value', function(snapshot) {
-        deferred.resolve(snapshot.val());
-      },function(error){
-        deferred.reject(error);
+      var query = userPublicationsRef.orderByChild('releaseDate');
+
+      var filteredMessages = $firebaseArray(query);
+
+      filteredMessages.$loaded(function () {
+        deferred.resolve(filteredMessages);
       });
 
       return deferred.promise;
@@ -50,7 +52,9 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       var publicationsImagesPromises = {};
 
       angular.forEach(publications, function(publication, publicationId){
-        publicationsImagesPromises[publicationId] = publicationImages(publicationId)
+        //$log.info('publication',publication);
+        //$log.info('publicationId',publicationId);
+        publicationsImagesPromises[publication.$id] = publicationImages(publication.$id)
       });
 
       return $q.all(publicationsImagesPromises);
