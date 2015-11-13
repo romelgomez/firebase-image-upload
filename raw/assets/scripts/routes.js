@@ -67,16 +67,16 @@ angular.module('routes',['ngRoute'])
         controller: 'TreeController'
       })
       .whenAuthenticated('/new-publication', {
-        templateUrl: 'assets/views/newPublication.html',
+        templateUrl: 'assets/views/publication.html',
         controller: 'PublicationsController'
       })
       .whenAuthenticated('/edit-publication/:publicationId', {
-        templateUrl: 'assets/views/newPublication.html',
+        templateUrl: 'assets/views/publication.html',
         controller: 'PublicationsController'
       })
-      .whenAuthenticated('/test-publication', {
-        templateUrl: 'assets/views/testPublication.html',
-        controller: 'PublicationsController'
+      .when('/view-publication/:publicationId', {
+        templateUrl: 'assets/views/viewPublication.html',
+        controller: 'ViewPublicationController'
       })
       .when('/login', {
         templateUrl: 'assets/views/login.html',
