@@ -35,9 +35,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
     var getPublicationsImages = function(publications){
       var publicationsImagesPromises = {};
 
-      angular.forEach(publications, function(publication, publicationId){
-        //$log.info('publication',publication);
-        //$log.info('publicationId',publicationId);
+      angular.forEach(publications, function(publication){
         publicationsImagesPromises[publication.$id] = publicationImages(publication.$id)
       });
 
