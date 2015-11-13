@@ -17,18 +17,15 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     'Upload',
     'user',
     '$uibModal',
-    '$log',function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, $log){
+    '$log',function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseArray, $firebaseObject, rfc4122, categoriesService, notificationService, $upload, user, $uibModal, $log){
 
     var userPublicationsRef   = FireRef.child('publications').child(user.uid);
     var userPublications      = $firebaseArray(userPublicationsRef);
     var publicationImagesRef  = FireRef.child('images');
 
     // Main Categories [Market, Jobs, RealEstate, Transport, Services]
-    //$log.info('$routeParams',$routeParams);
-    // {publicationId: "-K2AWCN-fYAWc4AlafMT"}
-    // {}
 
-    $scope.treeNodes              = treeService.nodes();
+    $scope.categories             = categoriesService.nodes();
     $scope.categoryExpected       = false;
     $scope.path                   = [];
     $scope.publicationId          = '';
@@ -47,13 +44,13 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
 
     var configTasks = {};
 
-    configTasks.treeNodes = $scope.treeNodes.$loaded(null,function(error){
+    configTasks.categories = $scope.categories.$loaded(null,function(error){
       notificationService.error(error);
     });
 
     $scope.setCategory = function (categoryId) {
       $scope.model.categoryId = categoryId;
-      $scope.path             = treeService.getPath(categoryId,$scope.treeNodes);
+      $scope.path             = categoriesService.getPath(categoryId,$scope.categories);
       $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
     };
 
