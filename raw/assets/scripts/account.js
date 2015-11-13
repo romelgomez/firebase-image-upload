@@ -16,22 +16,6 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
   }])
   .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$location', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, $log){
 
-    var getPublications = function(){
-      var deferred = $q.defer();
-
-      var userPublicationsRef = FireRef.child('publications').child($scope.account.user.uid);
-
-      var query = userPublicationsRef.orderByChild('releaseDate');
-
-      var filteredMessages = $firebaseArray(query);
-
-      filteredMessages.$loaded(function () {
-        deferred.resolve(filteredMessages);
-      });
-
-      return deferred.promise;
-    };
-
     var publicationImages = function(publicationId){
       var deferred = $q.defer();
 
@@ -63,19 +47,21 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
     var accountPublications = function(){
       var deferred = $q.defer();
 
-      var publications = {};
+      var userPublicationsRef = FireRef.child('publications').child($scope.account.user.uid);
 
-      getPublications()
-        .then(function(_publications_){
-          publications = _publications_;
-          return getPublicationsImages(_publications_);
-        })
-        .then(function(){
-          $scope.account.publications = publications;
-          deferred.resolve();
-        },function(error){
-          deferred.reject(error);
-        });
+      var query = userPublicationsRef.orderByChild('releaseDate');
+
+      var publications = $firebaseArray(query);
+
+      publications.$loaded(function () {
+        return getPublicationsImages(publications);
+      })
+      .then(function(){
+        $scope.account.publications = publications;
+        deferred.resolve();
+      },function(error){
+        deferred.reject(error);
+      });
 
       return deferred.promise;
     };
