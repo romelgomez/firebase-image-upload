@@ -77,8 +77,8 @@
 
         <div class="form-group">
           <label class="control-label"><span class="glyphicon glyphicon-book"></span> Description <sup style="color: red;">*</sup></label>
-          <textarea redactor name="description" data-ng-model="model.description" required class="form-control" placeholder=""></textarea>
-          <div data-ng-messages="publicationForm.$submitted && publicationForm.description.$error" class="help-block">
+          <textarea redactor name="htmlDescription" data-ng-model="model.htmlDescription" required class="form-control" placeholder=""></textarea>
+          <div data-ng-messages="publicationForm.$submitted && publicationForm.htmlDescription.$error" class="help-block">
             <div data-ng-message="required" >
               - The <b>description</b> is required.
             </div>
@@ -181,7 +181,7 @@
           </div>
         </div>
 
-        <!--<pre>{{model | json}}</pre>-->
+        <pre>{{model | json}}</pre>
 
         <div ng-show="images.length > 0">
 

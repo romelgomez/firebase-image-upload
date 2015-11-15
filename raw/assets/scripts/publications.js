@@ -33,9 +33,17 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     $scope.isEditing              = false;
     $scope.thePublicationIsReady  = false;
     var original = angular.copy($scope.model = {
-      categoryId:   '',
-      type:         '',
-      featuredImageId:     ''
+      categoryId:           '',
+      type:                 '',
+      featuredImageId:      '',
+      title:                '',
+      htmlDescription:      ''
+    });
+
+    $scope.$watch(function(scope){
+      return scope.model.htmlDescription;
+    },function(){
+      $scope.model.description = $filter('htmlToPlaintext')($scope.model.htmlDescription);
     });
 
     $scope.publicationIdStatus = function(){
@@ -44,13 +52,20 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
 
     var configTasks = {};
 
-    configTasks.categories = $scope.categories.$loaded(null,function(error){
-      notificationService.error(error);
-    });
+    configTasks.categories = $scope.categories.$loaded();
+
+    var pathNames = function(path){
+      var pathNames = [];
+      angular.forEach(path,function(pathNode){
+        pathNames.push(pathNode.name);
+      });
+      return pathNames;
+    };
 
     $scope.setCategory = function (categoryId) {
       $scope.model.categoryId = categoryId;
       $scope.path             = categoriesService.getPath(categoryId,$scope.categories);
+      $scope.model.path       = pathNames($scope.path);
       $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
     };
 
@@ -202,6 +217,8 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
               deferred.resolve();
             }
           })
+       }, function (error) {
+         notificationService.error(error);
        });
 
       return deferred.promise;
