@@ -1,0 +1,22 @@
+{
+  "name": "berlin",
+  "version": "0.0.0",
+  "description": "- Market OF London : Any type publications.",
+  "main": "server/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/romelgomez/berlin.git"
+  },
+  "author": "Romel Javier Gomez Herrera",
+  "license": "SEE LICENSE IN <LICENSE>",
+  "homepage": "https://bitbucket.org/romelgomez/berlin#readme",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^5.0.0-alpha.2",
+    "method-override": "^2.3.5",
+    "morgan": "^1.6.1"
+  }
+}
