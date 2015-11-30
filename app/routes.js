@@ -1,13 +1,10 @@
 module.exports = function(app) {
 
-  app.get('/', function(req, res) {
-
-    console.log('process.cwd() :',process.cwd());
-    console.log('__dirname :',__dirname);
-
-    res.send('Hello Romel Javier Gomez Herrera');
-
-  });
+  //app.get('/', function(req, res) {
+  //  console.log('process.cwd() :',process.cwd());
+  //  console.log('__dirname :',__dirname);
+  //  res.send('Hello Romel Javier Gomez Herrera');
+  //});
 
   app.get('/me', function(req, res){
     res.send('Hello Romel Javier Gomez Herrera');
