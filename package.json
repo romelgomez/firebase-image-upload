@@ -1,5 +1,5 @@
 {
-  "name": "London MarketPlace",
+  "name": "londonMarketPlace",
   "version": "0.0.0",
   "description": "- Market OF London : Any type publications.",
   "main": "server/app.js",

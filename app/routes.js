@@ -23,4 +23,28 @@ module.exports = function(app) {
     res.send('404');
   });
 
+
+  // Publications
+
+  //POST, GET, PUT, and DELETE
+
+  // get all publications
+  app.get('/api/v1/publications', function(req, res){
+
+  });
+
+  // create a publication
+  app.post('/api/v1/publications', function(req, res){
+
+    var mockModel = {
+
+    };
+
+  });
+
+  // delete a publication
+  app.delete('/api/v1/publications/:publicationId', function(req, res){
+
+  });
+
 };
