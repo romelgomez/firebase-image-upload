@@ -7,20 +7,22 @@ var index = client.initIndex('publications');
 var publicationsRef = new Firebase('berlin.firebaseio.com/publications');
 
 // Listen for changes to Firebase data
-publicationsRef.endAt().limitToLast(1).on('child_added',   function(dataSnapshot){
+publicationsRef.on('child_added',   function(dataSnapshot){
   console.log('-------------------------------------------');
   console.log('ADD INDEX', dataSnapshot.key());
 });
 
-publicationsRef.endAt().limitToLast(1).on('child_changed', function(dataSnapshot){
-  console.log('-------------------------------------------');
+publicationsRef.on('child_changed', function(dataSnapshot){
+  console.log('------------------------------------------');
   console.log('UPDATE INDEX', dataSnapshot.key());
 });
 
-publicationsRef.endAt().limitToLast(1).on('child_removed', function(dataSnapshot){
+publicationsRef.on('child_removed', function(dataSnapshot){
   console.log('-------------------------------------------');
   console.log('DELETE INDEX', dataSnapshot.key());
 });
+
+// endAt().limitToLast(1)
 
 //var deferred = $q.defer();
 
