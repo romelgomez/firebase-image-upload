@@ -1,3 +1,5 @@
+//https://www.algolia.com/doc/tutorials/firebase-algolia#Introduction
+
 var Firebase = require('firebase');
 var algoliasearch = require('algoliasearch');
 var Q = require('q');
@@ -7,96 +9,47 @@ var index = client.initIndex('publications');
 var publicationsRef = new Firebase('berlin.firebaseio.com/publications');
 
 // Listen for changes to Firebase data
-publicationsRef.on('child_added',   function(dataSnapshot){
-  console.log('-------------------------------------------');
-  console.log('ADD INDEX', dataSnapshot.key());
-});
+publicationsRef.on('child_added', addOrUpdateObject);
+publicationsRef.on('child_changed', addOrUpdateObject);
+publicationsRef.on('child_removed', removeIndex);
 
-publicationsRef.on('child_changed', function(dataSnapshot){
-  console.log('------------------------------------------');
-  console.log('UPDATE INDEX', dataSnapshot.key());
-});
+function addOrUpdateObject(dataSnapshot){
+  // Get FireBase object
+  var fireBaseObject = dataSnapshot.val();
 
-publicationsRef.on('child_removed', function(dataSnapshot){
-  console.log('-------------------------------------------');
-  console.log('DELETE INDEX', dataSnapshot.key());
-});
+  // Specify Algolia's objectID using the FireBase object key
+  fireBaseObject.objectID = dataSnapshot.key();
 
-// endAt().limitToLast(1)
+  // Add or update object
+  index.saveObject(fireBaseObject, function(err, content) {
+    if (err) {
+      throw err;
+    }else{
+      console.log('-------------------------------------------');
+      console.log('ADD OR UPDATED OBJECT ');
+      console.log('CONTENT:', content);
+    }
+  });
+}
 
-//var deferred = $q.defer();
+function removeIndex(dataSnapshot) {
+  // Get Firebase object
+  var firebaseObject = dataSnapshot.val();
 
-//function addObject(dataSnapshot) {
-//  // Get FireBase object
-//  var fireBaseObject = dataSnapshot.val();
-//  var algoliaObject = {};
-//
-//  console.log('·············································');
-//  console.log('ADD INDEX');
-//  console.log('');
-//  console.log('firebaseObject: ',fireBaseObject);
-//  console.log('');
-//  console.log('dataSnapshot.key: ',dataSnapshot.key());
-//  console.log('');
-//  console.log('·············································');
-//
-//  //// Specify Algolia's objectID using the Firebase object key
-//  fireBaseObject.objectID = dataSnapshot.key();
-//
-//  //// Add or update object
-//  index.addObject(fireBaseObject, function(err, content) {
-//    if (err) {
-//      throw err;
-//    }
-//    console.log('Firebase<>Algolia object saved');
-//  });
-//
-//}
-//
-//function updateObject(dataSnapshot) {
-//  // Get Firebase object
-//  var fireBaseObject = dataSnapshot.val();
-//
-//  console.log('-------------------------------------------');
-//  console.log('UPDATE INDEX');
-//  console.log('');
-//  console.log('firebaseObject: ',fireBaseObject);
-//  console.log('');
-//  console.log('dataSnapshot.key: ',dataSnapshot.key());
-//  console.log('-------------------------------------------');
-//
-//  //// Specify Algolia's objectID using the Firebase object key
-//  fireBaseObject.objectID = dataSnapshot.key();
-//
-//  //// Add or update object
-//  index.saveObject(fireBaseObject, function(err, content) {
-//    if (err) {
-//      throw err;
-//    }
-//    console.log('Firebase<>Algolia object saved');
-//  });
-//
-//}
-//
-//function removeIndex(dataSnapshot) {
-//
-//  console.log('-------------------------------------------');
-//  console.log('REMOVE INDEX');
-//  console.log('dataSnapshot.key: ',dataSnapshot.key());
-//  console.log('-------------------------------------------');
-//
-//  //// Get Algolia's objectID from the Firebase object key
-//  var objectID = dataSnapshot.key();
-//
-//  //// Remove the object from Algolia
-//  index.deleteObject(objectID, function(err, content) {
-//    if (err) {
-//      throw err;
-//    }
-//
-//    console.log('Firebase<>Algolia object deleted', content);
-//  });
-//}
+  // Specify Algolia's objectID using the Firebase object key
+  var objectID = dataSnapshot.key();
+
+  // Add or update object
+  index.deleteObject(objectID, function(err, content) {
+    if (err) {
+      throw err;
+    }else{
+      console.log('-------------------------------------------');
+      console.log('DELETE OBJECT');
+      console.log('CONTENT:', content);
+    }
+  });
+}
 
 /*
 [
