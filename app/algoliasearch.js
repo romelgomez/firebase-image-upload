@@ -25,7 +25,6 @@ publicationsRef.on('child_added', function(dataSnapshot){
 });
 
 publicationsRef.on('child_changed', function(dataSnapshot){
-
   console.log('-------------------------------------------');
   console.log('START ADD OR UPDATE OBJECT');
 
@@ -40,7 +39,6 @@ publicationsRef.on('child_changed', function(dataSnapshot){
 });
 
 publicationsRef.on('child_removed', function(dataSnapshot){
-
   console.log('-------------------------------------------');
   console.log('START REMOVE OBJECT');
 
@@ -55,44 +53,38 @@ publicationsRef.on('child_removed', function(dataSnapshot){
 });
 
 function addOrUpdateObject(dataSnapshot){
-  var deferred = Q.defer();
   // Get FireBase object
   var fireBaseObject = dataSnapshot.val();
 
   // Specify Algolia's objectID using the FireBase object key
   fireBaseObject.objectID = dataSnapshot.key();
 
-  // Add or update object
-  index.saveObject(fireBaseObject, function(error, content) {
-    if (error) {
-      deferred.reject(error);
-    }else{
-      deferred.resolve(content);
-    }
-  });
-
-  return deferred.promise;
+  // https://github.com/algolia/algoliasearch-client-js#promises
+  return index.saveObject(fireBaseObject);
 }
 
 function removeIndex(dataSnapshot) {
-  var deferred = Q.defer();
-
   // Specify Algolia's objectID using the Firebase object key
   var objectID = dataSnapshot.key();
 
-  // Add or update object
-  index.deleteObject(objectID, function(error, content) {
-    if (error) {
-      deferred.reject(error);
-    }else{
-      deferred.resolve(content);
-    }
-  });
-
-  return deferred.promise;
+  // https://github.com/algolia/algoliasearch-client-js#promises
+  return index.deleteObject(objectID);
 }
 
 /*
+
+Working links:
+
+ https://www.algolia.com/doc/tutorials/firebase-algolia#Introduction
+ https://www.algolia.com/explorer#?index=publications
+ https://www.algolia.com/doc/tutorials/getting-started-realtime-search
+ https://www.algolia.com/doc/node#setup
+ https://github.com/algolia/algoliasearch-client-js#table-of-contents
+ https://github.com/algolia/instant-search-demo
+
+
+Example Model:
+
 [
   {
     "name": "Monica Bellucci",
