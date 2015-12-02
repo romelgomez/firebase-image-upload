@@ -14,8 +14,10 @@
   "license": "SEE LICENSE IN <LICENSE>",
   "homepage": "https://bitbucket.org/romelgomez/berlin#readme",
   "dependencies": {
+    "algoliasearch": "^3.9.3",
     "body-parser": "^1.14.1",
     "express": "^5.0.0-alpha.2",
+    "firebase": "^2.3.2",
     "method-override": "^2.3.5",
     "morgan": "^1.6.1",
     "q": "^2.0.3"

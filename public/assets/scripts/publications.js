@@ -19,7 +19,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     '$uibModal',
     '$log',function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseArray, $firebaseObject, rfc4122, categoriesService, notificationService, $upload, user, $uibModal, $log){
 
-    var userPublicationsRef   = FireRef.child('publications').child(user.uid);
+    var userPublicationsRef   = FireRef.child('publications');
     var userPublications      = $firebaseArray(userPublicationsRef);
     var publicationImagesRef  = FireRef.child('images');
 
@@ -33,6 +33,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     $scope.isEditing              = false;
     $scope.thePublicationIsReady  = false;
     var original = angular.copy($scope.model = {
+      userUid:               user.uid,
       categoryId:           '',
       type:                 '',
       featuredImageId:      '',

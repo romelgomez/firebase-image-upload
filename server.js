@@ -17,6 +17,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 app.use(methodOverride());
 
 require('./app/routes')(app);
+require('./app/algoliasearch');
 
 var server = app.listen(port, function(){
   console.log('The server is running in port localhost: ',port);

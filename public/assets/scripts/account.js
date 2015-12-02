@@ -45,7 +45,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
     var accountPublications = function(){
       var deferred = $q.defer();
 
-      var userPublicationsRef = FireRef.child('publications').child($scope.account.user.uid);
+      var userPublicationsRef = FireRef.child('publications');
 
       var query = userPublicationsRef.orderByChild('releaseDate');
 
