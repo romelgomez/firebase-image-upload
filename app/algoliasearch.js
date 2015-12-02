@@ -9,11 +9,53 @@ var index = client.initIndex('publications');
 var publicationsRef = new Firebase('berlin.firebaseio.com/publications');
 
 // Listen for changes to Firebase data
-publicationsRef.on('child_added', addOrUpdateObject);
-publicationsRef.on('child_changed', addOrUpdateObject);
-publicationsRef.on('child_removed', removeIndex);
+publicationsRef.on('child_added', function(dataSnapshot){
+
+  console.log('-------------------------------------------');
+  console.log('START ADD OR UPDATE OBJECT');
+
+  addOrUpdateObject(dataSnapshot)
+    .then(function(content){
+      console.log('-------------------------------------------');
+      console.log('CONTENT ADDED OR UPDATED:');
+      console.log(content);
+    },function(error){
+      throw error;
+    });
+});
+
+publicationsRef.on('child_changed', function(dataSnapshot){
+
+  console.log('-------------------------------------------');
+  console.log('START ADD OR UPDATE OBJECT');
+
+  addOrUpdateObject(dataSnapshot)
+    .then(function(content){
+      console.log('-------------------------------------------');
+      console.log('CONTENT ADDED OR UPDATED:');
+      console.log(content);
+    },function(error){
+      throw error;
+    });
+});
+
+publicationsRef.on('child_removed', function(dataSnapshot){
+
+  console.log('-------------------------------------------');
+  console.log('START REMOVE OBJECT');
+
+  removeIndex(dataSnapshot)
+    .then(function(content){
+      console.log('-------------------------------------------');
+      console.log('CONTENT REMOVED:');
+      console.log(content);
+    },function(error){
+      throw error;
+    });
+});
 
 function addOrUpdateObject(dataSnapshot){
+  var deferred = Q.defer();
   // Get FireBase object
   var fireBaseObject = dataSnapshot.val();
 
@@ -21,34 +63,33 @@ function addOrUpdateObject(dataSnapshot){
   fireBaseObject.objectID = dataSnapshot.key();
 
   // Add or update object
-  index.saveObject(fireBaseObject, function(err, content) {
-    if (err) {
-      throw err;
+  index.saveObject(fireBaseObject, function(error, content) {
+    if (error) {
+      deferred.reject(error);
     }else{
-      console.log('-------------------------------------------');
-      console.log('ADD OR UPDATED OBJECT ');
-      console.log('CONTENT:', content);
+      deferred.resolve(content);
     }
   });
+
+  return deferred.promise;
 }
 
 function removeIndex(dataSnapshot) {
-  // Get Firebase object
-  var firebaseObject = dataSnapshot.val();
+  var deferred = Q.defer();
 
   // Specify Algolia's objectID using the Firebase object key
   var objectID = dataSnapshot.key();
 
   // Add or update object
-  index.deleteObject(objectID, function(err, content) {
-    if (err) {
-      throw err;
+  index.deleteObject(objectID, function(error, content) {
+    if (error) {
+      deferred.reject(error);
     }else{
-      console.log('-------------------------------------------');
-      console.log('DELETE OBJECT');
-      console.log('CONTENT:', content);
+      deferred.resolve(content);
     }
   });
+
+  return deferred.promise;
 }
 
 /*
