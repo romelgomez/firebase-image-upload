@@ -64,6 +64,28 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       return deferred.promise;
     };
 
+    var accountPublications2 = function(){
+      var deferred = $q.defer();
+
+      //var userPublicationsRef = FireRef.child('publications');
+      //
+      //var query = userPublicationsRef.orderByChild('releaseDate');
+      //
+      //var publications = $firebaseArray(query);
+      //
+      //publications.$loaded(function () {
+      //  return getPublicationsImages(publications);
+      //})
+      //.then(function(){
+      //  $scope.account.publications = publications;
+      //  deferred.resolve();
+      //},function(error){
+      //  deferred.reject(error);
+      //});
+
+      return deferred.promise;
+    };
+
     $scope.httpRequestPromise = accountPublications();
 
     $scope.editPublication = function (publicationId) {

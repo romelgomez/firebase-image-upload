@@ -49,6 +49,7 @@
     "ng-password-strength": "~0.2.1",
     "intl-tel-input": "~6.3.1",
     "cloudinary": "~1.0.25",
-    "cloudinary_ng": "~0.1.4"
+    "cloudinary_ng": "~0.1.4",
+    "algoliasearch": "~3.10.1"
   }
 }
