@@ -8,6 +8,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     '$filter',
     '$routeParams',
     '$location',
+    '$http',
     'FireRef',
     '$firebaseArray',
     '$firebaseObject',
@@ -17,11 +18,10 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     'Upload',
     'user',
     '$uibModal',
-    '$log',function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseArray, $firebaseObject, rfc4122, categoriesService, notificationService, $upload, user, $uibModal, $log){
+    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, categoriesService, notificationService, $upload, user, $uibModal, $log){
 
     var userPublicationsRef   = FireRef.child('publications');
     var userPublications      = $firebaseArray(userPublicationsRef);
-    var publicationImagesRef  = FireRef.child('images');
 
     // Main Categories [Market, Jobs, RealEstate, Transport, Services]
 
@@ -74,11 +74,9 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       var deferred = $q.defer();
 
       file.upload = $upload.upload({
-        url: "https://api.cloudinary.com/v1_1/berlin/upload",
+        url: "/files",
         fields: {
-          public_id: 'publications/'+fileId,
-          upload_preset: 'ebdyaimw',
-          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId
+          fileId: fileId
         },
         file: file
       }).progress(function (e) {
@@ -102,12 +100,12 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     };
 
     var saveFiles = function(files, publicationId){
-      var imagesRef = publicationImagesRef.child(publicationId);
+      var publicationImagesRef = userPublicationsRef.child(publicationId).child('images');
       var filesPromises = {};
       var filesReferences = {};
       angular.forEach(files,function(file){
         if(!angular.isDefined(file.inServer)){
-          var imageRef = imagesRef.push();
+          var imageRef = publicationImagesRef.push();
           filesReferences[imageRef.key()] = imageRef;
           filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key())
             .then(function(the){
@@ -254,34 +252,80 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         });
     };
 
-    var deleteAllPublicationImages = function () {
+/*
+* deleteAllPublicationImages
+* deletePublicationImage
+* removePublication
+* */
+
+    function deleteAllPublicationImages() {
       var deferred                            = $q.defer();
-      var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
-      var imagesToDelete                      = $firebaseArray(imagesToDeleteRef);
-      var tasksToDo                           = {};
-      tasksToDo.imagesInQueueToDeletePromises = {};
 
-      tasksToDo.imagesToDeleteLoadedPromise = imagesToDelete.$loaded(function(){
-        angular.forEach(imagesToDelete,function(value){
-          tasksToDo.imagesInQueueToDeletePromises[value.$id] = imagesInQueueToDelete.$add({
-            id:value.$id
-          });
-        });
-      });
+      function getImagesToDelete(){
+        var deferred  = $q.defer();
+        var imagesToDelete = [];
 
-      $q.all(tasksToDo)
-        .then(function(){
-          imagesToDeleteRef.remove(function(error){
-            if (error) {
-              deferred.reject(error);
-            } else {
-              deferred.resolve();
-            }
-          })
+        angular.forEach($scope.images, function(imagen, index){
+          if(angular.isDefined(imagen.inServer) && imagen.inServer === true){
+            imagesToDelete.push('publications/'+imagen.$id);
+          }
+          if(index === $scope.images.length-1){
+            deferred.resolve({imagesToDelete: imagesToDelete});
+          }
         });
+
+        return deferred.promise;
+      }
+
+      getImagesToDelete()
+        .then(function(the){
+          if(the.imagesToDelete.length > 0){
+            $http({
+              method: 'DELETE',
+              url: '/files',
+              params: {
+                public_ids: JSON.stringify(the.imagesToDelete)
+              }
+            }).then(function(res){
+              $log.info('DELETE response:',res);
+
+              /*
+
+               {"deleted":{"publications/-K5b0FySQURNk_MP8PXu":"deleted"},"partial":false,"rate_limit_allowed":500,"rate_limit_reset_at":"2015-12-15T20:00:00.000Z","rate_limit_remaining":499}
+               {"deleted":{"-K5b0V_UpUMtSV7bSiRd":"not_found"},"partial":false,"rate_limit_allowed":500,"rate_limit_reset_at":"2015-12-15T20:00:00.000Z","rate_limit_remaining":498}
+
+              */
+
+            })
+          }else{
+            deferred.resolve();
+          }
+        });
+
+      //var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
+      //var imagesToDelete                      = $firebaseArray(imagesToDeleteRef);
+      //var tasksToDo                           = {};
+      //tasksToDo.imagesInQueueToDeletePromises = {};
+      //tasksToDo.imagesToDeleteLoadedPromise = imagesToDelete.$loaded(function(){
+      //  angular.forEach(imagesToDelete,function(value){
+      //    tasksToDo.imagesInQueueToDeletePromises[value.$id] = imagesInQueueToDelete.$add({
+      //      id:value.$id
+      //    });
+      //  });
+      //});
+      //$q.all(tasksToDo)
+      //  .then(function(){
+      //    imagesToDeleteRef.remove(function(error){
+      //      if (error) {
+      //        deferred.reject(error);
+      //      } else {
+      //        deferred.resolve();
+      //      }
+      //    })
+      //  });
 
       return deferred.promise;
-    };
+    }
 
     $scope.deleteAllPublicationImages = function () {
        deleteAllPublicationImages()
@@ -387,30 +431,28 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return deferred.promise;
     };
 
-    var loadPublicationImages = function (publicationId) {
-      var deferred   = $q.defer();
-
-      var imagesRef = publicationImagesRef.child(publicationId);
-      var images = $firebaseArray(imagesRef);
-
-      images.$loaded(function(){
-        deferred.resolve(images);
-      }, function (error) {
-        deferred.reject(error);
-      });
-
-      return deferred.promise;
-    };
+    //var loadPublicationImages = function (publicationId) {
+    //  var deferred   = $q.defer();
+    //
+    //  var imagesRef = publicationImagesRef.child(publicationId);
+    //  var images = $firebaseArray(imagesRef);
+    //
+    //  images.$loaded(function(){
+    //    deferred.resolve(images);
+    //  }, function (error) {
+    //    deferred.reject(error);
+    //  });
+    //
+    //  return deferred.promise;
+    //};
 
     var setPublication = function(publicationId){
       var deferred   = $q.defer();
 
       var loadPublicationPromise = loadPublication(publicationId);
-      var loadPublicationImagesPromise = loadPublicationImages(publicationId);
 
       $q.all({
-        publication: loadPublicationPromise,
-        publicationImages:loadPublicationImagesPromise
+        publication: loadPublicationPromise
       })
         .then(function (the) {
           angular.forEach(the.publication, function ( value, key) {
@@ -418,7 +460,6 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
               $scope.model[key] = value;
             }
           });
-          $scope.images = the.publicationImages;
         })
         .then(function(){
           $scope.publicationId      = publicationId;
