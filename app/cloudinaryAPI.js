@@ -23,9 +23,10 @@ function $upload(file,fields){
       deferred.resolve({result: result});
     },
     {
-      public_id: 'publications/' + fields.fileId,
+      public_id: fields.fileId,
       upload_preset: 'pmceswio',
-      context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fields.fileId
+      context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fields.fileId,
+      tags: [fields.publicationId]
     }
   );
 
@@ -33,17 +34,36 @@ function $upload(file,fields){
 }
 
 /**
- * Delete file
+ * Delete uploaded resource by public IDs
  *
  *  Doc: http://cloudinary.com/documentation/admin_api#delete_uploaded_images_by_public_ids
  *
- * @param {Array} idList
+ * @param {Array} IDs
  * @return {Promise<Object>}
  * */
-function $delete(idList){
+function $deleteByIDs(IDs){
   var deferred = Q.defer();
 
-  cloudinary.api.delete_resources(idList,
+  cloudinary.api.delete_resources(IDs,
+    function(result){
+      deferred.resolve({result: result});
+    });
+
+  return deferred.promise;
+}
+
+/**
+ * Delete all resources with the given tag name.
+ *
+ * Doc: http://cloudinary.com/documentation/admin_api#delete_resources_by_tags
+ *
+ * @param {String} tag
+ * @return {Promise<Object>}
+ * */
+function $deleteByTag(tag){
+  var deferred = Q.defer();
+
+  cloudinary.api.delete_resources_by_tag(tag,
     function(result){
       deferred.resolve({result: result});
     });
@@ -65,24 +85,20 @@ module.exports = function(app){
 
   app.delete('/files',function(req, res){
 
-    $delete(JSON.parse(req.query.public_ids))
-      .then(function(the){
-        res.json(the.result);
-      });
+    if (typeof req.query.public_ids !== "undefined"){
+      $deleteByIDs(req.query.public_ids)
+        .then(function(the){
+          res.json(the.result);
+        });
+    } else if ( typeof req.query.tag !== "undefined") {
+      $deleteByTag(req.query.tag)
+        .then(function(the){
+          res.json(the.result);
+        });
+    } else {
+      res.status(400).send({ error: 'Bad Request!' });
+    }
 
   });
 
 };
-
-// var deferred = Q.defer();
-// deferred.reject();
-// deferred.resolve();
-// return deferred.promise;
-
-// file.name
-//fields: {
-//  public_id: 'publications/'+fileId,
-//  upload_preset: 'ebdyaimw',
-//  context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId
-//}
-// pmceswio

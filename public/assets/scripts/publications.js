@@ -70,13 +70,14 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
     };
 
-    var uploadFile = function(file,fileId){
+    var uploadFile = function(file,fileId,publicationId){
       var deferred = $q.defer();
 
       file.upload = $upload.upload({
         url: "/files",
         fields: {
-          fileId: fileId
+          fileId: fileId,
+          publicationId: publicationId
         },
         file: file
       }).progress(function (e) {
@@ -107,7 +108,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         if(!angular.isDefined(file.inServer)){
           var imageRef = publicationImagesRef.push();
           filesReferences[imageRef.key()] = imageRef;
-          filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key())
+          filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key(),publicationId)
             .then(function(the){
               return filesReferences[the.$id].set({
                 name:file.name,
@@ -259,48 +260,59 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
 * */
 
     function deleteAllPublicationImages() {
-      var deferred                            = $q.defer();
+      var deferred = $q.defer();
 
-      function getImagesToDelete(){
-        var deferred  = $q.defer();
-        var imagesToDelete = [];
+      $http({
+        method: 'DELETE',
+        url: '/files',
+        params: {
+          tag: $scope.publicationId
+        }
+      }).then(function(res){
+        $log.info('DELETE response:',res);
+        deferred.resolve();
+      },function(){
+        notificationService.error('The images cannot be deleted');
+      });
 
-        angular.forEach($scope.images, function(imagen, index){
-          if(angular.isDefined(imagen.inServer) && imagen.inServer === true){
-            imagesToDelete.push('publications/'+imagen.$id);
-          }
-          if(index === $scope.images.length-1){
-            deferred.resolve({imagesToDelete: imagesToDelete});
-          }
-        });
 
-        return deferred.promise;
-      }
+      //angular.forEach(objs, function(val, index){
+      //  console.log('val:', val);  // delete
+      //  console.log('index', index);  // id
+      //});
 
-      getImagesToDelete()
-        .then(function(the){
-          if(the.imagesToDelete.length > 0){
-            $http({
-              method: 'DELETE',
-              url: '/files',
-              params: {
-                public_ids: JSON.stringify(the.imagesToDelete)
-              }
-            }).then(function(res){
-              $log.info('DELETE response:',res);
+      /*
 
-              /*
+       {"deleted":{"publications/-K5b0FySQURNk_MP8PXu":"deleted"},"partial":false,"rate_limit_allowed":500,"rate_limit_reset_at":"2015-12-15T20:00:00.000Z","rate_limit_remaining":499}
+       {"deleted":{"publications/-K5b3MUgE3ILdHmF-ifS":"deleted","publications/-K5b3MUi0T_Ovv3BkhZT":"deleted","publications/-K5b0FySQURNk_MP8PXu":"not_found"},"partial":false,"rate_limit_allowed":500,"rate_limit_reset_at":"2015-12-15T20:00:00.000Z","rate_limit_remaining":497}
+       {"deleted":{"-K5b0V_UpUMtSV7bSiRd":"not_found"},"partial":false,"rate_limit_allowed":500,"rate_limit_reset_at":"2015-12-15T20:00:00.000Z","rate_limit_remaining":498}
 
-               {"deleted":{"publications/-K5b0FySQURNk_MP8PXu":"deleted"},"partial":false,"rate_limit_allowed":500,"rate_limit_reset_at":"2015-12-15T20:00:00.000Z","rate_limit_remaining":499}
-               {"deleted":{"-K5b0V_UpUMtSV7bSiRd":"not_found"},"partial":false,"rate_limit_allowed":500,"rate_limit_reset_at":"2015-12-15T20:00:00.000Z","rate_limit_remaining":498}
+       */
 
-              */
 
-            })
-          }else{
-            deferred.resolve();
-          }
-        });
+      //function getImagesToDelete(){
+      //  var deferred  = $q.defer();
+      //  var imagesToDelete = [];
+      //
+      //  angular.forEach($scope.images, function(imagen, index){
+      //    if(angular.isDefined(imagen.inServer) && imagen.inServer === true){
+      //      imagesToDelete.push(imagen.$id);
+      //    }
+      //    if(index === $scope.images.length-1){
+      //      deferred.resolve({imagesToDelete: imagesToDelete});
+      //    }
+      //  });
+      //
+      //  return deferred.promise;
+      //}
+
+      //getImagesToDelete()
+      //  .then(function(the){
+      //    if(the.imagesToDelete.length > 0){
+      //    }else{
+      //      deferred.resolve();
+      //    }
+      //  });
 
       //var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
       //var imagesToDelete                      = $firebaseArray(imagesToDeleteRef);
