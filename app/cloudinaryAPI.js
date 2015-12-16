@@ -86,7 +86,7 @@ module.exports = function(app){
   app.delete('/files',function(req, res){
 
     if (typeof req.query.public_ids !== "undefined"){
-      $deleteByIDs(req.query.public_ids)
+      $deleteByIDs(JSON.parse(req.query.public_ids))
         .then(function(the){
           res.json(the.result);
         });

@@ -37,7 +37,7 @@ function attributesToIndex(dataSnapshot,toExclude){
 
   function toDiscard (dataSnapshot,attributesToExclude){
     var deferred = Q.defer();
-    if(Array.isArray(attributesToExclude) && attributesToExclude.length > 0){
+    if(attributesToExclude.length > 0){
       for (var i = 0; i < attributesToExclude.length; i++) {
         if (dataSnapshot.hasOwnProperty(attributesToExclude[i])) {
           delete dataSnapshot[attributesToExclude[i]];
@@ -72,7 +72,8 @@ function setSettings(dataSnapshot){
   var deferred = Q.defer();
 
   var toIndexList = attributesToIndex(dataSnapshot,[
-    'htmlDescription'
+    'htmlDescription',
+    'images'
   ]);
 
   Q.all({attributesToIndex: toIndexList})

@@ -269,108 +269,52 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
           tag: $scope.publicationId
         }
       }).then(function(res){
-        $log.info('DELETE response:',res);
         deferred.resolve();
-      },function(){
-        notificationService.error('The images cannot be deleted');
+      },function(error){
+        deferred.reject(error);
       });
-
-
-      //angular.forEach(objs, function(val, index){
-      //  console.log('val:', val);  // delete
-      //  console.log('index', index);  // id
-      //});
-
-      /*
-
-       {"deleted":{"publications/-K5b0FySQURNk_MP8PXu":"deleted"},"partial":false,"rate_limit_allowed":500,"rate_limit_reset_at":"2015-12-15T20:00:00.000Z","rate_limit_remaining":499}
-       {"deleted":{"publications/-K5b3MUgE3ILdHmF-ifS":"deleted","publications/-K5b3MUi0T_Ovv3BkhZT":"deleted","publications/-K5b0FySQURNk_MP8PXu":"not_found"},"partial":false,"rate_limit_allowed":500,"rate_limit_reset_at":"2015-12-15T20:00:00.000Z","rate_limit_remaining":497}
-       {"deleted":{"-K5b0V_UpUMtSV7bSiRd":"not_found"},"partial":false,"rate_limit_allowed":500,"rate_limit_reset_at":"2015-12-15T20:00:00.000Z","rate_limit_remaining":498}
-
-       */
-
-
-      //function getImagesToDelete(){
-      //  var deferred  = $q.defer();
-      //  var imagesToDelete = [];
-      //
-      //  angular.forEach($scope.images, function(imagen, index){
-      //    if(angular.isDefined(imagen.inServer) && imagen.inServer === true){
-      //      imagesToDelete.push(imagen.$id);
-      //    }
-      //    if(index === $scope.images.length-1){
-      //      deferred.resolve({imagesToDelete: imagesToDelete});
-      //    }
-      //  });
-      //
-      //  return deferred.promise;
-      //}
-
-      //getImagesToDelete()
-      //  .then(function(the){
-      //    if(the.imagesToDelete.length > 0){
-      //    }else{
-      //      deferred.resolve();
-      //    }
-      //  });
-
-      //var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
-      //var imagesToDelete                      = $firebaseArray(imagesToDeleteRef);
-      //var tasksToDo                           = {};
-      //tasksToDo.imagesInQueueToDeletePromises = {};
-      //tasksToDo.imagesToDeleteLoadedPromise = imagesToDelete.$loaded(function(){
-      //  angular.forEach(imagesToDelete,function(value){
-      //    tasksToDo.imagesInQueueToDeletePromises[value.$id] = imagesInQueueToDelete.$add({
-      //      id:value.$id
-      //    });
-      //  });
-      //});
-      //$q.all(tasksToDo)
-      //  .then(function(){
-      //    imagesToDeleteRef.remove(function(error){
-      //      if (error) {
-      //        deferred.reject(error);
-      //      } else {
-      //        deferred.resolve();
-      //      }
-      //    })
-      //  });
 
       return deferred.promise;
     }
 
     $scope.deleteAllPublicationImages = function () {
+
        deleteAllPublicationImages()
          .then(function(){
-           angular.copy(original.files,$scope.images);
+           var imagesRef = userPublicationsRef.child($scope.publicationId).child('images');
+           return imagesRef.set({});
+         })
+         .then(function () {
+           angular.copy([],$scope.images);
            notificationService.success('The images has been deleted');
-         },function(error){
-           notificationService.error(error);
+         },function(){
+           notificationService.error('The images cannot be deleted');
          });
+
     };
 
-    var deletePublicationImage = function(imageId){
+    function deletePublicationImage(imageId){
       var deferred = $q.defer();
-      var imageToDeleteRef    = publicationImagesRef.child($scope.publicationId).child(imageId);
-      var tasksToDo           = {};
 
-      tasksToDo.imagesInQueueToDeletePromise = imagesInQueueToDelete.$add({
-        id:imageId
-      });
-
-      $q.all(tasksToDo)
+      $http({
+        method: 'DELETE',
+        url: '/files',
+        params: {
+          public_ids: [imageId]
+        }
+      })
         .then(function(){
-          imageToDeleteRef.remove(function(error){
-            if (error) {
-              deferred.reject(error);
-            } else {
-              deferred.resolve();
-            }
-          })
+          var imageRef = userPublicationsRef.child($scope.publicationId).child('images').child(imageId);
+          return imageRef.set({});
+        })
+        .then(function(){
+          deferred.resolve();
+        },function(error){
+          deferred.reject(error);
         });
 
       return deferred.promise;
-    };
+    }
 
     var featuredImage = function(imageId){
       var record = userPublications.$getRecord($scope.publicationId);
@@ -390,10 +334,10 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
         });
     };
 
-    var removeFile = function(fileIndex){
+    function removeFile(fileIndex){
       $scope.images = $filter('filter')($scope.images, function(value, index) { return index !== fileIndex;});
       notificationService.success('The file as been delete.');
-    };
+    }
 
     $scope.removeFile = function(fileIndex,file){
       if(angular.isDefined(file.inServer)){
@@ -442,21 +386,6 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
 
       return deferred.promise;
     };
-
-    //var loadPublicationImages = function (publicationId) {
-    //  var deferred   = $q.defer();
-    //
-    //  var imagesRef = publicationImagesRef.child(publicationId);
-    //  var images = $firebaseArray(imagesRef);
-    //
-    //  images.$loaded(function(){
-    //    deferred.resolve(images);
-    //  }, function (error) {
-    //    deferred.reject(error);
-    //  });
-    //
-    //  return deferred.promise;
-    //};
 
     var setPublication = function(publicationId){
       var deferred   = $q.defer();
