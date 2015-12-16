@@ -18,7 +18,7 @@ app.use(methodOverride());
 
 require('./app/routes')(app);
 require('./app/cloudinaryAPI')(app);
-//require('./app/algoliasearch');
+require('./app/algoliasearch');
 
 var server = app.listen(port, function(){
   console.log('The server is running in port localhost: ',port);

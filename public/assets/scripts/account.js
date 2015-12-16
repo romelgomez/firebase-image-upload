@@ -16,31 +16,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
   }])
   .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$location', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, $log){
 
-    var publicationImages = function(publicationId){
-      var deferred = $q.defer();
-
-      var publicationImagesRef = FireRef.child('images').child(publicationId);
-      var publicationImages    = $firebaseArray(publicationImagesRef);
-
-      publicationImages.$loaded(function(){
-        $scope.account.publicationsImages[publicationId] = publicationImages;
-        deferred.resolve();
-      },function(error){
-        deferred.reject(error);
-      });
-
-      return deferred.promise;
-    };
-
-    var getPublicationsImages = function(publications){
-      var publicationsImagesPromises = {};
-
-      angular.forEach(publications, function(publication){
-        publicationsImagesPromises[publication.$id] = publicationImages(publication.$id)
-      });
-
-      return $q.all(publicationsImagesPromises);
-    };
+    // http://stackoverflow.com/questions/6857468/a-better-way-to-convert-js-object-to-array
 
     var accountPublications = function(){
       var deferred = $q.defer();
@@ -52,36 +28,11 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
       var publications = $firebaseArray(query);
 
       publications.$loaded(function () {
-        return getPublicationsImages(publications);
-      })
-      .then(function(){
         $scope.account.publications = publications;
         deferred.resolve();
       },function(error){
         deferred.reject(error);
       });
-
-      return deferred.promise;
-    };
-
-    var accountPublications2 = function(){
-      var deferred = $q.defer();
-
-      //var userPublicationsRef = FireRef.child('publications');
-      //
-      //var query = userPublicationsRef.orderByChild('releaseDate');
-      //
-      //var publications = $firebaseArray(query);
-      //
-      //publications.$loaded(function () {
-      //  return getPublicationsImages(publications);
-      //})
-      //.then(function(){
-      //  $scope.account.publications = publications;
-      //  deferred.resolve();
-      //},function(error){
-      //  deferred.reject(error);
-      //});
 
       return deferred.promise;
     };
