@@ -1,15 +1,52 @@
+var Q = require('q');
 var Firebase = require('firebase');
 var algoliasearch = require('algoliasearch');
-var Q = require('q');
 var client = algoliasearch('FU6V8V2Y6Q', '1d84a9feb84aaff718e378e7dc66efef');
-var index = client.initIndex('publications');
 
+var publicationsIndex = client.initIndex('publications');
 var publicationsRef = new Firebase('berlin.firebaseio.com/publications');
 
-//var deferred = Q.defer();
-//deferred.reject();
-//deferred.resolve();
-//return deferred.promise;
+// Listen for changes to Firebase data
+publicationsRef.on('child_added', function(dataSnapshot){
+  console.log('-------------------------------------------');
+  console.log('START ADD OBJECT');
+
+  addOrUpdateObject(publicationsIndex,dataSnapshot,[
+    'htmlDescription',
+    'images'
+  ]);
+
+});
+
+publicationsRef.on('child_changed', function(dataSnapshot){
+  console.log('-------------------------------------------');
+  console.log('START UPDATE OBJECT');
+
+  addOrUpdateObject(publicationsIndex,dataSnapshot,[
+    'htmlDescription',
+    'images'
+  ]);
+
+});
+
+publicationsRef.on('child_removed', function(dataSnapshot){
+  console.log('-------------------------------------------');
+  console.log('START REMOVE OBJECT');
+
+  // Specify Algolia's objectID using the Firebase object key
+  var objectID = dataSnapshot.key();
+
+  publicationsIndex.deleteObject(objectID)
+    .then(function(content){
+      console.log('-------------------------------------------');
+      console.log('CONTENT REMOVED:');
+      console.log(content);
+    },function(error){
+      throw error;
+    });
+
+});
+
 
 /**
  * Publication attributes to index
@@ -57,119 +94,62 @@ function attributesToIndex(dataSnapshot,toExclude){
       .then(toIndex)
       .then(function(list){
         deferred.resolve(list);
-      })
+      });
   }else{
     toIndex(dataSnapshot)
       .then(function(list){
         deferred.resolve(list);
-      })
+      });
   }
 
   return deferred.promise;
 }
 
-function setSettings(dataSnapshot){
-  var deferred = Q.defer();
-
-  var toIndexList = attributesToIndex(dataSnapshot,[
-    'htmlDescription',
-    'images'
-  ]);
-
-  Q.all({attributesToIndex: toIndexList})
-    .then(function(the){
-      index.setSettings({
-        attributesToIndex: the.attributesToIndex,
-        customRanking: ['asc(title)']
-      });
-    })
-    .then(function(){
-      deferred.resolve();
-    });
-
-  return deferred.promise;
-}
-
-// Listen for changes to Firebase data
-publicationsRef.on('child_added', function(dataSnapshot){
-
-  console.log('-------------------------------------------');
-  console.log('START ADD OR UPDATE OBJECT');
-
-  setSettings(dataSnapshot)
-    .then(function(){
-
-      addOrUpdateObject(dataSnapshot)
-        .then(function(content){
-          console.log('-------------------------------------------');
-          console.log('CONTENT ADDED OR UPDATED:');
-          console.log(content);
-        },function(error){
-          throw error;
-        });
-
-    });
-
-});
-
-publicationsRef.on('child_changed', function(dataSnapshot){
-  console.log('-------------------------------------------');
-  console.log('START ADD OR UPDATE OBJECT');
-
-  setSettings(dataSnapshot)
-    .then(function(){
-
-      addOrUpdateObject(dataSnapshot)
-        .then(function(content){
-          console.log('-------------------------------------------');
-          console.log('CONTENT ADDED OR UPDATED:');
-          console.log(content);
-        },function(error){
-          throw error;
-        });
-
-    });
-
-});
-
-publicationsRef.on('child_removed', function(dataSnapshot){
-  console.log('-------------------------------------------');
-  console.log('START REMOVE OBJECT');
-
-  setSettings(dataSnapshot)
-    .then(function(){
-
-      removeIndex(dataSnapshot)
-        .then(function(content){
-          console.log('-------------------------------------------');
-          console.log('CONTENT REMOVED:');
-          console.log(content);
-        },function(error){
-          throw error;
-        });
-
-    });
-
-});
-
-function addOrUpdateObject(dataSnapshot){
+/**
+ * add Or Update Object to index
+ * @param {Object} indexReference
+ * @param {Object} dataSnapshot
+ * @param {Array} attributesToExclude
+ * @return {Promise<Array>}
+ * */
+function addOrUpdateObject(indexReference, dataSnapshot, attributesToExclude){
   // Get FireBase object
   var fireBaseObject = dataSnapshot.val();
 
   // Specify Algolia's objectID using the FireBase object key
   fireBaseObject.objectID = dataSnapshot.key();
 
-  // https://github.com/algolia/algoliasearch-client-js#promises
-  return index.saveObject(fireBaseObject);
+  // Exclude attributes of the index
+  var indexList = attributesToIndex(dataSnapshot.val(),attributesToExclude);
+
+  Q.all([indexList])
+    .then(function(theSettings){
+      return indexReference.setSettings({
+        attributesToIndex: theSettings[0],
+        customRanking: ['asc(title)']
+      });
+    })
+    .then(function(){
+
+      // https://github.com/algolia/algoliasearch-client-js#promises
+      indexReference.saveObject(fireBaseObject)
+        .then(function(content){
+          console.log('-------------------------------------------');
+          console.log('CONTENT ADDED OR UPDATED:');
+          console.log(content);
+        },function(error){
+          throw error;
+        });
+
+    });
+
 }
 
-function removeIndex(dataSnapshot) {
-  // Specify Algolia's objectID using the Firebase object key
-  var objectID = dataSnapshot.key();
 
-  // https://github.com/algolia/algoliasearch-client-js#promises
-  return index.deleteObject(objectID);
-}
+
+
+
+
 
 /*
 
