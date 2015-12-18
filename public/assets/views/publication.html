@@ -17,8 +17,8 @@
     </div>
     <div class="panel-body">
 
-      <ol class="breadcrumb" style="margin-bottom: 7px;">
-        <li ng-click="model.categoryId =''; path =[];" ng-class="{'a-link': path.length > 0}" > Home </li>
+      <ol ng-show="path.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
+        <li ng-click="model.categoryId =''; path =[];" class="a-link"> Reset </li>
         <li ng-repeat="category in path" ng-click="setCategory(category.$id)" ng-class="{'a-link': !$last}"> {{category.name | capitalizeFirstChar}} </li>
       </ol>
 
@@ -40,7 +40,6 @@
     <div class="panel-body">
 
       <ol class="breadcrumb" style="margin-bottom: 7px;">
-        <li> Home </li>
         <li ng-repeat="category in path"> {{category.name | capitalizeFirstChar}} </li>
       </ol>
 
@@ -85,7 +84,7 @@
           </div>
         </div>
 
-        <div class="form-group" ng-if="model.type === 'market'" >
+        <div class="form-group" ng-if="model.department === 'Marketplace'" >
           <div class="row">
             <div class="col-xs-4">
               <label class="control-label"><span class="glyphicon glyphicon-tag"></span> Price <sup style="color: red;">*</sup></label>
@@ -102,7 +101,7 @@
           </div>
         </div>
 
-        <div class="form-group" ng-if="model.type === 'market'">
+        <div class="form-group" ng-if="model.department === 'Marketplace'">
           <div class="row">
             <div class="col-xs-4">
               <label class="control-label"><i class="fa fa-cubes"></i> Quantity in stock <sup style="color: red;">*</sup></label>
@@ -119,7 +118,7 @@
           </div>
         </div>
 
-        <div class="form-group" ng-if="model.type === 'market'">
+        <div class="form-group" ng-if="model.department === 'Marketplace'">
           <div class="row">
             <div class="col-xs-4">
               <label><i class="fa fa-barcode"></i> Barcode</label>
@@ -128,10 +127,10 @@
           </div>
         </div>
 
-        <div class="form-group" ng-if="model.type === 'market'">
+        <div class="form-group" ng-if="model.department === 'Marketplace'">
           <label class="control-label"><i class="fa fa-certificate"></i> Warranty <sup style="color: red;">*</sup></label>
-          <textarea redactor name="warranty" data-ng-model="model.warranty" required class="form-control" placeholder=""></textarea>
-          <div data-ng-messages="publicationForm.$submitted && publicationForm.warranty.$error" class="help-block">
+          <textarea redactor name="htmlWarranty" data-ng-model="model.htmlWarranty" required class="form-control" placeholder=""></textarea>
+          <div data-ng-messages="publicationForm.$submitted && publicationForm.htmlWarranty.$error" class="help-block">
             <div data-ng-message="required" >
               - The <b>Warranty</b> is required.
             </div>
@@ -183,6 +182,7 @@
 
         <pre>{{model | json}}</pre>
         <pre>{{images | json}}</pre>
+        <pre>{{path | json}}</pre>
 
         <div ng-show="images.length > 0">
 

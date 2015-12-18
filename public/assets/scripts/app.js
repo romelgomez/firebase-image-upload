@@ -6,7 +6,7 @@ angular.module('app',[
         'firebase',
         'fire',
         'routes',
-        'tree',
+        'categories',
         'publications',
         'login',
         'account',

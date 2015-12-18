@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar'])
+angular.module('publications',['categories','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar'])
   .controller('PublicationsController',[
     '$scope',
     '$q',
@@ -13,7 +13,7 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     '$firebaseArray',
     '$firebaseObject',
     'rfc4122',
-    'treeService',
+    'categoriesService',
     'notificationService',
     'Upload',
     'user',
@@ -35,8 +35,8 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     var original = angular.copy($scope.model = {
       userUid:               user.uid,
       categoryId:           '',
-      type:                 '',
       featuredImageId:      '',
+      department:           '',
       title:                '',
       htmlDescription:      ''
     });
@@ -45,6 +45,12 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
       return scope.model.htmlDescription;
     },function(){
       $scope.model.description = $filter('htmlToPlaintext')($scope.model.htmlDescription);
+    });
+
+    $scope.$watch(function(scope){
+      return scope.model.htmlWarranty;
+    },function(){
+      $scope.model.warranty = $filter('htmlToPlaintext')($scope.model.htmlWarranty);
     });
 
     $scope.publicationIdStatus = function(){
@@ -64,10 +70,10 @@ angular.module('publications',['tree','uuid','ngMessages','angular-redactor','ng
     };
 
     $scope.setCategory = function (categoryId) {
-      $scope.model.categoryId = categoryId;
-      $scope.path             = categoriesService.getPath(categoryId,$scope.categories);
-      $scope.model.path       = pathNames($scope.path);
-      $scope.model.type       = ($scope.path[0]) ? $filter('camelCase')($scope.path[0].name): '';
+      $scope.model.categoryId           = categoryId;
+      $scope.path                       = categoriesService.getPath(categoryId,$scope.categories);
+      $scope.model.path                 = pathNames($scope.path);
+      $scope.model.department  = ($scope.path[0]) ? $scope.path[0].name : ''; // $filter('camelCase')($scope.path[0].name)
     };
 
     var uploadFile = function(file,fileId,publicationId){
