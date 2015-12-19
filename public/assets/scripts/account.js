@@ -2,8 +2,7 @@
 
 $.cloudinary.config().cloud_name = 'berlin';
 
-
-angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
+angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch'])
   .controller('AccountController',['$scope', '$q', 'user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log', function ($scope, $q, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
 
     $scope.account = {
@@ -14,30 +13,45 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary'])
     };
 
   }])
-  .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$location', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, $log){
+  .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$location', 'algolia', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, algolia, $location, $log){
+
+    $scope.query = '';
+    $scope.hits = [];
+
+    //var client = algolia.client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
+    //var index  = client.initIndex('publications');
+
+    //index.search('')
+    //  .then(function searchSuccess(content) {
+    //    console.log(content);
+    //  }, function searchFailure(err) {
+    //    console.log(err);
+    //  });
 
     // http://stackoverflow.com/questions/6857468/a-better-way-to-convert-js-object-to-array
 
-    var accountPublications = function(){
-      var deferred = $q.defer();
+    //var accountPublications = function(){
+    //  var deferred = $q.defer();
+    //
+    //  var userPublicationsRef = FireRef.child('publications');
+    //
+    //  var query = userPublicationsRef.orderByChild('releaseDate');
+    //
+    //  var publications = $firebaseArray(query);
+    //
+    //  publications.$loaded(function () {
+    //    $scope.account.publications = publications;
+    //    deferred.resolve();
+    //  },function(error){
+    //    deferred.reject(error);
+    //  });
+    //
+    //  return deferred.promise;
+    //};
+    //
+    //$scope.httpRequestPromise = accountPublications();
 
-      var userPublicationsRef = FireRef.child('publications');
 
-      var query = userPublicationsRef.orderByChild('releaseDate');
-
-      var publications = $firebaseArray(query);
-
-      publications.$loaded(function () {
-        $scope.account.publications = publications;
-        deferred.resolve();
-      },function(error){
-        deferred.reject(error);
-      });
-
-      return deferred.promise;
-    };
-
-    $scope.httpRequestPromise = accountPublications();
 
     $scope.editPublication = function (publicationId) {
       $location.path('/edit-publication/'+publicationId);

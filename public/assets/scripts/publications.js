@@ -88,16 +88,12 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
         file: file
       }).progress(function (e) {
         file.progress = Math.round((e.loaded * 100.0) / e.total);
-        //file.status = "Uploading... " + file.progress + "%";
       }).success(function (data) {
-        //$log.info('success - data - to json',angular.toJson(data));
         file.inServer = true;
         file.$id  = data.context.custom.$id;
-
         deferred.resolve({
           '$id':data.context.custom.$id
         });
-
       }).error(function (data) {
         file.details  = data;
         deferred.reject();
@@ -193,42 +189,42 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
       return info;
     };
 
-    var imagesInQueueToDeleteRef            = FireRef.child('imagesInQueueToDelete');
-    var imagesInQueueToDelete               = $firebaseArray(imagesInQueueToDeleteRef);
+    //var imagesInQueueToDeleteRef            = FireRef.child('imagesInQueueToDelete');
+    //var imagesInQueueToDelete               = $firebaseArray(imagesInQueueToDeleteRef);
 
-    var removePublication = function(){
-     var deferred                            = $q.defer();
-     var publication                         = userPublications.$getRecord($scope.publicationId);
-     var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
-     var imagesToDelete                      = $firebaseArray(imagesToDeleteRef);
-     var tasksToDo                           = {};
-     tasksToDo.imagesInQueueToDeletePromises = {};
-
-     tasksToDo.imagesToDeleteLoadedPromise = imagesToDelete.$loaded(function(){
-       angular.forEach(imagesToDelete,function(value){
-         tasksToDo.imagesInQueueToDeletePromises[value.$id] = imagesInQueueToDelete.$add({
-           id:value.$id
-         });
-       });
-     });
-
-     tasksToDo.userPublicationsRemovePromise = userPublications.$remove(publication);
-
-     $q.all(tasksToDo)
-       .then(function(){
-          imagesToDeleteRef.remove(function(error){
-            if (error) {
-              deferred.reject(error);
-            } else {
-              deferred.resolve();
-            }
-          })
-       }, function (error) {
-         notificationService.error(error);
-       });
-
-      return deferred.promise;
-    };
+    //var removePublication = function(){
+    // var deferred                            = $q.defer();
+    // var publication                         = userPublications.$getRecord($scope.publicationId);
+    // //var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
+    // var imagesToDelete                      = $firebaseArray(imagesToDeleteRef);
+    // var tasksToDo                           = {};
+    // tasksToDo.imagesInQueueToDeletePromises = {};
+    //
+    // tasksToDo.imagesToDeleteLoadedPromise = imagesToDelete.$loaded(function(){
+    //   angular.forEach(imagesToDelete,function(value){
+    //     tasksToDo.imagesInQueueToDeletePromises[value.$id] = imagesInQueueToDelete.$add({
+    //       id:value.$id
+    //     });
+    //   });
+    // });
+    //
+    // tasksToDo.userPublicationsRemovePromise = userPublications.$remove(publication);
+    //
+    // $q.all(tasksToDo)
+    //   .then(function(){
+    //      imagesToDeleteRef.remove(function(error){
+    //        if (error) {
+    //          deferred.reject(error);
+    //        } else {
+    //          deferred.resolve();
+    //        }
+    //      })
+    //   }, function (error) {
+    //     notificationService.error(error);
+    //   });
+    //
+    //  return deferred.promise;
+    //};
 
     $scope.discard = function(){
         var modalInstance = $uibModal.open({
@@ -384,11 +380,16 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
       var publication = $firebaseObject(publicationRef);
 
       publication.$loaded(function(){
-        deferred.resolve(publication);
+        if (typeof publication.releaseDate === "undefined"){
+          deferred.reject('404');
+        } else if (user.uid !== publication.userUid) {
+          deferred.reject('401');
+        } else {
+          deferred.resolve({publication:publication});
+        }
       }, function (error) {
         deferred.reject(error);
       });
-
 
       return deferred.promise;
     };
@@ -396,11 +397,7 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
     var setPublication = function(publicationId){
       var deferred   = $q.defer();
 
-      var loadPublicationPromise = loadPublication(publicationId);
-
-      $q.all({
-        publication: loadPublicationPromise
-      })
+      loadPublication(publicationId)
         .then(function (the) {
           angular.forEach(the.publication, function ( value, key) {
             if(key !== 'releaseDate'){
@@ -409,25 +406,38 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
           });
         })
         .then(function(){
+          angular.forEach($scope.model.images, function(value, key){
+            value.$id = key;
+            $scope.images.push(value);
+          })
+        })
+        .then(function(){
           $scope.publicationId      = publicationId;
+          $scope.path               = categoriesService.getPath($scope.model.categoryId,$scope.categories);
           $scope.categoryExpected   = true;
           $scope.isEditing          = true;
           deferred.resolve();
         },function(error){
+          $location.path('/');
           deferred.reject(error);
         });
 
       return deferred.promise;
     };
 
-    if(angular.isDefined($routeParams.publicationId)){
-      configTasks.publication = setPublication($routeParams.publicationId);
-    }
+    var deferred   = $q.defer();
+    $scope.httpRequestPromise = deferred.promise;
 
-    $scope.httpRequestPromise = $q.all(configTasks)
+    $q.all(configTasks)
       .then(function () {
+        if(angular.isDefined($routeParams.publicationId)){
+         return setPublication($routeParams.publicationId);
+        }
+      })
+      .then(function(){
         $scope.thePublicationIsReady = true;
-      });
+        deferred.resolve();
+      })
 
 
   }])
