@@ -8,8 +8,8 @@ publicationsRef.on('child_added', function(dataSnapshot){
   console.log('START ADD OBJECT');
 
   algolia.index('publications',dataSnapshot,{
-    attributesToIndex: ['title','description','price','quantity','barcode','warranty'],
-    customRanking: ['asc(title)']
+    attributesToIndex: ['barcode','title','path','unordered(description)'],
+    attributesForFaceting: ['path','price']
   })
     .then(function(content){
       console.log('-------------------------------------------');
@@ -26,8 +26,8 @@ publicationsRef.on('child_changed', function(dataSnapshot){
   console.log('START UPDATE OBJECT');
 
   algolia.index('publications',dataSnapshot,{
-    attributesToIndex: ['title','description','price','quantity','barcode','warranty'],
-    customRanking: ['asc(title)']
+    attributesToIndex: ['barcode','title','path','unordered(description)'],
+    attributesForFaceting: ['path','price']
   })
     .then(function(content){
       console.log('-------------------------------------------');

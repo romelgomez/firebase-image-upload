@@ -9,8 +9,8 @@ function main(){
   publicationsRef.on('value', function(dataSnapshot){
 
     algolia.reIndex('publications',dataSnapshot,{
-      attributesToIndex: ['title','description','price','quantity','barcode','warranty'],
-      customRanking: ['asc(title)']
+      attributesToIndex: ['barcode','title','path','unordered(description)'],
+      attributesForFaceting: ['path','price']
     })
       .then(function(content){
         console.log('PUBLICATIONS REINDEX IS DONE');

@@ -1,3 +1,20 @@
+
+attributesToIndex  
+  it is important to exclude attributes whose only purpose is for displaying, filtering, or ranking.
+  An example of this would be a link to an image. You want to store and retrieve it to display the image to the user, but it doesn’t make sense to have it be part of the search.
+
+  Attributes you want to search in (name, description, manufacturer, …)
+  Numerical values we can use to rank the results (popularity)
+  Attributes you want to filter on (price, manufacturer, …)
+  Other attributes used to display the results (imageUrl, price, …)
+
+  https://www.algolia.com/doc/tutorials/instant-search#searchable-attributes
+  
+  
+  
+  
+  
+
 Working links:
 
  https://www.algolia.com/doc/tutorials/instant-search
