@@ -246,7 +246,7 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
           tag: $scope.publicationId
         }
       }).then(function(res){
-        deferred.resolve();
+        deferred.resolve(res);
       },function(error){
         deferred.reject(error);
       });
