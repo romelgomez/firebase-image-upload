@@ -189,42 +189,23 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
       return info;
     };
 
-    //var imagesInQueueToDeleteRef            = FireRef.child('imagesInQueueToDelete');
-    //var imagesInQueueToDelete               = $firebaseArray(imagesInQueueToDeleteRef);
+    var removePublication = function(){
+     var deferred                            = $q.defer();
+     var publication                         = userPublications.$getRecord($scope.publicationId);
+     var tasksToDo                           = {};
 
-    //var removePublication = function(){
-    // var deferred                            = $q.defer();
-    // var publication                         = userPublications.$getRecord($scope.publicationId);
-    // //var imagesToDeleteRef                   = publicationImagesRef.child($scope.publicationId);
-    // var imagesToDelete                      = $firebaseArray(imagesToDeleteRef);
-    // var tasksToDo                           = {};
-    // tasksToDo.imagesInQueueToDeletePromises = {};
-    //
-    // tasksToDo.imagesToDeleteLoadedPromise = imagesToDelete.$loaded(function(){
-    //   angular.forEach(imagesToDelete,function(value){
-    //     tasksToDo.imagesInQueueToDeletePromises[value.$id] = imagesInQueueToDelete.$add({
-    //       id:value.$id
-    //     });
-    //   });
-    // });
-    //
-    // tasksToDo.userPublicationsRemovePromise = userPublications.$remove(publication);
-    //
-    // $q.all(tasksToDo)
-    //   .then(function(){
-    //      imagesToDeleteRef.remove(function(error){
-    //        if (error) {
-    //          deferred.reject(error);
-    //        } else {
-    //          deferred.resolve();
-    //        }
-    //      })
-    //   }, function (error) {
-    //     notificationService.error(error);
-    //   });
-    //
-    //  return deferred.promise;
-    //};
+     tasksToDo.deleteImages = deleteAllPublicationImages();
+     tasksToDo.detelePublication = userPublications.$remove(publication);
+
+     $q.all(tasksToDo)
+       .then(function(){
+          deferred.resolve();
+       }, function (error) {
+         notificationService.error(error);
+       });
+
+      return deferred.promise;
+    };
 
     $scope.discard = function(){
         var modalInstance = $uibModal.open({
@@ -254,12 +235,6 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
             notificationService.error(error);
         });
     };
-
-/*
-* deleteAllPublicationImages
-* deletePublicationImage
-* removePublication
-* */
 
     function deleteAllPublicationImages() {
       var deferred = $q.defer();
