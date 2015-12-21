@@ -76,33 +76,62 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
       $scope.model.department  = ($scope.path[0]) ? $scope.path[0].name : ''; // $filter('camelCase')($scope.path[0].name)
     };
 
-    var uploadFile = function(file,fileId,publicationId){
-      var deferred = $q.defer();
+    //var uploadFile = function(file,fileId,publicationId){
+    //  var deferred = $q.defer();
+    //
+    //  file.upload = $upload.upload({
+    //    url: "/files",
+    //    fields: {
+    //      fileId: fileId,
+    //      publicationId: publicationId
+    //    },
+    //    file: file
+    //  }).progress(function (e) {
+    //    file.progress = Math.round((e.loaded * 100.0) / e.total);
+    //  }).success(function (data) {
+    //    file.inServer = true;
+    //    file.$id  = data.context.custom.$id;
+    //    deferred.resolve({
+    //      '$id':data.context.custom.$id
+    //    });
+    //  }).error(function (data) {
+    //    file.details  = data;
+    //    deferred.reject();
+    //  });
+    //
+    //  return deferred.promise;
+    //};
 
-      file.upload = $upload.upload({
-        url: "/files",
-        fields: {
-          fileId: fileId,
-          publicationId: publicationId
-        },
-        file: file
-      }).progress(function (e) {
-        file.progress = Math.round((e.loaded * 100.0) / e.total);
-      }).success(function (data) {
-        file.inServer = true;
-        file.$id  = data.context.custom.$id;
-        deferred.resolve({
-          '$id':data.context.custom.$id
+      var uploadFile = function(file, fileId, publicationId){
+        var deferred = $q.defer();
+
+        file.upload = $upload.upload({
+          url: "https://api.cloudinary.com/v1_1/berlin/upload",
+          fields: {
+            public_id: fileId,
+            upload_preset: 'ebdyaimw',
+            context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId,
+            tags: [publicationId]
+          },
+          file: file
+        }).progress(function (e) {
+          file.progress = Math.round((e.loaded * 100.0) / e.total);
+        }).success(function (data) {
+          file.inServer = true;
+          file.$id  = data.context.custom.$id;
+
+          deferred.resolve({
+            '$id':data.context.custom.$id
+          });
+        }).error(function (data) {
+          file.details  = data;
+          deferred.reject();
         });
-      }).error(function (data) {
-        file.details  = data;
-        deferred.reject();
-      });
 
-      return deferred.promise;
-    };
+        return deferred.promise;
+      };
 
-    var saveFiles = function(files, publicationId){
+      var saveFiles = function(files, publicationId){
       var publicationImagesRef = userPublicationsRef.child(publicationId).child('images');
       var filesPromises = {};
       var filesReferences = {};

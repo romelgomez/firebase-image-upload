@@ -1,7 +1,6 @@
 var Q = require('q');
 var cloudinary = require('cloudinary');
 var formidable = require('formidable');
-var uuid = require('uuid');
 
 cloudinary.config({
   cloud_name: 'berlin',
@@ -74,15 +73,15 @@ function $deleteByTag(tag){
 
 module.exports = function(app){
 
-  app.post('/files', function(req, res){
-    var form = new formidable.IncomingForm();
-    form.parse(req, function(err, fields, files) {
-      $upload(files.file,fields)
-        .then(function(the){
-          res.json(the.result);
-        });
-    });
-  });
+  //app.post('/files', function(req, res){
+  //  var form = new formidable.IncomingForm();
+  //  form.parse(req, function(err, fields, files) {
+  //    $upload(files.file,fields)
+  //      .then(function(the){
+  //        res.json(the.result);
+  //      });
+  //  });
+  //});
 
   app.delete('/files',function(req, res){
 
