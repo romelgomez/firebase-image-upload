@@ -236,15 +236,24 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
         });
     };
 
-    function deleteAllPublicationImages() {
+    /** Delete all files of the publication, And you can selective delete files if their Ids are provider as array
+     * @param {Array} imagesIds
+     * @return {Promise<Object>}
+     * */
+    function deleteImages(imagesIds) {
       var deferred = $q.defer();
+      var params = {
+        publicationId: $scope.publicationId
+      };
+
+      if (typeof imagesIds !== "undefined" && Array.isArray(imagesIds)){
+        params.public_ids = imagesIds;
+      }
 
       $http({
         method: 'DELETE',
         url: '/files',
-        params: {
-          tag: $scope.publicationId
-        }
+        params: params
       }).then(function(res){
         deferred.resolve(res);
       },function(error){
@@ -256,7 +265,7 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
 
     $scope.deleteAllPublicationImages = function () {
 
-       deleteAllPublicationImages()
+      deleteImages()
          .then(function(){
            var imagesRef = userPublicationsRef.child($scope.publicationId).child('images');
            return imagesRef.set({});
@@ -269,29 +278,6 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
          });
 
     };
-
-    function deletePublicationImage(imageId){
-      var deferred = $q.defer();
-
-      $http({
-        method: 'DELETE',
-        url: '/files',
-        params: {
-          public_ids: [imageId]
-        }
-      })
-        .then(function(){
-          var imageRef = userPublicationsRef.child($scope.publicationId).child('images').child(imageId);
-          return imageRef.set({});
-        })
-        .then(function(){
-          deferred.resolve();
-        },function(error){
-          deferred.reject(error);
-        });
-
-      return deferred.promise;
-    }
 
     var featuredImage = function(imageId){
       var record = userPublications.$getRecord($scope.publicationId);
@@ -325,7 +311,11 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
               $scope.model.featuredImageId = '';
             });
         }
-        tasksToDo.deleteImage = deletePublicationImage(file.$id)
+        tasksToDo.deleteImage = deleteImages([file.$id])
+          .then(function(){
+            var imageRef = userPublicationsRef.child($scope.publicationId).child('images').child(file.$id);
+            return imageRef.set({});
+          })
           .then(function(){
             removeFile(fileIndex);
           },function(error){
