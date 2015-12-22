@@ -9,7 +9,7 @@ publicationsRef.on('child_added', function(dataSnapshot){
 
   algolia.index('publications',dataSnapshot,{
     attributesToIndex: ['barcode','title','path','unordered(description)'],
-    attributesForFaceting: ['path','price']
+    attributesForFaceting: ['path','price','userUid']
   })
     .then(function(content){
       console.log('-------------------------------------------');
@@ -27,7 +27,7 @@ publicationsRef.on('child_changed', function(dataSnapshot){
 
   algolia.index('publications',dataSnapshot,{
     attributesToIndex: ['barcode','title','path','unordered(description)'],
-    attributesForFaceting: ['path','price']
+    attributesForFaceting: ['path','price','userUid']
   })
     .then(function(content){
       console.log('-------------------------------------------');

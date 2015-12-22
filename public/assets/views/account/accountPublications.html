@@ -1,11 +1,30 @@
 <div style="margin-top: 10px; margin-bottom: 0; " ng-controller="AccountPublicationsController">
 
+  <input type="text" ng-model="query" class="form-control" placeholder="Search">
+
+  <hr>
+
+  <pre>
+    ng-model : {{query}}
+    content.nbHits : {{content.nbHits}}
+    content.page : {{content.page}}
+    content.nbPages : {{content.nbPages}}
+    content.hitsPerPage : {{content.hitsPerPage}}
+    content.processingTimeMS : {{content.processingTimeMS}}
+    content.query : {{content.query}}
+    content.params : {{content.params}}
+  </pre>
+
+  <hr>
+
+  <pre>{{content | json}}</pre>
+
   <!--http://stackoverflow.com/questions/6857468/a-better-way-to-convert-js-object-to-array-->
   <!--<a href="https://www.firebase.com/docs/web/libraries/angular/guide/synchronized-arrays.html#section-overview" target="_blank">https://www.firebase.com/docs/web/libraries/angular/guide/synchronized-arrays.html#section-overview</a>-->
 
-  Total de publicaciones: {{account.publications.length}}
+  <!--Total de publicaciones: {{account.publications.length}}-->
 
-  <pre>{{account.publications | json}}</pre>
+  <!--<pre>{{account.publications | json}}</pre>-->
 
   <!--<div class="list-group">-->
     <!--<a ng-repeat="(publicationId, publication) in account.publications"  href="#" class="list-group-item">{{publication.title}}</a>-->

@@ -10,7 +10,7 @@ function main(){
 
     algolia.reIndex('publications',dataSnapshot,{
       attributesToIndex: ['barcode','title','path','unordered(description)'],
-      attributesForFaceting: ['path','price']
+      attributesForFaceting: ['path','price','userUid']
     })
       .then(function(content){
         console.log('PUBLICATIONS REINDEX IS DONE');

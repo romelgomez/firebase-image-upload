@@ -13,20 +13,59 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     };
 
   }])
-  .controller('AccountPublicationsController',['$scope', '$q', 'FireRef', '$firebaseObject', '$firebaseArray','$timeout', '$location', 'algolia', '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, algolia, $location, $log){
+  .controller('AccountPublicationsController',[
+    '$scope',
+    '$q',
+    'FireRef',
+    '$firebaseObject',
+    '$firebaseArray',
+    '$timeout',
+    '$location',
+    'algolia',
+    '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, algolia, $log){
 
-    $scope.query = '';
-    $scope.hits = [];
+      //https://github.com/algolia/algoliasearch-client-js#get-an-object
+      //index.getObjects(['myObj1', 'myObj2'], function(err, content) {
+      //  console.log(content);
+      //});
+      //https://github.com/algolia/algoliasearch-client-js#index-settings
 
-    //var client = algolia.client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
-    //var index  = client.initIndex('publications');
+      // para el momento que llega la info, el campo query puede contener otra cosa.
+      var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
+      var index  = client.initIndex('publications');
 
-    //index.search('')
-    //  .then(function searchSuccess(content) {
-    //    console.log(content);
-    //  }, function searchFailure(err) {
-    //    console.log(err);
-    //  });
+      $scope.content = {};
+      $scope.query = '';
+      $scope.hits = [];
+
+      //$log.info('$scope.account.user.uid',$scope.account.user.uid);
+      // facebook:10204911533563856
+      // b0d0d782-7fe2-4c55-8fcb-c73aab87538e
+      // AlgoliaSearchError {name: "AlgoliaSearchError", message: "filters: Unexpected token string expected numeric at col 8"}
+
+      function search (){
+        index.search($scope.query, {
+            //facetFilters: 'userUid='+$scope.account.user.uid,
+            //filters: 'userUid='+$scope.account.user.uid,
+            hitsPerPage: 25
+          })
+          .then(function searchSuccess(content) {
+            //if(content.query !== $scope.query){
+            //  search();
+            //}
+            $scope.content = content;
+            console.log(content);
+          }, function searchFailure(err) {
+            console.log(err);
+          });
+      }
+
+      $scope.$watch(function(){
+        return $scope.query;
+      },function(){
+        search()
+      });
+
 
     // http://stackoverflow.com/questions/6857468/a-better-way-to-convert-js-object-to-array
 
