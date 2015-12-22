@@ -1,6 +1,16 @@
 var gulp = require('gulp');
+var uglify = require('gulp-uglify'); // https://www.npmjs.com/package/gulp-uglify
 
-gulp.task('default', function() {
-  // place code for your default task here
-  console.log('start using gulp');
+/**
+ * uglify the scripts files.
+* */
+gulp.task('compressScripts', function() {
+  return gulp.src('public/assets/scripts/*.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('dist/assets/scripts'));
 });
+
+gulp.task('default', [
+  'compressScripts'
+]);
+
