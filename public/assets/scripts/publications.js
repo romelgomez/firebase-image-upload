@@ -106,7 +106,7 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
         var deferred = $q.defer();
 
         file.upload = $upload.upload({
-          url: "https://api.cloudinary.com/v1_1/berlin/upload",
+          url: 'https://api.cloudinary.com/v1_1/berlin/upload',
           fields: {
             public_id: fileId,
             upload_preset: 'ebdyaimw',
@@ -275,7 +275,7 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
         publicationId: $scope.publicationId
       };
 
-      if (typeof imagesIds !== "undefined" && Array.isArray(imagesIds)){
+      if (typeof imagesIds !== 'undefined' && Array.isArray(imagesIds)){
         params.public_ids = imagesIds;
       }
 
@@ -374,7 +374,7 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
       var publication = $firebaseObject(publicationRef);
 
       publication.$loaded(function(){
-        if (typeof publication.releaseDate === "undefined"){
+        if (typeof publication.releaseDate === 'undefined'){
           deferred.reject('404');
         } else if (user.uid !== publication.userUid) {
           deferred.reject('401');
