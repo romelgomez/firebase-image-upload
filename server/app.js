@@ -8,17 +8,17 @@ var methodOverride = require('method-override'); // simulate DELETE and PUT (exp
 var port = process.env.PORT || 8080;
 
 // configuration =================
-app.use(express.static(path.join(__dirname, 'public'))); // set the static files location /public/img will be /img for users
-app.use('/bower_components',  express.static(path.join(__dirname, 'bower_components'))); // set the static files location of bower_components
+app.use(express.static(path.join(process.cwd(), 'public'))); // set the static files location /public/img will be /img for users
+app.use('/bower_components',  express.static(path.join(process.cwd(), 'bower_components'))); // set the static files location of bower_components
 app.use(morgan('dev'));  // log every request to the console
 app.use(bodyParser.urlencoded({'extended':'true'})); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 app.use(methodOverride());
 
-require('./app/routes')(app);
-require('./app/cloudinary/cloudinary')(app);
-require('./app/algolia/algoliaIndex');
+require('./routes')(app);
+require('./cloudinary/cloudinary')(app);
+//require('./algolia/algoliaIndex');
 
 var server = app.listen(port, function(){
   console.log('The server is running in port localhost: ',port);
@@ -26,3 +26,6 @@ var server = app.listen(port, function(){
 
 
 // https://scotch.io/courses/node-and-angular-to-do-app
+//console.log('__dirname',__dirname);
+//console.log('process.cwd()',process.cwd());
+//console.log('__filename',__filename);

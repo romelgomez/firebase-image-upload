@@ -20,7 +20,7 @@ module.exports = function(app) {
   //});
 
   app.get('*', function(req, res){
-    res.send('404');
+    res.send('#### 404 ####');
   });
 
   // Publications
