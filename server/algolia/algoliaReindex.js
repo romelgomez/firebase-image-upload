@@ -3,7 +3,7 @@ var Firebase = require('firebase');
 
 var settings = {
   attributesToIndex: ['barcode','title','unordered(description)'],
-  attributesForFaceting: ['path','price','userUid']
+  attributesForFaceting: ['categories','userID']
 };
 
 function main(){

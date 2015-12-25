@@ -4,7 +4,7 @@ var publicationsRef = new Firebase('berlin.firebaseio.com/publications');
 
 var settings = {
   attributesToIndex: ['barcode','title','unordered(description)'],
-  attributesForFaceting: ['path','price','userUid']
+  attributesForFaceting: ['categories','userID']
 };
 
 // Listen for changes to Firebase data

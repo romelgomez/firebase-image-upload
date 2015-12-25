@@ -46,7 +46,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
       function search (){
         index.search($scope.query, {
-            facetFilters: 'userUid:'+$scope.account.user.uid,
+            facetFilters: 'userID:'+$scope.account.user.uid,
             hitsPerPage: 25
           })
           .then(function searchSuccess(content) {

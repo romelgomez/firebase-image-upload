@@ -33,7 +33,7 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
     $scope.isEditing              = false;
     $scope.thePublicationIsReady  = false;
     var original = angular.copy($scope.model = {
-      userUid:               user.uid,
+      userID:               user.uid,
       categoryId:           '',
       featuredImageId:      '',
       department:           '',
@@ -72,8 +72,8 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
     $scope.setCategory = function (categoryId) {
       $scope.model.categoryId           = categoryId;
       $scope.path                       = categoriesService.getPath(categoryId,$scope.categories);
-      $scope.model.path                 = pathNames($scope.path);
-      $scope.model.department  = ($scope.path[0]) ? $scope.path[0].name : ''; // $filter('camelCase')($scope.path[0].name)
+      $scope.model.categories           = pathNames($scope.path);
+      $scope.model.department           = ($scope.path[0]) ? $scope.path[0].name : ''; // $filter('camelCase')($scope.path[0].name)
     };
 
     //var uploadFile = function(file,fileId,publicationId){
@@ -376,7 +376,7 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
       publication.$loaded(function(){
         if (typeof publication.releaseDate === 'undefined'){
           deferred.reject('404');
-        } else if (user.uid !== publication.userUid) {
+        } else if (user.uid !== publication.userID) {
           deferred.reject('401');
         } else {
           deferred.resolve({publication:publication});
