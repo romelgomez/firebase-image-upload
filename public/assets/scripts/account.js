@@ -38,15 +38,15 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       $scope.query = '';
       $scope.hits = [];
 
-      //$log.info('$scope.account.user.uid',$scope.account.user.uid);
+      $log.info('$scope.account.user.uid',$scope.account.user.uid);
+      // facetFilters: 'userUid:facebook:10204911533563856',
       // facebook:10204911533563856
       // b0d0d782-7fe2-4c55-8fcb-c73aab87538e
       // AlgoliaSearchError {name: "AlgoliaSearchError", message: "filters: Unexpected token string expected numeric at col 8"}
 
       function search (){
         index.search($scope.query, {
-            //facetFilters: 'userUid='+$scope.account.user.uid,
-            //filters: 'userUid='+$scope.account.user.uid,
+            facetFilters: 'userUid:'+$scope.account.user.uid,
             hitsPerPage: 25
           })
           .then(function searchSuccess(content) {

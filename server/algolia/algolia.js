@@ -11,26 +11,17 @@ module.exports = {
 /**
  * add Or Update Object to index
  * @param {String} indexName
- * @param {Object} dataSnapshot
+ * @param {Object} data
  * @param {Object} settings
  * @return {Promise<Object>}
  * */
-function index(indexName, dataSnapshot, settings){
+function index(indexName, data, settings){
   var deferred = Q.defer();
   var index = client.initIndex(indexName);
 
-  // Get FireBase object
-  var fireBaseObject = dataSnapshot.val();
-
-  // Specify Algolia's objectID using the FireBase object key
-  fireBaseObject.objectID = dataSnapshot.key();
-
-  index.setSettings({
-      attributesToIndex:  typeof settings.attributesToIndex !== "undefined"? settings.attributesToIndex : [],
-      customRanking:      typeof settings.customRanking !== "undefined"? settings.customRanking : []
-    })
+  index.setSettings(settings)
     .then(function(){
-      return index.saveObject(fireBaseObject)
+      return index.saveObject(data)
     })
     .then(function(content){
       deferred.resolve(content);
@@ -44,15 +35,12 @@ function index(indexName, dataSnapshot, settings){
 /**
  * Delete index object
  * @param {String} indexName
- * @param {Object} dataSnapshot
+ * @param {String} objectID
  * @return {Promise<Object>}
  * */
-function deleteIndexObject(indexName, dataSnapshot){
+function deleteIndexObject(indexName, objectID){
   var deferred = Q.defer();
   var index = client.initIndex(indexName);
-
-  // Specify Algolia's objectID using the Firebase object key
-  var objectID = dataSnapshot.key();
 
   index.deleteObject(objectID)
     .then(function(content){
@@ -110,10 +98,7 @@ function reIndex( indexName, dataSnapshot, settings) {
   var deferred = Q.defer();
   var tempIndex = client.initIndex(indexName+'Temp');
 
-  tempIndex.setSettings({
-      attributesToIndex:  typeof settings.attributesToIndex !== "undefined"? settings.attributesToIndex : [],
-      customRanking:      typeof settings.customRanking !== "undefined"? settings.customRanking : []
-    })
+  tempIndex.setSettings(settings)
     .then(function(){
       return tempIndex.clearIndex()
     })

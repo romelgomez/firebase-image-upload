@@ -1,6 +1,11 @@
 var algolia = require('./algolia');
 var Firebase = require('firebase');
 
+var settings = {
+  attributesToIndex: ['barcode','title','unordered(description)'],
+  attributesForFaceting: ['path','price','userUid']
+};
+
 function main(){
   console.log('-------------------------------------------');
   console.log('START REINDEX PUBLICATIONS');
@@ -8,10 +13,7 @@ function main(){
   var publicationsRef = new Firebase('berlin.firebaseio.com/publications');
   publicationsRef.on('value', function(dataSnapshot){
 
-    algolia.reIndex('publications',dataSnapshot,{
-      attributesToIndex: ['barcode','title','path','unordered(description)'],
-      attributesForFaceting: ['path','price','userUid']
-    })
+    algolia.reIndex('publications',dataSnapshot,settings)
       .then(function(content){
         console.log('PUBLICATIONS REINDEX IS DONE');
         console.log('CONTENT: ', content);
