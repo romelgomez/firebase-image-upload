@@ -18,14 +18,12 @@ app.use(methodOverride());
 
 require('./routes')(app);
 require('./cloudinary/cloudinary')(app);
-require('./algolia/algoliaIndex');
+require('./algolia/publicationsIndex');
 
 var server = app.listen(port, function(){
   console.log('The server is running in port localhost: ',port);
 });
 
-
-// https://scotch.io/courses/node-and-angular-to-do-app
 //console.log('__dirname',__dirname);
 //console.log('process.cwd()',process.cwd());
 //console.log('__filename',__filename);

@@ -15,12 +15,16 @@
   "homepage": "https://bitbucket.org/romelgomez/berlin#readme",
   "dependencies": {
     "algoliasearch": "^3.9.3",
+    "async": "^1.5.0",
     "body-parser": "^1.14.1",
     "cloudinary": "^1.2.6",
+    "colors": "^1.1.2",
     "express": "^5.0.0-alpha.2",
     "firebase": "^2.3.2",
     "formidable": "^1.0.17",
+    "lodash": "^3.10.1",
     "method-override": "^2.3.5",
+    "moment": "^2.10.6",
     "morgan": "^1.6.1",
     "q": "^2.0.3",
     "uuid": "^2.0.1"
