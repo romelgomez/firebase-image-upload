@@ -27,8 +27,8 @@ var start = process.hrtime();
  * */
 function elapsedTime(note){
   var precision = 3; // 3 decimal places
-  var elapsed = process.hrtime(start)[1] / 1000000; // divide by a million to get nano to milli
-  console.log(note + process.hrtime(start)[0] + " s, " + elapsed.toFixed(precision) + " ms"); // print message + time
+  var elapsed = process.hrtime()[1] / 1000000; // divide by a million to get nano to milli
+  console.log(note + process.hrtime()[0] + " s, " + elapsed.toFixed(precision) + " ms"); // print message + time
   start = process.hrtime(); // reset the timer
 }
 
@@ -41,7 +41,7 @@ function elapsedTime(note){
  * */
 function index( taskTitle, indexName, data){
   var deferred = Q.defer();
-  console.log('['+moment().format('h:mm:ss').gray+'] Starting \''+ taskTitle.green +'\'...');
+  console.log('['+moment().format('h:mm:ss').gray+'] Starting \''+ taskTitle.yellow +'\'...');
   var index = client.initIndex(indexName);
 
   index.saveObject(data)
@@ -89,7 +89,7 @@ function deleteIndexObject(taskTitle, indexName, objectID){
  * */
 function setSettings( taskTitle, indexName, settings){
   var deferred = Q.defer();
-  console.log('['+moment().format('h:mm:ss').gray+'] Starting \''+ taskTitle.green +'\'...');
+  console.log('['+moment().format('h:mm:ss').gray+'] Starting \''+ taskTitle.yellow +'\'...');
   var index = client.initIndex(indexName);
   index.setSettings(settings)
     .then(function(content){
