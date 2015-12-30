@@ -24,46 +24,38 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     'algolia',
     '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, algolia, $log){
 
-      //https://github.com/algolia/algoliasearch-client-js#get-an-object
-      //index.getObjects(['myObj1', 'myObj2'], function(err, content) {
-      //  console.log(content);
-      //});
-      //https://github.com/algolia/algoliasearch-client-js#index-settings
+      // TODO FOR DEBUG
+      $scope.isCollapsed = true;
 
-      // para el momento que llega la info, el campo query puede contener otra cosa.
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
       var index  = client.initIndex('publications');
 
-      $scope.content = {};
-      $scope.query = '';
-      $scope.hits = [];
-
-      $log.info('$scope.account.user.uid',$scope.account.user.uid);
-      // facetFilters: 'userUid:facebook:10204911533563856',
-      // facebook:10204911533563856
-      // b0d0d782-7fe2-4c55-8fcb-c73aab87538e
-      // AlgoliaSearchError {name: "AlgoliaSearchError", message: "filters: Unexpected token string expected numeric at col 8"}
+      $scope.algolia = {
+        req : {
+          query: '',
+          facets:'*',
+          facetFilters: 'userID:'+$scope.account.user.uid,
+          hitsPerPage: 25,
+          getRankingInfo: 1
+        },
+        res: {}
+      };
 
       function search (){
-        index.search($scope.query, {
-            facetFilters: 'userID:'+$scope.account.user.uid,
-            hitsPerPage: 25,
-            getRankingInfo: 1,
-            facets:'*'
-          })
-          .then(function searchSuccess(content) {
-            //if(content.query !== $scope.query){
-            //  search();
-            //}
-            $scope.content = content;
-            console.log(content);
-          }, function searchFailure(err) {
-            console.log(err);
+        index.search($scope.algolia.req)
+          .then(function(res) {
+            if(res.query !== $scope.algolia.req.query){
+              search();
+            }else{
+              $scope.algolia.res = res;
+            }
+          }, function(err){
+            notificationService.error(err);
           });
       }
 
       $scope.$watch(function(){
-        return $scope.query;
+        return $scope.algolia.req.query;
       },function(){
         search()
       });

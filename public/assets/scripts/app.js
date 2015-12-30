@@ -15,9 +15,17 @@ angular.module('app',[
     ])
     .controller('AppController',['$scope','FireAuth',function($scope,FireAuth){
 
-        $scope.logout = function() { FireAuth.$unauth(); };
+      $scope.logout = function() { FireAuth.$unauth(); };
 
-        $scope.inProduction = false;
+      $scope.inProduction = false;
+
+      $scope.sizeOf = function(obj) {
+        return Object.keys(obj).length;
+      };
+
+      $scope.firstObj = function (obj) {
+        for (var key in obj) if (obj.hasOwnProperty(key)) return key;
+      };
 
   }]);
 

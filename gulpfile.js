@@ -1,4 +1,8 @@
-// generated on 2015-12-23 using generator-gulp-webapp 1.0.3
+
+//http://macr.ae/article/splitting-gulpfile-multiple-files.html
+// http://pastebin.com/K1Ztr5d3
+
+
 var gulp = require('gulp');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var browserSync = require('browser-sync');

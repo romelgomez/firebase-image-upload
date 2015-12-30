@@ -1,5 +1,4 @@
 var algolia = require('./algolia');
-var Firebase = require('firebase');
 
 function main(){
 
