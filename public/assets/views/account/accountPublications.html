@@ -4,6 +4,15 @@
 
   <hr>
 
+  <div ng-show="(algolia.res.query !== '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert">There is not publications for this query: <b>{{algolia.res.query}}</b>, <a href="#/new-publication">create new one here!</a>  </div>
+  <div ng-show="(algolia.res.query === '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert">There is not publications, <a href="#/new-publication">create new one here!</a>  </div>
+
+  <pre ng-show="algolia.res.nbPages > 0">Page: {{algolia.pagination.currentPage}} / {{algolia.res.nbPages}}</pre>
+
+  <uib-pagination ng-show="algolia.res.nbHits > algolia.pagination.itemsPerPage" ng-change="algolia.pagination.pageChanged()" total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.pagination.itemsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></uib-pagination>
+
+  <!--<uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages2" items-per-page="itemsPerPage"></uib-pagination>-->
+
   <div class="panel panel-default" ng-repeat="publication in algolia.res.hits" style="margin-bottom: 10px;">
     <div class="panel-body" style="padding: 5px;">
       <div class="row">
@@ -30,6 +39,7 @@
         <div class="col-xs-8 col-md-10" style="padding-left: 0;">
           <div>
             <b>{{publication.title}}</b>
+            <!--<b>{{publication._highlightResult.title.value | unsafe}}</b>-->
           </div>
           <hr style="margin-top: 5px; margin-bottom: 5px;">
           <div>

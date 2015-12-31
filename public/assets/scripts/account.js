@@ -30,16 +30,32 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
       var index  = client.initIndex('publications');
 
-      $scope.algolia = {
+      var itemsPerPage = 2;
+      var algoliaOriginalSettings = angular.copy($scope.algolia = {
         req : {
           query: '',
           facets:'*',
           facetFilters: 'userID:'+$scope.account.user.uid,
-          hitsPerPage: 25,
-          getRankingInfo: 1
+          // number of hits per page
+          hitsPerPage: itemsPerPage,
+          getRankingInfo: 1,
+          // current page number
+          page: 0
         },
-        res: {}
-      };
+        res: {},
+        pagination: {
+          // number of pages that are visible
+          maxSize: 10,
+          // number of publications per page
+          itemsPerPage: itemsPerPage,
+          // current page
+          currentPage : 1,
+          pageChanged : function() {
+            $scope.algolia.req.page = $scope.algolia.pagination.currentPage-1;
+            search();
+          }
+        }
+      });
 
       function search (){
         index.search($scope.algolia.req)
@@ -57,6 +73,8 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       $scope.$watch(function(){
         return $scope.algolia.req.query;
       },function(){
+        $scope.algolia.req.page = 0;
+        $scope.algolia.pagination.currentPage = 1;
         search()
       });
 
