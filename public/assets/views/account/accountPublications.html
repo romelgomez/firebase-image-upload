@@ -38,8 +38,9 @@
         </div>
         <div class="col-xs-8 col-md-10" style="padding-left: 0;">
           <div>
-            <b>{{publication.title}}</b>
-            <!--<b>{{publication._highlightResult.title.value | unsafe}}</b>-->
+            <!--<b>{{publication.title}}</b>-->
+
+            <span ng-bind-html="publication._highlightResult.title.value | unsafe"></span>
           </div>
           <hr style="margin-top: 5px; margin-bottom: 5px;">
           <div>

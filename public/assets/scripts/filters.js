@@ -155,4 +155,9 @@ angular.module('filters',[])
     return function(text) {
       return  text ? String(text).replace(/<[^>]+>/gm, ' ').trim() : '';
     };
-  });
+  })
+  /**
+   * @Description use $sce.trustAsHtml(string) to replicate ng-bind-html-unsafe in Angular 1.2+
+   * Source: http://stackoverflow.com/questions/18340872/how-do-you-use-sce-trustashtmlstring-to-replicate-ng-bind-html-unsafe-in-angu
+   */
+  .filter('unsafe', function($sce) { return $sce.trustAsHtml; });

@@ -40,7 +40,9 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
           hitsPerPage: itemsPerPage,
           getRankingInfo: 1,
           // current page number
-          page: 0
+          page: 0,
+          highlightPreTag: '<b>',
+          highlightPostTag: '</b>'
         },
         res: {},
         pagination: {
