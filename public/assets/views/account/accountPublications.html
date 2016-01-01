@@ -4,16 +4,16 @@
 
   <hr>
 
-  <!--<pre>{{algolia.faceting.facetsAvailables | json}}</pre>-->
-
   <div class="list-group">
-    <button type="button" class="list-group-item" ng-click="algolia.faceting.addFacet(facet)" ng-repeat="facet in algolia.faceting.facetsAvailables" ><i style="color: #286090" class="fa fa-folder"></i> {{facet.name | capitalizeFirstChar}} - {{facet.count}}</button>
+    <button type="button" class="list-group-item" ng-click="algolia.faceting.addFacet(facet)" ng-repeat="facet in algolia.faceting.facetsAvailables" ><i style="color: #286090" class="fa fa-folder"></i> {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span></button>
   </div>
 
+  <ol ng-show="algolia.faceting.currentFacets.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
+    <li ng-click="algolia.faceting.removeAllFacet()" class="a-link"> Reset </li>
+    <li ng-repeat="facet in algolia.faceting.currentFacets" ng-click="algolia.faceting.removeFacet(facet, $index)" ng-class="{'a-link': !$last}"> {{facet.name | capitalizeFirstChar}} </li>
+  </ol>
 
   <hr>
-
-
 
   <div ng-show="(algolia.res.query !== '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert">There is not publications for this query: <b>{{algolia.res.query}}</b>, <a href="#/new-publication">create new one here!</a>  </div>
   <div ng-show="(algolia.res.query === '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert">There is not publications, <a href="#/new-publication">create new one here!</a>  </div>

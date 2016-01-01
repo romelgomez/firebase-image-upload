@@ -90,8 +90,22 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
             $scope.algolia.req.facetFilters.push('categories:'+facet.name);
             search();
           },
-          removeFacet: function (index) {
-
+          removeFacet: function (facet,index) {
+            $scope.algolia.req.facetFilters = ['userID:'+$scope.account.user.uid];
+            var currentFacets = $scope.algolia.faceting.currentFacets;
+            $scope.algolia.faceting.currentFacets = [];
+            for (var i  = 0; i <= index; i++){
+              $scope.algolia.req.facetFilters.push('categories:'+currentFacets[i].name);
+              $scope.algolia.faceting.currentFacets.push(currentFacets[i]);
+              if(i === index){
+                search();
+              }
+            }
+          },
+          removeAllFacet: function () {
+            angular.copy([],$scope.algolia.faceting.currentFacets);
+            $scope.algolia.req.facetFilters = ['userID:'+$scope.account.user.uid];
+            search();
           }
         }
       });
@@ -132,8 +146,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
               // Children facets
               if($scope.algolia.faceting.currentFacets.length > 0){
                 var lastObj = $scope._($scope.algolia.faceting.currentFacets)
-                  .first();
-                // $scope._.last($scope.algolia.faceting.currentFacets) ; // ._.last($scope.algolia.faceting.currentFacets);
+                  .last();
                 if(categoryObj.parentId === lastObj.$id){
                   categoryObj.count = count;
                   $scope.algolia.faceting.facetsAvailables.push(categoryObj);
