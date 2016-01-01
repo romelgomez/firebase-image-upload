@@ -2,9 +2,9 @@
 
   <input type="text" ng-model="algolia.req.query" class="form-control" placeholder="Search">
 
-  <hr>
+  <hr class="hr-xs">
 
-  <div class="list-group">
+  <div class="list-group" style="margin-bottom: 10px;">
     <button type="button" class="list-group-item" ng-click="algolia.faceting.addFacet(facet)" ng-repeat="facet in algolia.faceting.facetsAvailables" ><i style="color: #286090" class="fa fa-folder"></i> {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span></button>
   </div>
 
@@ -13,16 +13,13 @@
     <li ng-repeat="facet in algolia.faceting.currentFacets" ng-click="algolia.faceting.removeFacet(facet, $index)" ng-class="{'a-link': !$last}"> {{facet.name | capitalizeFirstChar}} </li>
   </ol>
 
-  <hr>
+  <hr class="hr-xs">
 
   <div ng-show="(algolia.res.query !== '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert">There is not publications for this query: <b>{{algolia.res.query}}</b>, <a href="#/new-publication">create new one here!</a>  </div>
   <div ng-show="(algolia.res.query === '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert">There is not publications, <a href="#/new-publication">create new one here!</a>  </div>
 
-  <pre ng-show="algolia.res.nbPages > 0">Page: {{algolia.pagination.currentPage}} / {{algolia.res.nbPages}}</pre>
+  <pre ng-show="algolia.res.nbPages > 0" style="margin-bottom: 10px"><b>Page:</b> {{algolia.pagination.currentPage}} of {{algolia.res.nbPages}} | <b>Hits:</b> {{algolia.res.nbHits}}</pre>
 
-  <uib-pagination ng-show="algolia.res.nbHits > algolia.pagination.itemsPerPage" ng-change="algolia.pagination.pageChanged()" total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.pagination.itemsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></uib-pagination>
-
-  <!--<uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages2" items-per-page="itemsPerPage"></uib-pagination>-->
 
   <div class="panel panel-default" ng-repeat="publication in algolia.res.hits" style="margin-bottom: 10px;">
     <div class="panel-body" style="padding: 5px;">
@@ -69,11 +66,17 @@
   </div>
 
 
-  <hr>
-  <button type="button" class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Raw Results</button>
-  <div uib-collapse="isCollapsed">
-    <hr>
-    <pre>{{algolia.res | json}}</pre>
-  </div>
+  <hr class="hr-xs">
+
+  <uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.pagination.itemsPerPage" ng-change="algolia.pagination.pageChanged()" total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.pagination.itemsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></uib-pagination>
+
+  <!--<br>-->
+  <!--<br>-->
+  <!--<br>-->
+  <!--<button type="button" class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Raw Results</button>-->
+  <!--<div uib-collapse="isCollapsed">-->
+    <!--<hr class="hr-xs">-->
+    <!--<pre>{{algolia.res | json}}</pre>-->
+  <!--</div>-->
 
 </div>
