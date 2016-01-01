@@ -2,7 +2,7 @@
 
 $.cloudinary.config().cloud_name = 'berlin';
 
-angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch'])
+angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch','categories'])
   .controller('AccountController',['$scope', '$q', 'user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log', function ($scope, $q, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
 
     $scope.account = {
@@ -22,20 +22,43 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     '$timeout',
     '$location',
     'algolia',
-    '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, algolia, $log){
+    'categoriesService',
+    '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, algolia, categoriesService,  $log){
 
-      // TODO FOR DEBUG
-      $scope.isCollapsed = true;
+      /*
 
+      cargo las categorias
+      separo las que no tienen padre
+      las comparo con el objeto que describe las facetas disponibles,
+
+         "categories": {
+           "Real Estate": 2,
+           "Apartments or Flat": 1,
+           "Houses": 1
+         }
+
+      extraigo las coincidencias, quedara algo como:
+
+       "facets": {
+         "Real Estate": 2,
+       }
+
+      * */
+
+      var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
       var index  = client.initIndex('publications');
+      var categories = categoriesService.nodes();
+      configTasks.categories = categories.$loaded();
+
+      $scope.isCollapsed = true; // TODO FOR DEBUG
 
       var itemsPerPage = 2;
       var algoliaOriginalSettings = angular.copy($scope.algolia = {
         req : {
           query: '',
           facets:'*',
-          facetFilters: 'userID:'+$scope.account.user.uid,
+          facetFilters: ['userID:'+$scope.account.user.uid],
           // number of hits per page
           hitsPerPage: itemsPerPage,
           getRankingInfo: 1,
@@ -56,54 +79,100 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
             $scope.algolia.req.page = $scope.algolia.pagination.currentPage-1;
             search();
           }
+        },
+        faceting: {
+          facetsAvailables : [],
+          currentFacets: [],
+          addFacet: function(facet){
+            // {"left":5,"name":"Real Estate","parentId":"","right":10,"$id":"-K5pzphvGtzcQhxopgpD","$priority":null,"count":1}
+
+            $scope.algolia.faceting.currentFacets.push(facet);
+            $scope.algolia.req.facetFilters.push('categories:'+facet.name);
+            search();
+          },
+          removeFacet: function (index) {
+
+          }
         }
       });
 
       function search (){
-        index.search($scope.algolia.req)
-          .then(function(res) {
-            if(res.query !== $scope.algolia.req.query){
-              search();
-            }else{
-              $scope.algolia.res = res;
-            }
-          }, function(err){
-            notificationService.error(err);
-          });
+        var deferred   = $q.defer();
+        function startSearch (){
+          index.search($scope.algolia.req)
+            .then(function(res) {
+              if(res.query !== $scope.algolia.req.query){
+                startSearch();
+              }else{
+                $scope.algolia.res = res;
+                setFacetedSearchMenu();
+                deferred.resolve();
+              }
+            }, function(err){
+              deferred.reject(err);
+            });
+        }
+        startSearch();
+        return deferred.promise;
       }
 
-      $scope.$watch(function(){
-        return $scope.algolia.req.query;
-      },function(){
-        $scope.algolia.req.page = 0;
-        $scope.algolia.pagination.currentPage = 1;
-        search()
-      });
+      /**
+       * This function set the faceted menu after the request is made
+       * @return {Undefined}
+       */
+      function setFacetedSearchMenu(){
+        $scope.algolia.faceting.facetsAvailables = [];
 
+        // needles
+        angular.forEach($scope.algolia.res.facets.categories, function (count, facetName) {
 
-    // http://stackoverflow.com/questions/6857468/a-better-way-to-convert-js-object-to-array
+          // haystack
+          angular.forEach(categories, function(categoryObj){
+            if(facetName === categoryObj.name){
+              // Children facets
+              if($scope.algolia.faceting.currentFacets.length > 0){
+                var lastObj = $scope._($scope.algolia.faceting.currentFacets)
+                  .first();
+                // $scope._.last($scope.algolia.faceting.currentFacets) ; // ._.last($scope.algolia.faceting.currentFacets);
+                if(categoryObj.parentId === lastObj.$id){
+                  categoryObj.count = count;
+                  $scope.algolia.faceting.facetsAvailables.push(categoryObj);
+                }
+              }else{
+              // Root facets
+                  if(categoryObj.parentId === ''){
+                    categoryObj.count = count;
+                    $scope.algolia.faceting.facetsAvailables.push(categoryObj);
+                  }
+              }
+            }
+          });
+        });
 
-    //var accountPublications = function(){
-    //  var deferred = $q.defer();
-    //
-    //  var userPublicationsRef = FireRef.child('publications');
-    //
-    //  var query = userPublicationsRef.orderByChild('releaseDate');
-    //
-    //  var publications = $firebaseArray(query);
-    //
-    //  publications.$loaded(function () {
-    //    $scope.account.publications = publications;
-    //    deferred.resolve();
-    //  },function(error){
-    //    deferred.reject(error);
-    //  });
-    //
-    //  return deferred.promise;
-    //};
-    //
-    //$scope.httpRequestPromise = accountPublications();
+      }
 
+      var deferred   = $q.defer();
+      $scope.httpRequestPromise = deferred.promise;
+
+      $q.all(configTasks)
+        .then(function () {
+
+          $scope.$watch(function(){
+            return $scope.algolia.req.query;
+          },function(){
+            $scope.algolia.req.page = 0;
+            $scope.algolia.pagination.currentPage = 1;
+            search()
+              .then(null,function(){
+                notificationService.error(err);
+              })
+          });
+
+        })
+        .then(function(){
+          $scope.thePublicationsAreReady = true;
+          deferred.resolve();
+        });
 
 
     $scope.editPublication = function (publicationId) {

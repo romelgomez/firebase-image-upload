@@ -11,7 +11,8 @@ angular.module('app',[
         'login',
         'account',
         'ui.bootstrap',
-        'main'
+        'main',
+        'angular-underscore'
     ])
     .controller('AppController',['$scope','FireAuth',function($scope,FireAuth){
 
