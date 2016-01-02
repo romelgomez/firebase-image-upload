@@ -448,4 +448,89 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
       $modalInstance.dismiss('This has be cancel');
     };
 
-  }]);
+  }])
+  .controller('ViewPublicationController',[
+    '$scope',
+    '$q',
+    '$window',
+    '$filter',
+    '$routeParams',
+    '$location',
+    '$http',
+    'FireRef',
+    '$firebaseArray',
+    '$firebaseObject',
+    'rfc4122',
+    'categoriesService',
+    'notificationService',
+    'Upload',
+    '$uibModal',
+    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, categoriesService, notificationService, $upload, $uibModal, $log){
+
+      var publicationsRef  = FireRef.child('publications');
+
+      $scope.publication = {
+        rawData: {},
+        images: []
+      };
+
+      var loadPublication  = function (publicationId) {
+        var deferred   = $q.defer();
+
+        var publicationRef = publicationsRef.child(publicationId);
+        var publication    = $firebaseObject(publicationRef);
+
+        publication.$loaded(function(){
+          if (typeof publication.releaseDate === 'undefined'){
+            deferred.reject();
+          }  else {
+            deferred.resolve({publication:publication});
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      };
+
+
+      //$scope.myInterval = 5000;
+      //$scope.noWrapSlides = false;
+      //var slides = $scope.slides = [];
+      //$scope.addSlide = function() {
+      //  var newWidth = 600 + slides.length + 1;
+      //  slides.push({
+      //    image: '//placekitten.com/' + newWidth + '/300',
+      //    text: ['More','Extra','Lots of','Surplus'][slides.length % 4] + ' ' +
+      //    ['Cats', 'Kittys', 'Felines', 'Cutes'][slides.length % 4]
+      //  });
+      //};
+      //for (var i=0; i<4; i++) {
+      //  $scope.addSlide();
+      //}
+
+      if(angular.isDefined($routeParams.publicationId)){
+        $scope.httpRequestPromise = loadPublication($routeParams.publicationId)
+          .then(function(the){
+
+            $scope.publication.rawData = the.publication;
+
+            angular.forEach(the.publication.images, function(imageData,imageID){
+              imageData.$id = imageID;
+              if(imageID !== the.publication.featuredImageId){
+                $scope.publication.images.push(imageData);
+              }else{
+                $scope.publication.images.unshift(imageData)
+              }
+            });
+
+          }, function () {
+            notificationService.error('This action cannot be completed.');
+            $location.path('/');
+          });
+      }else{
+        notificationService.error('This action cannot be completed.');
+        $location.path('/');
+      }
+
+    }]);

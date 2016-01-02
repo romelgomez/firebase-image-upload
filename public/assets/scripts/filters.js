@@ -151,13 +151,21 @@ angular.module('filters',[])
  * @Description Output plain text instead of html
  * Source: http://stackoverflow.com/a/17315483/2513972
  */
-  .filter('htmlToPlaintext', function() {
+  .filter('htmlToPlaintext', [function() {
     return function(text) {
       return  text ? String(text).replace(/<[^>]+>/gm, ' ').trim() : '';
     };
-  })
+  }])
   /**
    * @Description use $sce.trustAsHtml(string) to replicate ng-bind-html-unsafe in Angular 1.2+
    * Source: http://stackoverflow.com/questions/18340872/how-do-you-use-sce-trustashtmlstring-to-replicate-ng-bind-html-unsafe-in-angu
    */
-  .filter('unsafe', function($sce) { return $sce.trustAsHtml; });
+  .filter('unsafe', ['$sce',function($sce) { return $sce.trustAsHtml; }])
+  /**
+   * @Description remove the file Extension, exp: 'name.exe' will return 'name'
+   */
+  .filter('removeFileExtension', ['$filter',function($filter) {
+    return function(fileName) {
+      return  fileName ? $filter('stringReplace')(fileName,'.'+fileName.split('.').pop(),'').trim() : '';
+    };
+  }]);
