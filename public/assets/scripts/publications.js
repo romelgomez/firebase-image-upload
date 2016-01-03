@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('publications',['categories','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar'])
+angular.module('publications',['categories','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar','barcode'])
   .controller('PublicationsController',[
     '$scope',
     '$q',
@@ -38,7 +38,9 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
       featuredImageId:      '',
       department:           '',
       title:                '',
-      htmlDescription:      ''
+      htmlDescription:      '',
+      barcode:              '',
+      barcodeType:          'code128b'
     });
 
     $scope.$watch(function(scope){
@@ -367,6 +369,33 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
       });
     };
 
+      $scope.barcodeType = [
+        'ean',
+        'upc',
+        'code39',
+        'code128b',
+        'code128c',
+        'itf',
+        'itf14'
+      ];
+
+      $scope.barcodeOptions = {
+        width: 1,
+        height: 50,
+        quite: 10,
+        displayValue: true,
+        font: "monospace",
+        textAlign: "center",
+        fontSize: 12,
+        backgroundColor: "",
+        lineColor: "#000"
+      };
+
+    $scope.setBarcodeRandomly = function(){
+       $scope.model.barcode = rfc4122.v4()
+    };
+
+
     var loadPublication  = function (publicationId) {
       var deferred   = $q.defer();
 
@@ -534,3 +563,17 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
       }
 
     }]);
+    //.directive('barcode', function () {
+    //  return {
+    //    restrict: 'EA',
+    //    scope: {
+    //      data: '='
+    //    },
+    //    template: '<canvas id=barcode></canvas>',
+    //    link: function(scope, element, attrs, ngModel){
+    //      var canvas = element.find('canvas');
+    //      //$log
+    //
+    //      JsBarcode(canvas[0], '74a2e884-053d-471e-b02f-df01a44142d8');
+    //    }
+    //}});

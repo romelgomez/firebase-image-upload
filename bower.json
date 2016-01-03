@@ -51,6 +51,8 @@
     "cloudinary": "~1.0.25",
     "cloudinary_ng": "~0.1.4",
     "algoliasearch": "~3.10.1",
-    "angular-underscore": "~0.5.0"
+    "angular-underscore": "~0.5.0",
+    "JsBarcode": "jsbarcode#*",
+    "angular-barcode": "~0.0.2"
   }
 }
