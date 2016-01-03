@@ -28,7 +28,7 @@
           <div>
             <a href="#" class="thumbnail" style="margin-bottom: 0;">
 
-              <img ng-show="sizeOf(publication.images) === 0" src="assets/images/subaru.jpg" alt="...">
+              <img ng-show="sizeOf(publication.images) === 0" src="assets/images/uk.svg" alt="...">
 
               <cl-image ng-show="sizeOf(publication.images) > 0"  public-id="{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images) }}" class="inline" format="jpg">
                 <cl-transformation height="150" width="150" crop="fill"  radius="20"/>

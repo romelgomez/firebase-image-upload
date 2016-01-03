@@ -173,7 +173,7 @@ ul.jqtree-tree span.jqtree-border {
   border-radius: 50%;
 }
 
-.ukFlagBackground{
+.uk-flag-background{
   background-size:     cover;
   background: url('/assets/images/uk.svg');
   background-size:     cover;
@@ -181,6 +181,16 @@ ul.jqtree-tree span.jqtree-border {
   background-position: center center;
 }
 
+
+/* https://www.google.com/fonts#QuickUsePlace:quickUse/Family:Raleway */
+.font-raleway{
+    font-family: 'Raleway', sans-serif;
+}
+
+/* https://www.google.com/fonts#QuickUsePlace:quickUse/Family:Poiret+One */
+.font-poiret-one{
+    font-family: 'Poiret One', cursive;
+}
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
