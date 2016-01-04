@@ -1,38 +1,38 @@
 <section cg-busy="{promise: httpRequestPromise, message:'Just a moment'}">
 
-  <div class="panel panel-default uk-flag-background" ng-show="!thePublicationIsReady" style="height: 300px;">
+  <div class="panel panel-default uk-flag-background" ng-show="!publication.isReady" style="height: 300px;">
     <div class="panel-body">
     </div>
   </div>
 
-  <div class="panel panel-default" ng-show="categoryExpected === false && thePublicationIsReady">
+  <div class="panel panel-default" ng-show="publication.categorySelected === false && publication.isReady">
     <div class="panel-heading">
-      <h3 class="panel-title" ng-switch="isEditing">
+      <h3 class="panel-title" ng-switch="publication.inEditMode">
         <span ng-switch-when="false" >New Publication - Select a category:</span>
         <span ng-switch-when="true">Edit Publication</span>
       </h3>
     </div>
     <div class="list-group">
-      <button type="button" class="list-group-item" ng-click="setCategory(category.$id)" ng-repeat="category in categories | filter:{parentId: (model.categoryId) ? model.categoryId: ''}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{category.name | capitalizeFirstChar}}</button>
+      <button type="button" class="list-group-item" ng-click="setCategory(category.$id)" ng-repeat="category in publication.categories | filter:{parentId: (publication.model.categoryId) ? publication.model.categoryId: ''}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{category.name | capitalizeFirstChar}}</button>
     </div>
     <div class="panel-body">
 
-      <ol ng-show="path.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
-        <li ng-click="model.categoryId =''; path =[];" class="a-link"> Reset </li>
-        <li ng-repeat="category in path" ng-click="setCategory(category.$id)" ng-class="{'a-link': !$last}"> {{category.name | capitalizeFirstChar}} </li>
+      <ol ng-show="publication.path.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
+        <li ng-click="publication.model.categoryId =''; publication.path =[];" class="a-link"> Reset </li>
+        <li ng-repeat="category in publication.path" ng-click="setCategory(category.$id)" ng-class="{'a-link': !$last}"> {{category.name | capitalizeFirstChar}} </li>
       </ol>
 
       <div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: Select the category that best suits to the publication. No matter if it is too general or specific, the important thing is to select one.</div>
 
     </div>
     <div class="panel-footer" style="text-align: right;">
-      <input ng-click="categoryExpected = true" type="button" class="btn btn-primary" ng-disabled="model.categoryId ===''" value="Confirm selection" >
+      <input ng-click="publication.categorySelected = true" type="button" class="btn btn-primary" ng-disabled="publication.model.categoryId ===''" value="Confirm selection" >
     </div>
   </div>
 
-  <div class="panel panel-default" ng-show="categoryExpected && thePublicationIsReady">
+  <div class="panel panel-default" ng-show="publication.categorySelected && publication.isReady">
     <div class="panel-heading">
-      <h3 class="panel-title" ng-switch="isEditing">
+      <h3 class="panel-title" ng-switch="publication.inEditMode">
         <span ng-switch-when="false" >New Publication</span>
         <span ng-switch-when="true">Edit Publication</span>
       </h3>
@@ -40,30 +40,30 @@
     <div class="panel-body">
 
       <ol class="breadcrumb" style="margin-bottom: 7px;">
-        <li ng-repeat="category in path"> {{category.name | capitalizeFirstChar}} </li>
+        <li ng-repeat="category in publication.path"> {{category.name | capitalizeFirstChar}} </li>
       </ol>
 
       <form name="publicationForm" novalidate="" ng-submit="submit()">
 
         <div>
-          <button ng-click="categoryExpected = false; model.categoryId =''; path =[];" type="button" class="btn btn-default"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit category</button>
-          <button ng-switch="publicationIdStatus()" class="btn btn-primary"	type="submit" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+          <button ng-click="publication.categorySelected = false; publication.model.categoryId =''; publication.path =[];" type="button" class="btn btn-default"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit category</button>
+          <button ng-switch="isDefinedPublicationId()" class="btn btn-primary"	type="submit" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
             <span ng-switch-when="true">Update</span>
             <span ng-switch-when="false">Publish</span>
           </button>
-          <button ng-click="discard()" ng-switch="publicationIdStatus()" class="btn btn-warning" ng-class="{'btn-danger': publicationIdStatus()}"	type="button" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          <button ng-click="discard()" ng-switch="isDefinedPublicationId()" class="btn btn-warning" ng-class="{'btn-danger': isDefinedPublicationId()}"	type="button" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             <span ng-switch-when="true">Delete</span>
             <span ng-switch-when="false">Discard</span>
           </button>
         </div>
 
-        <div ng-show="images.length === 0 && publicationId !== ''" class="alert alert-danger alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: The images are mandatory, if the publication does not have at least one image, the publication will not be displayed to the clients.</div>
+        <div ng-show="publication.images.length === 0 && publication.$id !== ''" class="alert alert-danger alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: The images are mandatory, if the publication does not have at least one image, the publication will not be displayed to the clients.</div>
 
         <hr>
 
         <div class="form-group">
           <label class="control-label"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>
-          <input type="text" name="title" ng-model="model.title" required minlength="7" capitalize class="form-control" placeholder="">
+          <input type="text" name="title" ng-model="publication.model.title" required minlength="7" capitalize class="form-control" placeholder="">
           <div data-ng-messages="publicationForm.$submitted && publicationForm.title.$error" class="help-block">
             <div data-ng-message="required">
               - The <b>title</b> is required.
@@ -76,7 +76,7 @@
 
         <div class="form-group">
           <label class="control-label"><span class="glyphicon glyphicon-book"></span> Description <sup style="color: red;">*</sup></label>
-          <textarea redactor name="htmlDescription" data-ng-model="model.htmlDescription" required class="form-control" placeholder=""></textarea>
+          <textarea redactor name="htmlDescription" data-ng-model="publication.model.htmlDescription" required class="form-control" placeholder=""></textarea>
           <div data-ng-messages="publicationForm.$submitted && publicationForm.htmlDescription.$error" class="help-block">
             <div data-ng-message="required" >
               - The <b>description</b> is required.
@@ -84,13 +84,13 @@
           </div>
         </div>
 
-        <div class="form-group" ng-if="model.department === 'Marketplace'" >
+        <div class="form-group" ng-if="publication.model.department === 'Marketplace'" >
           <div class="row">
             <div class="col-xs-4">
               <label class="control-label"><span class="glyphicon glyphicon-tag"></span> Price <sup style="color: red;">*</sup></label>
               <div class="input-group">
                 <div class="input-group-addon">$</div>
-                <input name="price" ng-model="model.price" required class="form-control" placeholder="Eje: 1000" type="number">
+                <input name="price" ng-model="publication.model.price" required class="form-control" placeholder="Eje: 1000" type="number">
               </div>
               <div data-ng-messages="publicationForm.$submitted && publicationForm.price.$error" class="help-block">
                 <div data-ng-message="required">
@@ -101,13 +101,13 @@
           </div>
         </div>
 
-        <div class="form-group" ng-if="model.department === 'Marketplace'">
+        <div class="form-group" ng-if="publication.model.department === 'Marketplace'">
           <div class="row">
             <div class="col-xs-4">
               <label class="control-label"><i class="fa fa-cubes"></i> Quantity in stock <sup style="color: red;">*</sup></label>
               <div class="input-group">
                 <div class="input-group-addon">Units</div>
-                <input name="quantity" ng-model="model.quantity" required class="form-control" placeholder="Eje: 100" type="number">
+                <input name="quantity" ng-model="publication.model.quantity" required class="form-control" placeholder="Eje: 100" type="number">
               </div>
               <div data-ng-messages="publicationForm.$submitted && publicationForm.quantity.$error" class="help-block">
                 <div data-ng-message="required">
@@ -124,13 +124,13 @@
               <label><i class="fa fa-barcode"></i> Barcode</label>
 
               <div class="input-group">
-                <input name="barcode" ng-model="model.barcode" required class="form-control" placeholder="" type="text">
+                <input name="barcode" ng-model="publication.model.barcode" required class="form-control" placeholder="" type="text">
                 <span class="input-group-btn">
                   <button class="btn btn-default" type="button" ng-click="setBarcodeRandomly()">Set one randomly</button>
                 </span>
               </div><!-- /input-group -->
 
-              <select class="form-control" ng-model="model.barcodeType">
+              <select class="form-control" ng-model="publication.model.barcodeType">
                 <option ng-repeat="barcode in barcodeType" value="{{barcode.type}}">{{barcode.title}}</option>
               </select>
 
@@ -140,7 +140,7 @@
 
         <!--<barcode data="sas"></barcode>-->
         <!--{{model.barcodeType}}-->
-        <barcode ng-show="model.barcode!==''" type="{{model.barcodeType}}" string="{{model.barcode}}" options="barcodeOptions"></barcode>
+        <barcode ng-show="publication.model.barcode!==''" type="{{publication.model.barcodeType}}" string="{{publication.model.barcode}}" options="barcodeOptions"></barcode>
 
 
 
@@ -159,9 +159,9 @@
         <!--https://plugins.jquery.com/tag/barcode/-->
 
 
-        <div class="form-group" ng-if="model.department === 'Marketplace'">
+        <div class="form-group" ng-if="publication.model.department === 'Marketplace'">
           <label class="control-label"><i class="fa fa-certificate"></i> Warranty <sup style="color: red;">*</sup></label>
-          <textarea redactor name="htmlWarranty" data-ng-model="model.htmlWarranty" required class="form-control" placeholder=""></textarea>
+          <textarea redactor name="htmlWarranty" data-ng-model="publication.model.htmlWarranty" required class="form-control" placeholder=""></textarea>
           <div data-ng-messages="publicationForm.$submitted && publicationForm.htmlWarranty.$error" class="help-block">
             <div data-ng-message="required" >
               - The <b>Warranty</b> is required.
@@ -172,7 +172,7 @@
         <hr class="hr-xs">
 
         <button class="btn btn-primary"
-                ngf-select data-ng-model="images"
+                ngf-select data-ng-model="publication.images"
                 name="files"
                 data-ngf-multiple="true"
                 data-accept="image/*"
@@ -212,20 +212,7 @@
           </div>
         </div>
 
-        <pre>{{model | json}}</pre>
-        <!--<pre>{{images | json}}</pre>-->
-        <!--<pre>{{path | json}}</pre>-->
-        <!--<pre>-->
-        <!--Campos que añadir-->
-          <!-- - manufacturer-->
-          <!-- - brand-->
-        <!--</pre>-->
-
-
-
-
-
-        <div ng-show="images.length > 0">
+        <div ng-show="publication.images.length > 0">
 
           <ul class="list-group" style="margin-bottom: 10px;">
             <li class="list-group-item">
@@ -244,7 +231,7 @@
 
           <hr class="hr-xs">
 
-          <div class="panel panel-default" ng-repeat="(key, value) in images" style="margin-bottom: 10px;">
+          <div class="panel panel-default" ng-repeat="(key, value) in publication.images" style="margin-bottom: 10px;">
             <div class="panel-body" style="padding: 5px;">
               <div class="row">
                 <div class="col-xs-4 col-md-2" style="padding-right: 5px;">
@@ -261,7 +248,7 @@
                   </div>
 
                   <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
-                  <div style="margin-bottom: 5px;"><span ng-show="model.featuredImageId === value.$id" class="label label-info">Primary image</span></div>
+                  <div style="margin-bottom: 5px;"><span ng-show="publication.model.featuredImageId === value.$id" class="label label-info">Primary image</span></div>
                 </div>
                 <div class="col-xs-8 col-md-10" style="padding-left: 5px;">
                   <div class="file-name">
@@ -297,7 +284,7 @@
               </div>
             </div>
             <div class="panel-footer" style="padding: 5px; text-align: right">
-              <button ng-show="value.inServer && model.featuredImageId !== value.$id && imagesInfo().inServer > 1" type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(value.$id)" ><i class="fa fa-thumb-tack"></i> Set as featured Image</button>
+              <button ng-show="value.inServer && publication.model.featuredImageId !== value.$id && imagesInfo().inServer > 1" type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(value.$id)" ><i class="fa fa-thumb-tack"></i> Set as featured Image</button>
               <button type="button" class="btn btn-danger btn-xs" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
             </div>
           </div>
@@ -313,15 +300,13 @@
   </div>
 
 
-  <!--<pre>{{model.type | json}}</pre>-->
-  <!--<pre>{{model | json}}</pre>-->
-  <!--<pre>{{publicationForm | json}}</pre>-->
+  <pre>{{publication.model | json}}</pre>
 
 </section>
 
 <script type="text/ng-template" id="discardPublication.html">
     <div class="modal-header">
-        <h3 ng-switch="publicationId" class="modal-title">
+        <h3 ng-switch="publication.$id" class="modal-title">
            <span ng-switch-when="true" >Do you <b>really</b> want to <b>Delete</b> this publication?</span>
            <span ng-switch-when="false" >Do you want to discard this publication?</span>
         </h3>
@@ -330,7 +315,7 @@
 
         <h3 class="text-danger" style="margin-top: 0; margin-bottom: 0;">{{title | capitalize}}</h3>
 
-        <div ng-switch="publicationId" class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">
+        <div ng-switch="publication.$id" class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">
             <span ng-switch-when="true" >NOTE: This action cannot be undone. <b>This information will be permanently removed</b>.</span>
             <span ng-switch-when="false" >NOTE: This action cannot be undone.</span>
         </div>
