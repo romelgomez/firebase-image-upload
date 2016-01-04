@@ -131,7 +131,7 @@
               </div><!-- /input-group -->
 
               <select class="form-control" ng-model="model.barcodeType">
-                <option ng-repeat="type in barcodeType">{{type}}</option>
+                <option ng-repeat="barcode in barcodeType" value="{{barcode.type}}">{{barcode.title}}</option>
               </select>
 
             </div>

@@ -370,13 +370,34 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
     };
 
       $scope.barcodeType = [
-        'ean',
-        'upc',
-        'code39',
-        'code128b',
-        'code128c',
-        'itf',
-        'itf14'
+        {
+          title:'EAN',
+          type:'ean'
+        },
+        {
+          title:'UPC',
+          type:'upc'
+        },
+        {
+          title:'CODE39',
+          type:'code39'
+        },
+        {
+          title:'CODE128b',
+          type:'code128b'
+        },
+        {
+          title:'CODE128c',
+          type:'code128c'
+        },
+        {
+          title:'ITF',
+          type:'itf'
+        },
+        {
+          title:'ITF14',
+          type:'itf14'
+        }
       ];
 
       $scope.barcodeOptions = {
