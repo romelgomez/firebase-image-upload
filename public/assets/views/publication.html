@@ -119,22 +119,24 @@
         </div>
 
 
-        <div class="form-group" ng-controller="BarcodeController">
+        <div ng-controller="BarcodeController">
           <div class="row">
-            <div class="col-xs-10">
+            <div class="col-xs-8">
               <label><i class="fa fa-barcode"></i> Barcode</label>
 
-              <div class="input-group">
+              <div class="form-group" style="margin-bottom: 10px;">
                 <input name="barcode" ng-model="publication.model.barcode" required barcode barcode-options="barcode.options" class="form-control" placeholder="" type="text">
-
-                 <span ng-show="publication.model.barcodeType === 'CODE128'" class="input-group-btn">
-                   <button class="btn btn-default" type="button" ng-click="setBarcodeCODE128Randomly(); publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false;">Set one CODE128 randomly</button>
-                 </span>
               </div><!-- /input-group -->
 
-              <select class="form-control" ng-model="publication.model.barcodeType" ng-change="publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false;">
-                <option ng-repeat="barcode in barcode.types" value="{{barcode.type}}">{{barcode.title}}</option>
-              </select>
+              <button ng-show="publication.model.barcodeType === 'CODE128'" class="btn btn-default" type="button" ng-click="setBarcodeCODE128Randomly(); publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false;">Set one CODE128 type randomly</button>
+
+              <div class="row" style="margin-top: 10px;">
+                <div class="col-xs-5">
+                  <select class="form-control" ng-model="publication.model.barcodeType" ng-change="publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false;">
+                    <option ng-repeat="barcode in barcode.types" value="{{barcode.type}}">{{barcode.title}}</option>
+                  </select>
+                </div>
+              </div>
 
               <div data-ng-messages="(publicationForm.$submitted && publicationForm.barcode.$error) || (publicationForm.barcode.$dirty && publicationForm.barcode.$error)" class="help-block">
                 <div data-ng-message="required">
@@ -150,9 +152,6 @@
             </div>
           </div>
         </div>
-
-        <pre>{{publicationForm.barcode | json}}</pre>
-
 
 
         <div class="form-group" ng-if="publication.model.department === 'Marketplace'">
