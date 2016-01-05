@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('publications',['categories','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar','barcode'])
+var publicationsModule = angular.module('publications',['categories','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar'])
   .controller('PublicationsController',[
     '$scope',
     '$q',
@@ -42,7 +42,7 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
           title:                '',
           htmlDescription:      '',
           barcode:              '',
-          barcodeType:          'code128b'
+          barcodeType:          'CODE128'
         }
       };
 
@@ -106,61 +106,6 @@ angular.module('publications',['categories','uuid','ngMessages','angular-redacto
           notificationService.error('Something is missing');
         }
       };
-
-
-
-
-      $scope.barcodeType = [
-        {
-          title:'EAN',
-          type:'ean'
-        },
-        {
-          title:'UPC',
-          type:'upc'
-        },
-        {
-          title:'CODE39',
-          type:'code39'
-        },
-        {
-          title:'CODE128b',
-          type:'code128b'
-        },
-        {
-          title:'CODE128c',
-          type:'code128c'
-        },
-        {
-          title:'ITF',
-          type:'itf'
-        },
-        {
-          title:'ITF14',
-          type:'itf14'
-        }
-      ];
-
-      $scope.barcodeOptions = {
-        width: 1,
-        height: 50,
-        quite: 10,
-        displayValue: true,
-        font: "monospace",
-        textAlign: "center",
-        fontSize: 12,
-        backgroundColor: "",
-        lineColor: "#000"
-      };
-
-      $scope.setBarcodeRandomly = function(){
-        $scope.publication.model.barcode = rfc4122.v4()
-      };
-
-
-
-
-
 
       $scope.imagesInfo = function(){
         var info = {

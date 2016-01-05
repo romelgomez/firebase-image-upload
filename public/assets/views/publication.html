@@ -118,45 +118,41 @@
           </div>
         </div>
 
-        <div class="form-group">
+
+        <div class="form-group" ng-controller="BarcodeController">
           <div class="row">
             <div class="col-xs-10">
               <label><i class="fa fa-barcode"></i> Barcode</label>
 
               <div class="input-group">
-                <input name="barcode" ng-model="publication.model.barcode" required class="form-control" placeholder="" type="text">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button" ng-click="setBarcodeRandomly()">Set one randomly</button>
-                </span>
+                <input name="barcode" ng-model="publication.model.barcode" required barcode barcode-options="barcode.options" class="form-control" placeholder="" type="text">
+
+                 <span ng-show="publication.model.barcodeType === 'CODE128'" class="input-group-btn">
+                   <button class="btn btn-default" type="button" ng-click="setBarcodeCODE128Randomly(); publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false;">Set one CODE128 randomly</button>
+                 </span>
               </div><!-- /input-group -->
 
-              <select class="form-control" ng-model="publication.model.barcodeType">
-                <option ng-repeat="barcode in barcodeType" value="{{barcode.type}}">{{barcode.title}}</option>
+              <select class="form-control" ng-model="publication.model.barcodeType" ng-change="publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false;">
+                <option ng-repeat="barcode in barcode.types" value="{{barcode.type}}">{{barcode.title}}</option>
               </select>
+
+              <div data-ng-messages="(publicationForm.$submitted && publicationForm.barcode.$error) || (publicationForm.barcode.$dirty && publicationForm.barcode.$error)" class="help-block">
+                <div data-ng-message="required">
+                  - The <b>barcode</b> is required.
+                </div>
+                <div data-ng-message="barcode">
+                  - The <b>barcode </b> must be valid.
+                </div>
+              </div>
+
+              <barcode-img ng-show="!publicationForm.barcode.$error.barcode"></barcode-img>
 
             </div>
           </div>
         </div>
 
-        <!--<barcode data="sas"></barcode>-->
-        <!--{{model.barcodeType}}-->
-        <barcode ng-show="publication.model.barcode!==''" type="{{publication.model.barcodeType}}" string="{{publication.model.barcode}}" options="barcodeOptions"></barcode>
+        <pre>{{publicationForm.barcode | json}}</pre>
 
-
-
-
-        <!--<img id="barcode1"/>-->
-        <!--<script>$("#barcode1").JsBarcode("Hi!");</script>-->
-
-        <!--http://angularscript.com/angularjs-directive-for-code-128-barcode-generator/-->
-        <!--https://github.com/search?utf8=%E2%9C%93&q=angular+barcode&type=Repositories&ref=searchresults-->
-        <!--https://github.com/lindell/JsBarcode-->
-        <!--http://stackoverflow.com/questions/28442804/trying-to-make-a-directive-that-uses-jsbarcode-->
-        <!--https://github.com/loicmahieu/angular-io-barcode-->
-        <!--http://lindell.me/JsBarcode/-->
-        <!--https://github.com/goodeggs/angular-barcode-listener-->
-        <!--https://github.com/fumitoito/angularjs-barcodeScanner-->
-        <!--https://plugins.jquery.com/tag/barcode/-->
 
 
         <div class="form-group" ng-if="publication.model.department === 'Marketplace'">
