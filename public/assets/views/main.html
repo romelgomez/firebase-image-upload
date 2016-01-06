@@ -1,5 +1,13 @@
+<!--<div class="panel panel-default" ng-keydown="onKeyDown($event)" ng-keypress="onKeyPress($event)" >-->
 <div class="panel panel-default">
   <div class="panel-body">
+
+    <div class="input-group">
+      <input type="text" class="form-control input-without-focus" ng-model="algolia.query" placeholder="Barcode or Any Keyword" tabindex="1" input-focus>
+      <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
+    </div>
+
+    <hr class="hr-xs">
 
     <img src="assets/images/uk.svg" alt="..." class="img-thumbnail">
 
@@ -17,3 +25,5 @@
 
   </div>
 </div>
+
+<pre>{{algolia | json}}</pre>

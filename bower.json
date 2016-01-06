@@ -53,6 +53,7 @@
     "algoliasearch": "~3.10.1",
     "angular-underscore": "~0.5.0",
     "JsBarcode": "jsbarcode#*",
-    "angular-barcode": "~0.0.2"
+    "angular-barcode": "~0.0.2",
+    "angular-scanner-detection": "~0.0.2"
   }
 }

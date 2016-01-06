@@ -124,19 +124,20 @@
             <div class="col-xs-8">
               <label><i class="fa fa-barcode"></i> Barcode</label>
 
-              <div class="form-group" style="margin-bottom: 10px;">
-                <input name="barcode" ng-model="publication.model.barcode" required barcode barcode-options="barcode.options" class="form-control" placeholder="" type="text">
-              </div><!-- /input-group -->
-
-              <button ng-show="publication.model.barcodeType === 'CODE128'" class="btn btn-default" type="button" ng-click="setBarcodeCODE128Randomly(); publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false;">Set one CODE128 type randomly</button>
-
-              <div class="row" style="margin-top: 10px;">
+              <div class="row" style="margin-bottom: 10px;">
                 <div class="col-xs-5">
                   <select class="form-control" ng-model="publication.model.barcodeType" ng-change="publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false;">
                     <option ng-repeat="barcode in barcode.types" value="{{barcode.type}}">{{barcode.title}}</option>
                   </select>
                 </div>
+                <div class="col-xs-5">
+                  <button ng-show="publication.model.barcodeType === 'CODE128'" class="btn btn-default" type="button" ng-click="setBarcodeCODE128Randomly(); publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false;">Set one CODE128 type randomly</button>
+                </div>
               </div>
+
+              <div class="form-group" style="margin-bottom: 10px;">
+                <input name="barcode" ng-model="publication.model.barcode" required barcode barcode-options="barcode.options" class="form-control" placeholder="<Place here the bar code>" type="text">
+              </div><!-- /input-group -->
 
               <div data-ng-messages="(publicationForm.$submitted && publicationForm.barcode.$error) || (publicationForm.barcode.$dirty && publicationForm.barcode.$error)" class="help-block">
                 <div data-ng-message="required">
@@ -148,6 +149,8 @@
               </div>
 
               <barcode-img ng-show="!publicationForm.barcode.$error.barcode"></barcode-img>
+
+              <!--<pre>{{publicationForm.barcode | json}}</pre>-->
 
             </div>
           </div>
