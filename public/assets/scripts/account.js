@@ -25,26 +25,6 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     'categoriesService',
     '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, algolia, categoriesService,  $log){
 
-      /*
-
-      cargo las categorias
-      separo las que no tienen padre
-      las comparo con el objeto que describe las facetas disponibles,
-
-         "categories": {
-           "Real Estate": 2,
-           "Apartments or Flat": 1,
-           "Houses": 1
-         }
-
-      extraigo las coincidencias, quedara algo como:
-
-       "facets": {
-         "Real Estate": 2,
-       }
-
-      * */
-
       var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
       var index  = client.initIndex('publications');

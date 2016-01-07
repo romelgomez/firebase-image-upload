@@ -2,13 +2,16 @@
 <div class="panel panel-default">
   <div class="panel-body">
 
-    <div class="input-group">
-      <input type="text" class="form-control input-without-focus" ng-model="algolia.query" placeholder="Barcode or Any Keywords" tabindex="1" input-focus>
-      <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
-    </div>
+    <form name="algoliaForm" novalidate="" ng-submit="submit()">
+      <div class="input-group">
+        <input type="text" class="form-control input-without-focus" ng-model="algolia.req.query" placeholder="Barcode or Any Keywords" tabindex="1" input-focus>
+        <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
+      </div>
+    </form>
 
+    <!--<pre>{{algoliaForm | json}}</pre>-->
 
-    <section style="display: none;">
+    <section ng-show="algoliaForm.$pristine">
       <hr class="hr-xs">
 
       <img src="assets/images/uk.svg" alt="..." class="img-thumbnail">
@@ -26,79 +29,178 @@
       </div>
     </section>
 
-    <section>
+    <section ng-show="algoliaForm.$dirty" cg-busy="{promise: httpRequestPromise, message:'Just a moment'}">
+
       <hr class="hr-xs">
-      <div class="row">
-        <div class="col-xs-4 col-md-3" style="padding-right: 5px;">
-          <div class="panel panel-default" style="margin-bottom: 0;">
-            <div class="panel-heading">Filters</div>
-            <div class="panel-body">
-              memu
+
+      <ol ng-show="algolia.faceting.currentFacets.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
+        <li ng-click="algolia.faceting.removeAllFacet()" class="a-link"> Reset </li>
+        <li ng-repeat="facet in algolia.faceting.currentFacets" ng-click="algolia.faceting.removeFacet(facet, $index)" ng-class="{'a-link': !$last}"> {{facet.name | capitalizeFirstChar}} </li>
+      </ol>
+
+      <div ng-show="(algolia.res.query !== '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications for this query: <b>{{algolia.res.query}}</b>, <a href="#/new-publication">create new one here!</a>  </div>
+      <div ng-show="(algolia.res.query === '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications, <a href="#/new-publication">create new one here!</a>  </div>
+
+      <pre ng-show="algolia.res.nbPages > 0" style="margin-bottom: 10px"><b>Page:</b> {{algolia.pagination.currentPage}} of {{algolia.res.nbPages}} | <b>Hits:</b> {{algolia.res.nbHits}}</pre>
+
+      <section ng-show="algolia.res.nbHits > 0" >
+        <hr class="hr-xs">
+        <div class="row">
+          <div class="col-xs-4 col-md-3" style="padding-right: 5px;">
+            <div class="panel panel-default" style="margin-bottom: 0;">
+              <div class="panel-heading"> Categories <button ng-show="algolia.faceting.currentFacets.length > 0" ng-click="algolia.faceting.removeAllFacet()" type="button" style="padding-bottom: 0; padding-top: 0;" class="btn btn-link">Reset</button></div>
+              <div class="list-group">
+                <button type="button" class="list-group-item" ng-click="algolia.faceting.addFacet(facet)" ng-repeat="facet in algolia.faceting.facetsAvailables" ><i style="color: #286090" class="fa fa-folder"></i> {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span></button>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-8 col-md-9" style="padding-left: 5px;">
+            <div class="panel panel-default" style="margin-bottom: 0;">
+              <div class="list-group">
+                <a ng-href="#/view-publication/{{publication.objectID}}" class="list-group-item" ng-repeat="publication in algolia.res.hits">
+
+                  <section ng-if="(publication.department === 'Marketplace')">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <h4><i class="fa fa-shopping-cart"></i> - <span ng-bind-html="publication._highlightResult.title.value | unsafe"></span></h4>
+                        <hr class="hr-xs">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-8" style="padding-right: 5px; padding-left: 10px;">
+                        <img ng-show="sizeOf(publication.images) === 0" src="assets/images/uk.svg" alt="..." class="img-responsive img-thumbnail">
+
+                        <cl-image ng-show="sizeOf(publication.images) > 0"  public-id="{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images) }}" class="inline img-responsive img-thumbnail" format="jpg">
+                          <cl-transformation height="300" width="600" crop="fill"  />
+                        </cl-image>
+                      </div>
+                      <div class="col-xs-4" style="padding-left: 5px;">
+                        <ul class="list-unstyled">
+                          <li><h4><i class="fa fa-gbp"></i> £55000</h4></li>
+                          <li><h5><i class="fa fa-map-marker"></i>  London</h5></li>
+                        </ul>
+
+                      </div>
+                    </div>
+                  </section>
+                  <section ng-if="(publication.department === 'Jobs')">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <h4><i class="fa fa-suitcase"></i> - <span ng-bind-html="publication._highlightResult.title.value | unsafe"></span></h4>
+                        <hr class="hr-xs">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-10" style="padding-right: 5px;">
+                        <ul class="list-unstyled">
+                          <li><h4><i class="fa fa-gbp"></i> £55000</h4></li>
+                          <li><h5><i class="fa fa-map-marker"></i>  London</h5></li>
+                        </ul>
+                      </div>
+                      <div class="col-xs-2" style="padding-left: 5px;">
+                        <img ng-show="sizeOf(publication.images) === 0" src="assets/images/uk.svg" alt="..." class="img-responsive img-thumbnail">
+
+                        <cl-image ng-show="sizeOf(publication.images) > 0"  public-id="{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images) }}" class="inline img-responsive img-thumbnail" format="jpg">
+                          <cl-transformation height="150" width="250" crop="fill"  />
+                        </cl-image>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <hr class="hr-xs">
+                        JavaScript Developer - Birkenhead - 3/6 months - AngularJS, HTML5, CSS3 I am currently looking for a JavaScript Developer to join a Business Travel...
+                      </div>
+                    </div>
+                  </section>
+                  <section ng-if="(publication.department === 'Real Estate')">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <h4><i class="fa fa-home"></i> - <span ng-bind-html="publication._highlightResult.title.value | unsafe"></span></h4>
+                        <hr class="hr-xs">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-8" style="padding-right: 5px; padding-left: 10px;">
+                        <img ng-show="sizeOf(publication.images) === 0" src="assets/images/uk.svg" alt="..." class="img-responsive img-thumbnail">
+
+                        <cl-image ng-show="sizeOf(publication.images) > 0"  public-id="{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images) }}" class="inline img-responsive img-thumbnail" format="jpg">
+                          <cl-transformation height="300" width="600" crop="fill"  />
+                        </cl-image>
+                      </div>
+                      <div class="col-xs-4" style="padding-left: 5px;">
+                        <ul class="list-unstyled">
+                          <li><h4><i class="fa fa-gbp"></i> £55000</h4></li>
+                          <li><h5><i class="fa fa-map-marker"></i>  London</h5></li>
+                        </ul>
+
+                      </div>
+                    </div>
+                  </section>
+                  <section ng-if="(publication.department === 'Transport')">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <h4><i class="fa fa-car"></i> - <span ng-bind-html="publication._highlightResult.title.value | unsafe"></span></h4>
+                        <hr class="hr-xs">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-8" style="padding-right: 5px; padding-left: 10px;">
+                        <img ng-show="sizeOf(publication.images) === 0" src="assets/images/uk.svg" alt="..." class="img-responsive img-thumbnail">
+
+                        <cl-image ng-show="sizeOf(publication.images) > 0"  public-id="{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images) }}" class="inline img-responsive img-thumbnail" format="jpg">
+                          <cl-transformation height="300" width="600" crop="fill"  />
+                        </cl-image>
+                      </div>
+                      <div class="col-xs-4" style="padding-left: 5px;">
+                        <ul class="list-unstyled">
+                          <li><h4><i class="fa fa-gbp"></i> £55000</h4></li>
+                          <li><h5><i class="fa fa-map-marker"></i>  London</h5></li>
+                        </ul>
+
+                      </div>
+                    </div>
+                  </section>
+                  <section ng-if="(publication.department === 'Services')">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <h4><i class="fa fa-wrench"></i> - <span ng-bind-html="publication._highlightResult.title.value | unsafe"></span></h4>
+                        <hr class="hr-xs">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-8" style="padding-right: 5px; padding-left: 10px;">
+                        <img ng-show="sizeOf(publication.images) === 0" src="assets/images/uk.svg" alt="..." class="img-responsive img-thumbnail">
+
+                        <cl-image ng-show="sizeOf(publication.images) > 0"  public-id="{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images) }}" class="inline img-responsive img-thumbnail" format="jpg">
+                          <cl-transformation height="300" width="600" crop="fill"  />
+                        </cl-image>
+                      </div>
+                      <div class="col-xs-4" style="padding-left: 5px;">
+                        <ul class="list-unstyled">
+                          <li><h4><i class="fa fa-gbp"></i> £55000</h4></li>
+                          <li><h5><i class="fa fa-map-marker"></i>  London</h5></li>
+                        </ul>
+
+                      </div>
+                    </div>
+                  </section>
+
+                </a>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-xs-8 col-md-9" style="padding-left: 5px;">
-          <div class="panel panel-default" style="margin-bottom: 0;">
-            <div class="list-group">
-              <a href="#" class="list-group-item">
+        <hr class="hr-xs">
+      </section>
 
-                <div class="row">
-                  <div class="col-xs-12">
-                    <h4><i class="fa fa-shopping-cart"></i> - Senior Front-end JavaScript Developer - London - up to £90k</h4>
-                    <hr class="hr-xs">
-                  </div>
-                </div>
+      <uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.pagination.itemsPerPage" ng-change="algolia.pagination.pageChanged()" total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.pagination.itemsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></uib-pagination>
 
-                <div class="row">
-                  <div class="col-xs-8" style="padding-right: 5px; padding-left: 10px;">
-                    <img src="assets/images/subaru.jpg" class="img-responsive img-thumbnail" >
-                  </div>
-                  <div class="col-xs-4" style="padding-left: 5px;">
-                    <ul class="list-unstyled">
-                      <li><h4><i class="fa fa-gbp"></i> £55000</h4></li>
-                      <li><h5><i class="fa fa-map-marker"></i>  London</h5></li>
-                    </ul>
-
-                  </div>
-                </div>
-
-              </a>
-              <a href="#" class="list-group-item">
-
-                <div class="row">
-                  <div class="col-xs-12">
-                    <h4><i class="fa fa-suitcase"></i> - Senior Front-end JavaScript Developer - London - up to £90k</h4>
-                    <hr class="hr-xs">
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-xs-10" style="padding-right: 5px;">
-                    <ul class="list-unstyled">
-                      <li><h4><i class="fa fa-gbp"></i> £55000</h4></li>
-                      <li><h5><i class="fa fa-map-marker"></i>  London</h5></li>
-                    </ul>
-                  </div>
-                  <div class="col-xs-2" style="padding-left: 5px;">
-                    <img src="assets/images/subaru.jpg" class="img-responsive img-thumbnail" >
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-xs-12">
-                    <hr class="hr-xs">
-                    JavaScript Developer - Birkenhead - 3/6 months - AngularJS, HTML5, CSS3 I am currently looking for a JavaScript Developer to join a Business Travel...
-                  </div>
-                </div>
-
-              </a>
-              <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-              <a href="#" class="list-group-item">Vestibulum at eros</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr class="hr-xs">
     </section>
 
 
