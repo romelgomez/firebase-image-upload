@@ -30,7 +30,9 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
           highlightPreTag: '<b>',
           highlightPostTag: '</b>'
         },
+        // The response object that we get after make a http request
         res: {},
+        // configuration relate to the pagination
         pagination: {
           // number of pages that are visible
           maxSize: 10,
@@ -43,9 +45,13 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
             search();
           }
         },
+        // configuration relate to faceting
         faceting: {
+          // Availables facets that we can select
           facetsAvailables : [],
+          // Track Faces in use
           currentFacets: [],
+          // add facet to main request string
           addFacet: function(facet){
             // {"left":5,"name":"Real Estate","parentId":"","right":10,"$id":"-K5pzphvGtzcQhxopgpD","$priority":null,"count":1}
 
@@ -53,6 +59,7 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
             $scope.algolia.req.facetFilters.push('categories:'+facet.name);
             search();
           },
+          // Todo remove the exclusivity of categories
           removeFacet: function (facet,index) {
             $scope.algolia.req.facetFilters = [];
             var currentFacets = $scope.algolia.faceting.currentFacets;
@@ -65,6 +72,7 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
               }
             }
           },
+          // Remove al facets
           removeAllFacet: function () {
             angular.copy([],$scope.algolia.faceting.currentFacets);
             $scope.algolia.req.facetFilters = [];
@@ -94,6 +102,7 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
       }
 
       /**
+       * TODO This function is very relate to categories faceting, should be Rename.
        * This function set the faceted menu after the request is made
        * @return {Undefined}
        */
