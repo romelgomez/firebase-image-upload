@@ -33,9 +33,9 @@
 
       <hr class="hr-xs">
 
-      <ol ng-show="algolia.faceting.currentFacets.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
-        <li ng-click="algolia.faceting.removeAllFacet()" class="a-link"> Reset </li>
-        <li ng-repeat="facet in algolia.faceting.currentFacets" ng-click="algolia.faceting.removeFacet(facet, $index)" ng-class="{'a-link': !$last}"> {{facet.name | capitalizeFirstChar}} </li>
+      <ol ng-show="algolia.faceting.currentFacets.categories.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
+        <li ng-click="algolia.faceting.categories.removeAllFacet()" class="a-link"> Reset </li>
+        <li ng-repeat="facet in algolia.faceting.currentFacets.categories" ng-click="algolia.faceting.categories.removeFacet(facet, $index)" ng-class="{'a-link': !$last}"> {{facet.name | capitalizeFirstChar}} </li>
       </ol>
 
       <div ng-show="(algolia.res.query !== '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications for this query: <b>{{algolia.res.query}}</b>, <a href="#/new-publication">create new one here!</a>  </div>
@@ -48,9 +48,9 @@
         <div class="row">
           <div class="col-xs-4 col-md-3" style="padding-right: 5px;">
             <div class="panel panel-default" style="margin-bottom: 0;">
-              <div class="panel-heading"> Categories <button ng-show="algolia.faceting.currentFacets.length > 0" ng-click="algolia.faceting.removeAllFacet()" type="button" style="padding-bottom: 0; padding-top: 0;" class="btn btn-link">Reset</button></div>
+              <div class="panel-heading"> Categories <button ng-show="algolia.faceting.currentFacets.categories.length > 0" ng-click="algolia.faceting.categories.removeAllFacet()" type="button" style="padding-bottom: 0; padding-top: 0;" class="btn btn-link">Reset</button></div>
               <div class="list-group">
-                <button type="button" class="list-group-item" ng-click="algolia.faceting.addFacet(facet)" ng-repeat="facet in algolia.faceting.facetsAvailables" ><i style="color: #286090" class="fa fa-folder"></i> {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span></button>
+                <button type="button" class="list-group-item" ng-click="algolia.faceting.categories.addFacet(facet)" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" ><i style="color: #286090" class="fa fa-folder"></i> {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span></button>
               </div>
             </div>
           </div>

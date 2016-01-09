@@ -4,9 +4,10 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
     '$scope',
     '$q',
     '$location',
+    '$window',
     'algolia',
     'categoriesService',
-    '$log', function( $scope, $q, $location, algolia, categoriesService, $log){
+    '$log', function( $scope, $q, $location, $window, algolia, categoriesService, $log){
 
       var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
@@ -48,38 +49,65 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
         // configuration relate to faceting
         faceting: {
           // Availables facets that we can select
-          facetsAvailables : [],
-          // Track Faces in use
-          currentFacets: [],
-          // add facet to main request string
-          addFacet: function(facet){
-            // {"left":5,"name":"Real Estate","parentId":"","right":10,"$id":"-K5pzphvGtzcQhxopgpD","$priority":null,"count":1}
-
-            $scope.algolia.faceting.currentFacets.push(facet);
-            $scope.algolia.req.facetFilters.push('categories:'+facet.name);
-            search();
+          facetsAvailables : {
+            categories:[]
           },
-          // Todo remove the exclusivity of categories
-          removeFacet: function (facet,index) {
-            $scope.algolia.req.facetFilters = [];
-            var currentFacets = $scope.algolia.faceting.currentFacets;
-            $scope.algolia.faceting.currentFacets = [];
-            for (var i  = 0; i <= index; i++){
-              $scope.algolia.req.facetFilters.push('categories:'+currentFacets[i].name);
-              $scope.algolia.faceting.currentFacets.push(currentFacets[i]);
-              if(i === index){
-                search();
+          // Track Faces in use
+          currentFacets: {
+            categories:[]
+          },
+          categories: {
+            // add facet to main request string
+            addFacet: function(facet){
+              // facet : {"left":5,"name":"Real Estate","parentId":"","right":10,"$id":"-K5pzphvGtzcQhxopgpD","$priority":null,"count":1}
+              $scope.algolia.faceting.currentFacets.categories = angular.isDefined($scope.algolia.faceting.currentFacets.categories) ? $scope.algolia.faceting.currentFacets.categories : [];
+              $scope.algolia.faceting.currentFacets.categories.push(facet);
+              $scope.algolia.req.facetFilters.push('categories:'+facet.name);
+              search();
+            },
+            // Remove al facets
+            removeAllFacet: function () {
+              angular.copy([],$scope.algolia.faceting.currentFacets.categories);
+              updateFacetFilters()
+                .then(function(){
+                  search();
+                });
+            },
+            removeFacet: function (facet,index) {
+              var currentFacets = $scope.algolia.faceting.currentFacets.categories;
+              angular.copy([],$scope.algolia.faceting.currentFacets.categories);
+              for (var i  = 0; i <= index; i++){
+                $scope.algolia.faceting.currentFacets.categories.push(currentFacets[i]);
+                if(i === index){
+                  updateFacetFilters()
+                    .then(function(){
+                      search();
+                    });
+                }
               }
             }
-          },
-          // Remove al facets
-          removeAllFacet: function () {
-            angular.copy([],$scope.algolia.faceting.currentFacets);
-            $scope.algolia.req.facetFilters = [];
-            search();
           }
         }
       });
+
+      function updateFacetFilters (){
+        var deferred   = $q.defer();
+        var currentFacetsLength  = $window.Object.keys($scope.algolia.faceting.currentFacets).length;
+        var count = 0;
+        $scope.algolia.req.facetFilters = [];
+        angular.forEach($scope.algolia.faceting.currentFacets, function(facets, attrName){
+          if(facets.length > 0){
+            angular.forEach(facets, function(facet){
+              $scope.algolia.req.facetFilters.push(attrName+':'+facet.name)
+            })
+          }
+          count++;
+          if(currentFacetsLength === count){
+            deferred.resolve();
+          }
+        });
+        return deferred.promise;
+      }
 
       function search (){
         var deferred   = $q.defer();
@@ -90,7 +118,7 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
                 startSearch();
               }else{
                 $scope.algolia.res = res;
-                setFacetedSearchMenu();
+                categoriesfacetsAvailables();
                 deferred.resolve();
               }
             }, function(err){
@@ -101,13 +129,8 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
         return deferred.promise;
       }
 
-      /**
-       * TODO This function is very relate to categories faceting, should be Rename.
-       * This function set the faceted menu after the request is made
-       * @return {Undefined}
-       */
-      function setFacetedSearchMenu(){
-        $scope.algolia.faceting.facetsAvailables = [];
+      function categoriesfacetsAvailables(){
+        $scope.algolia.faceting.facetsAvailables.categories = [];
 
         // needles
         angular.forEach($scope.algolia.res.facets.categories, function (count, facetName) {
@@ -116,18 +139,18 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
           angular.forEach(categories, function(categoryObj){
             if(facetName === categoryObj.name){
               // Children facets
-              if($scope.algolia.faceting.currentFacets.length > 0){
-                var lastObj = $scope._($scope.algolia.faceting.currentFacets)
+              if(angular.isDefined($scope.algolia.faceting.currentFacets.categories) && $scope.algolia.faceting.currentFacets.categories.length > 0){
+                var lastObj = $scope._($scope.algolia.faceting.currentFacets.categories)
                   .last();
                 if(categoryObj.parentId === lastObj.$id){
                   categoryObj.count = count;
-                  $scope.algolia.faceting.facetsAvailables.push(categoryObj);
+                  $scope.algolia.faceting.facetsAvailables.categories.push(categoryObj);
                 }
               }else{
                 // Root facets
                 if(categoryObj.parentId === ''){
                   categoryObj.count = count;
-                  $scope.algolia.faceting.facetsAvailables.push(categoryObj);
+                  $scope.algolia.faceting.facetsAvailables.categories.push(categoryObj);
                 }
               }
             }
@@ -136,9 +159,15 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
 
       }
 
-      $scope.submit = function(){
+      function resetQuerySettings (){
+        angular.copy({},$scope.algolia.faceting.currentFacets);
+        $scope.algolia.req.facetFilters = [];
         $scope.algolia.req.page = 0;
         $scope.algolia.pagination.currentPage = 1;
+      }
+
+      $scope.submit = function(){
+        resetQuerySettings();
         search()
           .then(null,function(err){
             notificationService.error(err);
@@ -154,10 +183,7 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
           $scope.$watch(function(){
             return $scope.algolia.req.query;
           },function(){
-            angular.copy([],$scope.algolia.faceting.currentFacets);
-            $scope.algolia.req.facetFilters = [];
-            $scope.algolia.req.page = 0;
-            $scope.algolia.pagination.currentPage = 1;
+            resetQuerySettings();
             search()
               .then(null,function(err){
                 notificationService.error(err);
