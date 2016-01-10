@@ -35,6 +35,20 @@ var settings = {
     customRanking:['desc(views)'],
     attributesForFaceting: ['categories','userID'],
     ranking: ['desc(releaseDate)']
+  },
+  publications_by_salary_asc:{
+    attributesToIndex: ['barcode','title','unordered(description)'],
+    numericAttributesToIndex:['salary','releaseDate'],
+    customRanking:['desc(views)'],
+    attributesForFaceting: ['categories','userID'],
+    ranking: ['asc(salary)']
+  },
+  publications_by_salary_desc:{
+    attributesToIndex: ['barcode','title','unordered(description)'],
+    numericAttributesToIndex:['salary','releaseDate'],
+    customRanking:['desc(views)'],
+    attributesForFaceting: ['categories','userID'],
+    ranking: ['desc(salary)']
   }
 };
 
@@ -43,7 +57,9 @@ function main (){
   algolia.setSettings('publications_by_price_asc index settings','publications_by_price_asc',settings.publications_by_price_asc);
   algolia.setSettings('publications_by_price_desc index settings','publications_by_price_desc',settings.publications_by_price_desc);
   algolia.setSettings('publications_by_releaseDate_asc index settings','publications_by_releaseDate_asc',settings.publications_by_releaseDate_asc);
-  algolia.setSettings('publications_by_releaseDate_desc index settings','publications_by_price_asc',settings.publications_by_releaseDate_desc);
+  algolia.setSettings('publications_by_releaseDate_desc index settings','publications_by_releaseDate_desc',settings.publications_by_releaseDate_desc);
+  algolia.setSettings('publications_by_salary_asc index settings','publications_by_salary_asc',settings.publications_by_salary_asc);
+  algolia.setSettings('publications_by_salary_desc index settings','publications_by_salary_desc',settings.publications_by_salary_desc);
 }
 
 main();

@@ -11,7 +11,6 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
 
       var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
-      var index  = client.initIndex('publications');
       var categories = categoriesService.nodes();
       configTasks.categories = categories.$loaded();
 
@@ -46,6 +45,114 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
             search();
           }
         },
+        // configuration relate to sort order
+        sortOrder:{
+          defaultIndexName: 'publications',
+          options:{
+            'Marketplace': [
+              {
+                title:'Relevance',
+                indexName:'publications'
+              },
+              {
+                title:'Low prices publications',
+                indexName:'publications_by_price_asc'
+              },
+              {
+                title:'Highest prices publications',
+                indexName:'publications_by_price_desc'
+              },
+              {
+                title:'Latest publications',
+                indexName:'publications_by_releaseDate_desc'
+              },
+              {
+                title:'Old publications',
+                indexName:'publications_by_releaseDate_asc'
+              }
+            ],
+            'Jobs':[
+              {
+                title:'Relevance',
+                indexName:'publications'
+              },
+              {
+                title:'Highest salary publications',
+                indexName:'publications_by_salary_desc'
+              },
+              {
+                title:'Low salary publications',
+                indexName:'publications_by_salary_asc'
+              },
+              {
+                title:'Latest publications',
+                indexName:'publications_by_releaseDate_desc'
+              },
+              {
+                title:'Old publications',
+                indexName:'publications_by_releaseDate_asc'
+              }
+            ],
+            'Real Estate':[
+              {
+                title:'Relevance',
+                indexName:'publications'
+              },
+              {
+                title:'Low prices publications',
+                indexName:'publications_by_price_asc'
+              },
+              {
+                title:'Highest prices publications',
+                indexName:'publications_by_price_desc'
+              },
+              {
+                title:'Latest publications',
+                indexName:'publications_by_releaseDate_desc'
+              },
+              {
+                title:'Old publications',
+                indexName:'publications_by_releaseDate_asc'
+              }
+            ],
+            'Transport':[
+              {
+                title:'Relevance',
+                indexName:'publications'
+              },
+              {
+                title:'Low prices publications',
+                indexName:'publications_by_price_asc'
+              },
+              {
+                title:'Highest prices publications',
+                indexName:'publications_by_price_desc'
+              },
+              {
+                title:'Latest publications',
+                indexName:'publications_by_releaseDate_desc'
+              },
+              {
+                title:'Old publications',
+                indexName:'publications_by_releaseDate_asc'
+              }
+            ],
+            'Services':[
+              {
+                title:'Relevance',
+                indexName:'publications'
+              },
+              {
+                title:'Latest publications',
+                indexName:'publications_by_releaseDate_desc'
+              },
+              {
+                title:'Old publications',
+                indexName:'publications_by_releaseDate_asc'
+              }
+            ]
+          }
+        },
         // configuration relate to faceting
         faceting: {
           // Availables facets that we can select
@@ -73,12 +180,13 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
                   search();
                 });
             },
-            removeFacet: function (facet,index) {
-              var currentFacets = $scope.algolia.faceting.currentFacets.categories;
+            removeFacet: function (facet,$index) {
+              var currentFacets = [];
+              angular.copy($scope.algolia.faceting.currentFacets.categories,currentFacets);
               angular.copy([],$scope.algolia.faceting.currentFacets.categories);
-              for (var i  = 0; i <= index; i++){
+              for (var i  = 0; i <= $index; i++){
                 $scope.algolia.faceting.currentFacets.categories.push(currentFacets[i]);
-                if(i === index){
+                if(i === $index){
                   updateFacetFilters()
                     .then(function(){
                       search();
@@ -109,8 +217,9 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
         return deferred.promise;
       }
 
-      function search (){
+      function search (indexName){
         var deferred   = $q.defer();
+        var index  = client.initIndex(angular.isDefined(indexName) ? indexName : 'publications');
         function startSearch (){
           index.search($scope.algolia.req)
             .then(function(res) {

@@ -5,7 +5,10 @@
     <form name="algoliaForm" novalidate="" ng-submit="submit()">
       <div class="input-group">
         <input type="text" class="form-control input-without-focus" ng-model="algolia.req.query" placeholder="Barcode or Any Keywords" tabindex="1" input-focus>
-        <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
+        <div class="input-group-addon">
+          <span ng-show="algolia.req.query === '';" class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          <span ng-show="algolia.req.query !== '';" ng-click="algolia.req.query = '';" class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+        </div>
       </div>
     </form>
 
@@ -34,7 +37,7 @@
       <hr class="hr-xs">
 
       <ol ng-show="algolia.faceting.currentFacets.categories.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
-        <li ng-click="algolia.faceting.categories.removeAllFacet()" class="a-link"> Reset </li>
+        <!--<li ng-click="algolia.faceting.categories.removeAllFacet()" class="a-link"> Reset </li>-->
         <li ng-repeat="facet in algolia.faceting.currentFacets.categories" ng-click="algolia.faceting.categories.removeFacet(facet, $index)" ng-class="{'a-link': !$last}"> {{facet.name | capitalizeFirstChar}} </li>
       </ol>
 
@@ -48,13 +51,21 @@
         <div class="row">
           <div class="col-xs-4 col-md-3" style="padding-right: 5px;">
             <div class="panel panel-default" style="margin-bottom: 0;">
-              <div class="panel-heading"> Categories <button ng-show="algolia.faceting.currentFacets.categories.length > 0" ng-click="algolia.faceting.categories.removeAllFacet()" type="button" style="padding-bottom: 0; padding-top: 0;" class="btn btn-link">Reset</button></div>
+              <div class="panel-heading"><i class="fa fa-bars"></i> Categories <button ng-show="algolia.faceting.currentFacets.categories.length > 0" ng-click="algolia.faceting.categories.removeAllFacet()" type="button" style="padding-bottom: 0; padding-top: 0;" class="btn btn-link">Reset</button></div>
               <div class="list-group">
                 <button type="button" class="list-group-item" ng-click="algolia.faceting.categories.addFacet(facet)" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" ><i style="color: #286090" class="fa fa-folder"></i> {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span></button>
               </div>
             </div>
           </div>
           <div class="col-xs-8 col-md-9" style="padding-left: 5px;">
+
+            <div ng-show="algolia.res.nbHits > 1 && algolia.faceting.currentFacets.categories.length > 0" class="well well-sm" style="margin-bottom: 10px;">
+              <div style="margin-bottom: 5px;">Sorted by: </div>
+              <select  class="form-control" ng-model="algolia.sortOrder.defaultIndexName">
+                <option ng-repeat="sortOrder in algolia.sortOrder.options[algolia.faceting.currentFacets.categories[0].name]" value="{{sortOrder.indexName}}">{{sortOrder.title}}</option>
+              </select>
+            </div>
+
             <div class="panel panel-default" style="margin-bottom: 0;">
               <div class="list-group">
                 <a ng-href="#/view-publication/{{publication.objectID}}" class="list-group-item" ng-repeat="publication in algolia.res.hits">
