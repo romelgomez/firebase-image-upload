@@ -28,7 +28,6 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
 
       $scope.publication = {
         $id: '',
-        images: [],
         path: [],
         categories: categoriesService.nodes(),
         categorySelected: false,
@@ -50,6 +49,8 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
         .then(function () {
           if(angular.isDefined($routeParams.publicationId)){
             return setPublication($routeParams.publicationId);
+          }else{
+            $scope.publication.images = [];
           }
         })
         .then(function(){
@@ -384,6 +385,7 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
             });
           })
           .then(function(){
+            $scope.publication.images = [];
             angular.forEach($scope.publication.model.images, function(value, key){
               value.$id = key;
               $scope.publication.images.push(value);
