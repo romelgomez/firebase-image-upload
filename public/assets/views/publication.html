@@ -126,7 +126,7 @@
 
               <div class="row" style="margin-bottom: 10px;">
                 <div class="col-xs-5">
-                  <select class="form-control" ng-model="publication.model.barcodeType" ng-change="publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false;">
+                  <select class="form-control" ng-model="publication.model.barcodeType" ng-change="publicationForm.barcode.$dirty = true; publicationForm.barcode.$pristine = false; publication.model.barcode = '';">
                     <option ng-repeat="barcode in barcode.types" value="{{barcode.type}}">{{barcode.title}}</option>
                   </select>
                 </div>
@@ -240,7 +240,7 @@
                     </div>
                     <div ng-switch-when="false">
                       <cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="jpg">
-                        <cl-transformation height="100" width="100" crop="fill"  radius="20"/>
+                        <cl-transformation height="100" width="100" crop="fill"/>
                       </cl-image>
                     </div>
                   </div>
@@ -298,7 +298,7 @@
   </div>
 
 
-  <pre>{{publication.model | json}}</pre>
+  <pre>{{publication | json}}</pre>
 
 </section>
 
