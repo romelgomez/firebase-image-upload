@@ -69,10 +69,6 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
         $scope.publication.model.warranty = $filter('htmlToPlaintext')($scope.publication.model.htmlWarranty);
       });
 
-      $scope.isDefinedPublicationId = function(){
-        return $scope.publication.$id !== '';
-      };
-
       $scope.setCategory = function (categoryId) {
         $scope.publication.model.categoryId           = categoryId;
         $scope.publication.path                       = categoriesService.getPath(categoryId,$scope.publication.categories);
