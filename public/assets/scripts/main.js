@@ -47,7 +47,13 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
         },
         // configuration relate to sort order
         sortOrder:{
-          defaultIndexName: 'publications',
+          currentIndexName: 'publications',
+          changeIndexName: function(indexName){
+            $scope.algolia.sortOrder.currentIndexName = indexName;
+          },
+          sortBy:function(){
+            search();
+          },
           options:{
             'Marketplace': [
               {
@@ -177,6 +183,7 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
               angular.copy([],$scope.algolia.faceting.currentFacets.categories);
               updateFacetFilters()
                 .then(function(){
+                  $scope.algolia.sortOrder.changeIndexName('publications');
                   search();
                 });
             },
@@ -217,9 +224,9 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
         return deferred.promise;
       }
 
-      function search (indexName){
+      function search (){
         var deferred   = $q.defer();
-        var index  = client.initIndex(angular.isDefined(indexName) ? indexName : 'publications');
+        var index  = client.initIndex($scope.algolia.sortOrder.currentIndexName);
         function startSearch (){
           index.search($scope.algolia.req)
             .then(function(res) {
@@ -269,6 +276,7 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
       }
 
       function resetQuerySettings (){
+        $scope.algolia.sortOrder.changeIndexName('publications');
         angular.copy({},$scope.algolia.faceting.currentFacets);
         $scope.algolia.req.facetFilters = [];
         $scope.algolia.req.page = 0;
