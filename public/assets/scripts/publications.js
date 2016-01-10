@@ -50,7 +50,7 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
           if(angular.isDefined($routeParams.publicationId)){
             return setPublication($routeParams.publicationId);
           }else{
-            $scope.publication.images = [];
+            $scope.publication.images = []; // If this definition is moved to the main object the images in edit mode after F5 are not recognized.
           }
         })
         .then(function(){
