@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('app',[
+        'angular-loading-bar',
         'filters',
         'validators',
         'firebase',

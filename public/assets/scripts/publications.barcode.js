@@ -109,7 +109,7 @@ publicationsModule
         ngModel.$validators.barcode = function(input) {
           var element = document.getElementById("barcode-img");
 
-          // if barcodeImg is not set, only validated the barcode
+          // if barcodeImg directive is not set, only validated the barcode
           if (typeof element === "undefined") {
             element = document.createElement('div');
           }

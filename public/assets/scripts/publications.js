@@ -1,6 +1,6 @@
 'use strict';
 
-var publicationsModule = angular.module('publications',['categories','uuid','ngMessages','angular-redactor','ngFileUpload','angular-loading-bar'])
+var publicationsModule = angular.module('publications',['categories','uuid','ngMessages','angular-redactor','ngFileUpload'])
   .controller('PublicationsController',[
     '$scope',
     '$q',

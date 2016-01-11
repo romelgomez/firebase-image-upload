@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('login',['ngMessages','angular-loading-bar','validation.match','angular-loading-bar','trTrustpass','ngPasswordStrength'])
+angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswordStrength'])
   .controller('LoginController', ['$scope','FireAuth','$location','$q','FireRef','notificationService','$window','$log',function ($scope, FireAuth, $location, $q, FireRef, notificationService, $window, $log) {
     // Manages authentication to any active providers.
 

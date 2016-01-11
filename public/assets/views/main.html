@@ -23,13 +23,13 @@
 
       <h2 class="font-poiret-one">Welcome to London Classifieds:</h2>
 
-      <div class="list-group" style="margin-bottom: 0; font-family: 'Raleway', sans-serif; font-size: 15px; color: blue">
-        <a href="#" class="list-group-item"><i class="fa fa-shopping-cart"></i> Marketplace</a>
-        <a href="#" class="list-group-item"><i class="fa fa-suitcase"></i> Jobs</a>
-        <a href="#" class="list-group-item"><i class="fa fa-home"></i> Real Estate</a>
-        <a href="#" class="list-group-item"><i class="fa fa-car"></i> Transport</a>
-        <a href="#" class="list-group-item"><i class="fa fa-wrench"></i> Services</a>
+      <div class="list-group" style="margin-bottom: 0;">
+        <button type="button" class="list-group-item" ng-click="algolia.faceting.categories.addFacet(facet); algoliaForm.$pristine = false; algoliaForm.$dirty = true;" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" >
+          <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (facet.name === 'Marketplace'),'fa-suitcase': (facet.name === 'Jobs'),'fa-home': (facet.name === 'Real Estate'),'fa-car': (facet.name === 'Transport'),'fa-wrench': (facet.name === 'Services')}"></i>
+          {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span>
+        </button>
       </div>
+
     </section>
 
     <section ng-show="algoliaForm.$dirty" cg-busy="{promise: httpRequestPromise, message:'Just a moment'}">
@@ -51,9 +51,12 @@
         <div class="row">
           <div class="col-xs-4 col-md-3" style="padding-right: 5px;">
             <div class="panel panel-default" style="margin-bottom: 0;">
-              <div class="panel-heading"><i class="fa fa-bars"></i> Categories <button ng-show="algolia.faceting.currentFacets.categories.length > 0" ng-click="algolia.faceting.categories.removeAllFacet()" type="button" style="padding-bottom: 0; padding-top: 0;" class="btn btn-link">Reset</button></div>
+              <div class="panel-heading"><i class="fa fa-bars"></i> Categories <button ng-show="algolia.faceting.currentFacets.categories.length > 0" ng-click="algolia.faceting.categories.removeAllFacet()" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
               <div class="list-group">
-                <button type="button" class="list-group-item" ng-click="algolia.faceting.categories.addFacet(facet)" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" ><i style="color: #286090" class="fa fa-folder"></i> {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span></button>
+                <button type="button" class="list-group-item" ng-click="algolia.faceting.categories.addFacet(facet);" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" >
+                  <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (facet.name === 'Marketplace'),'fa-suitcase': (facet.name === 'Jobs'),'fa-home': (facet.name === 'Real Estate'),'fa-car': (facet.name === 'Transport'),'fa-wrench': (facet.name === 'Services')}"></i>
+                  {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span>
+                </button>
               </div>
             </div>
           </div>
