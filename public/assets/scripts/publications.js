@@ -42,6 +42,38 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
           htmlDescription:      '',
           barcode:              '',
           barcodeType:          'CODE128'
+        },
+        setCategory: function (categoryId) {
+          $scope.publication.model.categoryId           = categoryId;
+          $scope.publication.path                       = categoriesService.getPath(categoryId,$scope.publication.categories);
+          $scope.publication.model.categories           = pathNames($scope.publication.path);
+          $scope.publication.model.department           = ($scope.publication.path[0]) ? $scope.publication.path[0].name : ''; // $filter('camelCase')($scope.publication.path[0].name)
+        },
+        submit: function(){
+          if($scope.publicationForm.$valid){
+            var deferred    = $q.defer();
+
+            savePublication( $scope.publication.model, $scope.publication.$id)
+              .then(function(the){
+                $scope.publication.$id = $scope.publication.$id !== '' ? $scope.publication.$id : the.key();
+                return saveFiles( $scope.publication.images, $scope.publication.$id)
+              })
+              .then(function () {
+
+                notificationService.success('Data has been save');
+                deferred.resolve();
+
+              },function(error){
+
+                notificationService.error(error);
+                deferred.reject(error);
+
+              });
+
+            $scope.httpRequestPromise = deferred.promise;
+          }else{
+            notificationService.error('Something is missing');
+          }
         }
       };
 
@@ -69,40 +101,6 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
       },function(){
         $scope.publication.model.warranty = $filter('htmlToPlaintext')($scope.publication.model.htmlWarranty);
       });
-
-      $scope.setCategory = function (categoryId) {
-        $scope.publication.model.categoryId           = categoryId;
-        $scope.publication.path                       = categoriesService.getPath(categoryId,$scope.publication.categories);
-        $scope.publication.model.categories           = pathNames($scope.publication.path);
-        $scope.publication.model.department           = ($scope.publication.path[0]) ? $scope.publication.path[0].name : ''; // $filter('camelCase')($scope.publication.path[0].name)
-      };
-
-      $scope.submit = function(){
-        if($scope.publicationForm.$valid){
-          var deferred    = $q.defer();
-
-          savePublication( $scope.publication.model, $scope.publication.$id)
-            .then(function(the){
-              $scope.publication.$id = $scope.publication.$id !== '' ? $scope.publication.$id : the.key();
-              return saveFiles( $scope.publication.images, $scope.publication.$id)
-            })
-            .then(function () {
-
-              notificationService.success('Data has been save');
-              deferred.resolve();
-
-            },function(error){
-
-              notificationService.error(error);
-              deferred.reject(error);
-
-            });
-
-          $scope.httpRequestPromise = deferred.promise;
-        }else{
-          notificationService.error('Something is missing');
-        }
-      };
 
       $scope.imagesInfo = function(){
         var info = {
@@ -376,8 +374,6 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
 
         loadPublication(publicationId)
           .then(function (the) {
-            $log.info('the.publication',the.publication);
-
             angular.forEach(the.publication, function ( value, key) {
               if(key !== 'releaseDate'){
                 $scope.publication.model[key] = value;
