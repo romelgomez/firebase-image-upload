@@ -359,14 +359,19 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         /**
          * Observing the move event
          */
-        //treeElement.bind('tree.move',function(event) {
-        //  event.preventDefault();
-        //  event.move_info.do_move(); // jshint ignore:line
-        //  var proposalTree = angular.fromJson(element.tree('toJson'));
-        //  categoriesService.normalize(proposalTree);
-        //  var newTree = categoriesService.prepareDataForFireBase(proposalTree);
-        //  scope.updateAllTree(newTree);
-        //});
+        treeElement.bind('tree.move',function(event) {
+          event.preventDefault();
+          event.move_info.do_move(); // jshint ignore:line
+          var proposalTree = angular.fromJson(treeElement.tree('toJson'));
+          normalize(proposalTree);
+          var newTree = prepareDataForFireBase(proposalTree);
+          updateAllTree(newTree)
+            .then(function(){
+              notificationService.success('The tree or nodes has been update');
+            },function(error){
+              notificationService.error(error);
+            });
+        });
 
         /**
          * Observing the select event
@@ -388,7 +393,31 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
         scope.editNode = function(node){
           var modalInstance = $uibModal.open({
-            templateUrl: 'editNode.html',
+            template: '' +
+            '<div class="modal-header">'+
+              '<h3 class="modal-title">Edit node:</h3>'+
+            '</div>'+
+            '<div class="modal-body" cg-busy="{promise:httpRequestPromise,message:\'Just a moment\'}">'+
+              '<h3 class="text-danger" style="margin-top: 0; margin-bottom: 0;">{{node.name | capitalizeFirstChar}}</h3>'+
+              '<form id="editNodeForm" name="editNodeForm" novalidate="" ng-submit="confirm()">'+
+                '<div class="form-group">'+
+                  '<label>Node name</label>'+
+                  '<input type="text" name="node" ng-model="model.name" required no-special-chars class="form-control" placeholder="" tabindex="1">'+
+                  '<div data-ng-messages="editNodeForm.$submitted && editNodeForm.node.$error" class="help-block">'+
+                    '<div data-ng-message="required">'+
+                    '- The <b>node</b> name is required.'+
+                    '</div>'+
+                    '<div data-ng-message="noSpecialChars">'+
+                    '- La <b>node</b> name must not have special characters.'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+              '</form>'+
+            '</div>'+
+            '<div class="modal-footer">'+
+              '<button class="btn btn-warning" ng-click="cancel()">Cancel</button>'+
+              '<button form="editNodeForm" class="btn btn-primary" type="submit">Confirm</button>'+
+            '</div>',
             controller: 'EditNodeController',
             resolve: {
               node: function () {
@@ -409,7 +438,28 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
         scope.deleteNode = function(node){
           var modalInstance = $uibModal.open({
-            templateUrl: 'deleteNode.html',
+            //templateUrl: 'deleteNode.html',
+            template: '' +
+            '<div class="modal-header">'+
+              '<h3 class="modal-title">Do you really want to delete this node?</h3>'+
+            '</div>'+
+            '<div class="modal-body">'+
+              '<h3 class="text-danger" style="margin-top: 0; margin-bottom: 0;">{{node.name | capitalizeFirstChar}}</h3>'+
+              '<form id="deleteBranchForm" name="deleteBranchForm" novalidate="" ng-submit="confirm()">'+
+                '<div ng-show="branchCheckBox">'+
+                  '<div class="checkbox">'+
+                    '<label>'+
+                      '<input type="checkbox" name="branch" ng-model="model.branch" value="">' +
+                      'And daughters nodes to.'+
+                    '</label>'+
+                  '</div>'+
+                '</div>'+
+              '</form>'+
+            '</div>'+
+            '<div class="modal-footer">'+
+              '<button class="btn btn-warning" ng-click="cancel()">Cancel</button>'+
+              '<button form="deleteBranchForm" class="btn btn-primary" type="submit">Confirm</button>'+
+            '</div>',
             controller: 'DeleteNodeController',
             resolve: {
               node: function () {
