@@ -8,6 +8,7 @@ angular.module('app',[
         'fire',
         'routes',
         'categories',
+        'tree',
         'publications',
         'login',
         'account',

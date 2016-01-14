@@ -1,24 +1,24 @@
 
 <pre>{{testData}}</pre>
 
-
 <section cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
+
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">New category</h3>
+      <h3 class="panel-title">New node</h3>
     </div>
     <div class="panel-body" >
 
-      <form id="form" name="form" novalidate="" ng-submit="submit()">
+      <form id="nodeForm" name="nodeForm" novalidate="" ng-submit="nodeForm.submitForm()">
         <div class="form-group">
-          <label>New category</label>
-          <input type="text" name="category" ng-model="model.node" required no-special-chars class="form-control" placeholder="Laptops" tabindex="1">
-          <div data-ng-messages="form.$submitted && form.category.$error" class="help-block">
+          <label>New node</label>
+          <input type="text" name="node" ng-model="nodeForm.model.node" required no-special-chars class="form-control" placeholder="" tabindex="1">
+          <div data-ng-messages="nodeForm.$submitted && nodeForm.node.$error" class="help-block">
             <div data-ng-message="required">
-              - The <b>category</b> is required.
+              - The <b>node</b> name is required.
             </div>
             <div data-ng-message="noSpecialChars">
-              - La <b>category</b> must not have special characters.
+              - The <b>node</b> name must not have special characters.
             </div>
           </div>
         </div>
@@ -26,18 +26,14 @@
 
     </div>
     <div class="panel-footer">
-      <button form="form" class="btn btn-primary" type="submit">Send</button>
-      <button class="btn btn-warning" ng-click="reset()">Cancel</button>
+      <button form="nodeForm" class="btn btn-primary" type="submit">Send</button>
+      <button class="btn btn-warning" ng-click="nodeForm.resetForm()">Cancel</button>
     </div>
   </div>
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title" style="line-height: 30px;">Categories
-
-        <!--<div class="btn-group pull-right" role="group" aria-label="..." ng-show="!nodeSelected.status" >-->
-          <!--<button ng-click="deleteTree()" type="button" class="btn btn-danger">Delete All Categories</button>-->
-        <!--</div>-->
+      <h3 class="panel-title" style="line-height: 30px;">Locations
 
         <div class="btn-group pull-right" role="group" aria-label="..." ng-show="nodeSelected.status">
           <button ng-click="editNode(nodeSelected.node)" type="button" class="btn btn-default">Edit</button>
@@ -51,7 +47,7 @@
 
         <uib-tab heading="JqTree">
           <br>
-          <tree reference="categories"></tree>
+          <tree reference="locations"></tree>
         </uib-tab>
         <uib-tab heading="JqTree RAW DATA">
           <br>
@@ -85,7 +81,7 @@
             </div>
           </section>
           <section ng-if="nodes.length === 0">
-            <h2>There is no categories</h2>
+            <h2>There is no locations</h2>
           </section>
         </uib-tab>
         <uib-tab heading="Pretty JSON">
@@ -101,7 +97,7 @@
 
 <script type="text/ng-template" id="deleteNode.html">
   <div class="modal-header">
-    <h3 class="modal-title">Do you really want to delete this category?</h3>
+    <h3 class="modal-title">Do you really want to delete this location?</h3>
   </div>
   <!--<div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">-->
   <div class="modal-body">
@@ -113,7 +109,7 @@
         <div class="checkbox">
           <label>
             <input type="checkbox" name="branch" ng-model="model.branch" value="">
-            And daughters categories to.
+            And daughters locations to.
           </label>
         </div>
       </div>
@@ -128,23 +124,22 @@
 
 <script type="text/ng-template" id="editNode.html">
   <div class="modal-header">
-    <h3 class="modal-title">Edit category</h3>
+    <h3 class="modal-title">Edit location</h3>
   </div>
-  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Un momento'}">
-  <!--<div class="modal-body">-->
+  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
     <h3 class="text-danger" style="margin-top: 0; margin-bottom: 0;">{{node.name | capitalizeFirstChar}}</h3>
 
     <form id="editNodeForm" name="editNodeForm" novalidate="" ng-submit="confirm()">
       <div class="form-group">
         <label>Category</label>
-        <input type="text" name="category" ng-model="model.name" required no-special-chars class="form-control" placeholder="Laptops" tabindex="1">
-        <div data-ng-messages="editNodeForm.$submitted && editNodeForm.category.$error" class="help-block">
+        <input type="text" name="location" ng-model="model.name" required no-special-chars class="form-control" placeholder="Laptops" tabindex="1">
+        <div data-ng-messages="editNodeForm.$submitted && editNodeForm.location.$error" class="help-block">
           <div data-ng-message="required">
-            - The <b>category</b> is required.
+            - The <b>location</b> is required.
           </div>
           <div data-ng-message="noSpecialChars">
-            - La <b>category</b> must not have special characters.
+            - La <b>location</b> must not have special characters.
           </div>
         </div>
       </div>

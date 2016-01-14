@@ -1,11 +1,9 @@
 'use strict';
 
+// TODO SIMPLIFY, DELETE DUPLICATE CODE
+
 angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
   .factory('categoriesService',['$q','$filter','$firebaseArray','FireRef','notificationService',function($q,$filter,$firebaseArray,FireRef,notificationService){
-
-    var categoriesRef = function(){
-      return FireRef.child('categories');
-    };
 
     /**
      * Source node is packed as JqTree node. ImplementedBy sourceDataAsJqTreeData();
@@ -41,14 +39,18 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
       });
     };
 
+    var currentReference = '';
+
     return {
-      nodes:function(){
-        return $firebaseArray(categoriesRef().orderByChild('left'));
+      nodes:function(reference){
+        currentReference = currentReference !== '' ?  currentReference : reference;
+        var ref = FireRef.child(currentReference);
+        return $firebaseArray(ref.orderByChild('left'));
       },
       updateAllTree:function(newTree){
         var deferred = $q.defer();
         var promise = deferred.promise;
-        var ref = categoriesRef();
+        var ref = FireRef.child(currentReference);
         ref.set(newTree, function(error) {
           if (error) {
             notificationService.error(error);
@@ -72,7 +74,7 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
             deferred.resolve();
           }
         };
-        categoriesRef().remove(onComplete);
+        FireRef.child(currentReference).remove(onComplete);
         return promise;
       },
       /**
@@ -240,7 +242,7 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
       updateNode:function(node){
         var deferred = $q.defer();
         var promise = deferred.promise;
-        var nodeRef = categoriesRef().child(node.id);
+        var nodeRef = FireRef.child(currentReference).child(node.id);
         nodeRef.update({
           name:node.name
         },function(error){
@@ -255,96 +257,11 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
   }])
-  .directive('tree',['$templateCache','$compile','categoriesService',function($templateCache,$compile,categoriesService){
-
-    return {
-      restrict:'E',
-      replace:true,
-      template:'<div><div/>',
-      link:function(scope,element){
-
-        /**
-         * Display initially JqTree Data.
-         * @param {Element} element, reference of DOM element
-         * @param {Object} data
-         * @return undefined
-         */
-        var displayJqTreeData = function(element,data){
-          var options = {
-            dragAndDrop: true,
-            selectable: true,
-            autoEscape: false,
-            autoOpen: true,
-            data: data
-          };
-
-          element.tree(options);
-        };
-
-        /**
-         * Replace whole Tree. Implemented By: newCategory(), editCategoryName(), deleteCategory(), treeMove()
-         * @param {Element} element, reference of DOM element
-         * @param {Object} data
-         * @return undefined
-         */
-        var replaceWholeTree = function(element,data){
-          element.tree('loadData', data);
-        };
-
-
-        /**
-         * Displaying initially Data, which is []
-         */
-        displayJqTreeData(element,[]);
-
-        /**
-         * Observing the move event
-         */
-        element.bind('tree.move',function(event) {
-          event.preventDefault();
-          event.move_info.do_move(); // jshint ignore:line
-          var proposalTree = angular.fromJson(element.tree('toJson'));
-          categoriesService.normalize(proposalTree);
-          var newTree = categoriesService.prepareDataForFireBase(proposalTree);
-          scope.updateAllTree(newTree);
-        });
-
-        /**
-         * Observing the select event
-         */
-        element.bind('tree.select',function(event) {
-            var result = {
-              status:false,
-              node:{}
-            };
-            if(event.node !== null){
-              result.node = event.node;
-              result.status = true;
-            }
-            categoriesService.nodeSelected = result;
-            scope.$apply();
-          }
-        );
-
-        /**
-         * The real time data front fireBase
-         */
-        var nodes = categoriesService.nodes();
-
-        /**
-         * Observing changes in nodes var, which has first [] empty array, after some time is get server data.
-         */
-        nodes.$watch(function(){
-          replaceWholeTree(element,categoriesService.sourceDataAsJqTreeData(nodes));
-        });
-
-      }
-    };
-
-  }])
   .controller('TreeController',['$scope','notificationService','categoriesService','$uibModal',function($scope,notificationService,categoriesService,$uibModal){
 
-    $scope.nodes = categoriesService.nodes();
+    $scope.testData = 'categories string';
+
+    $scope.nodes = categoriesService.nodes('categories');
 
     $scope.asJqTreeData = [];
 
@@ -401,7 +318,120 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
         }
       });
       modalInstance.result.then(function(){
-        notificationService.success('Se modifico.');
+        notificationService.success('It was updated successfully.');
+      }, function (error) {
+        notificationService.error(error);
+      });
+    };
+
+    $scope.submit = function () {
+      if($scope.form.$valid){
+
+        var nodesLength = $scope.nodes.length;
+        var left, right;
+
+        if(nodesLength >= 1){
+          var upperLimit = nodesLength * 2;
+          left    = upperLimit+1;
+          right   = upperLimit+2;
+        }else{
+          left    = 1;
+          right   = 2;
+        }
+
+        var node = {
+          left:     left,
+          right:    right,
+          parentId: '',
+          name:     $scope.model.node
+        };
+
+        $scope.httpRequestPromise = $scope.nodes.$add(node).then(function() {
+          notificationService.success('Data has been saved to our FireBase database');
+          $scope.reset();
+        },function(error){
+          notificationService.error(error);
+          //$window.location = '/';
+        });
+
+      }
+    };
+
+    $scope.updateAllTree = function (newTree){
+      $scope.httpRequestPromise = categoriesService.updateAllTree(newTree);
+    };
+
+    $scope.nodeSelected = categoriesService.nodeSelected;
+
+    $scope.$watch(function () {
+      return categoriesService.nodeSelected;
+    },function () {
+      $scope.nodeSelected = categoriesService.nodeSelected;
+    });
+
+  }])
+  .controller('LocationsController',['$scope','notificationService','categoriesService','$uibModal',function($scope,notificationService,categoriesService,$uibModal){
+
+    $scope.testData = 'location string';
+
+    $scope.nodes = categoriesService.nodes('locations');
+
+    $scope.asJqTreeData = [];
+
+    $scope.nodes.$watch(function () {
+      $scope.asJqTreeData = categoriesService.sourceDataAsJqTreeData($scope.nodes);
+    });
+
+    $scope.httpRequestPromise = $scope.nodes.$loaded(null,function(error){
+      notificationService.error(error);
+    });
+
+    var original = angular.copy($scope.model = {
+      node: null
+    });
+
+    $scope.reset = function(){
+      $scope.model = angular.copy(original);
+      $scope.form.$setUntouched();
+      $scope.form.$setPristine();
+    };
+
+    $scope.deleteTree = function(){
+      $scope.httpRequestPromise = categoriesService.deleteAllTree();
+    };
+
+    $scope.deleteNode = function(node){
+      var modalInstance = $uibModal.open({
+        templateUrl: 'deleteNode.html',
+        controller: 'DeleteNodeController',
+        resolve: {
+          node: function () {
+            return node;
+          }
+        }
+      });
+      modalInstance.result.then(function(branch){
+        var newData = categoriesService.excludeNode($scope.asJqTreeData,node.$id,branch);
+        categoriesService.normalize(newData.targetTree);
+        var newTree = categoriesService.prepareDataForFireBase(newData.targetTree);
+        $scope.httpRequestPromise = categoriesService.updateAllTree(newTree);
+      }, function (error) {
+        notificationService.error(error);
+      });
+    };
+
+    $scope.editNode = function(node){
+      var modalInstance = $uibModal.open({
+        templateUrl: 'editNode.html',
+        controller: 'EditNodeController',
+        resolve: {
+          node: function () {
+            return node;
+          }
+        }
+      });
+      modalInstance.result.then(function(){
+        notificationService.success('It was updated successfully.');
       }, function (error) {
         notificationService.error(error);
       });
@@ -491,6 +521,99 @@ angular.module('categories',['ngMessages','cgBusy','jlareau.pnotify'])
 
     $scope.cancel   = function () {
       $modalInstance.dismiss('this has be cancel');
+    };
+
+  }])
+  .directive('tree',['$templateCache','$compile','categoriesService',function($templateCache,$compile,categoriesService){
+
+    return {
+      restrict:'E',
+      replace:true,
+      template:'<div><div/>',
+      scope: {
+        reference: '@'
+      },
+      link:function(scope,element){
+        if (typeof scope.reference === "undefined") {
+          throw "the reference attr is undefined";
+        }
+
+        /**
+         * Display initially JqTree Data.
+         * @param {Element} element, reference of DOM element
+         * @param {Object} data
+         * @return undefined
+         */
+        var displayJqTreeData = function(element,data){
+          var options = {
+            dragAndDrop: true,
+            selectable: true,
+            autoEscape: false,
+            autoOpen: true,
+            data: data
+          };
+
+          element.tree(options);
+        };
+
+        /**
+         * Replace whole Tree. Implemented By: newCategory(), editCategoryName(), deleteCategory(), treeMove()
+         * @param {Element} element, reference of DOM element
+         * @param {Object} data
+         * @return undefined
+         */
+        var replaceWholeTree = function(element,data){
+          element.tree('loadData', data);
+        };
+
+
+        /**
+         * Displaying initially Data, which is []
+         */
+        displayJqTreeData(element,[]);
+
+        /**
+         * Observing the move event
+         */
+        element.bind('tree.move',function(event) {
+          event.preventDefault();
+          event.move_info.do_move(); // jshint ignore:line
+          var proposalTree = angular.fromJson(element.tree('toJson'));
+          categoriesService.normalize(proposalTree);
+          var newTree = categoriesService.prepareDataForFireBase(proposalTree);
+          scope.updateAllTree(newTree);
+        });
+
+        /**
+         * Observing the select event
+         */
+        element.bind('tree.select',function(event) {
+            var result = {
+              status:false,
+              node:{}
+            };
+            if(event.node !== null){
+              result.node = event.node;
+              result.status = true;
+            }
+            categoriesService.nodeSelected = result;
+            scope.$apply();
+          }
+        );
+
+        /**
+         * The real time data front fireBase
+         */
+        var nodes = categoriesService.nodes(scope.reference);
+
+        /**
+         * Observing changes in nodes var, which has first [] empty array, after some time is get server data.
+         */
+        nodes.$watch(function(){
+          replaceWholeTree(element,categoriesService.sourceDataAsJqTreeData(nodes));
+        });
+
+      }
     };
 
   }]);

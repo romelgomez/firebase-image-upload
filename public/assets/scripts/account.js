@@ -28,7 +28,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
       var index  = client.initIndex('publications');
-      var categories = categoriesService.nodes();
+      var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
       configTasks.categories = categories.$loaded();
 
       $scope.isCollapsed = true; // TODO FOR DEBUG

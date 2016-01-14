@@ -29,7 +29,7 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
       $scope.publication = {
         $id: '',
         path: [],
-        categories: categoriesService.nodes(),
+        categories: $firebaseArray(FireRef.child('categories').orderByChild('left')),
         categorySelected: false,
         inEditMode: false,
         isReady: false,

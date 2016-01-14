@@ -6,12 +6,13 @@ angular.module('main',['cloudinary','algoliasearch','categories'])
     '$location',
     '$window',
     'algolia',
-    'categoriesService',
-    '$log', function( $scope, $q, $location, $window, algolia, categoriesService, $log){
+    'FireRef',
+    '$firebaseArray',
+    '$log', function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray, $log){
 
       var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
-      var categories = categoriesService.nodes();
+      var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
       configTasks.categories = categories.$loaded();
 
       //$scope.isCollapsed = true; // TODO FOR DEBUG
