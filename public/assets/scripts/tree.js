@@ -69,19 +69,16 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     var reference = '';
 
     function updateAllTree(newTree){
-      console.log('newTree',newTree);
       var deferred = $q.defer();
-      //var promise = deferred.promise;
-      //var ref = FireRef.child(reference);
-      //ref.set(newTree, function(error) {
-      //  if (error) {
-      //    deferred.reject(error);
-      //  } else {
-      //    deferred.resolve();
-      //  }
-      //});
-      //return promise;
-      return deferred.reject('in contruccion');
+      var ref = FireRef.child(reference);
+      ref.set(newTree, function(error) {
+        if (error) {
+          deferred.reject(error);
+        } else {
+          deferred.resolve();
+        }
+      });
+      return deferred.promise;
     }
 
     /**
@@ -331,8 +328,8 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
             '<div class="panel-heading">' +
               '<h3 class="panel-title" style="line-height: 30px;">The <b>{{reference | capitalize}}</b> tree data:' +
                 '<div class="btn-group pull-right" role="group" aria-label="..." ng-show="nodeSelected.status">' +
-                  '<button ng-click="editNode(nodeSelected.node)" type="button" class="btn btn-default">Edit</button>' +
-                  '<button ng-click="deleteNode(nodeSelected.node)" type="button" class="btn btn-default">Delete</button>' +
+                  '<button ng-click="editNode(nodeSelected.node)" type="button" class="btn btn-info">Edit</button>' +
+                  '<button ng-click="deleteNode(nodeSelected.node)" type="button" class="btn btn-danger">Delete</button>' +
                 '</div>' +
               '</h3>' +
             '</div>' +
@@ -421,7 +418,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
             }
           });
           modalInstance.result.then(function( node, branch){
-            var newData = excludeNode( treeData.jTreeNodes, node.$id, branch);
+            var newData = excludeNode( sourceDataAsJqTreeData(treeData.rawNodes), node.id, branch);
             normalize(newData.targetTree);
             var newTree = prepareDataForFireBase(newData.targetTree);
             scope.httpRequestPromise = updateAllTree(newTree)
