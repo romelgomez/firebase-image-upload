@@ -80,7 +80,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
   }])
-  .directive('jTree',[ '$q', '$templateCache', '$compile', '$uibModal', 'FireRef', '$firebaseArray', 'notificationService', '$log', function( $q, $templateCache, $compile, $uibModal, FireRef, $firebaseArray, notificationService, $log){
+  .directive('jTree',[ '$q', '$templateCache', '$compile', '$uibModal', 'FireRef', '$firebaseArray', '$firebaseObject', 'notificationService', '$log', function( $q, $templateCache, $compile, $uibModal, FireRef, $firebaseArray, $firebaseObject, notificationService, $log){
 
     var treeData = {
       rawNodes:[]
@@ -370,8 +370,19 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
               '</h3>' +
             '</div>' +
             '<div class="panel-body">' +
-              '<div ng-show="rawNodesLength === 0">Start add some data.</div>' +
+              '<div ng-show="rawNodes.length === 0">Start add some data.</div>' +
               '<div id="tree"></div>' +
+            '<div/>' +
+          '<div/>' +
+        '</section>' +
+        '<section>' +
+          '<div class="panel panel-default">' +
+            '<div class="panel-heading">' +
+              '<h3 class="panel-title" style="line-height: 30px;">The <b>{{reference | capitalize}}</b> tree <b>Raw</b> data: </h3>' +
+            '</div>' +
+            '<div class="panel-body">' +
+              '<div><div class="alert alert-danger" role="alert"> For recovering purposes, after any changes, update the node service at code level, to avoid lost of this critical data.  </div></div>' +
+              '<pre>{{rawNodes | json }}</pre>' +
             '<div/>' +
           '<div/>' +
         '</section>' +
@@ -568,10 +579,10 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
          * The real time data front fireBase
          */
         treeData.rawNodes = $firebaseArray(FireRef.child(scope.reference).orderByChild('left'));
+        // For recovery purposes
+        scope.rawNodes = $firebaseObject(FireRef.child(scope.reference).orderByChild('left'));
 
-        scope.httpRequestPromise = treeData.rawNodes.$loaded(function(){
-          scope.rawNodesLength = treeData.rawNodes.length;
-        },function(error){
+        scope.httpRequestPromise = treeData.rawNodes.$loaded(null,function(error){
           notificationService.error(error);
         });
 
@@ -579,7 +590,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
          * Observing changes in nodes var, which has first [] empty array, after some time is get server data.
          */
         treeData.rawNodes.$watch(function(){
-          scope.rawNodesLength = treeData.rawNodes.length;
+          //scope.rawNodesLength = treeData.rawNodes.length;
           replaceWholeTree(treeElement,sourceDataAsJqTreeData(treeData.rawNodes));
         });
 
