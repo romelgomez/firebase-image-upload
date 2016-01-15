@@ -2,7 +2,7 @@
 
 $.cloudinary.config().cloud_name = 'berlin';
 
-angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch','categories'])
+angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch'])
   .controller('AccountController',['$scope', '$q', 'user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log', function ($scope, $q, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
 
     $scope.account = {
@@ -22,8 +22,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     '$timeout',
     '$location',
     'algolia',
-    'categoriesService',
-    '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, algolia, categoriesService,  $log){
+    '$log', function( $scope, $q, FireRef, $firebaseObject, $firebaseArray, $timeout, $location, algolia, $log){
 
       var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');

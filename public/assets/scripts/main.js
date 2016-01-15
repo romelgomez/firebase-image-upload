@@ -1,5 +1,5 @@
 // FrontEnd Controller
-angular.module('main',['cloudinary','algoliasearch','categories'])
+angular.module('main',['cloudinary','algoliasearch'])
   .controller('MainController',[
     '$scope',
     '$q',

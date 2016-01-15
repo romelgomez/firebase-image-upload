@@ -68,7 +68,7 @@ angular.module('routes',['ngRoute'])
       })
       .whenAuthenticated('/locations', {
         templateUrl: 'assets/views/locations.html',
-        controller: 'LocationsController'
+        controller: 'TreeController'
       })
       .whenAuthenticated('/j-tree-test', {
         templateUrl: 'assets/views/jtree-diretive-test.html',

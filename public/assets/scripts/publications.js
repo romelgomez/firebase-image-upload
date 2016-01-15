@@ -1,6 +1,6 @@
 'use strict';
 
-var publicationsModule = angular.module('publications',['categories','uuid','ngMessages','angular-redactor','ngFileUpload'])
+var publicationsModule = angular.module('publications',['uuid','ngMessages','angular-redactor','ngFileUpload'])
   .controller('PublicationsController',[
     '$scope',
     '$q',
@@ -13,12 +13,12 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
     '$firebaseArray',
     '$firebaseObject',
     'rfc4122',
-    'categoriesService',
+    'treeService',
     'notificationService',
     'Upload',
     'user',
     '$uibModal',
-    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, categoriesService, notificationService, $upload, user, $uibModal, $log){
+    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, $log){
 
       var deferred = $q.defer();
       var publicationsRef = FireRef.child('publications');
@@ -45,7 +45,7 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
         },
         setCategory: function (categoryId) {
           $scope.publication.model.categoryId           = categoryId;
-          $scope.publication.path                       = categoriesService.getPath(categoryId,$scope.publication.categories);
+          $scope.publication.path                       = treeService.getPath(categoryId,$scope.publication.categories);
           $scope.publication.model.categories           = pathNames($scope.publication.path);
           $scope.publication.model.department           = ($scope.publication.path[0]) ? $scope.publication.path[0].name : ''; // $filter('camelCase')($scope.publication.path[0].name)
         },
@@ -389,7 +389,7 @@ var publicationsModule = angular.module('publications',['categories','uuid','ngM
           })
           .then(function(){
             $scope.publication.$id      = publicationId;
-            $scope.publication.path               = categoriesService.getPath($scope.publication.model.categoryId,$scope.publication.categories);
+            $scope.publication.path               = treeService.getPath($scope.publication.model.categoryId,$scope.publication.categories);
             $scope.publication.categorySelected   = true;
             $scope.publication.inEditMode          = true;
             deferred.resolve();

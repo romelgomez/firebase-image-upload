@@ -7,7 +7,6 @@ angular.module('app',[
         'firebase',
         'fire',
         'routes',
-        'categories',
         'tree',
         'publications',
         'login',

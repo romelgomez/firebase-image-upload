@@ -11,11 +11,10 @@ publicationsModule
     '$firebaseArray',
     '$firebaseObject',
     'rfc4122',
-    'categoriesService',
     'notificationService',
     'Upload',
     '$uibModal',
-    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, categoriesService, notificationService, $upload, $uibModal, $log){
+    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, notificationService, $upload, $uibModal, $log){
 
       var publicationsRef  = FireRef.child('publications');
 

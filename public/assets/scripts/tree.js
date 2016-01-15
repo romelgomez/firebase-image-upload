@@ -1,4 +1,26 @@
 angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
+  .factory('treeService', ['$filter',function($filter) {
+
+    return {
+      getPath : function(nodeId,nodes){
+        var path = [];
+        var reverseNodes   = $filter('reverse')(nodes);
+        var process = function (nodeId){
+          angular.forEach(reverseNodes,function(node){
+            if(nodeId === node.$id){
+              path.push(node);
+              if(node.parentId !== ''){
+                process(node.parentId);
+              }
+            }
+          });
+        };
+        process(nodeId);
+        return $filter('reverse')(path);
+      }
+    };
+
+  }])
   .controller('TreeController',[function(){
   }])
   .controller('EditNodeController',['$scope', '$q', '$modalInstance', 'node', 'nodeRef',function($scope, $q, $modalInstance, node, nodeRef){
@@ -61,12 +83,26 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
   .directive('jTree',[ '$q', '$templateCache', '$compile', '$uibModal', 'FireRef', '$firebaseArray', 'notificationService', '$log', function( $q, $templateCache, $compile, $uibModal, FireRef, $firebaseArray, notificationService, $log){
 
     var treeData = {
-      rawNodes:[],
-      jTreeNodes : []
+      rawNodes:[]
     };
 
     var nodeSelected = {};
     var reference = '';
+
+    //function deleteAllTree(){
+    //  var deferred = $q.defer();
+    //  function onComplete(error) {
+    //    if (error) {
+    //      notificationService.error(error);
+    //      deferred.reject();
+    //    } else {
+    //      notificationService.success('The tree or nodes has been deleted');
+    //      deferred.resolve();
+    //    }
+    //  }
+    //  FireRef.child(reference).remove(onComplete);
+    //  return deferred.promise;
+    //}
 
     function updateAllTree(newTree){
       var deferred = $q.defer();
@@ -334,6 +370,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
               '</h3>' +
             '</div>' +
             '<div class="panel-body">' +
+              '<div ng-show="rawNodesLength === 0">Start add some data.</div>' +
               '<div id="tree"></div>' +
             '<div/>' +
           '<div/>' +
@@ -365,7 +402,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           var proposalTree = angular.fromJson(treeElement.tree('toJson'));
           normalize(proposalTree);
           var newTree = prepareDataForFireBase(proposalTree);
-          updateAllTree(newTree)
+          scope.httpRequestPromise = updateAllTree(newTree)
             .then(function(){
               notificationService.success('The tree or nodes has been update');
             },function(error){
@@ -532,7 +569,9 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
          */
         treeData.rawNodes = $firebaseArray(FireRef.child(scope.reference).orderByChild('left'));
 
-        scope.httpRequestPromise = treeData.rawNodes.$loaded(null,function(error){
+        scope.httpRequestPromise = treeData.rawNodes.$loaded(function(){
+          scope.rawNodesLength = treeData.rawNodes.length;
+        },function(error){
           notificationService.error(error);
         });
 
@@ -540,6 +579,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
          * Observing changes in nodes var, which has first [] empty array, after some time is get server data.
          */
         treeData.rawNodes.$watch(function(){
+          scope.rawNodesLength = treeData.rawNodes.length;
           replaceWholeTree(treeElement,sourceDataAsJqTreeData(treeData.rawNodes));
         });
 
