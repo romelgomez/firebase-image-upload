@@ -1,57 +1,4 @@
-
 publicationsModule
-  .controller('BarcodeController', ['$scope','rfc4122',function($scope,rfc4122){
-
-    $scope.barcode = {
-      types: [
-        {
-          title:'EAN (13)',
-          type:'EAN'
-        },
-        {
-          title:'UPC-A',
-          type:'UPC'
-        },
-        {
-          title:'CODE39',
-          type:'CODE39'
-        },
-        {
-          title:'CODE128',
-          type:'CODE128'
-        },
-        {
-          title:'ITF (Interleaved 2 of 5)',
-          type:'ITF'
-        },
-        {
-          title:'ITF14',
-          type:'ITF14'
-        },
-        {
-          title:'Pharmacode',
-          type:'pharmacode'
-        }
-      ],
-      options: {
-        width: 1,
-        height: 50,
-        quite: 10,
-        format: $scope.publication.model.barcodeType,
-        displayValue: true,
-        font: "monospace",
-        textAlign: "center",
-        fontSize: 12,
-        backgroundColor: "",
-        lineColor: "#000"
-      }
-    };
-
-    $scope.setBarcodeCODE128Randomly = function(){
-      $scope.publication.model.barcode = rfc4122.v4()
-    };
-
-  }])
   .directive('barcodeImg', ['$compile', '$window','$log',function ($compile) {
 
     function isCanvasSupported(){
@@ -89,7 +36,7 @@ publicationsModule
 
       }
     }}])
-  .directive('barcode', [function() {
+  .directive('barcode', ['$log',function($log) {
     return {
       restrict:'A',
       require : 'ngModel',
@@ -114,10 +61,110 @@ publicationsModule
             element = document.createElement('div');
           }
 
+          $log.info('scope.barcodeOptions.format', scope.barcodeOptions.format);
           JsBarcode(element, input, scope.barcodeOptions, isValid);
           return result;
         };
 
       }
     };
+  }])
+  .directive('barcodeInput', ['rfc4122', function(rfc4122){
+
+    return {
+      restrict: 'E',
+      scope:{
+        formName:'=',
+        inputModel:'=',
+        selectModel:'='
+      },
+      template:'' +
+      '<div class="row">'+
+        '<div class="col-xs-8">'+
+          '<label><i class="fa fa-barcode"></i> Barcode</label>'+
+          '<div class="row" style="margin-bottom: 10px;">'+
+            '<div class="col-xs-5">'+
+              '<select class="form-control" ng-model="selectModel" ng-change="formName.barcode.$dirty = true; formName.barcode.$pristine = false; inputModel = \'\';">'+
+                '<option ng-repeat="barcode in barcode.types" value="{{barcode.type}}">{{barcode.title}}</option>'+
+              '</select>'+
+            '</div>'+
+            '<div class="col-xs-5">'+
+              '<button ng-show="selectModel === \'CODE128\'" class="btn btn-default" type="button" ng-click="setBarcodeCODE128Randomly(); formName.barcode.$dirty = true; formName.barcode.$pristine = false;">Set one CODE128 type randomly</button>'+
+            '</div>'+
+          '</div>'+
+          '<div class="form-group" style="margin-bottom: 10px;">'+
+            '<input name="barcode" ng-model="inputModel" required barcode barcode-options="barcode.options" class="form-control" placeholder="<Place here the bar code>" type="text">'+
+          '</div>'+
+          '<div data-ng-messages="(formName.$submitted && formName.barcode.$error) || (formName.barcode.$dirty && formName.barcode.$error)" class="help-block">'+
+            '<div data-ng-message="required">'+
+            '- The <b>barcode</b> is required.'+
+            '</div>'+
+            '<div data-ng-message="barcode">'+
+            '- The <b>barcode </b> must be valid.'+
+            '</div>'+
+          '</div>'+
+          '<barcode-img ng-show="!formName.barcode.$error.barcode"></barcode-img>'+
+        '</div>'+
+      '</div>',
+      link:function(scope){
+
+        scope.barcode = {
+          types: [
+            {
+              title:'EAN (13)',
+              type:'EAN'
+            },
+            {
+              title:'UPC-A',
+              type:'UPC'
+            },
+            {
+              title:'CODE39',
+              type:'CODE39'
+            },
+            {
+              title:'CODE128',
+              type:'CODE128'
+            },
+            {
+              title:'ITF (Interleaved 2 of 5)',
+              type:'ITF'
+            },
+            {
+              title:'ITF14',
+              type:'ITF14'
+            },
+            {
+              title:'Pharmacode',
+              type:'pharmacode'
+            }
+          ],
+          options: {
+            width: 1,
+            height: 50,
+            quite: 10,
+            format: 'CODE128',
+            displayValue: true,
+            font: "monospace",
+            textAlign: "center",
+            fontSize: 12,
+            backgroundColor: "",
+            lineColor: "#000"
+          }
+        };
+
+        scope.setBarcodeCODE128Randomly = function(){
+          scope.inputModel = rfc4122.v4()
+        };
+
+        scope.$watch(function(){
+          return scope.selectModel;
+        },function(value){
+          scope.barcode.options.format = value;
+        });
+
+      }
+    };
+
   }]);
+
