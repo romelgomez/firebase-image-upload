@@ -1,5 +1,5 @@
 publicationsModule
-  .directive('barcodeImg', ['$compile', '$window','$log',function ($compile) {
+  .directive('barcodeImg', ['$compile', '$window',function ($compile, $window) {
 
     function isCanvasSupported(){
       var elem = document.createElement('canvas');
@@ -31,12 +31,12 @@ publicationsModule
           if (typeof scope.barcodeOptions === "undefined") {
             scope.barcodeOptions = {};
           }
-          JsBarcode(element.find(tagUsed), scope.barcodeString, scope.barcodeOptions);
+          $window.JsBarcode(element.find(tagUsed), scope.barcodeString, scope.barcodeOptions);
         }
 
       }
     }}])
-  .directive('barcode', ['$log',function($log) {
+  .directive('barcode', ['$window', function($window) {
     return {
       restrict:'A',
       require : 'ngModel',
@@ -61,8 +61,7 @@ publicationsModule
             element = document.createElement('div');
           }
 
-          $log.info('scope.barcodeOptions.format', scope.barcodeOptions.format);
-          JsBarcode(element, input, scope.barcodeOptions, isValid);
+          $window.JsBarcode(element, input, scope.barcodeOptions, isValid);
           return result;
         };
 
