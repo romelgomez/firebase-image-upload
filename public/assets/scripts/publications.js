@@ -1,6 +1,67 @@
 'use strict';
 
 var publicationsModule = angular.module('publications',['uuid','ngMessages','angular-redactor','ngFileUpload'])
+  .factory('publicationService',['$q','imagesService',function( $q, imagesService){
+
+    return {
+      savePublication : function(publicationModel , publicationsRef, publicationId) {
+
+        if(angular.isDefined(publicationId) && publicationId !== ''){
+          // update record
+          var deferred = $q.defer();
+
+          var publicationRef = publicationsRef.child(publicationId);
+
+          var record = {};
+          angular.forEach(publicationModel,function(value,key){
+            if(key !== 'releaseDate'){
+              record[key] = value;
+            }
+          });
+
+          publicationRef.update(record, function (error) {
+            if (error) {
+              deferred.reject(error);
+            } else {
+              deferred.resolve();
+            }
+          });
+
+          return deferred.promise;
+        }else{
+          // new record
+          var newPublicationRef = publicationsRef.push(); // like array element
+          publicationModel.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
+          return newPublicationRef.set(publicationModel);
+        }
+
+      },
+      removePublication : function( publicationsRef, publicationId){
+        var deferred                            = $q.defer();
+        var tasksToDo                           = {};
+
+        tasksToDo.deleteImages = imagesService.deleteImages(publicationId,null);
+        tasksToDo.detelePublication = publicationsRef.child(publicationId).remove(function (error) {
+          if (error) {
+            deferred.reject(error);
+          } else {
+            deferred.resolve();
+          }
+        });
+
+        $q.all(tasksToDo)
+          .then(function(){
+            deferred.resolve();
+          }, function (error) {
+            notificationService.error(error);
+          });
+
+        return deferred.promise;
+      }
+    };
+
+  }])
+
   .controller('PublicationsController',[
     '$scope',
     '$q',
