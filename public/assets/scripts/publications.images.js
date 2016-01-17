@@ -1,34 +1,34 @@
 publicationsModule
-  .factory('imagesService', ['$q', '$upload',function($q, $upload) {
+  .factory('imagesService', ['$q', function($q) {
 
-    function uploadFile(file, fileId, publicationId){
-      var deferred = $q.defer();
-
-      file.upload = $upload.upload({
-        url: 'https://api.cloudinary.com/v1_1/berlin/upload',
-        fields: {
-          public_id: fileId,
-          upload_preset: 'ebdyaimw',
-          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId,
-          tags: [publicationId]
-        },
-        file: file
-      }).progress(function (e) {
-        file.progress = Math.round((e.loaded * 100.0) / e.total);
-      }).success(function (data) {
-        file.inServer = true;
-        file.$id  = data.context.custom.$id;
-
-        deferred.resolve({
-          '$id':data.context.custom.$id
-        });
-      }).error(function (data) {
-        file.details  = data;
-        deferred.reject();
-      });
-
-      return deferred.promise;
-    }
+    //function uploadFile(file, fileId, publicationId){
+    //  var deferred = $q.defer();
+    //
+    //  file.upload = $upload.upload({
+    //    url: 'https://api.cloudinary.com/v1_1/berlin/upload',
+    //    fields: {
+    //      public_id: fileId,
+    //      upload_preset: 'ebdyaimw',
+    //      context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId,
+    //      tags: [publicationId]
+    //    },
+    //    file: file
+    //  }).progress(function (e) {
+    //    file.progress = Math.round((e.loaded * 100.0) / e.total);
+    //  }).success(function (data) {
+    //    file.inServer = true;
+    //    file.$id  = data.context.custom.$id;
+    //
+    //    deferred.resolve({
+    //      '$id':data.context.custom.$id
+    //    });
+    //  }).error(function (data) {
+    //    file.details  = data;
+    //    deferred.reject();
+    //  });
+    //
+    //  return deferred.promise;
+    //}
 
 
     return {
@@ -59,30 +59,30 @@ publicationsModule
 
         return deferred.promise;
       },
-      saveFiles: function(publicationsRef, publicationId, files){
-        var publicationImagesRef = publicationsRef.child(publicationId).child('images');
-        var filesPromises = {};
-        var filesReferences = {};
-        angular.forEach(files,function(file){
-          if(!angular.isDefined(file.inServer)){
-            var imageRef = publicationImagesRef.push();
-            filesReferences[imageRef.key()] = imageRef;
-            filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key(),publicationId)
-              .then(function(the){
-                return filesReferences[the.$id].set({
-                  name:file.name,
-                  size:file.size,
-                  type:file.type,
-                  width:file.width,
-                  height:file.height,
-                  inServer:true,
-                  addedDate: $window.Firebase.ServerValue.TIMESTAMP
-                })
-              });
-          }
-        });
-        return $q.all(filesPromises);
-      },
+      //saveFiles: function(publicationsRef, publicationId, files){
+      //  var publicationImagesRef = publicationsRef.child(publicationId).child('images');
+      //  var filesPromises = {};
+      //  var filesReferences = {};
+      //  angular.forEach(files,function(file){
+      //    if(!angular.isDefined(file.inServer)){
+      //      var imageRef = publicationImagesRef.push();
+      //      filesReferences[imageRef.key()] = imageRef;
+      //      filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key(),publicationId)
+      //        .then(function(the){
+      //          return filesReferences[the.$id].set({
+      //            name:file.name,
+      //            size:file.size,
+      //            type:file.type,
+      //            width:file.width,
+      //            height:file.height,
+      //            inServer:true,
+      //            addedDate: $window.Firebase.ServerValue.TIMESTAMP
+      //          })
+      //        });
+      //    }
+      //  });
+      //  return $q.all(filesPromises);
+      //},
       featuredImage: function(publicationRef,imageId){
         var deferred = $q.defer();
 

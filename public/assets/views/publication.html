@@ -235,11 +235,11 @@
 
                     <div ng-switch="value.blobUrl !== undefined">
                       <div ng-switch-when="true">
-                        <img class="img-thumbnail img-preview img-responsive" ng-src="{{value.blobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}" width="100" height="100">
+                        <img class="img-thumbnail img-preview img-responsive" ng-src="{{value.blobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">
                       </div>
                       <div ng-switch-when="false">
                         <cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="jpg">
-                          <cl-transformation height="100" width="100" crop="fill"/>
+                          <cl-transformation height="120" width="150" crop="fill"/>
                         </cl-image>
                       </div>
                     </div>

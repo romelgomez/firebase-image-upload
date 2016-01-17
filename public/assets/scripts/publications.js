@@ -83,7 +83,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
 
       var deferred = $q.defer();
       var publicationsRef = FireRef.child('publications');
-      var publications  = $firebaseArray(publicationsRef);
+      //var publications  = $firebaseArray(publicationsRef);
 
       $scope.httpRequestPromise = deferred.promise;
 
@@ -116,15 +116,17 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         setLocation: function (locationId) {
           $scope.publication.model.locationId          = locationId;
           $scope.publication.locationPath              = treeService.getPath(locationId,$scope.publication.locations);
-          $scope.publication.model.locations           = pathNames($scope.publication.path);
+          $scope.publication.model.locations           = pathNames($scope.publication.locationPath);
         },
         submit: function(){
           if($scope.publicationForm.$valid){
             var deferred    = $q.defer();
 
-            savePublication( $scope.publication.model, $scope.publication.$id)
+            savePublication( $scope.publication.model, publicationsRef, $scope.publication.$id)
               .then(function(the){
-                $scope.publication.$id = $scope.publication.$id !== '' ? $scope.publication.$id : the.key();
+                console.log('the save data:',angular.fromJson(the));
+                console.log('the save data:',angular.toJson(the));
+                $scope.publication.$id = $scope.publication.$id !== '' ? $scope.publication.$id : the.publicationId;
                 return saveFiles( $scope.publication.images, $scope.publication.$id)
               })
               .then(function () {
@@ -346,21 +348,47 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         return $q.all(filesPromises);
       }
 
-      function savePublication(publication,id) {
-        if(angular.isDefined(id) && id !== ''){
-          var record = publications.$getRecord(id);
-          angular.forEach(publication,function(value,key){
+      function savePublication(publicationModel, publicationsRef, publicationId) {
+        var deferred = $q.defer();
+
+        if(angular.isDefined(publicationId) && publicationId !== ''){
+          // update record
+          var publicationRef = publicationsRef.child(publicationId);
+
+          var record = {};
+          angular.forEach(publicationModel,function(value,key){
             if(key !== 'releaseDate'){
               record[key] = value;
             }
           });
-          return publications.$save(record);
+
+          publicationRef.update(record, function (error) {
+            if (error) {
+              deferred.reject(error);
+            } else {
+              deferred.resolve({publicationId: publicationId});
+            }
+          });
+
         }else{
-          publication.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
-          return publications.$add(publication);
+          // new record
+          var newPublicationRef = publicationsRef.push(); // like array element
+          publicationModel.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
+          newPublicationRef.set(publicationModel, function (error) {
+            if (error) {
+              deferred.reject(error);
+            } else {
+              deferred.resolve({publicationId: newPublicationRef.key()});
+            }
+          });
+
         }
+
+        return deferred.promise;
       }
 
+
+      // TODO ELIMINAR $getRecord
       function removePublication(){
         var deferred                            = $q.defer();
         var publication                         = publications.$getRecord($scope.publication.$id);
@@ -407,6 +435,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       }
 
       function featuredImage(imageId){
+        // TODO ELIMINAR $getRecord
         var record = publications.$getRecord($scope.publication.$id);
         if(angular.isDefined(imageId) && imageId!==''){
           record.featuredImageId = imageId;
