@@ -29,13 +29,16 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       $scope.publication = {
         $id: '',
         path: [],
+        locationPath: [],
         categories: $firebaseArray(FireRef.child('categories').orderByChild('left')),
+        locations: $firebaseArray(FireRef.child('locations').orderByChild('left')),
         categorySelected: false,
         inEditMode: false,
         isReady: false,
         model : {
           userID:               user.uid,
           categoryId:           '',
+          locationId:           '',
           featuredImageId:      '',
           department:           '',
           title:                '',
@@ -48,6 +51,11 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           $scope.publication.path                       = treeService.getPath(categoryId,$scope.publication.categories);
           $scope.publication.model.categories           = pathNames($scope.publication.path);
           $scope.publication.model.department           = ($scope.publication.path[0]) ? $scope.publication.path[0].name : ''; // $filter('camelCase')($scope.publication.path[0].name)
+        },
+        setLocation: function (locationId) {
+          $scope.publication.model.locationId          = locationId;
+          $scope.publication.locationPath              = treeService.getPath(locationId,$scope.publication.locations);
+          $scope.publication.model.locations           = pathNames($scope.publication.path);
         },
         submit: function(){
           if($scope.publicationForm.$valid){
@@ -77,7 +85,10 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         }
       };
 
-      $scope.publication.categories.$loaded()
+      var categories = $scope.publication.categories.$loaded();
+      var locations = $scope.publication.locations.$loaded();
+
+      $q.all([categories,locations])
         .then(function () {
           if(angular.isDefined($routeParams.publicationId)){
             return setPublication($routeParams.publicationId);
@@ -101,26 +112,6 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       },function(){
         $scope.publication.model.warranty = $filter('htmlToPlaintext')($scope.publication.model.htmlWarranty);
       });
-
-      $scope.imagesInfo = function(){
-        var info = {
-          'inQueue':0,
-          'inServer':0,
-          'invalid':0
-        };
-        angular.forEach($scope.publication.images,function(value){
-          if(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error)){
-            info.inQueue += 1;
-          }else{
-            if(angular.isDefined(value.inServer)){
-              info.inServer += 1;
-            }else{
-              info.invalid += 1;
-            }
-          }
-        });
-        return info;
-      };
 
       $scope.discard = function(){
         var modalInstance = $uibModal.open({
@@ -149,6 +140,27 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         }, function (error) {
           notificationService.error(error);
         });
+      };
+
+      // images related
+      $scope.imagesInfo = function(){
+        var info = {
+          'inQueue':0,
+          'inServer':0,
+          'invalid':0
+        };
+        angular.forEach($scope.publication.images,function(value){
+          if(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error)){
+            info.inQueue += 1;
+          }else{
+            if(angular.isDefined(value.inServer)){
+              info.inServer += 1;
+            }else{
+              info.invalid += 1;
+            }
+          }
+        });
+        return info;
       };
 
       $scope.deleteAllPublicationImages = function () {
@@ -347,6 +359,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         $scope.publication.images = $filter('filter')($scope.publication.images, function(value, index) { return index !== fileIndex;});
         notificationService.success('The file as been delete.');
       }
+      // End images related
 
       function loadPublication(publicationId) {
         var deferred   = $q.defer();
@@ -389,6 +402,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           })
           .then(function(){
             $scope.publication.$id              = publicationId;
+
             $scope.publication.path             = treeService.getPath($scope.publication.model.categoryId,$scope.publication.categories);
             if($scope.publication.path.length > 0){
               $scope.publication.categorySelected = true;
@@ -398,6 +412,14 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
               $scope.publication.categorySelected = false;
               $scope.publication.model.categoryId = '';
             }
+
+            $scope.publication.locationPath     = treeService.getPath($scope.publication.model.locationId,$scope.publication.locations);
+            if($scope.publication.locationPath.length === 0){
+              // This mean that for some reason the location database it got lost completely or partially temporarily, and with this, we force the user redefine the location.
+              $scope.publication.redefineLocation = true;
+              $scope.publication.model.locationId = '';
+            }
+
             $scope.publication.inEditMode       = true;
             deferred.resolve();
           },function(error){
