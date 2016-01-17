@@ -388,10 +388,17 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
             })
           })
           .then(function(){
-            $scope.publication.$id      = publicationId;
-            $scope.publication.path               = treeService.getPath($scope.publication.model.categoryId,$scope.publication.categories);
-            $scope.publication.categorySelected   = true;
-            $scope.publication.inEditMode          = true;
+            $scope.publication.$id              = publicationId;
+            $scope.publication.path             = treeService.getPath($scope.publication.model.categoryId,$scope.publication.categories);
+            if($scope.publication.path.length > 0){
+              $scope.publication.categorySelected = true;
+            }else{
+              // This mean that for some reason the categories database it got lost completely or partially temporarily, and with this, we force the user redefine category.
+              $scope.publication.redefineCategory = true;
+              $scope.publication.categorySelected = false;
+              $scope.publication.model.categoryId = '';
+            }
+            $scope.publication.inEditMode       = true;
             deferred.resolve();
           },function(error){
             $location.path('/');
