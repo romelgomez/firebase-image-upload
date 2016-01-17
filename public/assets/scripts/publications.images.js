@@ -1,5 +1,5 @@
 publicationsModule
-  .factory('imagesService', ['$q', function($q) {
+  .factory('imagesService', ['$q', '$http', function($q , $http) {
 
     //function uploadFile(file, fileId, publicationId){
     //  var deferred = $q.defer();

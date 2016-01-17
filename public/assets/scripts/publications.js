@@ -1,15 +1,14 @@
 'use strict';
 
 var publicationsModule = angular.module('publications',['uuid','ngMessages','angular-redactor','ngFileUpload'])
-  .factory('publicationService',['$q','imagesService',function( $q, imagesService){
+  .factory('publicationService',['$q', '$window', 'imagesService',function( $q, $window, imagesService){
 
     return {
-      savePublication : function(publicationModel , publicationsRef, publicationId) {
+      savePublication: function(publicationModel, publicationsRef, publicationId) {
+        var deferred = $q.defer();
 
         if(angular.isDefined(publicationId) && publicationId !== ''){
           // update record
-          var deferred = $q.defer();
-
           var publicationRef = publicationsRef.child(publicationId);
 
           var record = {};
@@ -23,18 +22,25 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
             if (error) {
               deferred.reject(error);
             } else {
-              deferred.resolve();
+              deferred.resolve({publicationId: publicationId});
             }
           });
 
-          return deferred.promise;
         }else{
           // new record
           var newPublicationRef = publicationsRef.push(); // like array element
           publicationModel.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
-          return newPublicationRef.set(publicationModel);
+          newPublicationRef.set(publicationModel, function (error) {
+            if (error) {
+              deferred.reject(error);
+            } else {
+              deferred.resolve({publicationId: newPublicationRef.key()});
+            }
+          });
+
         }
 
+        return deferred.promise;
       },
       removePublication : function( publicationsRef, publicationId){
         var deferred                            = $q.defer();
@@ -79,7 +85,8 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
     'Upload',
     'user',
     '$uibModal',
-    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, $log){
+    'publicationService',
+    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, publicationService, $log){
 
       var deferred = $q.defer();
       var publicationsRef = FireRef.child('publications');
@@ -122,10 +129,8 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           if($scope.publicationForm.$valid){
             var deferred    = $q.defer();
 
-            savePublication( $scope.publication.model, publicationsRef, $scope.publication.$id)
+            publicationService.savePublication( $scope.publication.model, publicationsRef, $scope.publication.$id)
               .then(function(the){
-                console.log('the save data:',angular.fromJson(the));
-                console.log('the save data:',angular.toJson(the));
                 $scope.publication.$id = $scope.publication.$id !== '' ? $scope.publication.$id : the.publicationId;
                 return saveFiles( $scope.publication.images, $scope.publication.$id)
               })
@@ -191,7 +196,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         });
         modalInstance.result.then(function(){
           if($scope.publication.$id !== ''){
-            $scope.httpRequestPromise = removePublication()
+            $scope.httpRequestPromise = publicationService.removePublication(publicationsRef, $scope.publication.$id)
               .then(function(){
                 notificationService.success('The publication has been deleted.');
                 $location.path('/');
@@ -348,64 +353,6 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         return $q.all(filesPromises);
       }
 
-      function savePublication(publicationModel, publicationsRef, publicationId) {
-        var deferred = $q.defer();
-
-        if(angular.isDefined(publicationId) && publicationId !== ''){
-          // update record
-          var publicationRef = publicationsRef.child(publicationId);
-
-          var record = {};
-          angular.forEach(publicationModel,function(value,key){
-            if(key !== 'releaseDate'){
-              record[key] = value;
-            }
-          });
-
-          publicationRef.update(record, function (error) {
-            if (error) {
-              deferred.reject(error);
-            } else {
-              deferred.resolve({publicationId: publicationId});
-            }
-          });
-
-        }else{
-          // new record
-          var newPublicationRef = publicationsRef.push(); // like array element
-          publicationModel.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
-          newPublicationRef.set(publicationModel, function (error) {
-            if (error) {
-              deferred.reject(error);
-            } else {
-              deferred.resolve({publicationId: newPublicationRef.key()});
-            }
-          });
-
-        }
-
-        return deferred.promise;
-      }
-
-
-      // TODO ELIMINAR $getRecord
-      function removePublication(){
-        var deferred                            = $q.defer();
-        var publication                         = publications.$getRecord($scope.publication.$id);
-        var tasksToDo                           = {};
-
-        tasksToDo.deleteImages = deleteAllPublicationImages();
-        tasksToDo.detelePublication = publications.$remove(publication);
-
-        $q.all(tasksToDo)
-          .then(function(){
-            deferred.resolve();
-          }, function (error) {
-            notificationService.error(error);
-          });
-
-        return deferred.promise;
-      }
 
       /** Delete all files of the publication, And you can selective delete files if their Ids are provider as array
        * @param {Array} imagesIds
