@@ -1,34 +1,34 @@
 publicationsModule
-  .factory('imagesService', ['$q', '$http', function($q , $http) {
+  .factory('imagesService', ['$q', '$http', '$window', 'Upload', function($q , $http, $window, $upload) {
 
-    //function uploadFile(file, fileId, publicationId){
-    //  var deferred = $q.defer();
-    //
-    //  file.upload = $upload.upload({
-    //    url: 'https://api.cloudinary.com/v1_1/berlin/upload',
-    //    fields: {
-    //      public_id: fileId,
-    //      upload_preset: 'ebdyaimw',
-    //      context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId,
-    //      tags: [publicationId]
-    //    },
-    //    file: file
-    //  }).progress(function (e) {
-    //    file.progress = Math.round((e.loaded * 100.0) / e.total);
-    //  }).success(function (data) {
-    //    file.inServer = true;
-    //    file.$id  = data.context.custom.$id;
-    //
-    //    deferred.resolve({
-    //      '$id':data.context.custom.$id
-    //    });
-    //  }).error(function (data) {
-    //    file.details  = data;
-    //    deferred.reject();
-    //  });
-    //
-    //  return deferred.promise;
-    //}
+    function uploadFile(file, fileId, publicationId){
+      var deferred = $q.defer();
+
+      file.upload = $upload.upload({
+        url: 'https://api.cloudinary.com/v1_1/berlin/upload',
+        fields: {
+          public_id: fileId,
+          upload_preset: 'ebdyaimw',
+          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId,
+          tags: [publicationId]
+        },
+        file: file
+      }).progress(function (e) {
+        file.progress = Math.round((e.loaded * 100.0) / e.total);
+      }).success(function (data) {
+        file.inServer = true;
+        file.$id  = data.context.custom.$id;
+
+        deferred.resolve({
+          '$id':data.context.custom.$id
+        });
+      }).error(function (data) {
+        file.details  = data;
+        deferred.reject();
+      });
+
+      return deferred.promise;
+    }
 
 
     return {
@@ -59,30 +59,30 @@ publicationsModule
 
         return deferred.promise;
       },
-      //saveFiles: function(publicationsRef, publicationId, files){
-      //  var publicationImagesRef = publicationsRef.child(publicationId).child('images');
-      //  var filesPromises = {};
-      //  var filesReferences = {};
-      //  angular.forEach(files,function(file){
-      //    if(!angular.isDefined(file.inServer)){
-      //      var imageRef = publicationImagesRef.push();
-      //      filesReferences[imageRef.key()] = imageRef;
-      //      filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key(),publicationId)
-      //        .then(function(the){
-      //          return filesReferences[the.$id].set({
-      //            name:file.name,
-      //            size:file.size,
-      //            type:file.type,
-      //            width:file.width,
-      //            height:file.height,
-      //            inServer:true,
-      //            addedDate: $window.Firebase.ServerValue.TIMESTAMP
-      //          })
-      //        });
-      //    }
-      //  });
-      //  return $q.all(filesPromises);
-      //},
+      saveFiles: function(publicationsRef, publicationId, files){
+        var publicationImagesRef = publicationsRef.child(publicationId).child('images');
+        var filesPromises = {};
+        var filesReferences = {};
+        angular.forEach(files,function(file){
+          if(!angular.isDefined(file.inServer)){
+            var imageRef = publicationImagesRef.push();
+            filesReferences[imageRef.key()] = imageRef;
+            filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key(),publicationId)
+              .then(function(the){
+                return filesReferences[the.$id].set({
+                  name:file.name,
+                  size:file.size,
+                  type:file.type,
+                  width:file.width,
+                  height:file.height,
+                  inServer:true,
+                  addedDate: $window.Firebase.ServerValue.TIMESTAMP
+                })
+              });
+          }
+        });
+        return $q.all(filesPromises);
+      },
       featuredImage: function(publicationRef,imageId){
         var deferred = $q.defer();
 
@@ -108,21 +108,20 @@ publicationsModule
     };
 
   }])
-  .directive('publicationImages',['$q', 'FireRef','notificationService', 'imagesService',function( $q, FireRef, notificationService , imagesService){
+  .directive('publicationImages',['$q', '$filter', 'FireRef','notificationService', 'imagesService',function( $q, $filter, FireRef, notificationService , imagesService){
 
     return {
       scope:{
         formName:'=',
         images:'=',
-        publicationId:'@',
+        publicationId:'=',
         model:'=',
         httpRequestPromise:'='
       },
-      templateUrl: 'discardPublication.html',
+      templateUrl: 'publicationImages.html',
       link: function (scope) {
 
         var publicationsRef = FireRef.child('publications');
-        var publicationRef = publicationsRef.child(scope.publicationId);
 
         scope.imagesInfo = function(){
           var info = {
@@ -149,6 +148,7 @@ publicationsModule
           imagesService.deleteImages(scope.publicationId,null)
             .then(function(){
               // deleting in firebase
+              var publicationRef = publicationsRef.child(scope.publicationId);
               var imagesRef = publicationRef.child('images');
               return imagesRef.set({});
             })
@@ -161,6 +161,7 @@ publicationsModule
         };
 
         scope.setAsPrimaryImage = function(imageId){
+          var publicationRef = publicationsRef.child(scope.publicationId);
           scope.httpRequestPromise = imagesService.featuredImage(publicationRef, imageId)
             .then(function(){
               scope.model.featuredImageId = imageId;
@@ -177,12 +178,13 @@ publicationsModule
           if(angular.isDefined(file.inServer)){
             var tasksToDo = {};
             if(file.$id === scope.model.featuredImageId){
+              var publicationRef = publicationsRef.child(scope.publicationId);
               tasksToDo.blankFeaturedImage = imagesService.featuredImage(publicationRef).
               then(function(){
                 scope.model.featuredImageId = '';
               });
             }
-            tasksToDo.deleteImage = deleteImages(scope.publicationId,[file.$id])
+            tasksToDo.deleteImage = imagesService.deleteImages(scope.publicationId,[file.$id])
               .then(function(){
                 var imageRef = publicationsRef.child(scope.publicationId).child('images').child(file.$id);
                 return imageRef.set({});
@@ -207,6 +209,7 @@ publicationsModule
           scope.images = $filter('filter')(scope.images, function(value) {
             return !(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error));
           });
+          notificationService.success('All queue files have been removed.');
         };
 
       }

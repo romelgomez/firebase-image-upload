@@ -22,6 +22,9 @@ angular.module('app',[
       $scope.inProduction = false;
 
       $scope.sizeOf = function(obj) {
+        if (typeof obj === 'undefined'){
+          obj = {};
+        }
         return Object.keys(obj).length;
       };
 

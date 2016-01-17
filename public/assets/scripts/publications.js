@@ -86,7 +86,8 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
     'user',
     '$uibModal',
     'publicationService',
-    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, publicationService, $log){
+    'imagesService',
+    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, publicationService, imagesService, $log){
 
       var deferred = $q.defer();
       var publicationsRef = FireRef.child('publications');
@@ -132,7 +133,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
             publicationService.savePublication( $scope.publication.model, publicationsRef, $scope.publication.$id)
               .then(function(the){
                 $scope.publication.$id = $scope.publication.$id !== '' ? $scope.publication.$id : the.publicationId;
-                return saveFiles( $scope.publication.images, $scope.publication.$id)
+                return imagesService.saveFiles(publicationsRef, $scope.publication.$id, $scope.publication.images)
               })
               .then(function () {
 
@@ -210,87 +211,6 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         });
       };
 
-      // images related
-      $scope.imagesInfo = function(){
-        var info = {
-          'inQueue':0,
-          'inServer':0,
-          'invalid':0
-        };
-        angular.forEach($scope.publication.images,function(value){
-          if(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error)){
-            info.inQueue += 1;
-          }else{
-            if(angular.isDefined(value.inServer)){
-              info.inServer += 1;
-            }else{
-              info.invalid += 1;
-            }
-          }
-        });
-        return info;
-      };
-
-      $scope.deleteAllPublicationImages = function () {
-
-        deleteImages()
-          .then(function(){
-            var imagesRef = publicationsRef.child($scope.publication.$id).child('images');
-            return imagesRef.set({});
-          })
-          .then(function () {
-            angular.copy([],$scope.publication.images);
-            notificationService.success('The images has been deleted');
-          },function(){
-            notificationService.error('The images cannot be deleted');
-          });
-
-      };
-
-      $scope.setAsPrimaryImage = function(imageId){
-        $scope.httpRequestPromise = featuredImage(imageId)
-          .then(function(){
-            $scope.publication.model.featuredImageId = imageId;
-            notificationService.success('The file as been selected as featured imagen.');
-          });
-      };
-
-      $scope.removeFile = function(fileIndex,file){
-        if(angular.isDefined(file.inServer)){
-          var tasksToDo = {};
-          if(file.$id === $scope.publication.model.featuredImageId){
-            tasksToDo.blankFeaturedImage = featuredImage().
-            then(function(){
-              $scope.publication.model.featuredImageId = '';
-            });
-          }
-          tasksToDo.deleteImage = deleteImages([file.$id])
-            .then(function(){
-              var imageRef = publicationsRef.child($scope.publication.$id).child('images').child(file.$id);
-              return imageRef.set({});
-            })
-            .then(function(){
-              removeFile(fileIndex);
-            },function(error){
-              notificationService.error(error);
-            });
-
-          $scope.httpRequestPromise = $q.all(tasksToDo);
-        }else{
-          removeFile(fileIndex);
-        }
-      };
-
-      $scope.removeInvalidFiles = function(){
-        $scope.publication.images = $filter('filter')($scope.publication.images, function(value) { return !angular.isDefined(value.$error);});
-      };
-
-      $scope.removeAllQueueFiles = function () {
-        $scope.publication.images = $filter('filter')($scope.publication.images, function(value) {
-          return !(!angular.isDefined(value.inServer) && !angular.isDefined(value.$error));
-        });
-      };
-
       function pathNames(path){
         var pathNames = [];
         angular.forEach(path,function(pathNode){
@@ -298,105 +218,6 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         });
         return pathNames;
       }
-
-      function uploadFile(file, fileId, publicationId){
-        var deferred = $q.defer();
-
-        file.upload = $upload.upload({
-          url: 'https://api.cloudinary.com/v1_1/berlin/upload',
-          fields: {
-            public_id: fileId,
-            upload_preset: 'ebdyaimw',
-            context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId,
-            tags: [publicationId]
-          },
-          file: file
-        }).progress(function (e) {
-          file.progress = Math.round((e.loaded * 100.0) / e.total);
-        }).success(function (data) {
-          file.inServer = true;
-          file.$id  = data.context.custom.$id;
-
-          deferred.resolve({
-            '$id':data.context.custom.$id
-          });
-        }).error(function (data) {
-          file.details  = data;
-          deferred.reject();
-        });
-
-        return deferred.promise;
-      }
-
-      function saveFiles(files, publicationId){
-        var publicationImagesRef = publicationsRef.child(publicationId).child('images');
-        var filesPromises = {};
-        var filesReferences = {};
-        angular.forEach(files,function(file){
-          if(!angular.isDefined(file.inServer)){
-            var imageRef = publicationImagesRef.push();
-            filesReferences[imageRef.key()] = imageRef;
-            filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key(),publicationId)
-              .then(function(the){
-                return filesReferences[the.$id].set({
-                  name:file.name,
-                  size:file.size,
-                  type:file.type,
-                  width:file.width,
-                  height:file.height,
-                  inServer:true,
-                  addedDate: $window.Firebase.ServerValue.TIMESTAMP
-                })
-              });
-          }
-        });
-        return $q.all(filesPromises);
-      }
-
-
-      /** Delete all files of the publication, And you can selective delete files if their Ids are provider as array
-       * @param {Array} imagesIds
-       * @return {Promise<Object>}
-       * */
-      function deleteImages(imagesIds) {
-        var deferred = $q.defer();
-        var params = {
-          publicationId: $scope.publication.$id
-        };
-
-        if (typeof imagesIds !== 'undefined' && Array.isArray(imagesIds)){
-          params.public_ids = imagesIds;
-        }
-
-        $http({
-          method: 'DELETE',
-          url: '/files',
-          params: params
-        }).then(function(res){
-          deferred.resolve(res);
-        },function(error){
-          deferred.reject(error);
-        });
-
-        return deferred.promise;
-      }
-
-      function featuredImage(imageId){
-        // TODO ELIMINAR $getRecord
-        var record = publications.$getRecord($scope.publication.$id);
-        if(angular.isDefined(imageId) && imageId!==''){
-          record.featuredImageId = imageId;
-        }else{
-          record.featuredImageId = '';
-        }
-        return publications.$save(record);
-      }
-
-      function removeFile(fileIndex){
-        $scope.publication.images = $filter('filter')($scope.publication.images, function(value, index) { return index !== fileIndex;});
-        notificationService.success('The file as been delete.');
-      }
-      // End images related
 
       function loadPublication(publicationId) {
         var deferred   = $q.defer();
