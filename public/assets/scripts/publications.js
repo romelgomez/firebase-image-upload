@@ -109,32 +109,6 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           htmlDescription:      '',
           barcode:              '',
           barcodeType:          'CODE128'
-        },
-        submit: function(){
-          if($scope.publicationForm.$valid){
-            var deferred    = $q.defer();
-
-            publicationService.savePublication( $scope.publication.model, publicationsRef, $scope.publication.$id)
-              .then(function(the){
-                $scope.publication.$id = $scope.publication.$id !== '' ? $scope.publication.$id : the.publicationId;
-                return imagesService.saveFiles(publicationsRef, $scope.publication.$id, $scope.publication.images)
-              })
-              .then(function () {
-
-                notificationService.success('Data has been save');
-                deferred.resolve();
-
-              },function(error){
-
-                notificationService.error(error);
-                deferred.reject(error);
-
-              });
-
-            $scope.httpRequestPromise = deferred.promise;
-          }else{
-            notificationService.error('Something is missing');
-          }
         }
       };
 
@@ -154,17 +128,32 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           deferred.resolve();
         });
 
-      $scope.$watch(function(scope){
-        return scope.publication.model.htmlDescription;
-      },function(){
-        $scope.publication.model.description = $filter('htmlToPlaintext')($scope.publication.model.htmlDescription);
-      });
+      $scope.submit = function(){
+        if($scope.publicationForm.$valid){
+          var deferred    = $q.defer();
 
-      $scope.$watch(function(scope){
-        return scope.publication.model.htmlWarranty;
-      },function(){
-        $scope.publication.model.warranty = $filter('htmlToPlaintext')($scope.publication.model.htmlWarranty);
-      });
+          publicationService.savePublication( $scope.publication.model, publicationsRef, $scope.publication.$id)
+            .then(function(the){
+              $scope.publication.$id = $scope.publication.$id !== '' ? $scope.publication.$id : the.publicationId;
+              return imagesService.saveFiles(publicationsRef, $scope.publication.$id, $scope.publication.images)
+            })
+            .then(function () {
+
+              notificationService.success('Data has been save');
+              deferred.resolve();
+
+            },function(error){
+
+              notificationService.error(error);
+              deferred.reject(error);
+
+            });
+
+          $scope.httpRequestPromise = deferred.promise;
+        }else{
+          notificationService.error('Something is missing');
+        }
+      };
 
       $scope.discard = function(){
         var modalInstance = $uibModal.open({
@@ -381,5 +370,66 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
 
     }
 
+  }])
+  .directive('descriptionInput',['$filter',function ($filter) {
+
+    return {
+      restrict:'E',
+      scope:{
+        formName:'=',
+        model:'='
+      },
+      template:''+
+      '<div class="form-group">'+
+        '<label class="control-label"><span class="glyphicon glyphicon-book"></span> Description <sup style="color: red;">*</sup></label>'+
+        '<textarea redactor name="htmlDescription" data-ng-model="model.htmlDescription" required class="form-control" placeholder=""></textarea>'+
+        '<div data-ng-messages="formName.$submitted && formName.htmlDescription.$error" class="help-block">'+
+          '<div data-ng-message="required" >'+
+          '- The <b>description</b> is required.'+
+          '</div>'+
+        '</div>'+
+      '</div>',
+      link:function(scope){
+
+        scope.$watch(function(scope){
+          return scope.model.htmlDescription;
+        },function(){
+          scope.model.description = $filter('htmlToPlaintext')(scope.model.htmlDescription);
+        });
+
+      }
+
+    };
+
+  }])
+  .directive('warrantyInput',['$filter',function ($filter) {
+
+    return {
+      restrict:'E',
+      scope:{
+        formName:'=',
+        model:'='
+      },
+      template:''+
+      '<div class="form-group">'+
+        '<label class="control-label"><i class="fa fa-certificate"></i> Warranty <sup style="color: red;">*</sup></label>'+
+        '<textarea redactor name="htmlWarranty" data-ng-model="model.htmlWarranty" required class="form-control" placeholder=""></textarea>'+
+        '<div data-ng-messages="formName.$submitted && formName.htmlWarranty.$error" class="help-block">'+
+          '<div data-ng-message="required" >'+
+            '- The <b>Warranty</b> is required.'+
+          '</div>'+
+        '</div>'+
+      '</div>',
+      link:function(scope){
+
+        scope.$watch(function(scope){
+          return scope.model.htmlWarranty;
+        },function(){
+          scope.model.warranty = $filter('htmlToPlaintext')(scope.model.htmlWarranty);
+        });
+
+      }
+
+    };
 
   }]);
