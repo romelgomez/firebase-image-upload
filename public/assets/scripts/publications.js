@@ -432,4 +432,84 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
 
     };
 
+  }])
+  .directive('titleInput',[function () {
+
+    return {
+      restrict:'E',
+      scope:{
+        formName:'=',
+        model:'='
+      },
+      template:''+
+      '<div class="form-group">'+
+        '<label class="control-label"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>'+
+        '<input type="text" name="title" ng-model="model.title" required minlength="7" capitalize class="form-control" placeholder="">'+
+        '<div data-ng-messages="formName.$submitted && formName.title.$error" class="help-block">'+
+          '<div data-ng-message="required">'+
+            '- The <b>title</b> is required.'+
+          '</div>'+
+          '<div data-ng-message="minlength" >'+
+           '- The <b>title</b> must be at least 7 characters long.'+
+          '</div>'+
+        '</div>'+
+      '</div>'
+    };
+
+  }])
+  .directive('quantityInput',[function () {
+
+    return {
+      restrict:'E',
+      scope:{
+        formName:'=',
+        model:'='
+      },
+      template:''+
+      '<div class="form-group" >'+
+        '<div class="row">'+
+          '<div class="col-xs-4">'+
+            '<label class="control-label"><i class="fa fa-cubes"></i> Quantity in stock <sup style="color: red;">*</sup></label>'+
+              '<div class="input-group">'+
+                '<div class="input-group-addon">Units</div>'+
+                '<input name="quantity" ng-model="model.quantity" required class="form-control" placeholder="Eje: 100" type="number">'+
+              '</div>'+
+            '<div data-ng-messages="formName.$submitted && formName.quantity.$error" class="help-block">'+
+              '<div data-ng-message="required">'+
+                '- The <b>quantity</b> is required.'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'
+    };
+
+  }])
+  .directive('priceInput',[function () {
+
+    return {
+      restrict:'E',
+      scope:{
+        formName:'=',
+        model:'='
+      },
+      template:''+
+      '<div class="form-group" >'+
+        '<div class="row">'+
+          '<div class="col-xs-4">'+
+            '<label class="control-label"><span class="glyphicon glyphicon-tag"></span> Price <sup style="color: red;">*</sup></label>'+
+            '<div class="input-group">'+
+              '<div class="input-group-addon">$</div>'+
+              '<input name="price" ng-model="model.price" required class="form-control" placeholder="Eje: 1000" type="number">'+
+            '</div>'+
+            '<div data-ng-messages="formName.$submitted && formName.price.$error" class="help-block">'+
+              '<div data-ng-message="required">'+
+                '- The <b>price</b> is required.'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'
+    };
+
   }]);
