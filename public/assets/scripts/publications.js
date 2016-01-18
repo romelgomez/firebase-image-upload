@@ -11,14 +11,10 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           // update record
           var publicationRef = publicationsRef.child(publicationId);
 
-          var record = {};
-          angular.forEach(publicationModel,function(value,key){
-            if(key !== 'releaseDate'){
-              record[key] = value;
-            }
-          });
+          delete publicationModel.releaseDate;
+          delete publicationModel.images;
 
-          publicationRef.update(record, function (error) {
+          publicationRef.update(publicationModel, function (error) {
             if (error) {
               deferred.reject(error);
             } else {
@@ -120,11 +116,6 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           $scope.publication.path                       = treeService.getPath(categoryId,$scope.publication.categories);
           $scope.publication.model.categories           = pathNames($scope.publication.path);
           $scope.publication.model.department           = ($scope.publication.path[0]) ? $scope.publication.path[0].name : ''; // $filter('camelCase')($scope.publication.path[0].name)
-        },
-        setLocation: function (locationId) {
-          $scope.publication.model.locationId          = locationId;
-          $scope.publication.locationPath              = treeService.getPath(locationId,$scope.publication.locations);
-          $scope.publication.model.locations           = pathNames($scope.publication.locationPath);
         },
         submit: function(){
           if($scope.publicationForm.$valid){
@@ -303,5 +294,51 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
     $scope.cancel   = function () {
       $modalInstance.dismiss('This has be cancel');
     };
+
+  }])
+  .directive('locationInput',['treeService',function(treeService){
+
+    return {
+      scope:{
+        formName:'=',
+        locations:'=',
+        model:'=',
+        redefineLocation:'=',
+        locationPath:'='
+      },
+      template:'' +
+      '<div>'+
+      '<hr class="hr-xs">'+
+      '<label class="control-label"><i class="fa fa-map-marker"></i> Location <sup style="color: red;">*</sup></label>'+
+      '<div class="list-group" style="margin-bottom: 0">'+
+      '<button type="button" class="list-group-item" ng-click="setLocation(location.$id); publication.redefineLocation = false;" ng-repeat="location in locations | filter:{parentId: model.locationId}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{location.name | capitalizeFirstChar}}</button>'+
+      '</div>'+
+
+      '<ol ng-show="locationPath.length > 0" class="breadcrumb" style="margin-bottom: 0; margin-top: 10px;">'+
+      '<li ng-click="model.locationId =\'\'; locationPath =[];" class="a-link"> Reset </li>'+
+      '<li ng-repeat="location in locationPath" ng-click="setLocation(location.$id)" ng-class="{\'a-link\': !$last}"> {{location.name | capitalizeFirstChar}} </li>'+
+      '</ol>'+
+
+      '<input name="location" ng-model="model.locationId" required class="form-control" placeholder="" type="text" style="display: none;">'+
+      '<div data-ng-messages="publicationForm.$submitted && publicationForm.location.$error" class="help-block">'+
+      '<div data-ng-message="required" >'+
+      '- The <b>Location</b> is required.'+
+      '</div>'+
+      '</div>'+
+
+      '<div ng-show="formName.redefineLocation === true" class="alert alert-danger alert-xs" style="margin-bottom: 10px;" role="alert"><b>NOTE: Sorry, but we need to redefine the location.</b></div>'+
+      '<div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: Select the <b>location</b> that best suits to the publication. No matter if it is too general or specific, the important thing is to select one.</div>'+
+      '</div>',
+      link:function(scope){
+
+        scope.setLocation = function (locationId) {
+          scope.model.locationId          = locationId;
+          scope.locationPath              = treeService.getPath(locationId,scope.locations);
+          scope.model.locations           = treeService.pathNames(scope.locationPath);
+        }
+
+      }
+    }
+
 
   }]);

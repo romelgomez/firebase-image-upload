@@ -17,6 +17,13 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         };
         process(nodeId);
         return $filter('reverse')(path);
+      },
+      pathNames : function(path){
+        var pathNames = [];
+        angular.forEach(path,function(pathNode){
+          pathNames.push(pathNode.name);
+        });
+        return pathNames;
       }
     };
 
