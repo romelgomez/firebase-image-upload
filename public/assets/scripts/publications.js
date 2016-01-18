@@ -87,13 +87,12 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
 
       var deferred = $q.defer();
       var publicationsRef = FireRef.child('publications');
-      //var publications  = $firebaseArray(publicationsRef);
 
       $scope.httpRequestPromise = deferred.promise;
 
       $scope.publication = {
         $id: '',
-        path: [],
+        categoryPath: [],
         locationPath: [],
         categories: $firebaseArray(FireRef.child('categories').orderByChild('left')),
         locations: $firebaseArray(FireRef.child('locations').orderByChild('left')),
@@ -110,12 +109,6 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           htmlDescription:      '',
           barcode:              '',
           barcodeType:          'CODE128'
-        },
-        setCategory: function (categoryId) {
-          $scope.publication.model.categoryId           = categoryId;
-          $scope.publication.path                       = treeService.getPath(categoryId,$scope.publication.categories);
-          $scope.publication.model.categories           = pathNames($scope.publication.path);
-          $scope.publication.model.department           = ($scope.publication.path[0]) ? $scope.publication.path[0].name : ''; // $filter('camelCase')($scope.publication.path[0].name)
         },
         submit: function(){
           if($scope.publicationForm.$valid){
@@ -202,14 +195,6 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         });
       };
 
-      function pathNames(path){
-        var pathNames = [];
-        angular.forEach(path,function(pathNode){
-          pathNames.push(pathNode.name);
-        });
-        return pathNames;
-      }
-
       function loadPublication(publicationId) {
         var deferred   = $q.defer();
 
@@ -252,8 +237,8 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           .then(function(){
             $scope.publication.$id              = publicationId;
 
-            $scope.publication.path             = treeService.getPath($scope.publication.model.categoryId,$scope.publication.categories);
-            if($scope.publication.path.length > 0){
+            $scope.publication.categoryPath             = treeService.getPath($scope.publication.model.categoryId,$scope.publication.categories);
+            if($scope.publication.categoryPath.length > 0){
               $scope.publication.categorySelected = true;
             }else{
               // This mean that for some reason the categories database it got lost completely or partially temporarily, and with this, we force the user redefine category.
@@ -347,7 +332,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
     return {
       restrict:'E',
       scope:{
-        path:'=',
+        categoryPath:'=',
         categorySelected:'=',
         isReady:'=',
         inEditMode:'=',
@@ -370,9 +355,9 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           '</button>'+
         '</div>'+
         '<div class="panel-body">'+
-          '<ol ng-show="path.length > 0" class="breadcrumb" style="margin-bottom: 7px;">'+
-            '<li ng-click="model.categoryId = \'\'; path =[];" class="a-link"> Reset </li>'+
-            '<li ng-repeat="category in path" ng-click="setCategory(category.$id)" ng-class="{\'a-link\': !$last}"> {{category.name | capitalizeFirstChar}} </li>'+
+          '<ol ng-show="categoryPath.length > 0" class="breadcrumb" style="margin-bottom: 7px;">'+
+            '<li ng-click="model.categoryId = \'\'; categoryPath =[];" class="a-link"> Reset </li>'+
+            '<li ng-repeat="category in categoryPath" ng-click="setCategory(category.$id)" ng-class="{\'a-link\': !$last}"> {{category.name | capitalizeFirstChar}} </li>'+
           '</ol>'+
           '<div ng-show="redefineCategory === true" class="alert alert-danger alert-xs" style="margin-bottom: 10px;" role="alert"><b>NOTE: Sorry, but we need to redefine the category.</b></div>'+
           '<div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: Select the category that best suits to the publication. No matter if it is too general or specific, the important thing is to select one.</div>'+
@@ -387,9 +372,9 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
 
         scope.setCategory = function (categoryId) {
           scope.model.categoryId           = categoryId;
-          scope.path                       = treeService.getPath(categoryId,scope.categories);
-          scope.model.categories           = treeService.pathNames(scope.path);
-          scope.model.department           = (scope.path[0]) ? scope.path[0].name : ''; // $filter('camelCase')($scope.publication.path[0].name)
+          scope.categoryPath                       = treeService.getPath(categoryId,scope.categories);
+          scope.model.categories           = treeService.pathNames(scope.categoryPath);
+          scope.model.department           = (scope.categoryPath[0]) ? scope.categoryPath[0].name : ''; // $filter('camelCase')($scope.publication.categoryPath[0].name)
         };
 
       }
