@@ -308,26 +308,26 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       },
       template:'' +
       '<div>'+
-      '<hr class="hr-xs">'+
-      '<label class="control-label"><i class="fa fa-map-marker"></i> Location <sup style="color: red;">*</sup></label>'+
-      '<div class="list-group" style="margin-bottom: 0">'+
-      '<button type="button" class="list-group-item" ng-click="setLocation(location.$id); publication.redefineLocation = false;" ng-repeat="location in locations | filter:{parentId: model.locationId}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{location.name | capitalizeFirstChar}}</button>'+
-      '</div>'+
+        '<hr class="hr-xs">'+
+        '<label class="control-label"><i class="fa fa-map-marker"></i> Location <sup style="color: red;">*</sup></label>'+
+        '<div class="list-group" style="margin-bottom: 0">'+
+          '<button type="button" class="list-group-item" ng-click="setLocation(location.$id); publication.redefineLocation = false;" ng-repeat="location in locations | filter:{parentId: model.locationId}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{location.name | capitalizeFirstChar}}</button>'+
+        '</div>'+
 
-      '<ol ng-show="locationPath.length > 0" class="breadcrumb" style="margin-bottom: 0; margin-top: 10px;">'+
-      '<li ng-click="model.locationId =\'\'; locationPath =[];" class="a-link"> Reset </li>'+
-      '<li ng-repeat="location in locationPath" ng-click="setLocation(location.$id)" ng-class="{\'a-link\': !$last}"> {{location.name | capitalizeFirstChar}} </li>'+
-      '</ol>'+
+        '<ol ng-show="locationPath.length > 0" class="breadcrumb" style="margin-bottom: 0; margin-top: 10px;">'+
+          '<li ng-click="model.locationId =\'\'; locationPath =[];" class="a-link"> Reset </li>'+
+          '<li ng-repeat="location in locationPath" ng-click="setLocation(location.$id)" ng-class="{\'a-link\': !$last}"> {{location.name | capitalizeFirstChar}} </li>'+
+        '</ol>'+
 
-      '<input name="location" ng-model="model.locationId" required class="form-control" placeholder="" type="text" style="display: none;">'+
-      '<div data-ng-messages="publicationForm.$submitted && publicationForm.location.$error" class="help-block">'+
-      '<div data-ng-message="required" >'+
-      '- The <b>Location</b> is required.'+
-      '</div>'+
-      '</div>'+
+        '<input name="location" ng-model="model.locationId" required class="form-control" placeholder="" type="text" style="display: none;">'+
+        '<div data-ng-messages="publicationForm.$submitted && publicationForm.location.$error" class="help-block">'+
+          '<div data-ng-message="required" >'+
+          '- The <b>Location</b> is required.'+
+          '</div>'+
+        '</div>'+
 
-      '<div ng-show="formName.redefineLocation === true" class="alert alert-danger alert-xs" style="margin-bottom: 10px;" role="alert"><b>NOTE: Sorry, but we need to redefine the location.</b></div>'+
-      '<div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: Select the <b>location</b> that best suits to the publication. No matter if it is too general or specific, the important thing is to select one.</div>'+
+        '<div ng-show="formName.redefineLocation === true" class="alert alert-danger alert-xs" style="margin-bottom: 10px;" role="alert"><b>NOTE: Sorry, but we need to redefine the location.</b></div>'+
+        '<div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: Select the <b>location</b> that best suits to the publication. No matter if it is too general or specific, the important thing is to select one.</div>'+
       '</div>',
       link:function(scope){
 
@@ -338,6 +338,62 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         }
 
       }
+    }
+
+
+  }])
+  .directive('categorySelector',['treeService', function (treeService) {
+
+    return {
+      restrict:'E',
+      scope:{
+        path:'=',
+        categorySelected:'=',
+        isReady:'=',
+        inEditMode:'=',
+        model:'=',
+        categories:'=',
+        redefineCategory:'='
+      },
+      template:'' +
+      '<div class="panel panel-default" ng-show="categorySelected === false && isReady">'+
+        '<div class="panel-heading">'+
+          '<h3 class="panel-title" ng-switch="inEditMode">'+
+            '<span ng-switch-when="false" >New Publication - Select a category:</span>'+
+            '<span ng-switch-when="true">Edit Publication</span>'+
+          '</h3>'+
+        '</div>'+
+        '<div class="list-group">'+
+          '<button type="button" class="list-group-item" ng-click="setCategory(category.$id)" ng-repeat="category in categories | filter:{parentId: model.categoryId}:true" >' +
+            '<i style="color: #286090" class="fa" ng-class="{\'fa-folder\': (category.name !== \'Marketplace\' && category.name !== \'Jobs\' && category.name !== \'Real Estate\' && category.name !== \'Transport\' && category.name !== \'Services\') , \'fa-shopping-cart\': (category.name === \'Marketplace\') , \'fa-suitcase\': (category.name === \'Jobs\'), \'fa-home\': (category.name === \'Real Estate\'), \'fa-car\': (category.name === \'Transport\'), \'fa-wrench\' : (category.name === \'Services\')}"></i> '+
+            '{{category.name | capitalizeFirstChar}}'+
+          '</button>'+
+        '</div>'+
+        '<div class="panel-body">'+
+          '<ol ng-show="path.length > 0" class="breadcrumb" style="margin-bottom: 7px;">'+
+            '<li ng-click="model.categoryId = \'\'; path =[];" class="a-link"> Reset </li>'+
+            '<li ng-repeat="category in path" ng-click="setCategory(category.$id)" ng-class="{\'a-link\': !$last}"> {{category.name | capitalizeFirstChar}} </li>'+
+          '</ol>'+
+          '<div ng-show="redefineCategory === true" class="alert alert-danger alert-xs" style="margin-bottom: 10px;" role="alert"><b>NOTE: Sorry, but we need to redefine the category.</b></div>'+
+          '<div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: Select the category that best suits to the publication. No matter if it is too general or specific, the important thing is to select one.</div>'+
+        '</div>'+
+        '<div class="panel-footer" style="text-align: right;">'+
+          '<button ng-click="categorySelected = true; redefineCategory = false" type="button" class="btn btn-primary" ng-disabled="model.categoryId ===\'\'" >'+
+            '<i class="fa fa-check"></i> Confirm selection' +
+          '</button>'+
+        '</div>'+
+      '</div>',
+      link:function(scope){
+
+        scope.setCategory = function (categoryId) {
+          scope.model.categoryId           = categoryId;
+          scope.path                       = treeService.getPath(categoryId,scope.categories);
+          scope.model.categories           = treeService.pathNames(scope.path);
+          scope.model.department           = (scope.path[0]) ? scope.path[0].name : ''; // $filter('camelCase')($scope.publication.path[0].name)
+        };
+
+      }
+
     }
 
 

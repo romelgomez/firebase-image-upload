@@ -5,32 +5,13 @@
     </div>
   </div>
 
-  <div class="panel panel-default" ng-show="publication.categorySelected === false && publication.isReady">
-    <div class="panel-heading">
-      <h3 class="panel-title" ng-switch="publication.inEditMode">
-        <span ng-switch-when="false" >New Publication - Select a category:</span>
-        <span ng-switch-when="true">Edit Publication</span>
-      </h3>
-    </div>
-    <div class="list-group">
-      <button type="button" class="list-group-item" ng-click="publication.setCategory(category.$id)" ng-repeat="category in publication.categories | filter:{parentId: publication.model.categoryId}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{category.name | capitalizeFirstChar}}</button>
-    </div>
-    <div class="panel-body">
-
-
-      <ol ng-show="publication.path.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
-        <li ng-click="publication.model.categoryId =''; publication.path =[];" class="a-link"> Reset </li>
-        <li ng-repeat="category in publication.path" ng-click="publication.setCategory(category.$id)" ng-class="{'a-link': !$last}"> {{category.name | capitalizeFirstChar}} </li>
-      </ol>
-
-      <div ng-show="publication.redefineCategory === true" class="alert alert-danger alert-xs" style="margin-bottom: 10px;" role="alert"><b>NOTE: Sorry, but we need to redefine the category.</b></div>
-      <div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: Select the category that best suits to the publication. No matter if it is too general or specific, the important thing is to select one.</div>
-
-    </div>
-    <div class="panel-footer" style="text-align: right;">
-      <input ng-click="publication.categorySelected = true; publication.redefineCategory = false" type="button" class="btn btn-primary" ng-disabled="publication.model.categoryId ===''" value="Confirm selection" >
-    </div>
-  </div>
+  <category-selector path="publication.path"
+                     category-selected="publication.categorySelected"
+                     is-ready="publication.isReady"
+                     in-edit-mode="publication.inEditMode"
+                     model="publication.model"
+                     categories="publication.categories"
+                     redefine-category="publication.redefineCategory" ></category-selector>
 
   <div class="panel panel-default" ng-show="publication.categorySelected && publication.isReady">
     <div class="panel-heading">
