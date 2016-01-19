@@ -104,7 +104,8 @@ publicationsModule
           '</div>'+
           '<barcode-img ng-show="!formName.barcode.$error.barcode"></barcode-img>'+
         '</div>'+
-      '</div>',
+      '</div>' +
+      '<div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: The <b>barcode</b> is obligatory for all type of publications, if you don\'t have one, you can set one CODE128 type randomly, with the barcode you and the clients can track this publication in many ways, and other publications they can maybe have the same barcode.</div>',
       link:function(scope){
 
         scope.barcode = {

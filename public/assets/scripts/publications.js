@@ -512,4 +512,71 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       '</div>'
     };
 
+  }])
+  .directive('jobTypeSelect',[function () {
+
+    return {
+      restrict:'E',
+      scope:{
+        model:'='
+      },
+      template:''+
+      '<label><i class="fa fa-barcode"></i> Job types</label>'+
+      '<div class="row" style="margin-bottom: 10px;">'+
+        '<div class="col-xs-5">'+
+          '<select class="form-control" ng-model="model">'+
+            '<option ng-repeat="type in jobTypes" value="{{type}}">{{type}}</option>'+
+          '</select>'+
+        '</div>'+
+      '</div>',
+      link:function(scope){
+
+        scope.model = 'Permanent';
+
+        scope.jobTypes = [
+          'Permanent',
+          'Contract'
+        ];
+
+      }
+    }
+
+  }])
+  .directive('salaryInput',[function () {
+
+    return {
+      restrict:'E',
+      scope:{
+        formName:'=',
+        model:'='
+      },
+      template:'',
+      link:function(scope){
+
+        scope.salaryType = [
+          'Annual',
+          'Daily',
+          'Hourly'
+        ];
+
+        /*
+        * Annual
+        *   checkboxes
+        *     + bonus
+        *     + benefits
+        *   inputs
+        *     front
+        *     to
+        * Daily
+         *   inputs
+         *     front
+         *     to
+        *
+        *
+        *
+        * */
+
+      }
+    }
+
   }]);
