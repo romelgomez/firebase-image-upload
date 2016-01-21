@@ -63,60 +63,13 @@
 
         <location-input form-name="publicationForm" locations="publication.locations" model="publication.model" redefine-location="publication.redefineLocation" location-path="publication.locationPath" ></location-input>
 
-        <barcode-input form-name="publicationForm" input-model="publication.model.barcode" select-model="publication.model.barcodeType" ></barcode-input>
-
         <job-type-select ng-if="publication.model.department === 'Jobs'" model="publication.model" ></job-type-select>
 
         <salary-input ng-if="publication.model.department === 'Jobs'" form-name="publicationForm" model="publication.model"></salary-input>
 
+        <recruiter-types-select ng-if="publication.model.department === 'Jobs'" model="publication.model"></recruiter-types-select>
 
-        <!--<div class="row">-->
-          <!--<div class="col-xs-8">-->
-
-            <!--<label><i class="fa fa-money"></i> Salary type</label>-->
-            <!--<div class="row" style="margin-bottom: 10px;">-->
-              <!--<div class="col-xs-5">-->
-                <!--<select class="form-control" ng-model="model.jobSalaryType">-->
-                  <!--<option ng-repeat="salaryType in model.jobSalaryTypes" value="{{salaryType}}"> {{salaryType}} </option>-->
-                <!--</select>-->
-              <!--</div>-->
-            <!--</div>-->
-
-            <!--<label><i class="fa fa-line-chart"></i> From:</label>-->
-            <!--<div class="form-group" style="margin-bottom: 10px;">-->
-              <!--<input name="jobSalaryStartAt" ng-model="model.jobSalaryStartAt" required class="form-control" placeholder="<Base salary or start at>" type="number">-->
-            <!--</div>-->
-            <!--<div data-ng-messages="(formName.$submitted && formName.jobSalaryStartAt.$error) || (formName.jobSalaryStartAt.$dirty && formName.jobSalaryStartAt.$error)" class="help-block">-->
-              <!--<div data-ng-message="required">-->
-                  <!-- - The <b>start or base salary</b> is required.-->
-              <!--</div>-->
-            <!--</div>-->
-
-            <!--<label><i class="fa fa-long-arrow-right"></i> To:</label>-->
-            <!--<div class="form-group" style="margin-bottom: 10px;">-->
-              <!--<input name="jobSalaryEndAt" ng-model="model.jobSalaryEndAt" required class="form-control" placeholder="<End at>" type="number">-->
-            <!--</div>-->
-            <!--<div data-ng-messages="(formName.$submitted && formName.jobSalaryEndAt.$error) || (formName.jobSalaryEndAt.$dirty && formName.jobSalaryEndAt.$error)" class="help-block">-->
-              <!--<div data-ng-message="required">-->
-                  <!-- - The <b> max salary </b> is required.-->
-              <!--</div>-->
-            <!--</div>-->
-
-            <!--<div class="checkbox">-->
-              <!--<label>-->
-                <!--<input ng-model="model.jobHasBonus" type="checkbox"> Has Bonus ?-->
-              <!--</label>-->
-            <!--</div>-->
-
-            <!--<div class="checkbox">-->
-              <!--<label>-->
-                <!--<input ng-model="model.jobHasBenefits" type="checkbox"> Has Benefits ?-->
-              <!--</label>-->
-            <!--</div>-->
-
-          <!--</div>-->
-        <!--</div>-->
-
+        <barcode-input form-name="publicationForm" input-model="publication.model.barcode" select-model="publication.model.barcodeType" ></barcode-input>
 
         <publication-images form-name="publicationForm" images="publication.images" publication-id="publication.$id" model="publication.model" http-request-promise="httpRequestPromise" ></publication-images>
 
@@ -124,7 +77,7 @@
 
       <hr class="hr-xs">
       <div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
-      <div class="alert alert-danger alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: Mostly all the info will be used for rank and faceting search the publications, so try to be honest and respect the other's time.</div>
+      <div class="alert alert-danger alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: Mostly all the info will be used for rank and faceting search the publications, so try to be explicit, honest and respect the other's time.</div>
 
     </div>
   </div>

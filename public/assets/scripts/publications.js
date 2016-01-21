@@ -294,7 +294,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         '</ol>'+
 
         '<input name="location" ng-model="model.locationId" required class="form-control" placeholder="" type="text" style="display: none;">'+
-        '<div data-ng-messages="publicationForm.$submitted && publicationForm.location.$error" class="help-block">'+
+        '<div data-ng-messages="formName.$submitted && formName.location.$error" class="help-block">'+
           '<div data-ng-message="required" >'+
           '- The <b>Location</b> is required.'+
           '</div>'+
@@ -523,7 +523,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       template:''+
       '<hr class="hr-xs">'+
 
-      '<label><i class="fa fa-barcode"></i> Job type</label>'+
+      '<label><i class="fa fa-random"></i> Job type</label>'+
       '<div class="row" style="margin-bottom: 10px;">'+
         '<div class="col-xs-5">'+
           '<select class="form-control" ng-model="model.jobType">'+
@@ -558,50 +558,50 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       '<hr class="hr-xs">'+
 
       '<div class="row">'+
-      '<div class="col-xs-8">'+
+        '<div class="col-xs-8">'+
 
-      '<label><i class="fa fa-gbp"></i> Salary</label>'+
-      '<div class="row" style="margin-bottom: 10px;">'+
-      '<div class="col-xs-5">'+
-      '<select class="form-control" ng-model="model.jobSalaryType">'+
-      '<option ng-repeat="salaryType in jobSalaryTypes" value="{{salaryType}}"> {{salaryType}} </option>'+
-      '</select>'+
-      '</div>'+
-      '</div>'+
+          '<label><i class="fa fa-gbp"></i> Salary</label>'+
+          '<div class="row" style="margin-bottom: 10px;">'+
+            '<div class="col-xs-5">'+
+              '<select class="form-control" ng-model="model.jobSalaryType">'+
+                '<option ng-repeat="salaryType in jobSalaryTypes" value="{{salaryType}}"> {{salaryType}} </option>'+
+              '</select>'+
+            '</div>'+
+          '</div>'+
 
-      '<label><i class="fa fa-gbp"></i> From:</label>'+
-      '<div class="form-group" style="margin-bottom: 10px;">'+
-      '<input name="jobSalaryStartAt" ng-model="model.jobSalaryStartAt" required class="form-control" placeholder="<Base salary or start at>" type="number">'+
-      '</div>'+
-      '<div data-ng-messages="(formName.$submitted && formName.jobSalaryStartAt.$error) || (formName.jobSalaryStartAt.$dirty && formName.jobSalaryStartAt.$error)" class="help-block">'+
-      '<div data-ng-message="required">'+
-      '- The <b>start or base salary</b> is required.'+
-      '</div>'+
-      '</div>'+
+          '<label><i class="fa fa-gbp"></i> From:</label>'+
+          '<div class="form-group" style="margin-bottom: 10px;">'+
+            '<input name="jobSalaryStartAt" ng-model="model.jobSalaryStartAt" required class="form-control" placeholder="<Base salary or start at>" type="number">'+
+          '</div>'+
+          '<div data-ng-messages="(formName.$submitted && formName.jobSalaryStartAt.$error) || (formName.jobSalaryStartAt.$dirty && formName.jobSalaryStartAt.$error)" class="help-block">'+
+            '<div data-ng-message="required">'+
+              '- The <b>start or base salary</b> is required.'+
+            '</div>'+
+          '</div>'+
 
-      '<label><i class="fa fa-gbp"></i> To:</label>'+
-      '<div class="form-group" style="margin-bottom: 10px;">'+
-      '<input name="jobSalaryEndAt" ng-model="model.jobSalaryEndAt" required class="form-control" placeholder="<End at>" type="number">'+
-      '</div>'+
-      '<div data-ng-messages="(formName.$submitted && formName.jobSalaryEndAt.$error) || (formName.jobSalaryEndAt.$dirty && formName.jobSalaryEndAt.$error)" class="help-block">'+
-      '<div data-ng-message="required">'+
-      '- The <b> max salary </b> is required.'+
-      '</div>'+
-      '</div>'+
+          '<label><i class="fa fa-gbp"></i> To:</label>'+
+          '<div class="form-group" style="margin-bottom: 10px;">'+
+            '<input name="jobSalaryEndAt" ng-model="model.jobSalaryEndAt" required class="form-control" placeholder="<End at>" type="number">'+
+          '</div>'+
+          '<div data-ng-messages="(formName.$submitted && formName.jobSalaryEndAt.$error) || (formName.jobSalaryEndAt.$dirty && formName.jobSalaryEndAt.$error)" class="help-block">'+
+            '<div data-ng-message="required">'+
+              '- The <b> max salary </b> is required.'+
+            '</div>'+
+          '</div>'+
 
-      '<div class="checkbox">'+
-      '<label>'+
-      '<input ng-model="model.jobHasBonus" type="checkbox"> The job Has Bonus?'+
-      '</label>'+
-      '</div>'+
+          '<div class="checkbox">'+
+            '<label>'+
+              '<input ng-model="model.jobHasBonus" type="checkbox"> The job Has Bonus?'+
+            '</label>'+
+          '</div>'+
 
-      '<div class="checkbox" style="margin-bottom: 0;">'+
-      '<label>'+
-      '<input ng-model="model.jobHasBenefits" type="checkbox"> The job Has Benefits?'+
-      '</label>'+
-      '</div>'+
+          '<div class="checkbox" style="margin-bottom: 0;">'+
+            '<label>'+
+              '<input ng-model="model.jobHasBenefits" type="checkbox"> The job Has Benefits?'+
+            '</label>'+
+          '</div>'+
 
-      '</div>'+
+        '</div>'+
       '</div>',
       link:function(scope){
 
@@ -630,13 +630,13 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         function setEstimatedMonthlySalary (){
           switch(scope.model.jobSalaryType) {
             case 'Annual':
-              scope.model.estimatedMonthlySalary = (scope.model.jobSalaryStartAt / 12);
+              scope.model.jobEstimatedMonthlySalary = (scope.model.jobSalaryStartAt / 12);
               break;
             case 'Daily':
-              scope.model.estimatedMonthlySalary = (scope.model.jobSalaryStartAt * 21.741);
+              scope.model.jobEstimatedMonthlySalary = (scope.model.jobSalaryStartAt * 21.741);
               break;
             case 'Hourly':
-              scope.model.estimatedMonthlySalary = (scope.model.jobSalaryStartAt * 8 * 21.741);
+              scope.model.jobEstimatedMonthlySalary = (scope.model.jobSalaryStartAt * 8 * 21.741);
               break;
           }
         }
@@ -653,6 +653,39 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           setEstimatedMonthlySalary()
         });
 
+
+      }
+    }
+
+  }])
+  .directive('recruiterTypesSelect',[function () {
+
+    return {
+      restrict:'E',
+      scope:{
+        model:'='
+      },
+      template:''+
+      '<hr class="hr-xs">'+
+
+      '<label><i class="fa fa-random"></i> Recruiter type</label>'+
+        '<div class="row" style="margin-bottom: 10px;">'+
+        '<div class="col-xs-5">'+
+          '<select class="form-control" ng-model="model.jobRecruiterType">'+
+            '<option ng-repeat="type in recruiterTypes" value="{{type}}">{{type}}</option>'+
+          '</select>'+
+        '</div>'+
+      '</div>',
+      link:function(scope){
+
+        if (typeof scope.model.jobRecruiterType === 'undefined'){
+          scope.model.jobRecruiterType = 'Agency';
+        }
+
+        scope.recruiterTypes = [
+          'Agency',
+          'Direct Employer'
+        ];
 
       }
     }
