@@ -521,17 +521,21 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         model:'='
       },
       template:''+
-      '<label><i class="fa fa-barcode"></i> Job types</label>'+
+      '<hr class="hr-xs">'+
+
+      '<label><i class="fa fa-barcode"></i> Job type</label>'+
       '<div class="row" style="margin-bottom: 10px;">'+
         '<div class="col-xs-5">'+
-          '<select class="form-control" ng-model="model">'+
+          '<select class="form-control" ng-model="model.jobType">'+
             '<option ng-repeat="type in jobTypes" value="{{type}}">{{type}}</option>'+
           '</select>'+
         '</div>'+
       '</div>',
       link:function(scope){
 
-        scope.model = 'Permanent';
+        if (typeof scope.model.jobType === 'undefined'){
+          scope.model.jobType = 'Permanent';
+        }
 
         scope.jobTypes = [
           'Permanent',
@@ -550,31 +554,105 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         formName:'=',
         model:'='
       },
-      template:'',
+      template:'' +
+      '<hr class="hr-xs">'+
+
+      '<div class="row">'+
+      '<div class="col-xs-8">'+
+
+      '<label><i class="fa fa-gbp"></i> Salary</label>'+
+      '<div class="row" style="margin-bottom: 10px;">'+
+      '<div class="col-xs-5">'+
+      '<select class="form-control" ng-model="model.jobSalaryType">'+
+      '<option ng-repeat="salaryType in jobSalaryTypes" value="{{salaryType}}"> {{salaryType}} </option>'+
+      '</select>'+
+      '</div>'+
+      '</div>'+
+
+      '<label><i class="fa fa-gbp"></i> From:</label>'+
+      '<div class="form-group" style="margin-bottom: 10px;">'+
+      '<input name="jobSalaryStartAt" ng-model="model.jobSalaryStartAt" required class="form-control" placeholder="<Base salary or start at>" type="number">'+
+      '</div>'+
+      '<div data-ng-messages="(formName.$submitted && formName.jobSalaryStartAt.$error) || (formName.jobSalaryStartAt.$dirty && formName.jobSalaryStartAt.$error)" class="help-block">'+
+      '<div data-ng-message="required">'+
+      '- The <b>start or base salary</b> is required.'+
+      '</div>'+
+      '</div>'+
+
+      '<label><i class="fa fa-gbp"></i> To:</label>'+
+      '<div class="form-group" style="margin-bottom: 10px;">'+
+      '<input name="jobSalaryEndAt" ng-model="model.jobSalaryEndAt" required class="form-control" placeholder="<End at>" type="number">'+
+      '</div>'+
+      '<div data-ng-messages="(formName.$submitted && formName.jobSalaryEndAt.$error) || (formName.jobSalaryEndAt.$dirty && formName.jobSalaryEndAt.$error)" class="help-block">'+
+      '<div data-ng-message="required">'+
+      '- The <b> max salary </b> is required.'+
+      '</div>'+
+      '</div>'+
+
+      '<div class="checkbox">'+
+      '<label>'+
+      '<input ng-model="model.jobHasBonus" type="checkbox"> The job Has Bonus?'+
+      '</label>'+
+      '</div>'+
+
+      '<div class="checkbox" style="margin-bottom: 0;">'+
+      '<label>'+
+      '<input ng-model="model.jobHasBenefits" type="checkbox"> The job Has Benefits?'+
+      '</label>'+
+      '</div>'+
+
+      '</div>'+
+      '</div>',
       link:function(scope){
 
-        scope.salaryType = [
+        if (typeof scope.model.jobSalaryStartAt === 'undefined'){
+          scope.model.jobSalaryStartAt = null;
+        }
+        if (typeof scope.model.jobSalaryEndAt === 'undefined'){
+          scope.model.jobSalaryEndAt = null;
+        }
+        if (typeof scope.model.jobHasBonus === 'undefined'){
+          scope.model.jobHasBonus = false;
+        }
+        if (typeof scope.model.jobHasBenefits === 'undefined'){
+          scope.model.jobHasBenefits = false;
+        }
+        if (typeof scope.model.jobSalaryType === 'undefined'){
+          scope.model.jobSalaryType = 'Annual';
+        }
+
+        scope.jobSalaryTypes = [
           'Annual',
           'Daily',
           'Hourly'
         ];
 
-        /*
-        * Annual
-        *   checkboxes
-        *     + bonus
-        *     + benefits
-        *   inputs
-        *     front
-        *     to
-        * Daily
-         *   inputs
-         *     front
-         *     to
-        *
-        *
-        *
-        * */
+        function setEstimatedMonthlySalary (){
+          switch(scope.model.jobSalaryType) {
+            case 'Annual':
+              scope.model.estimatedMonthlySalary = (scope.model.jobSalaryStartAt / 12);
+              break;
+            case 'Daily':
+              scope.model.estimatedMonthlySalary = (scope.model.jobSalaryStartAt * 21.741);
+              break;
+            case 'Hourly':
+              scope.model.estimatedMonthlySalary = (scope.model.jobSalaryStartAt * 8 * 21.741);
+              break;
+          }
+        }
+
+        scope.$watch(function(scope){
+          return scope.model.jobSalaryType;
+        },function(){
+          setEstimatedMonthlySalary()
+        });
+
+        scope.$watch(function(scope){
+          return scope.model.jobSalaryStartAt;
+        },function(){
+          setEstimatedMonthlySalary()
+        });
+
 
       }
     }

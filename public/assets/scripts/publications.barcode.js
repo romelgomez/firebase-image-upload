@@ -78,6 +78,8 @@ publicationsModule
         selectModel:'='
       },
       template:'' +
+      '<hr class="hr-xs">'+
+
       '<div class="row">'+
         '<div class="col-xs-8">'+
           '<label><i class="fa fa-barcode"></i> Barcode</label>'+
