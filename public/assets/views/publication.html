@@ -69,6 +69,8 @@
 
         <recruiter-types-select ng-if="publication.model.department === 'Jobs'" model="publication.model"></recruiter-types-select>
 
+        <re-home-status ng-if="publication.model.department === 'Real Estate'" model="publication.model" ></re-home-status>
+
         <barcode-input form-name="publicationForm" input-model="publication.model.barcode" select-model="publication.model.barcodeType" ></barcode-input>
 
         <publication-images form-name="publicationForm" images="publication.images" publication-id="publication.$id" model="publication.model" http-request-promise="httpRequestPromise" ></publication-images>
@@ -82,8 +84,7 @@
     </div>
   </div>
 
-
-  <pre>{{publication.model | json}}</pre>
+  <!--<pre>{{publication.model | json}}</pre>-->
 
 </section>
 
