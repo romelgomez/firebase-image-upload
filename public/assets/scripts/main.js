@@ -23,14 +23,13 @@ angular.module('main',['cloudinary','algoliasearch'])
 
       //$scope.isCollapsed = true; // TODO FOR DEBUG
 
-      var itemsPerPage = 2;
       var algoliaOriginalSettings = angular.copy($scope.algolia = {
         req : {
           query: '',
           facets:'*',
           facetFilters: [],
           // number of hits per page
-          hitsPerPage: itemsPerPage,
+          hitsPerPage: 2,
           getRankingInfo: 1,
           // current page number
           page: 0,
@@ -43,8 +42,6 @@ angular.module('main',['cloudinary','algoliasearch'])
         pagination: {
           // number of pages that are visible
           maxSize: 10,
-          // number of publications per page
-          itemsPerPage: itemsPerPage,
           // current page
           currentPage : 1,
           pageChanged : function() {
