@@ -724,4 +724,37 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       }
     }
 
+  }])
+  .directive('reHomeFor',[function () {
+
+    return {
+      restrict:'E',
+      scope:{
+        model:'='
+      },
+      template:''+
+      '<hr class="hr-xs">'+
+
+      '<label><i class="fa fa-random"></i> Home for</label>'+
+        '<div class="row" style="margin-bottom: 10px;">'+
+        '<div class="col-xs-5">'+
+          '<select class="form-control" ng-model="model.reHomeFor">'+
+            '<option ng-repeat="option in options" value="{{option}}">{{option}}</option>'+
+          '</select>'+
+        '</div>'+
+      '</div>',
+      link:function(scope){
+
+        if (typeof scope.model.reHomeFor === 'undefined'){
+          scope.model.reHomeFor = 'Sale';
+        }
+
+        scope.options = [
+          'Sale',
+          'Rent'
+        ];
+
+      }
+    }
+
   }]);
