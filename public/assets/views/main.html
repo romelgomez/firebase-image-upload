@@ -80,7 +80,15 @@
               <div class="panel-heading"><i class="fa fa-random"></i> Job type <button ng-show="algolia.faceting.currentFacets.jobType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobType')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
               <div class="list-group">
                 <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobType',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.jobType" >
-                  <!--<i style="color: #286090" class="fa" ></i>-->
+                  {{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>
+                </button>
+              </div>
+            </div>
+
+            <div ng-if="algolia.res.facets.jobRecruiterType && algolia.faceting.currentFacets.categories.length > 0" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
+              <div class="panel-heading"><i class="fa fa-random"></i> Recruiter Type <button ng-show="algolia.faceting.currentFacets.jobRecruiterType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobRecruiterType')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
+              <div class="list-group">
+                <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobRecruiterType',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.jobRecruiterType" >
                   {{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>
                 </button>
               </div>

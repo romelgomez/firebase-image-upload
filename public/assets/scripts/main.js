@@ -169,13 +169,15 @@ angular.module('main',['cloudinary','algoliasearch'])
           facetsAvailables : {
             categories:[],
             locations:[],
-            jobType:[]
+            jobType:[],
+            jobRecruiterType:[]
           },
           // Track Faces in use
           currentFacets: {
             categories:[],
             locations:[],
-            jobType:[]
+            jobType:[],
+            jobRecruiterType:[]
           },
           treeFacetsMethods: {
             // add facet to main request string
@@ -197,6 +199,7 @@ angular.module('main',['cloudinary','algoliasearch'])
                 // Services
                 // Jobs
                 angular.copy([],$scope.algolia.faceting.currentFacets['jobType']);
+                angular.copy([],$scope.algolia.faceting.currentFacets['jobRecruiterType']);
               }
 
               updateFacetFilters()
