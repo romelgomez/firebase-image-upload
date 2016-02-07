@@ -171,7 +171,8 @@ angular.module('main',['cloudinary','algoliasearch'])
             locations:[],
             jobType:[],
             jobRecruiterType:[],
-            jobSalaryType:[]
+            jobSalaryType:[],
+            reHomeStatus:[]
           },
           // Track Faces in use
           currentFacets: {
@@ -179,7 +180,8 @@ angular.module('main',['cloudinary','algoliasearch'])
             locations:[],
             jobType:[],
             jobRecruiterType:[],
-            jobSalaryType:[]
+            jobSalaryType:[],
+            reHomeStatus:[]
           },
           treeFacetsMethods: {
             // add facet to main request string
@@ -197,6 +199,7 @@ angular.module('main',['cloudinary','algoliasearch'])
               if(facetType === 'categories'){
                 // Marketplace
                 // Real Estate
+                angular.copy([],$scope.algolia.faceting.currentFacets['reHomeStatus']);
                 // Transport
                 // Services
                 // Jobs

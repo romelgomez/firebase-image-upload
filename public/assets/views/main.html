@@ -103,6 +103,15 @@
               </div>
             </div>
 
+            <div ng-if="algolia.res.facets.reHomeStatus && algolia.faceting.currentFacets.categories.length > 0" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
+              <div class="panel-heading"><i class="fa fa-random"></i> Home Status <button ng-show="algolia.faceting.currentFacets.reHomeStatus.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeStatus')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
+              <div class="list-group">
+                <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('reHomeStatus',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.reHomeStatus" >
+                  {{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>
+                </button>
+              </div>
+            </div>
+
           </div>
           <div class="col-xs-8 col-md-9" style="padding-left: 5px;">
 
