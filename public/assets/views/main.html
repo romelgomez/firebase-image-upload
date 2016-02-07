@@ -94,6 +94,15 @@
               </div>
             </div>
 
+            <div ng-if="algolia.res.facets.jobSalaryType && algolia.faceting.currentFacets.categories.length > 0" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
+              <div class="panel-heading"><i class="fa fa-random"></i> Salary Type <button ng-show="algolia.faceting.currentFacets.jobSalaryType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobSalaryType')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
+              <div class="list-group">
+                <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobSalaryType',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.jobSalaryType" >
+                  {{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>
+                </button>
+              </div>
+            </div>
+
           </div>
           <div class="col-xs-8 col-md-9" style="padding-left: 5px;">
 
