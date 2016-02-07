@@ -168,12 +168,14 @@ angular.module('main',['cloudinary','algoliasearch'])
           // Availables facets that we can select
           facetsAvailables : {
             categories:[],
-            locations:[]
+            locations:[],
+            jobType:[]
           },
           // Track Faces in use
           currentFacets: {
             categories:[],
-            locations:[]
+            locations:[],
+            jobType:[]
           },
           treeFacetsMethods: {
             // add facet to main request string
@@ -187,6 +189,16 @@ angular.module('main',['cloudinary','algoliasearch'])
             // Remove al facets
             removeAllFacet: function (facetType) {
               angular.copy([],$scope.algolia.faceting.currentFacets[facetType]);
+
+              if(facetType === 'categories'){
+                // Marketplace
+                // Real Estate
+                // Transport
+                // Services
+                // Jobs
+                angular.copy([],$scope.algolia.faceting.currentFacets['jobType']);
+              }
+
               updateFacetFilters()
                 .then(function(){
                   $scope.algolia.sortOrder.changeIndexName('publications');
@@ -206,6 +218,26 @@ angular.module('main',['cloudinary','algoliasearch'])
                     });
                 }
               }
+            }
+          },
+          facetsMethods: {
+            // add facet to main request string
+            addFacet: function(facetType,facetName){
+              // facet : {"left":5,"name":"Real Estate","parentId":"","right":10,"$id":"-K5pzphvGtzcQhxopgpD","$priority":null,"count":1}
+              var facetObj = {};
+              facetObj.name = facetName; // to match the requirements of updateFacetFilters function
+              $scope.algolia.faceting.currentFacets[facetType] = angular.isDefined($scope.algolia.faceting.currentFacets[facetType]) ? $scope.algolia.faceting.currentFacets[facetType] : [];
+              $scope.algolia.faceting.currentFacets[facetType].push(facetObj);
+              $scope.algolia.req.facetFilters.push(facetType+':'+facetObj.name);
+              search();
+            },
+            removeFacet: function (facetType) {
+              angular.copy([],$scope.algolia.faceting.currentFacets[facetType]);
+              updateFacetFilters()
+                .then(function(){
+                  $scope.algolia.sortOrder.changeIndexName('publications');
+                  search();
+                });
             }
           }
         }
