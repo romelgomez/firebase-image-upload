@@ -173,6 +173,7 @@ angular.module('main',['cloudinary','algoliasearch'])
             jobRecruiterType:[],
             jobSalaryType:[],
             reHomeStatus:[],
+            reHomeFor:[],
             jobHasBenefits:[],
             jobHasBonus:[]
           },
@@ -184,6 +185,7 @@ angular.module('main',['cloudinary','algoliasearch'])
             jobRecruiterType:[],
             jobSalaryType:[],
             reHomeStatus:[],
+            reHomeFor:[],
             jobHasBenefits:[],
             jobHasBonus:[]
           },
@@ -204,6 +206,7 @@ angular.module('main',['cloudinary','algoliasearch'])
                 // Marketplace
                 // Real Estate
                 angular.copy([],$scope.algolia.faceting.currentFacets['reHomeStatus']);
+                angular.copy([],$scope.algolia.faceting.currentFacets['reHomeFor']);
                 // Transport
                 // Services
                 // Jobs

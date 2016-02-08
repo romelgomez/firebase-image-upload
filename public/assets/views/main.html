@@ -112,6 +112,15 @@
               </div>
             </div>
 
+            <div ng-if="algolia.res.facets.reHomeFor && algolia.faceting.currentFacets.categories.length > 0" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
+              <div class="panel-heading"><i class="fa fa-random"></i> Home for <button ng-show="algolia.faceting.currentFacets.reHomeFor.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeFor')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
+              <div class="list-group">
+                <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('reHomeFor',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.reHomeFor" >
+                  {{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>
+                </button>
+              </div>
+            </div>
+
             <div ng-if="algolia.res.facets.jobHasBenefits && algolia.faceting.currentFacets.categories.length > 0" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
               <div class="panel-heading"><i class="fa fa-random"></i> The job has benefits <button ng-show="algolia.faceting.currentFacets.jobHasBenefits.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobHasBenefits')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
               <div class="list-group">
