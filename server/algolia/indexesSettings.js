@@ -2,10 +2,6 @@ var Q = require('q');
 var utilities = require('./../utilities');
 var algoliaSettings = require('./algoliaSettings');
 
-module.exports = {
-  updateIndexSettings: updateIndexSettings
-};
-
 var settings = {
   publications:{
     attributesToIndex: ['barcode','title','unordered(description)'],
@@ -56,6 +52,11 @@ var settings = {
     attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
     ranking: ['desc(salary)']
   }
+};
+
+module.exports = {
+  updateIndexSettings: updateIndexSettings,
+  allSettings: settings
 };
 
 /**

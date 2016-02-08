@@ -12,15 +12,19 @@ var indexesSettings = require('./indexesSettings');
  * @param {String} taskTitle
  * @param {String} firePath
  * @param {String} indexName
+ * @param {Object} mainIndexSettings are the main index settings only, without the slaves settings
  * @return {Promise<Object>}
  * */
-function reImport( taskTitle, firePath, indexName) {
+function reImport( taskTitle, firePath, indexName, mainIndexSettings) {
   var deferred = Q.defer();
   utilities.startProcess(taskTitle);
   var tempIndex = algoliaSettings.client.initIndex(indexName+'Temp');
   var ref = new Firebase(firePath);
   ref.once('value', function(dataSnapshot){
     tempIndex.clearIndex()
+      .then(function(){
+        return tempIndex.setSettings(mainIndexSettings)
+      })
       .then(function(){
         return addObjectIDs(dataSnapshot)
       })
@@ -96,7 +100,10 @@ function addObjectIDs(dataSnapshot){
 
 function main(){
 
-  reImport('reImport publications data', 'berlin.firebaseio.com/publications', 'publications')
+  var publicationsMainSettings = indexesSettings.allSettings.publications;
+  delete publicationsMainSettings.slaves; // http://stackoverflow.com/questions/34954127/how-to-properly-reimport-data-and-kept-the-settings-in-algolia
+
+  reImport('reImport publications data', 'berlin.firebaseio.com/publications', 'publications', publicationsMainSettings)
     .then(function(){
       console.log('······· The reImport was satisfactory ·······');
       process.exit();
