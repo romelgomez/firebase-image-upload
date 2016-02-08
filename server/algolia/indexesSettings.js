@@ -11,49 +11,49 @@ var settings = {
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['price','releaseDate'],
     customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
     slaves: ['publications_by_price_asc', 'publications_by_price_desc','publications_by_releaseDate_asc', 'publications_by_releaseDate_desc']
   },
   publications_by_price_asc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['price','releaseDate'],
     customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
     ranking: ['asc(price)']
   },
   publications_by_price_desc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['price','releaseDate'],
     customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
     ranking: ['desc(price)']
   },
   publications_by_releaseDate_asc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['price','releaseDate'],
     customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
     ranking: ['asc(releaseDate)']
   },
   publications_by_releaseDate_desc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['price','releaseDate'],
     customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
     ranking: ['desc(releaseDate)']
   },
   publications_by_salary_asc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['salary','releaseDate'],
     customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
     ranking: ['asc(salary)']
   },
   publications_by_salary_desc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['salary','releaseDate'],
     customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
     ranking: ['desc(salary)']
   }
 };

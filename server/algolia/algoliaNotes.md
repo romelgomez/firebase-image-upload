@@ -46,28 +46,3 @@ FireBase example model data
  title: "Dasdasdasd 22211"
  type: "realEstate"
  userUid: "facebook:10204911533563856"
-
-
-Example Model:
-
-[
-  {
-    "name": "Monica Bellucci",
-    "alternative_name": "Monica Anna Maria Bellucci",
-    "rating": 3956,
-    "image_path": "/z3sLuRKP7hQVr.jpg"
-  },
-  {
-    "name": "Sean Connery",
-    "alternative_name": "Sir Sean Connery",
-    "rating": 746,
-    "image_path": "/ce84udJZ9QRSR44jxwK2apM3DM8.jpg"
-  },
-  {
-    "name": "Will Smith",
-    "alternative_name": null,
-    "rating": 492,
-    "image_path": "/2iYXDlCvLyVO49louRyDDXagZ0G.jpg"
-  },
-  {...}
-]
