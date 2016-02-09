@@ -8,49 +8,43 @@ var settings = {
     numericAttributesToIndex:['price','releaseDate'],
     customRanking:['desc(views)'],
     attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
-    slaves: ['publications_by_price_asc', 'publications_by_price_desc','publications_by_releaseDate_asc', 'publications_by_releaseDate_desc']
+    slaves: ['publications_by_price_asc', 'publications_by_price_desc','publications_by_releaseDate_asc', 'publications_by_releaseDate_desc','publications_by_salary_asc','publications_by_salary_desc']
   },
   publications_by_price_asc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['price','releaseDate'],
-    customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
-    ranking: ['asc(price)']
+    customRanking:['asc(price)'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor']
   },
   publications_by_price_desc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['price','releaseDate'],
-    customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
-    ranking: ['desc(price)']
+    customRanking:['desc(price)'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor']
   },
   publications_by_releaseDate_asc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['price','releaseDate'],
-    customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
-    ranking: ['asc(releaseDate)']
+    customRanking:['asc(releaseDate)'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor']
   },
   publications_by_releaseDate_desc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
     numericAttributesToIndex:['price','releaseDate'],
-    customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
-    ranking: ['desc(releaseDate)']
+    customRanking:['desc(releaseDate)'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor']
   },
   publications_by_salary_asc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
-    numericAttributesToIndex:['salary','releaseDate'],
-    customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
-    ranking: ['asc(salary)']
+    numericAttributesToIndex:['jobEstimatedMonthlySalary','releaseDate'],
+    customRanking:['asc(jobEstimatedMonthlySalary)'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor']
   },
   publications_by_salary_desc:{
     attributesToIndex: ['barcode','title','unordered(description)'],
-    numericAttributesToIndex:['salary','releaseDate'],
-    customRanking:['desc(views)'],
-    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor'],
-    ranking: ['desc(salary)']
+    numericAttributesToIndex:['jobEstimatedMonthlySalary','releaseDate'],
+    customRanking:['desc(jobEstimatedMonthlySalary)'],
+    attributesForFaceting: ['categories','userID','locations','jobType','jobSalaryType','jobRecruiterType','jobHasBonus','jobHasBenefits','reHomeStatus','reHomeFor']
   }
 };
 

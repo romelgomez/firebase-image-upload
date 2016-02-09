@@ -56,6 +56,8 @@ angular.module('main',['cloudinary','algoliasearch'])
             $scope.algolia.sortOrder.currentIndexName = indexName;
           },
           sortBy:function(){
+            $scope.algolia.req.page = 0;
+            $scope.algolia.pagination.currentPage = 1;
             search();
           },
           options:{
