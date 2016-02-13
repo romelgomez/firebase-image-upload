@@ -20,6 +20,22 @@ publicationsModule
 
       $scope.publication = {};
 
+      $scope.barcode = {
+        string:'',
+        options: {
+          width: 1,
+          height: 50,
+          quite: 10,
+          format: 'CODE128',
+          displayValue: true,
+          font: "monospace",
+          textAlign: "center",
+          fontSize: 12,
+          backgroundColor: "",
+          lineColor: "#000"
+        }
+      };
+
       function loadPublication(publicationId) {
         var deferred   = $q.defer();
 
@@ -45,6 +61,7 @@ publicationsModule
 
             $scope.publication = the.publication;
             $scope.publicationImages = [];
+            $scope.barcode.string = the.publication.barcode;
 
             angular.forEach(the.publication.images, function(imageData,imageID){
               imageData.$id = imageID;

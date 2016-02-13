@@ -20,7 +20,12 @@
 
     <span ng-bind-html="publication.htmlDescription | unsafe"></span>
 
-    <!--<hr class="hr-xs">-->
+    <hr class="hr-xs">
+
+    <div style="padding-bottom: 15px;">
+      <b>Publication barcode:</b>
+    </div>
+    <barcode-img barcode-string="barcode.string" barcode-options="barcode.options" ></barcode-img>
 
   </div>
 </div>

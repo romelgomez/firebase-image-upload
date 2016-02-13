@@ -31,7 +31,13 @@ publicationsModule
           if (typeof scope.barcodeOptions === "undefined") {
             scope.barcodeOptions = {};
           }
-          $window.JsBarcode(element.find(tagUsed), scope.barcodeString, scope.barcodeOptions);
+
+          scope.$watch(function(){
+            return scope.barcodeString;
+          },function(barcode){
+            $window.JsBarcode(element.find(tagUsed), barcode, scope.barcodeOptions);
+          });
+
         }
 
       }
