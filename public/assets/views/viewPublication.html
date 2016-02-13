@@ -1,11 +1,14 @@
 <div class="panel panel-default" cg-busy="{promise: httpRequestPromise, message:'Just a moment'}">
   <div class="panel-heading">
-    <h3 class="panel-title" style="font-size: 25px;">{{publication.rawData.title}}</h3>
+    <h3 class="panel-title" style="font-size: 25px;">
+      <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (publication.department === 'Marketplace'),'fa-suitcase': (publication.department === 'Jobs'),'fa-home': (publication.department === 'Real Estate'),'fa-car': (publication.department === 'Transport'),'fa-wrench': (publication.department === 'Services')}"></i>
+      - {{publication.title | capitalizeFirstChar}}
+    </h3>
   </div>
   <div class="panel-body">
 
     <uib-carousel interval="5000" no-wrap="false">
-      <uib-slide ng-repeat="image in publication.images">
+      <uib-slide ng-repeat="image in publicationImages">
         <img ng-src="http://res.cloudinary.com/berlin/image/upload/c_fill,h_500,w_800/{{image.$id}}.jpg" style="margin:auto;">
         <div class="carousel-caption">
           <h4>{{image.name | removeFileExtension | noSpecialChars | capitalizeFirstChar}}</h4>
@@ -15,11 +18,12 @@
 
     <hr class="hr-xs">
 
-    <span ng-bind-html="publication.rawData.htmlDescription | unsafe"></span>
+    <span ng-bind-html="publication.htmlDescription | unsafe"></span>
 
     <!--<hr class="hr-xs">-->
 
   </div>
 </div>
 
-<!--<pre>{{publication | json}}</pre>-->
+<pre>{{publication | json}}</pre>
+<pre>{{publicationImages | json}}</pre>

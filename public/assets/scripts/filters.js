@@ -67,6 +67,26 @@ angular.module('filters',[])
       return (!!input) ? input.trim().replace(/(^\w?)/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1);}) : '';
     };
   }])
+  /**
+   * @Description All first letters of each word will be capital letters. (NOTE: The filter directive is to directly use in forms inputs)
+   * @source http://stackoverflow.com/a/14425022/2513972
+   */
+  .directive('capitalizeFirstChar', ['$filter',function($filter){
+    return {
+      require: 'ngModel',
+      link: function(scope, element, attrs, modelCtrl) {
+
+        modelCtrl.$parsers.push(function (inputValue) {
+          var transformedInput = $filter('capitalizeFirstChar')(inputValue);
+          if (transformedInput!=inputValue) {
+            modelCtrl.$setViewValue(transformedInput);
+            modelCtrl.$render();
+          }
+          return transformedInput;
+        });
+      }
+    };
+  }])
 /**
  * @Description Add one more step before apply the 'date' filter of angular. The raw data is first passed through Date.parse(input) before apply the 'date' filter of angular.
  * The idea is get the integer format: Date.parse('2015-01-19 14:12:15') // 142169293500, before apply the 'date' filter of angular.

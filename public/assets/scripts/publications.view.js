@@ -18,10 +18,7 @@ publicationsModule
 
       var publicationsRef  = FireRef.child('publications');
 
-      $scope.publication = {
-        rawData: {},
-        images: []
-      };
+      $scope.publication = {};
 
       function loadPublication(publicationId) {
         var deferred   = $q.defer();
@@ -46,14 +43,15 @@ publicationsModule
         $scope.httpRequestPromise = loadPublication($routeParams.publicationId)
           .then(function(the){
 
-            $scope.publication.rawData = the.publication;
+            $scope.publication = the.publication;
+            $scope.publicationImages = [];
 
             angular.forEach(the.publication.images, function(imageData,imageID){
               imageData.$id = imageID;
               if(imageID !== the.publication.featuredImageId){
-                $scope.publication.images.push(imageData);
+                $scope.publicationImages.push(imageData);
               }else{
-                $scope.publication.images.unshift(imageData)
+                $scope.publicationImages.unshift(imageData)
               }
             });
 

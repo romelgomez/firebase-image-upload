@@ -433,7 +433,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
     };
 
   }])
-  .directive('titleInput',[function () {
+  .directive('titleInput',['$filter',function ($filter) {
 
     return {
       restrict:'E',
@@ -444,7 +444,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       template:''+
       '<div class="form-group">'+
         '<label class="control-label"><span class="glyphicon glyphicon-bookmark"></span> Title <sup style="color: red;">*</sup></label>'+
-        '<input type="text" name="title" ng-model="model.title" required minlength="7" capitalize class="form-control" placeholder="">'+
+        '<input type="text" name="title" ng-model="model.title" required minlength="7" capitalize-first-char class="form-control" placeholder="">'+
         '<div data-ng-messages="formName.$submitted && formName.title.$error" class="help-block">'+
           '<div data-ng-message="required">'+
             '- The <b>title</b> is required.'+
