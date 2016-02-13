@@ -1,6 +1,6 @@
 'use strict';
 
-var publicationsModule = angular.module('publications',['uuid','ngMessages','angular-redactor','ngFileUpload'])
+var publicationsModule = angular.module('publications',['uuid','ngMessages','angular-redactor','ngFileUpload','cloudinary','algoliasearch'])
   .factory('publicationService',['$q', '$window', 'imagesService',function( $q, $window, imagesService){
 
     return {
