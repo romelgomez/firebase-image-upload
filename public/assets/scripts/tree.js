@@ -409,13 +409,13 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         reference: '@'
       },
       link:function(scope,element){
-        if (typeof scope.reference === "undefined") {
-          throw ">>> The reference attr is undefined >>>";
+        if (typeof scope.reference === 'undefined') {
+          throw '>>> The reference attr is undefined >>>';
         }
 
         reference = scope.reference;
 
-        var treeElement = element.find("#tree");
+        var treeElement = element.find('#tree');
 
         /**
          * Displaying initially Data, which is []

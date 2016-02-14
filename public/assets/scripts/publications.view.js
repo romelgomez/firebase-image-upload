@@ -28,11 +28,11 @@ publicationsModule
           quite: 10,
           format: 'CODE128',
           displayValue: true,
-          font: "monospace",
-          textAlign: "center",
+          font: 'monospace',
+          textAlign: 'center',
           fontSize: 12,
-          backgroundColor: "",
-          lineColor: "#000"
+          backgroundColor: '',
+          lineColor: '#000'
         }
       };
 

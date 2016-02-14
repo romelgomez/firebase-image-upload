@@ -499,7 +499,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           '<div class="col-xs-4">'+
             '<label class="control-label"><span class="glyphicon glyphicon-tag"></span> Price <sup style="color: red;">*</sup></label>'+
             '<div class="input-group">'+
-              '<div class="input-group-addon">$</div>'+
+              '<div class="input-group-addon">£</div>'+
               '<input name="price" ng-model="model.price" required class="form-control" placeholder="Eje: 1000" type="number">'+
             '</div>'+
             '<div data-ng-messages="formName.$submitted && formName.price.$error" class="help-block">'+

@@ -361,7 +361,7 @@ publicationsModule
           },function(){
             resetQuerySettings();
 
-            if (typeof $scope.account !== "undefined"){
+            if (typeof $scope.account !== 'undefined'){
               var facetObj = {};
               facetObj.name = $scope.account.user.uid; // to match the requirements of updateFacetFilters function
               $scope.algolia.faceting.currentFacets.userID = [];

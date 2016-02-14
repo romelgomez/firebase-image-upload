@@ -27,8 +27,8 @@ publicationsModule
         element.html($compile(template)(scope));
 
         // in case you want to use only this directive for show purposes only
-        if (typeof scope.barcodeString !== "undefined") {
-          if (typeof scope.barcodeOptions === "undefined") {
+        if (typeof scope.barcodeString !== 'undefined') {
+          if (typeof scope.barcodeOptions === 'undefined') {
             scope.barcodeOptions = {};
           }
 
@@ -50,7 +50,7 @@ publicationsModule
         barcodeOptions: '='
       },
       link : function(scope, element, attrs, ngModel) {
-        if (typeof scope.barcodeOptions === "undefined") {
+        if (typeof scope.barcodeOptions === 'undefined') {
           scope.barcodeOptions = {};
         }
 
@@ -60,10 +60,10 @@ publicationsModule
         }
 
         ngModel.$validators.barcode = function(input) {
-          var element = document.getElementById("barcode-img");
+          var element = document.getElementById('barcode-img');
 
           // if barcodeImg directive is not set, only validated the barcode
-          if (typeof element === "undefined") {
+          if (typeof element === 'undefined') {
             element = document.createElement('div');
           }
 
@@ -153,11 +153,11 @@ publicationsModule
             quite: 10,
             format: 'CODE128',
             displayValue: true,
-            font: "monospace",
-            textAlign: "center",
+            font: 'monospace',
+            textAlign: 'center',
             fontSize: 12,
-            backgroundColor: "",
-            lineColor: "#000"
+            backgroundColor: '',
+            lineColor: '#000'
           }
         };
 

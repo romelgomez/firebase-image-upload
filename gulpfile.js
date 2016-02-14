@@ -2,7 +2,6 @@
 //http://macr.ae/article/splitting-gulpfile-multiple-files.html
 // http://pastebin.com/K1Ztr5d3
 
-
 var gulp = require('gulp');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var browserSync = require('browser-sync');
@@ -26,7 +25,6 @@ gulp.task('styles', function(){
     .pipe(gulp.dest('.tmp/assets/styles'))
     .pipe(reload({stream: true}));
 });
-
 
 function lint(files, options) {
   return function() {
