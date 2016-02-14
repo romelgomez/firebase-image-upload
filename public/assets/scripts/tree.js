@@ -28,7 +28,18 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
   }])
-  .controller('TreeController',[function(){
+  .controller('TreeController',['$scope','$location','user',function($scope, $location, user){
+
+    /*
+    * /categories
+    * /locations
+    * /j-tree-test
+    * */
+
+    if(user.uid !== 'facebook:10204911533563856'){
+      $location.path('/');
+    }
+
   }])
   .controller('EditNodeController',['$scope', '$q', '$modalInstance', 'node', 'nodeRef',function($scope, $q, $modalInstance, node, nodeRef){
 
