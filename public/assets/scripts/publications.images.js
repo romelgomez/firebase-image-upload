@@ -1,5 +1,35 @@
 publicationsModule
-  .factory('imagesService', ['$q', '$http', '$window', 'Upload', function($q , $http, $window, Upload) {
+  .factory('imagesService', ['$q', '$http', '$window', 'Upload', function($q , $http, $window, $upload) {
+
+    function uploadFile(file, fileId, publicationId){
+      var deferred = $q.defer();
+
+      file.upload = $upload.upload({
+        url: 'https://api.cloudinary.com/v1_1/berlin/upload',
+        fields: {
+          public_id: fileId,
+          upload_preset: 'ebdyaimw',
+          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId,
+          tags: [publicationId]
+        },
+        file: file
+      }).progress(function (e) {
+        file.progress = Math.round((e.loaded * 100.0) / e.total);
+      }).success(function (data) {
+        file.inServer = true;
+        file.$id  = data.context.custom.$id;
+
+        deferred.resolve({
+          '$id':data.context.custom.$id
+        });
+      }).error(function (data) {
+        file.details  = data;
+        deferred.reject();
+      });
+
+      return deferred.promise;
+    }
+
 
     return {
       /** Delete all files of the publication, And you can selective delete files if their Ids are provider as array
@@ -30,6 +60,32 @@ publicationsModule
         return deferred.promise;
       },
       saveFiles: function(publicationsRef, publicationId, files){
+        var publicationImagesRef = publicationsRef.child(publicationId).child('images');
+        var filesPromises = {};
+        var filesReferences = {};
+        angular.forEach(files,function(file){
+          if(!angular.isDefined(file.inServer)){
+            var imageRef = publicationImagesRef.push();
+            filesReferences[imageRef.key()] = imageRef;
+            filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key(),publicationId)
+              .then(function(the){
+                return filesReferences[the.$id].set({
+                  name:file.name,
+                  size:file.size,
+                  type:file.type,
+                  width:file.width,
+                  height:file.height,
+                  inServer:true,
+                  addedDate: $window.Firebase.ServerValue.TIMESTAMP
+                })
+              });
+          }
+        });
+        return $q.all(filesPromises);
+      },
+      saveFiles2: function(publicationsRef, publicationId, files){
+        // this is the new version, but is exist a bug, the view value and the model value, are not updating like expected, the form remain invalid
+
         var publicationImagesRef = publicationsRef.child(publicationId).child('images');
         var filesPromises = {};
         var filesReferences = {};

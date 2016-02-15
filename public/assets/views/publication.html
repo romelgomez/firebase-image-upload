@@ -117,8 +117,12 @@
 <script type="text/ng-template" id="publicationImages.html">
   <section>
     <hr class="hr-xs">
+
+    <!--<pre>{{formName.files | json}}</pre>-->
+
     <button class="btn btn-primary"
-            ngf-select data-ng-model="images"
+            ngf-select
+            data-ng-model="images"
             name="files"
             data-ngf-multiple="true"
             data-accept="image/*"
@@ -177,14 +181,17 @@
 
       <hr class="hr-xs">
 
+      <!--<pre>{{images | json}}</pre>-->
+
       <div class="panel panel-default" ng-repeat="(key, value) in images" style="margin-bottom: 10px;">
         <div class="panel-body" style="padding: 5px;">
           <div class="row">
             <div class="col-xs-4 col-md-2" style="padding-right: 5px;">
 
-              <div ng-switch="value.$ngfBlobUrl !== undefined">
+
+              <div ng-switch="value.blobUrl !== undefined">
                 <div ng-switch-when="true">
-                  <img class="img-thumbnail img-preview img-responsive" ng-src="{{value.$ngfBlobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">
+                  <img class="img-thumbnail img-preview img-responsive" ng-src="{{value.blobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">
                 </div>
                 <div ng-switch-when="false">
                   <cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="jpg">
@@ -192,6 +199,19 @@
                   </cl-image>
                 </div>
               </div>
+
+              <!-- this is the new version, but is exist a bug, the view and the model are not updating like expected, the form remain invalid-->
+
+              <!--<div ng-switch="value.$ngfBlobUrl !== undefined">-->
+                <!--<div ng-switch-when="true">-->
+                  <!--<img class="img-thumbnail img-preview img-responsive" ng-src="{{value.$ngfBlobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">-->
+                <!--</div>-->
+                <!--<div ng-switch-when="false">-->
+                  <!--<cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="jpg">-->
+                    <!--<cl-transformation height="120" width="160" crop="fill"/>-->
+                  <!--</cl-image>-->
+                <!--</div>-->
+              <!--</div>-->
 
               <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
               <div style="margin-bottom: 5px;"><span ng-show="model.featuredImageId === value.$id" class="label label-info">Primary image</span></div>
