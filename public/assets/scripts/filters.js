@@ -68,7 +68,7 @@ angular.module('filters',[])
     };
   }])
   /**
-   * @Description All first letters of each word will be capital letters. (NOTE: The filter directive is to directly use in forms inputs)
+   * @Description first letter will be capital letter. (NOTE: The filter directive is to directly use in forms inputs)
    * @source http://stackoverflow.com/a/14425022/2513972
    */
   .directive('capitalizeFirstChar', ['$filter',function($filter){
