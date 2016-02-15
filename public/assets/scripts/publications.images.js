@@ -1,35 +1,5 @@
 publicationsModule
-  .factory('imagesService', ['$q', '$http', '$window', 'Upload', function($q , $http, $window, $upload) {
-
-    function uploadFile(file, fileId, publicationId){
-      var deferred = $q.defer();
-
-      file.upload = $upload.upload({
-        url: 'https://api.cloudinary.com/v1_1/berlin/upload',
-        fields: {
-          public_id: fileId,
-          upload_preset: 'ebdyaimw',
-          context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fileId,
-          tags: [publicationId]
-        },
-        file: file
-      }).progress(function (e) {
-        file.progress = Math.round((e.loaded * 100.0) / e.total);
-      }).success(function (data) {
-        file.inServer = true;
-        file.$id  = data.context.custom.$id;
-
-        deferred.resolve({
-          '$id':data.context.custom.$id
-        });
-      }).error(function (data) {
-        file.details  = data;
-        deferred.reject();
-      });
-
-      return deferred.promise;
-    }
-
+  .factory('imagesService', ['$q', '$http', '$window', 'Upload', function($q , $http, $window, Upload) {
 
     return {
       /** Delete all files of the publication, And you can selective delete files if their Ids are provider as array
@@ -67,18 +37,36 @@ publicationsModule
           if(!angular.isDefined(file.inServer)){
             var imageRef = publicationImagesRef.push();
             filesReferences[imageRef.key()] = imageRef;
-            filesPromises[imageRef.key()]   =  uploadFile(file,imageRef.key(),publicationId)
-              .then(function(the){
-                return filesReferences[the.$id].set({
-                  name:file.name,
-                  size:file.size,
-                  type:file.type,
-                  width:file.width,
-                  height:file.height,
+
+            filesPromises[imageRef.key()] = Upload.upload({
+                url: 'https://api.cloudinary.com/v1_1/berlin/upload',
+                data: {
+                  file: file,
+                  public_id: imageRef.key(),
+                  upload_preset: 'ebdyaimw',
+                  context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + imageRef.key(),
+                  tags: publicationId
+                }
+              })
+              .then(function (resp) {
+                file.inServer = true;
+                file.$id  = resp.data.public_id;
+                return filesReferences[resp.data.public_id].set({
+                  name:resp.data.original_filename + '.' + resp.data.format,
+                  size:resp.data.bytes,
+                  type:resp.data.format,
+                  width:resp.data.width,
+                  height:resp.data.height,
                   inServer:true,
                   addedDate: $window.Firebase.ServerValue.TIMESTAMP
                 })
+              }, function (resp) {
+                file.details  = resp;
+                //console.log('Error status: ' + resp.status);
+              }, function (evt) {
+                file.progress = Math.round((evt.loaded * 100.0) / evt.total);
               });
+
           }
         });
         return $q.all(filesPromises);
