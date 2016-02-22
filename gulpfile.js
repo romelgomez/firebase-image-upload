@@ -20,12 +20,19 @@ var inject = require('gulp-inject');
 var es = require('event-stream');
 var processhtml = require('gulp-processhtml');
 var useref = require('gulp-useref');
+var sourcemaps = require('gulp-sourcemaps');
+var lazypipe = require('lazypipe');
+
 
 var src = {
   scripts : 'public/assets/scripts/**/*.js',
   styles  : 'public/assets/styles/**/*.css',
   images  : 'public/assets/images/**/*.*',
-  views   : 'public/assets/views/**/*.html'
+  views   : 'public/assets/views/**/*.html',
+  fonts   : {
+    fontAwesome: 'bower_components/font-awesome/fonts/fontawesome-webfont.*',
+    bootstrap:   'bower_components/bootstrap/fonts/glyphicons-halflings-regular.*'
+  }
 };
 
 var output = {
@@ -33,6 +40,7 @@ var output = {
   styles  : 'dist/assets/styles',
   images  : 'dist/assets/images',
   views  : 'dist/assets/views',
+  fonts  : 'dist/assets/fonts',
   dist    : 'dist'
 };
 
@@ -67,16 +75,29 @@ gulp.task('basic', function() {
     .pipe(gulp.dest(output.dist));
 });
 
-gulp.task('build', ['lint', 'basic', 'images', 'views'], function() {
+gulp.task('fonts', function() {
+  return gulp.src([src.fonts.fontAwesome,src.fonts.bootstrap])
+    .pipe(gulp.dest(output.fonts));
+});
+
+gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts'], function() {
   return gulp.src('dist/**/*')
     .pipe(size({title: 'build', gzip: true}));
 });
 
-gulp.task('start', function () {
+gulp.task('startDev', function () {
   nodemon({
-    script: 'server/app.js'
-    , ext: 'js html'
-    , env: { 'NODE_ENV': 'development' }
+    script: 'server/app.js',
+    ext: 'js html',
+    env: { 'NODE_ENV': 'development' }
+  })
+});
+
+gulp.task('startPro', function () {
+  nodemon({
+    script: 'server/appProduction.js',
+    ext: 'js html',
+    env: { 'NODE_ENV': 'production' }
   })
 });
 

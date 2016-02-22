@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width">
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-  <!-- build:css(.) assets/styles/vendor.min.css -->
+  <!-- build:css({.,public}) assets/styles/app.min.css -->
   <!-- bower:css -->
   <link rel="stylesheet" href="/bower_components/angular-busy/dist/angular-busy.css" />
   <link rel="stylesheet" href="/bower_components/angular-loading-bar/build/loading-bar.css" />
@@ -23,13 +23,9 @@
   <link rel="stylesheet" href="/bower_components/ngprogress/ngProgress.css" />
   <link rel="stylesheet" href="/bower_components/angular-trustpass/dist/tr-trustpass.min.css">
   <!-- endbower -->
-  <!-- endbuild -->
 
-  <!-- build:css(public) assets/styles/plugins.min.css -->
   <link rel="stylesheet" href="plugins/redactor/redactor.css">
-  <!-- endbuild -->
 
-  <!-- build:css(public) assets/styles/app.min.css -->
   <link rel="stylesheet" href="assets/styles/main.css">
   <!-- endbuild -->
 
@@ -88,7 +84,7 @@
 <!--ga('send', 'pageview');-->
 <!--</script>-->
 
-<!-- build:js(.) assets/scripts/vendor.min.js -->
+<!-- build:js({.,public}) assets/scripts/app.min.js -->
 <!-- bower:js -->
 <script src="/bower_components/jquery/dist/jquery.js"></script>
 <script src="/bower_components/JsBarcode/CODE39.js"></script>
@@ -137,10 +133,7 @@
 <script src="/bower_components/lodash/lodash.js"></script>
 <script src="/bower_components/cloudinary_js/js/jquery.cloudinary.js"></script>
 <script src="/bower_components/cloudinary_ng/js/angular.cloudinary.js"></script>
-<!-- endbower -->
-<!-- endbuild -->
 
-<!-- build:js(public) assets/scripts/app.min.js -->
 <script src="assets/scripts/app.js"></script>
 <script src="assets/scripts/main.js"></script>
 <script src="assets/scripts/filters.js"></script>
@@ -155,9 +148,7 @@
 <script src="assets/scripts/publications.list.js"></script>
 <script src="assets/scripts/login.js"></script>
 <script src="assets/scripts/account.js"></script>
-<!-- endbuild -->
 
-<!-- build:js(public) assets/scripts/plugins.min.js -->
 <script src="plugins/redactor/redactor.js"></script>
 <!-- endbuild -->
 
