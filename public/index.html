@@ -6,7 +6,8 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-  <!-- build:css(.) styles/vendor.css -->
+
+  <!-- build:css(.) assets/styles/vendor.min.css -->
   <!-- bower:css -->
   <link rel="stylesheet" href="/bower_components/angular-busy/dist/angular-busy.css" />
   <link rel="stylesheet" href="/bower_components/angular-loading-bar/build/loading-bar.css" />
@@ -23,8 +24,12 @@
   <link rel="stylesheet" href="/bower_components/angular-trustpass/dist/tr-trustpass.min.css">
   <!-- endbower -->
   <!-- endbuild -->
-  <!-- build:css(.tmp) styles/main.css -->
-  <link rel="stylesheet" href="assets/components/redactor/redactor.css">
+
+  <!-- build:css(public) assets/styles/plugins.min.css -->
+  <link rel="stylesheet" href="plugins/redactor/redactor.css">
+  <!-- endbuild -->
+
+  <!-- build:css(public) assets/styles/app.min.css -->
   <link rel="stylesheet" href="assets/styles/main.css">
   <!-- endbuild -->
 
@@ -36,7 +41,6 @@
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<!-- Add your site or application content here -->
 <div class="header container" ng-cloak="">
   <div class="navbar navbar-default" role="navigation">
     <div class="navbar-header">
@@ -84,7 +88,7 @@
 <!--ga('send', 'pageview');-->
 <!--</script>-->
 
-<!-- build:js(.) scripts/vendor.js -->
+<!-- build:js(.) assets/scripts/vendor.min.js -->
 <!-- bower:js -->
 <script src="/bower_components/jquery/dist/jquery.js"></script>
 <script src="/bower_components/JsBarcode/CODE39.js"></script>
@@ -136,7 +140,7 @@
 <!-- endbower -->
 <!-- endbuild -->
 
-<!-- build:js({.tmp,app}) scripts/scripts.js -->
+<!-- build:js(public) assets/scripts/app.min.js -->
 <script src="assets/scripts/app.js"></script>
 <script src="assets/scripts/main.js"></script>
 <script src="assets/scripts/filters.js"></script>
@@ -151,7 +155,11 @@
 <script src="assets/scripts/publications.list.js"></script>
 <script src="assets/scripts/login.js"></script>
 <script src="assets/scripts/account.js"></script>
-<script src="assets/components/redactor/redactor.js"></script>
 <!-- endbuild -->
+
+<!-- build:js(public) assets/scripts/plugins.min.js -->
+<script src="plugins/redactor/redactor.js"></script>
+<!-- endbuild -->
+
 </body>
 </html>
