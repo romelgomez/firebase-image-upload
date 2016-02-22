@@ -1,0 +1,260 @@
+<section cg-busy="{promise: httpRequestPromise, message:'Just a moment'}">
+
+  <div class="panel panel-default uk-flag-background" ng-show="!publication.isReady" style="height: 300px;">
+    <div class="panel-body">
+    </div>
+  </div>
+
+  <category-selector category-path="publication.categoryPath"
+                     category-selected="publication.categorySelected"
+                     is-ready="publication.isReady"
+                     in-edit-mode="publication.inEditMode"
+                     model="publication.model"
+                     categories="publication.categories"
+                     redefine-category="publication.redefineCategory" ></category-selector>
+
+  <div class="panel panel-default" ng-show="publication.categorySelected && publication.isReady">
+    <div class="panel-heading">
+      <h3 class="panel-title" ng-switch="publication.inEditMode">
+        <span ng-switch-when="false" >New Publication</span>
+        <span ng-switch-when="true">Edit Publication</span>
+      </h3>
+    </div>
+    <div class="panel-body">
+
+      <ol class="breadcrumb" style="margin-bottom: 7px;">
+        <li ng-repeat="category in publication.categoryPath"> {{category.name | capitalizeFirstChar}} </li>
+      </ol>
+
+      <form name="publicationForm" novalidate="" ng-submit="submit()">
+
+        <div>
+          <button ng-click="publication.categorySelected = false; publication.model.categoryId =''; publication.categoryPath =[];" type="button" class="btn btn-default"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit category</button>
+          <button ng-switch="publication.$id !== '';" class="btn btn-primary"	type="submit" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            <span ng-switch-when="true">Update</span>
+            <span ng-switch-when="false">Publish</span>
+          </button>
+          <button ng-click="discard()" ng-switch="publication.$id !== '';" class="btn btn-warning" ng-class="{'btn-danger': publication.$id !== ''}"	type="button" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            <span ng-switch-when="true">Delete</span>
+            <span ng-switch-when="false">Discard</span>
+          </button>
+        </div>
+
+        <div ng-show="publication.images.length === 0 && publication.$id !== ''" class="alert alert-danger alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: The images are mandatory, if the publication does not have at least one image, the publication will not be displayed to the clients.</div>
+
+        <input name="category" ng-model="publication.model.categoryId" required class="form-control" placeholder="" type="text" style="display: none;">
+        <div data-ng-messages="publicationForm.$submitted && publicationForm.category.$error" class="help-block">
+          <div data-ng-message="required" >
+            - The <b>Category</b> is required.
+          </div>
+        </div>
+
+        <hr>
+
+        <title-input form-name="publicationForm" model="publication.model"></title-input>
+
+        <description-input form-name="publicationForm" model="publication.model"></description-input>
+
+        <price-input form-name="publicationForm" model="publication.model" ng-if="publication.model.department === 'Marketplace' || publication.model.department === 'Real Estate' || publication.model.department === 'Transport'"></price-input>
+
+        <quantity-input form-name="publicationForm" model="publication.model" ng-if="publication.model.department === 'Marketplace'" ></quantity-input>
+
+        <warranty-input ng-if="publication.model.department === 'Marketplace'" form-name="publicationForm" model="publication.model"></warranty-input>
+
+        <location-input form-name="publicationForm" locations="publication.locations" model="publication.model" redefine-location="publication.redefineLocation" location-path="publication.locationPath" ></location-input>
+
+        <job-type-select ng-if="publication.model.department === 'Jobs'" model="publication.model" ></job-type-select>
+
+        <salary-input ng-if="publication.model.department === 'Jobs'" form-name="publicationForm" model="publication.model"></salary-input>
+
+        <recruiter-types-select ng-if="publication.model.department === 'Jobs'" model="publication.model"></recruiter-types-select>
+
+        <re-home-status ng-if="publication.model.department === 'Real Estate'" model="publication.model" ></re-home-status>
+
+        <re-home-for ng-if="publication.model.department === 'Real Estate'" model="publication.model" ></re-home-for>
+
+        <barcode-input form-name="publicationForm" input-model="publication.model.barcode" select-model="publication.model.barcodeType" ></barcode-input>
+
+        <publication-images form-name="publicationForm" images="publication.images" publication-id="publication.$id" model="publication.model" http-request-promise="httpRequestPromise" ></publication-images>
+
+      </form>
+
+      <hr class="hr-xs">
+      <div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
+      <div class="alert alert-danger alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: Mostly all the info will be used for rank and faceting search the publications, so try to be explicit, honest and respect the other's time.</div>
+
+    </div>
+  </div>
+
+  <!--<pre>{{publication.model | json}}</pre>-->
+
+</section>
+
+<script type="text/ng-template" id="discardPublication.html">
+    <div class="modal-header">
+        <h3 ng-switch="publication.$id" class="modal-title">
+           <span ng-switch-when="true" >Do you <b>really</b> want to <b>Delete</b> this publication?</span>
+           <span ng-switch-when="false" >Do you want to discard this publication?</span>
+        </h3>
+    </div>
+    <div class="modal-body">
+
+        <h3 class="text-danger" style="margin-top: 0; margin-bottom: 0;">{{title | capitalize}}</h3>
+
+        <div ng-switch="publication.$id" class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">
+            <span ng-switch-when="true" >NOTE: This action cannot be undone. <b>This information will be permanently removed</b>.</span>
+            <span ng-switch-when="false" >NOTE: This action cannot be undone.</span>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="confirm()" type="submit">Confirm</button>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="publicationImages.html">
+  <section>
+    <hr class="hr-xs">
+
+    <!--<pre>{{formName.files | json}}</pre>-->
+
+    <button class="btn btn-primary"
+            ngf-select
+            data-ng-model="images"
+            name="files"
+            data-ngf-multiple="true"
+            data-accept="image/*"
+            data-ngf-keep="true"
+            data-ngf-keep-distinct="true"
+            data-ngf-validate="{size: {max: '10MB'}, width: {min: 500, max:5000}, height: {min: 500, max: 5000}}"
+            data-ngf-validate-force="true"
+            required>
+      <i class="fa fa-picture-o"></i> Select the images</button>
+
+    <button ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove in queue</button>
+    <button ng-show="imagesInfo().inServer > 0" type="button" class="btn btn-danger" ng-click="deleteAllPublicationImages()"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
+    <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove invalid</button>
+
+
+    <div data-ng-messages="formName.$submitted && formName.files.$error" class="help-block">
+      <div data-ng-message="required" >
+        - The <b>Images</b> are required.
+      </div>
+    </div>
+
+    <div data-ng-messages="formName.files.$error" class="help-block">
+      <div data-ng-message="minHeight" >
+        - Some image(s) not meet the minimum specs.
+      </div>
+      <div data-ng-message="maxHeight" >
+        - Some image(s) not meet the minimum specs.
+      </div>
+      <div data-ng-message="minWidth" >
+        - Some image(s) not meet the minimum specs.
+      </div>
+      <div data-ng-message="maxWidth" >
+        - Some image(s) not meet the minimum specs.
+      </div>
+      <div data-ng-message="maxSize" >
+        - Some image(s) exceeds the Maximum Size of 10MB.
+      </div>
+    </div>
+
+    <div ng-show="images.length > 0">
+
+      <ul class="list-group" style="margin-bottom: 10px;">
+        <li class="list-group-item">
+          <span class="badge">{{imagesInfo().inQueue}}</span>
+          Images in queue to upload:
+        </li>
+        <li class="list-group-item">
+          <span class="badge">{{imagesInfo().inServer}}</span>
+          Images in server:
+        </li>
+        <li class="list-group-item">
+          <span class="badge">{{imagesInfo().invalid}}</span>
+          Images invalid:
+        </li>
+      </ul>
+
+      <hr class="hr-xs">
+
+      <!--<pre>{{images | json}}</pre>-->
+
+      <div class="panel panel-default" ng-repeat="(key, value) in images" style="margin-bottom: 10px;">
+        <div class="panel-body" style="padding: 5px;">
+          <div class="row">
+            <div class="col-xs-4 col-md-2" style="padding-right: 5px;">
+
+
+              <div ng-switch="value.blobUrl !== undefined">
+                <div ng-switch-when="true">
+                  <img class="img-thumbnail img-preview img-responsive" ng-src="{{value.blobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">
+                </div>
+                <div ng-switch-when="false">
+                  <cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="jpg">
+                    <cl-transformation height="120" width="160" crop="fill"/>
+                  </cl-image>
+                </div>
+              </div>
+
+              <!-- this is the new version, but is exist a bug, the view and the model are not updating like expected, the form remain invalid-->
+
+              <!--<div ng-switch="value.$ngfBlobUrl !== undefined">-->
+                <!--<div ng-switch-when="true">-->
+                  <!--<img class="img-thumbnail img-preview img-responsive" ng-src="{{value.$ngfBlobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">-->
+                <!--</div>-->
+                <!--<div ng-switch-when="false">-->
+                  <!--<cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="jpg">-->
+                    <!--<cl-transformation height="120" width="160" crop="fill"/>-->
+                  <!--</cl-image>-->
+                <!--</div>-->
+              <!--</div>-->
+
+              <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
+              <div style="margin-bottom: 5px;"><span ng-show="model.featuredImageId === value.$id" class="label label-info">Primary image</span></div>
+            </div>
+            <div class="col-xs-8 col-md-10" style="padding-left: 5px;">
+              <div class="file-name">
+                {{value.name}}
+              </div>
+              <hr style="margin-top: 5px; margin-bottom: 5px;">
+              <div>
+
+                <!--<pre>{{value}}</pre>-->
+
+                <div ng-show="!value.$error">
+                  <div><b>Size: </b>{{value.size | bytes}}</div>
+                  <uib-progressbar ng-show="value.addedDate === undefined" class="progress-striped active" value="value.progress ? value.progress : 0" type="{{  value.progress < 100 ? 'info' : 'success' }}">{{value.progress}}%</uib-progressbar>
+                </div>
+
+                <div ng-show="value.$error" class="bg-warning" style="padding: 7px;">
+                  <h3 class="text-warning" style="margin-bottom: 0; margin-top: 4px">Invalid image</h3>
+                  <div style="margin-bottom: 3px;"><b>Reason: </b>
+                        <span ng-switch="value.$error">
+                          <span ng-switch-when="minHeight">Does not meet the minimum height of 500px.</span>
+                          <span ng-switch-when="maxHeight">Does not meet the maximum height of 5000px.</span>
+                          <span ng-switch-when="minWidth">Does not meet the minimum width of 500px.</span>
+                          <span ng-switch-when="maxWidth">Does not meet the maximum width of 5000px.</span>
+                          <span ng-switch-when="maxSize">Exceeds the Maximum Size of 10MB.</span>
+                          <span ng-switch-default>Undefined</span>
+                        </span>
+                  </div>
+                  <div style="margin-bottom: 3px"><b>Size:</b> {{value.size | bytes}}</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer" style="padding: 5px; text-align: right">
+          <button ng-show="value.inServer && model.featuredImageId !== value.$id && imagesInfo().inServer > 1" type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(value.$id)" ><i class="fa fa-thumb-tack"></i> Set as featured Image</button>
+          <button type="button" class="btn btn-danger btn-xs" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</script>

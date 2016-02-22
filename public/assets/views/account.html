@@ -1,0 +1,44 @@
+<div class="panel panel-default" cg-busy="{promise:account.httpRequestPromise,message:'Just a moment'}">
+  <div class="panel-heading">
+    <h3 class="panel-title">Account <i class="fa fa-wrench"></i></h3>
+  </div>
+  <div class="panel-body">
+
+    <uib-tabset>
+      <!-- Publications -->
+      <uib-tab>
+        <tab-heading>
+          Publications <i class="fa fa-files-o"></i>
+        </tab-heading>
+
+        <ng-include src="'assets/views/account/accountPublications.html'"></ng-include>
+
+      </uib-tab>
+      <uib-tab>
+        <tab-heading>
+          Profile <i class="fa fa-user"></i>
+        </tab-heading>
+
+        <ng-include src="'assets/views/account/accountProfile.html'"></ng-include>
+
+      </uib-tab>
+      <!--<uib-tab >-->
+        <!--<tab-heading>-->
+          <!--Billing <i class="fa fa-gbp"></i>-->
+        <!--</tab-heading>-->
+
+        <!--<ng-include src="'assets/views/account/accountBilling.html'"></ng-include>-->
+
+      <!--</uib-tab>-->
+    </uib-tabset>
+
+  </div>
+</div>
+
+<!--<ng-include src=""></ng-include>-->
+
+<ng-include src="'assets/views/account/modals/accountProfileDetailsModal.html'"></ng-include>
+<ng-include src="'assets/views/account/modals/accountProfilePasswordModal.html'"></ng-include>
+<ng-include src="'assets/views/account/modals/accountProfileEmailModal.html'"></ng-include>
+
+

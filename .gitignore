@@ -1,2 +1,7 @@
+dist
+.sass-cache
+bower_components
+node_modules
 .idea
 berlin.iml
+.tmp

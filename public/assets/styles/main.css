@@ -1,0 +1,251 @@
+.browsehappy {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
+
+body {
+  padding: 0;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.header {
+  //border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 10px;
+}
+
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+  padding-bottom: 19px;
+}
+
+/* Custom page footer */
+.footer {
+  //padding-top: 19px;
+  color: #777;
+  //border-top: 1px solid #e5e5e5;
+}
+
+/*.container-narrow > hr {*/
+  /*margin: 30px 0;*/
+/*}*/
+
+/* Main marketing message and sign up button */
+/*.jumbotron {*/
+  /*text-align: center;*/
+  /*border-bottom: 1px solid #e5e5e5;*/
+/*}*/
+
+/*.jumbotron .btn{*/
+  /*font-size: 21px;*/
+  /*padding: 14px 24px;*/
+/*}*/
+
+/* Supporting marketing content */
+/*.marketing {*/
+  /*margin: 40px 0;*/
+/*}*/
+
+/*.marketing p + h4 {*/
+  /*margin-top: 28px;*/
+/*}*/
+
+
+/* tree  */
+ul.jqtree-tree .jqtree-element {
+  position: relative;
+
+  /* Store - new css */
+  padding: 7px;
+  border-radius: 4px;
+}
+
+ul.jqtree-tree li {
+  /* Store - new css */
+  border: 1px solid #143546;
+  margin: 7px 7px 7px 0;
+  border-radius: 4px;
+}
+ul.jqtree-tree span.jqtree-border {
+  /* Store - new css */
+  padding: 7px;
+  border-radius: 4px;
+}
+/* tree ends */
+
+.a-link {
+  color: #337ab7;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.help-block{
+  color: #a94442;
+}
+
+.has-success input {
+  background: #E3FFE3;
+}
+
+.has-error input {
+  background: #FFF0F4;
+}
+
+.alert-xs {
+  padding: 1px 5px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
+
+/* FileUpload START */
+.file-name{
+  white-space: nowrap;
+  //font-weight: bold;
+  width: 300px;
+  margin-bottom: 2px;
+}
+.file-name:not(:hover) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.remove-button{
+  padding-top: 10px;
+}
+.img-preview{
+  height:100px;
+  max-height: 250px;
+  max-width: 250px;
+  margin-bottom: 5px;
+}
+.file-input{
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+}
+/* FileUpload END */
+
+.hr-xs{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.redactor-box {
+  margin-bottom: 0;
+}
+
+#loading-bar .bar {
+  background: #FF0000;
+  height: 2px;
+}
+
+#loading-bar-spinner .spinner-icon {
+  border-top-color: #FF0000;
+  border-left-color: #FF0000;
+}
+
+.photo{
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 5px;
+  background: #ededed;
+  display: inline-block;
+}
+
+.photo img{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.uk-flag-background{
+  background-size:     cover;
+  background: url('/assets/images/uk.svg');
+  background-size:     cover;
+  background-repeat:   no-repeat;
+  background-position: center center;
+}
+
+
+/* https://www.google.com/fonts#QuickUsePlace:quickUse/Family:Raleway */
+.font-raleway{
+    font-family: 'Raleway', sans-serif;
+}
+
+/* https://www.google.com/fonts#QuickUsePlace:quickUse/Family:Poiret+One */
+.font-poiret-one{
+    font-family: 'Poiret One', cursive;
+}
+
+.input-without-focus:focus{
+    outline: none;
+    webkit-box-shadow:none;
+    box-shadow:none;
+}
+
+
+/* http://www.bypeople.com/css-ribbon/ */
+.box {
+    width: 200px; height: 300px;
+    position: relative;
+    border: 1px solid #BBB;
+    background: #EEE;
+}
+.ribbon {
+    position: absolute;
+    right: -5px; top: -5px;
+    z-index: 1;
+    overflow: hidden;
+    width: 75px; height: 75px;
+    text-align: right;
+}
+.ribbon span {
+    font-size: 10px;
+    font-weight: bold;
+    color: #FFF;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 20px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    width: 100px;
+    display: block;
+    background: #79A70A;
+    background: linear-gradient(#2989d8 0%, #1e5799 100%);
+    box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+    position: absolute;
+    top: 19px; right: -21px;
+}
+.ribbon span::before {
+    content: "";
+    position: absolute; left: 0px; top: 100%;
+    z-index: -1;
+    border-left: 3px solid #1e5799;
+    border-right: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid #1e5799;
+}
+.ribbon span::after {
+    content: "";
+    position: absolute; right: 0px; top: 100%;
+    z-index: -1;
+    border-left: 3px solid transparent;
+    border-right: 3px solid #1e5799;
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid #1e5799;
+}
