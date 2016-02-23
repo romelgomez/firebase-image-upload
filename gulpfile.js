@@ -87,16 +87,16 @@ gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts'], function() {
 
 gulp.task('startDev', function () {
   nodemon({
-    script: 'server/app.js',
-    ext: 'js html',
+    script: 'server/appDev.js',
+    ext: 'js',
     env: { 'NODE_ENV': 'development' }
   })
 });
 
-gulp.task('startPro', function () {
+gulp.task('start', function () {
   nodemon({
-    script: 'server/appProduction.js',
-    ext: 'js html',
+    script: 'server/app.js',
+    ext: 'js',
     env: { 'NODE_ENV': 'production' }
   })
 });

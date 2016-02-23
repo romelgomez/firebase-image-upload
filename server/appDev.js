@@ -5,10 +5,10 @@ var morgan = require('morgan'); // log requests to the console (express4)
 var path = require('path'); // normalize the paths : http://stackoverflow.com/questions/9756567/do-you-need-to-use-path-join-in-node-js
 var bodyParser = require('body-parser'); // pull information from HTML POST (express4)
 var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
-var port = process.env.PORT || 9090;
+var port = process.env.PORT || 8080;
 
 // configuration =================
-app.use(express.static(path.join(process.cwd(), 'dist'))); // set the static files location /public/img will be /img for users
+app.use(express.static(path.join(process.cwd(), 'public'))); // set the static files location /public/img will be /img for users
 app.use('/bower_components',  express.static(path.join(process.cwd(), 'bower_components'))); // set the static files location of bower_components
 app.use(morgan('dev'));  // log every request to the console
 app.use(bodyParser.urlencoded({'extended':'true'})); // parse application/x-www-form-urlencoded
@@ -18,7 +18,7 @@ app.use(methodOverride());
 
 require('./routes')(app);
 require('./cloudinary/cloudinary')(app);
-//require('./algolia/publicationsIndex');
+require('./algolia/publicationsIndex');
 
 var server = app.listen(port, function(){
   console.log('The server is running in port localhost: ',port);
