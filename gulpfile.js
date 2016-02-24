@@ -85,7 +85,7 @@ gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts'], function() {
     .pipe(size({title: 'build', gzip: true}));
 });
 
-gulp.task('startDev', function () {
+gulp.task('devServer', function () {
   nodemon({
     script: 'server/appDev.js',
     ext: 'js',
@@ -93,7 +93,7 @@ gulp.task('startDev', function () {
   })
 });
 
-gulp.task('start', function () {
+gulp.task('server', function () {
   nodemon({
     script: 'server/app.js',
     ext: 'js',
