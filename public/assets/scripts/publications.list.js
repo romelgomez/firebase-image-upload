@@ -7,8 +7,8 @@ publicationsModule
     'algolia',
     'FireRef',
     '$firebaseArray',
-    '$log',
-    function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray){
+    '$routeParams',
+    function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray, $routeParams){
 
       var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
@@ -368,6 +368,15 @@ publicationsModule
               $scope.algolia.faceting.currentFacets.userID.push(facetObj);
               $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
             }
+
+            if(typeof $routeParams['user-id'] !== 'undefined'){
+              console.log('algoliaForm',$scope.algoliaForm.$pristine);
+              console.log('algoliaForm',$scope.algoliaForm.$dirty);
+            }
+
+            console.log('$routeParams',$routeParams);
+
+
 
             search()
               .then(null,function(err){
