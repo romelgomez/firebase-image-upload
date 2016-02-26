@@ -11,7 +11,7 @@
 
     <uib-carousel interval="5000" no-wrap="false">
       <uib-slide ng-repeat="image in publicationImages">
-        <img ng-src="http://res.cloudinary.com/berlin/image/upload/c_fill,h_500,w_800/{{image.$id}}.jpg" style="margin:auto;">
+        <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_500,w_800/{{image.$id}}.jpg" style="margin:auto;">
         <div class="carousel-caption">
           <h4>{{image.name | removeFileExtension | noSpecialChars | capitalizeFirstChar}}</h4>
         </div>
@@ -78,7 +78,7 @@
 <update-title title="{{publication.title | capitalize }} {{publication.department === 'Real Estate'? 'for ' + (publication.reHomeFor | uppercase) : ''}} - MarketOfLondon.UK"></update-title>
 <update-meta property="og:title" content="{{publication.title | capitalize }} {{publication.department === 'Real Estate'? 'for ' + (publication.reHomeFor | uppercase) : ''}}  <See more in MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications>"></update-meta>
 <update-meta property="og:url" content="https://londres.herokuapp.com/#/view-publication/{{publication.$id}}/{{publication.title | slug}}.html" ></update-meta>
-<update-meta property="og:description" content="{{publication.description}}" />
+<update-meta property="og:description" content="{{publication.description}}"></update-meta>
 <update-meta property="og:image" content="{{publicationImages.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ publicationImages[0].$id +'.jpg') : 'https://londres.herokuapp.com/assets/images/uk.svg' }}" ></update-meta>
 <update-meta name="twitter:title" content="{{publication.title | capitalize }} {{publication.department === 'Real Estate'? 'for ' + (publication.reHomeFor | uppercase) : ''}}  <See more in MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications>" ></update-meta>
 <update-meta name="twitter:description" content="{{publication.description}}"></update-meta>
