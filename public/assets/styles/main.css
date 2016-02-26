@@ -249,3 +249,9 @@ ul.jqtree-tree span.jqtree-border {
     border-bottom: 3px solid transparent;
     border-top: 3px solid #1e5799;
 }
+
+@media print
+{
+    .non-printable { display: none; }
+    .printable { display: block; }
+}
