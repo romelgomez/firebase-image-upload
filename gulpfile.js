@@ -80,7 +80,12 @@ gulp.task('fonts', function() {
     .pipe(gulp.dest(output.fonts));
 });
 
-gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts'], function() {
+gulp.task('favicon', function() {
+  return gulp.src('public/favicon.ico')
+    .pipe(gulp.dest(output.dist));
+});
+
+gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts', 'favicon'], function() {
   return gulp.src('dist/**/*')
     .pipe(size({title: 'build', gzip: true}));
 });
