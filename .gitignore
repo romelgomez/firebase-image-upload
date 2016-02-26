@@ -4,3 +4,4 @@ node_modules
 .idea
 berlin.iml
 .tmp
+npm-debug.log

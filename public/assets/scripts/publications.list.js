@@ -7,8 +7,9 @@ publicationsModule
     'algolia',
     'FireRef',
     '$firebaseArray',
-    '$log',
-    function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray){
+    '$routeParams',
+    '$filter',
+    function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray, $routeParams, $filter){
 
       var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
@@ -351,7 +352,6 @@ publicationsModule
 
       var deferred   = $q.defer();
       $scope.httpRequestPromise = deferred.promise;
-
 
       $q.all(configTasks)
         .then(function () {

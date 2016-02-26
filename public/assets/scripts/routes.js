@@ -82,7 +82,7 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'assets/views/publication.html',
         controller: 'PublicationsController'
       })
-      .when('/view-publication/:publicationId', {
+      .when('/view-publication/:publicationId/:title', {
         templateUrl: 'assets/views/viewPublication.html',
         controller: 'ViewPublicationController'
       })
