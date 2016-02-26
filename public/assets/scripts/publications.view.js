@@ -18,7 +18,7 @@ publicationsModule
 
       var publicationsRef  = FireRef.child('publications');
 
-      $scope.publication = {};
+      $scope.c = {};
 
       $scope.barcode = {
         string:'',
