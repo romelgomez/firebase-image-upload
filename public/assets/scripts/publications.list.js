@@ -353,7 +353,6 @@ publicationsModule
       var deferred   = $q.defer();
       $scope.httpRequestPromise = deferred.promise;
 
-
       $q.all(configTasks)
         .then(function () {
 
@@ -369,19 +368,6 @@ publicationsModule
               $scope.algolia.faceting.currentFacets.userID.push(facetObj);
               $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
             }
-
-// Todo TEST .............................................................................................
-
-            $location.search('q',$filter('slug')($scope.algolia.req.query));
-
-            if(typeof $routeParams['user-id'] !== 'undefined'){
-              console.log('algoliaForm',$scope.algoliaForm.$pristine);
-              console.log('algoliaForm',$scope.algoliaForm.$dirty);
-            }
-
-            console.log('$routeParams',$routeParams);
-// ----------------------------------------------------------------------------------------
-
 
             search()
               .then(null,function(err){
