@@ -13,7 +13,8 @@ angular.module('app',[
     'account',
     'ui.bootstrap',
     'main',
-    'angular-underscore'
+    'angular-underscore',
+    'updateMeta'
   ])
   .controller('AppController',['$scope','FireAuth',function($scope,FireAuth){
 

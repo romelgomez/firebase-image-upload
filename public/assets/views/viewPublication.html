@@ -75,5 +75,13 @@
   </div>
 </div>
 
-<!--<pre>{{publication | json}}</pre>-->
-<!--<pre>{{publicationImages | json}}</pre>-->
+<update-meta property="og:title" content="{{publication.title | capitalize }} {{publication.department === 'Real Estate'? 'for ' + (publication.reHomeFor | uppercase) : ''}}  <See more in MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications>"></update-meta>
+<update-meta property="og:url" content="https://londres.herokuapp.com/#/view-publication/{{publication.$id}}/{{publication.title | slug}}.html" ></update-meta>
+<update-meta property="og:image" content="{{publicationImages.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ publicationImages[0].$id +'.jpg') : 'https://londres.herokuapp.com/assets/images/uk.svg' }}" ></update-meta>
+
+<meta name="twitter:title" content="{{publication.title | capitalize }} {{publication.department === 'Real Estate'? 'for ' + (publication.reHomeFor | uppercase) : ''}}  <See more in MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications>" />
+<meta name="twitter:image:src" content="{{publicationImages.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ publicationImages[0].$id +'.jpg') : 'https://londres.herokuapp.com/assets/images/uk.svg' }}" />
+<meta name="twitter:url" content="https://londres.herokuapp.com/#/view-publication/{{publication.$id}}/{{publication.title | slug}}.html" />
+
+<pre>{{publication | json}}</pre>
+<pre>{{publicationImages | json}}</pre>
