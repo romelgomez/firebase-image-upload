@@ -63,6 +63,10 @@ publicationsModule
             $scope.publicationImages = [];
             $scope.barcode.string = the.publication.barcode;
 
+            $scope.seo = {
+              url: 'https://londres.herokuapp.com/#/view-publication/' + the.publication.$id + '/' + $filter('slug')(the.publication.title) + '.html'
+            };
+
             angular.forEach(the.publication.images, function(imageData,imageID){
               imageData.$id = imageID;
               if(imageID !== the.publication.featuredImageId){
@@ -81,4 +85,23 @@ publicationsModule
         $location.path('/');
       }
 
-    }]);
+    }])
+  .directive('facebook',['$window', function ($window) {
+
+    return {
+      restrict:'E',
+      scope:{
+        url:'='
+      },
+      template:''+
+      '<div class="fb-like" data-href="{{url}}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>',
+      link:function(){
+
+        if (typeof $window.FB !== 'undefined'){
+          $window.FB.XFBML.parse();
+        }
+
+      }
+    }
+
+  }]);

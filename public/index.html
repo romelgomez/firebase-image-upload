@@ -48,12 +48,14 @@
   <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
 </head>
 <body ng-controller="AppController">
+<div id="fb-root"></div>
+
 <!--[if lt IE 7]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
 <div class="header container" ng-cloak="">
-  <div class="navbar navbar-default" role="navigation">
+  <div class="navbar navbar-default" role="navigation" style="margin-bottom: 0;">
     <div class="navbar-header">
 
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#js-navbar-collapse">
@@ -168,5 +170,13 @@
 <script src="plugins/redactor/redactor.js"></script>
 <!-- endbuild -->
 
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v2.5&appId=1717304911824824";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
 </body>
 </html>
