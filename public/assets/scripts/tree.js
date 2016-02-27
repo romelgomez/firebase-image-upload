@@ -90,7 +90,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
     $scope.confirm  = function () {
-      $modalInstance.close(node, $scope.model.branch);
+      $modalInstance.close({node: node, branch: $scope.model.branch});
     };
 
     $scope.cancel   = function () {
@@ -533,8 +533,8 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
               }
             }
           });
-          modalInstance.result.then(function( node, branch){
-            var newData = excludeNode( sourceDataAsJqTreeData(treeData.rawNodes), node.id, branch);
+          modalInstance.result.then(function(result){
+            var newData = excludeNode( sourceDataAsJqTreeData(treeData.rawNodes), result.node.id, result.branch);
             normalize(newData.targetTree);
             var newTree = prepareDataForFireBase(newData.targetTree);
             scope.httpRequestPromise = updateAllTree(newTree)
