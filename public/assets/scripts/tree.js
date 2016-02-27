@@ -534,6 +534,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
             }
           });
           modalInstance.result.then(function(result){
+            scope.nodeSelected = {};
             var newData = excludeNode( sourceDataAsJqTreeData(treeData.rawNodes), result.node.id, result.branch);
             normalize(newData.targetTree);
             var newTree = prepareDataForFireBase(newData.targetTree);
