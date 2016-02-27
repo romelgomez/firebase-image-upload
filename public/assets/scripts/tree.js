@@ -330,7 +330,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         dragAndDrop: true,
         selectable: true,
         autoEscape: false,
-        autoOpen: true,
+        autoOpen: false,
         data: data
       };
 
