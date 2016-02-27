@@ -40,7 +40,7 @@
           </button>
         </div>
 
-        <div ng-show="publication.images.length === 0 && publication.$id !== ''" class="alert alert-danger alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: The images are mandatory, if the publication does not have at least one image, the publication will not be displayed to the clients.</div>
+        <!--<div ng-show="publication.images.length === 0 && publication.$id !== ''" class="alert alert-danger alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: The images are mandatory, if the publication does not have at least one image, the publication will not be displayed to the clients.</div>-->
 
         <input name="category" ng-model="publication.model.categoryId" required class="form-control" placeholder="" type="text" style="display: none;">
         <div data-ng-messages="publicationForm.$submitted && publicationForm.category.$error" class="help-block">
@@ -81,7 +81,6 @@
 
       <hr class="hr-xs">
       <div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
-      <div class="alert alert-danger alert-xs" style="margin-bottom: 0; margin-top: 10px;" role="alert">NOTE: Mostly all the info will be used for rank and faceting search the publications, so try to be explicit, honest and respect the other's time.</div>
 
     </div>
   </div>
@@ -194,9 +193,17 @@
                   <img class="img-thumbnail img-preview img-responsive" ng-src="{{value.blobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">
                 </div>
                 <div ng-switch-when="false">
-                  <cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="jpg">
-                    <cl-transformation height="120" width="160" crop="fill"/>
-                  </cl-image>
+
+                  <div ng-if="value.$error !== undefined">
+                    <img class="img-thumbnail img-preview img-responsive" ng-src="assets/images/invalid_image.png" alt="{{value.name}}">
+                  </div>
+
+                  <div ng-if="value.$id !== undefined">
+                    <cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="jpg">
+                      <cl-transformation height="120" width="160" crop="fill"/>
+                    </cl-image>
+                  </div>
+
                 </div>
               </div>
 
