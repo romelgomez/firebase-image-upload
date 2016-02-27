@@ -433,6 +433,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           var newTree = prepareDataForFireBase(proposalTree);
           scope.httpRequestPromise = updateAllTree(newTree)
             .then(function(){
+              scope.nodeSelected = {};
               notificationService.success('The tree or nodes has been update');
             },function(error){
               notificationService.error(error);
