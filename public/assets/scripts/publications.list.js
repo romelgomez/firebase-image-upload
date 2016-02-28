@@ -28,7 +28,7 @@ publicationsModule
           facets:'*',
           facetFilters: [],
           // number of hits per page
-          hitsPerPage: 2,
+          hitsPerPage: 7,
           getRankingInfo: 1,
           // current page number
           page: 0,

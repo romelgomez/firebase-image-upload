@@ -90,7 +90,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
     $scope.confirm  = function () {
-      $modalInstance.close(node, $scope.model.branch);
+      $modalInstance.close({node: node, branch: $scope.model.branch});
     };
 
     $scope.cancel   = function () {
@@ -330,7 +330,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         dragAndDrop: true,
         selectable: true,
         autoEscape: false,
-        autoOpen: true,
+        autoOpen: false,
         data: data
       };
 
@@ -433,6 +433,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           var newTree = prepareDataForFireBase(proposalTree);
           scope.httpRequestPromise = updateAllTree(newTree)
             .then(function(){
+              scope.nodeSelected = {};
               notificationService.success('The tree or nodes has been update');
             },function(error){
               notificationService.error(error);
@@ -533,8 +534,9 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
               }
             }
           });
-          modalInstance.result.then(function( node, branch){
-            var newData = excludeNode( sourceDataAsJqTreeData(treeData.rawNodes), node.id, branch);
+          modalInstance.result.then(function(result){
+            scope.nodeSelected = {};
+            var newData = excludeNode( sourceDataAsJqTreeData(treeData.rawNodes), result.node.id, result.branch);
             normalize(newData.targetTree);
             var newTree = prepareDataForFireBase(newData.targetTree);
             scope.httpRequestPromise = updateAllTree(newTree)
@@ -576,6 +578,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
               };
 
               scope.httpRequestPromise = treeData.rawNodes.$add(node).then(function() {
+                scope.nodeSelected = {};
                 notificationService.success('Data has been saved.');
                 scope.nodeFormSettings.resetForm();
               },function(error){
