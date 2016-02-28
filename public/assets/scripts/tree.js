@@ -578,6 +578,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
               };
 
               scope.httpRequestPromise = treeData.rawNodes.$add(node).then(function() {
+                scope.nodeSelected = {};
                 notificationService.success('Data has been saved.');
                 scope.nodeFormSettings.resetForm();
               },function(error){
