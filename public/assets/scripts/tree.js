@@ -359,7 +359,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
               '<form id="nodeForm" name="nodeForm" novalidate="" ng-submit="nodeFormSettings.submitForm()">'+
                 '<div class="form-group">'+
                   '<label>New node</label>'+
-                  '<input type="text" name="node" ng-model="nodeFormSettings.model.nodeName" required no-special-chars class="form-control" placeholder="" tabindex="1">'+
+                  '<input type="text" name="node" ng-model="nodeFormSettings.model.nodeName" required class="form-control" placeholder="" tabindex="1">'+
                   '<div data-ng-messages="nodeForm.$submitted && nodeForm.node.$error" class="help-block">'+
                     '<div data-ng-message="required">'+
                       '- The <b>node</b> name is required.'+
