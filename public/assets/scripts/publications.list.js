@@ -26,6 +26,7 @@ publicationsModule
         req : {
           query: '',
           facets:'*',
+          typoTolerance:false,
           facetFilters: [],
           // number of hits per page
           hitsPerPage: 7,
