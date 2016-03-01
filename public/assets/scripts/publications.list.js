@@ -203,6 +203,9 @@ publicationsModule
             },
             // Remove al facets
             removeAllFacet: function (facetType) {
+              $scope.algolia.req.page = 0;
+              $scope.algolia.pagination.currentPage = 1;
+
               angular.copy([],$scope.algolia.faceting.currentFacets[facetType]);
 
               if(facetType === 'categories'){
