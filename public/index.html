@@ -22,29 +22,47 @@
   <meta name="twitter:image:src" content="https://londres.herokuapp.com/assets/images/uk.jpg" />
   <meta name="twitter:url" content="https://londres.herokuapp.com" />
 
-  <!-- build:css(.) assets/styles/vendors.min.css -->
-  <!-- bower:css -->
+  <!-- build:css(.) assets/styles/ng.min.css -->
   <link rel="stylesheet" href="/bower_components/angular-busy/dist/angular-busy.css" />
   <link rel="stylesheet" href="/bower_components/angular-loading-bar/build/loading-bar.css" />
+
+  <!-- build:css(.) assets/styles/nf.min.css -->
   <link rel="stylesheet" href="/bower_components/pnotify/pnotify.core.css" />
   <link rel="stylesheet" href="/bower_components/pnotify/pnotify.buttons.css" />
   <link rel="stylesheet" href="/bower_components/pnotify/pnotify.history.css" />
+  <!-- endbuild -->
+
+  <!-- build:css(.) assets/styles/fa.min.css -->
   <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.css" />
+  <!-- endbuild -->
+
+  <!-- build:css(.) assets/styles/bs.min.css -->
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.css" />
   <link rel="stylesheet" href="/bower_components/bootstrap-social/bootstrap-social.css" />
-  <link rel="stylesheet" href="/bower_components/hover/css/hover.css" />
-  <link rel="stylesheet" href="/bower_components/jqtree/jqtree.css" />
-  <link rel="stylesheet" href="/bower_components/ngprogress/ngProgress.css" />
-  <link rel="stylesheet" href="/bower_components/angular-trustpass/dist/tr-trustpass.min.css">
-  <!-- endbower -->
   <!-- endbuild -->
 
-  <!-- build:css(public) assets/styles/plugins.min.css -->
+  <!-- build:css(.) assets/styles/hv.min.css -->
+  <link rel="stylesheet" href="/bower_components/hover/css/hover.css" />
+  <!-- endbuild -->
+
+  <!-- build:css(.) assets/styles/tr.min.css -->
+  <link rel="stylesheet" href="/bower_components/jqtree/jqtree.css" />
+  <!-- endbuild -->
+
+  <!-- build:css(.) assets/styles/pr.min.css -->
+  <link rel="stylesheet" href="/bower_components/ngprogress/ngProgress.css" />
+  <!-- endbuild -->
+
+  <!-- build:css(.) assets/styles/ps.min.css -->
+  <link rel="stylesheet" href="/bower_components/angular-trustpass/dist/tr-trustpass.min.css">
+  <!-- endbuild -->
+
+  <!-- build:css(public) assets/styles/rd.min.css -->
   <link rel="stylesheet" href="plugins/redactor/redactor.css">
   <!-- endbuild -->
 
-  <!-- build:css(public) assets/styles/app.min.css -->
+  <!-- build:css(public) assets/styles/st.min.css -->
   <link rel="stylesheet" href="assets/styles/main.css">
   <!-- endbuild -->
 
@@ -93,9 +111,11 @@
   </div>
 </div>
 
-<!-- build:js(.) assets/scripts/vendors.min.js -->
-<!-- bower:js -->
+<!-- build:js(.) assets/scripts/jq.min.js -->
 <script src="/bower_components/jquery/dist/jquery.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/bc.min.js -->
 <script src="/bower_components/JsBarcode/CODE39.js"></script>
 <script src="/bower_components/JsBarcode/CODE128.js"></script>
 <script src="/bower_components/JsBarcode/EAN_UPC.js"></script>
@@ -103,68 +123,129 @@
 <script src="/bower_components/JsBarcode/ITF14.js"></script>
 <script src="/bower_components/JsBarcode/pharmacode.js"></script>
 <script src="/bower_components/JsBarcode/JsBarcode.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/ng.min.js -->
 <script src="/bower_components/angular/angular.js"></script>
+<script src="/bower_components/angular-animate/angular-animate.js"></script>
+<script src="/bower_components/angular-messages/angular-messages.js"></script>
+<script src="/bower_components/angular-route/angular-route.js"></script>
+<script src="/bower_components/angular-cookies/angular-cookies.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/_.min.js -->
 <script src="/bower_components/underscore/underscore.js"></script>
 <script src="/bower_components/angular-underscore/angular-underscore.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/q.min.js -->
 <script src="/bower_components/algoliasearch/dist/algoliasearch.angular.min.js"></script>
-<script src="/bower_components/angular-animate/angular-animate.js"></script>
-<script src="/bower_components/algoliasearch/dist/algoliasearch.angular.js"></script>
-<script src="/bower_components/angular-aria/angular-aria.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/bs.min.js -->
 <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/bu.min.js -->
 <script src="/bower_components/angular-busy/dist/angular-busy.js"></script>
-<script src="/bower_components/angular-cookies/angular-cookies.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/lo.min.js -->
 <script src="/bower_components/angular-loading-bar/build/loading-bar.js"></script>
-<script src="/bower_components/angular-messages/angular-messages.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/me.min.js -->
 <script src="/bower_components/angular-update-meta/dist/update-meta.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/no.min.js -->
 <script src="/bower_components/pnotify/pnotify.core.js"></script>
 <script src="/bower_components/angular-pnotify/src/angular-pnotify.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/re.min.js -->
 <script src="/bower_components/angular-redactor/angular-redactor.js"></script>
-<script src="/bower_components/angular-route/angular-route.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/uu.min.js -->
 <script src="/bower_components/angular-uuid-service/angular-uuid-service.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/vm.min.js -->
 <script src="/bower_components/angular-validation-match/dist/angular-validation-match.min.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/fb.min.js -->
 <script src="/bower_components/firebase/firebase.js"></script>
 <script src="/bower_components/angularfire/dist/angularfire.js"></script>
-<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/tree.min.js -->
 <script src="/bower_components/jqtree/tree.jquery.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/fu.min.js -->
 <script src="/bower_components/ng-file-upload/ng-file-upload.js"></script>
 <script src="/bower_components/ng-file-upload-shim/ng-file-upload-shim.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/pw.min.js -->
 <script src="/bower_components/angular-trustpass/dist/tr-trustpass.min.js"></script>
 <script src="/bower_components/ng-password-strength/dist/scripts/ng-password-strength.js"></script>
+<!-- endbuild -->
+
+<!-- build:js(.) assets/scripts/img.min.js -->
 <script src="/bower_components/cloudinary_js/js/jquery.cloudinary.js"></script>
 <script src="/bower_components/cloudinary_ng/js/angular.cloudinary.js"></script>
 <!-- endbuild -->
 
-<!-- build:js(public) assets/scripts/app.min.js -->
-<!-- bower:js -->
+<!-- build:js(public) assets/scripts/zero.min.js -->
 <script src="assets/scripts/app.js"></script>
+
+<!-- build:js(public) assets/scripts/m.min.js -->
 <script src="assets/scripts/main.js"></script>
+
+<!-- build:js(public) assets/scripts/fil.min.js -->
 <script src="assets/scripts/filters.js"></script>
+
+<!-- build:js(public) assets/scripts/val.min.js -->
 <script src="assets/scripts/validators.js"></script>
+
+<!-- build:js(public) assets/scripts/fire.min.js -->
 <script src="assets/scripts/fire.js"></script>
+
+<!-- build:js(public) assets/scripts/ro.min.js -->
 <script src="assets/scripts/routes.js"></script>
+
+<!-- build:js(public) assets/scripts/t.min.js -->
 <script src="assets/scripts/tree.js"></script>
+
+<!-- build:js(public) assets/scripts/pu.min.js -->
 <script src="assets/scripts/publications.js"></script>
 <script src="assets/scripts/publications.view.js"></script>
 <script src="assets/scripts/publications.barcode.js"></script>
 <script src="assets/scripts/publications.images.js"></script>
 <script src="assets/scripts/publications.list.js"></script>
+
+<!-- build:js(public) assets/scripts/lg.min.js -->
 <script src="assets/scripts/login.js"></script>
+
+<!-- build:js(public) assets/scripts/ac.min.js -->
 <script src="assets/scripts/account.js"></script>
 <!-- endbuild -->
 
-<!-- build:js(public) assets/scripts/plugins.min.js -->
-<!-- bower:js -->
+<!-- build:js(public) assets/scripts/pg.min.js -->
 <script src="plugins/redactor/redactor.js"></script>
 <!-- endbuild -->
 
-<!-- build:js(public) assets/scripts/google-analytics.min.js -->
-<!-- bower:js -->
+<!-- build:js(public) assets/scripts/ga.min.js -->
 <script src="assets/scripts/google-analytics.js"></script>
 <!-- endbuild -->
 
-<!-- build:js(public) assets/scripts/facebook.min.js -->
-<!-- bower:js -->
+<!-- build:js(public) assets/scripts/f.min.js -->
 <script src="assets/scripts/facebook.js"></script>
 <!-- endbuild -->
+
 </body>
 </html>
