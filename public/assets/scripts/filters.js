@@ -1,6 +1,18 @@
 'use strict';
 
 angular.module('filters',[])
+  /**
+   * @Description trim
+   * @source http://stackoverflow.com/questions/30506300/how-do-i-trim-a-string-in-angularjs
+   */
+  .filter('trim', function () {
+    return function(value) {
+      if(!angular.isString(value)) {
+        return value;
+      }
+      return value.replace(/^\s+|\s+$/g, ''); // you could use .trim, but it's not going to work in IE<9
+    };
+  })
 /**
  *  @Description  All first letters of each word will be capital letters.
  *
