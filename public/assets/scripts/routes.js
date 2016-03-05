@@ -56,7 +56,10 @@ angular.module('routes',['ngRoute'])
 
   // configure views; whenAuthenticated adds a resolve method to ensure users authenticate
   // before trying to access that route
-  .config(['$routeProvider', function($routeProvider) {
+  .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+
+    $locationProvider.hashPrefix('!');
+
     $routeProvider
       .when('/', {
         templateUrl: 'assets/views/main.html',
