@@ -3,7 +3,7 @@
 angular.module('fire',[])
   .constant('FIRE_BASE_URL', 'https://berlin.firebaseio.com')
   .constant('SIMPLE_LOGIN_PROVIDERS', ['password','facebook','google','twitter'])
-  .constant('LOGIN_REDIRECT_PATH', '/login')
+  .constant('LOGIN_REDIRECT_PATH', '#!/login')
   .factory('FireAuth', [ '$firebaseAuth', 'FireRef', function($firebaseAuth, FireRef) {
     return $firebaseAuth(FireRef);
   }])

@@ -25,8 +25,8 @@
         <li ng-repeat="facet in algolia.faceting.currentFacets.locations" ng-click="algolia.faceting.treeFacetsMethods.removeFacet('locations', facet, $index)" ng-class="{'a-link': !$last}"> {{facet.name | capitalizeFirstChar}} </li>
       </ol>
 
-      <div ng-show="(algolia.res.query !== '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications for this query: <b>{{algolia.res.query}}</b>, <a href="#/new-publication">create new one here!</a>  </div>
-      <div ng-show="(algolia.res.query === '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications, <a href="#/new-publication">create new one here!</a>  </div>
+      <div ng-show="(algolia.res.query !== '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications for this query: <b>{{algolia.res.query}}</b>, <a href="#!/new-publication">create new one here!</a>  </div>
+      <div ng-show="(algolia.res.query === '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications, <a href="#!/new-publication">create new one here!</a>  </div>
 
       <pre ng-show="algolia.res.nbPages > 0" style="margin-bottom: 10px"><b>Page:</b> {{algolia.pagination.currentPage}} of {{algolia.res.nbPages}} | <b>Hits:</b> {{algolia.res.nbHits}}</pre>
 
@@ -139,7 +139,7 @@
                   <div>
                     <div class="row">
                       <div class="col-xs-12">
-                        <a ng-href="#/view-publication/{{publication.objectID}}/{{publication.title | slug}}.html">
+                        <a ng-href="#!/view-publication/{{publication.objectID}}/{{publication.title | slug}}.html">
                           <h4>
                             <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (publication.department === 'Marketplace'),'fa-suitcase': (publication.department === 'Jobs'),'fa-home': (publication.department === 'Real Estate'),'fa-car': (publication.department === 'Transport'),'fa-wrench': (publication.department === 'Services')}"></i>
                             - <span ng-bind-html="publication._highlightResult.title.value | unsafe"></span>
@@ -152,7 +152,7 @@
                     <div ng-if="(publication.department === 'Marketplace') || (publication.department === 'Real Estate') || (publication.department === 'Transport') || (publication.department === 'Services')">
                       <div class="row">
                         <div class="col-xs-8" style="padding-right: 5px; padding-left: 10px;">
-                          <a ng-href="#/view-publication/{{publication.objectID}}/{{publication.title | slug}}.html">
+                          <a ng-href="#!/view-publication/{{publication.objectID}}/{{publication.title | slug}}.html">
                             <img ng-show="sizeOf(publication.images) === 0" src="assets/images/uk.svg" alt="..." class="img-responsive img-thumbnail">
                             <cl-image ng-show="sizeOf(publication.images) > 0"  public-id="{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images) }}" class="inline img-responsive img-thumbnail" format="jpg">
                               <cl-transformation height="300" width="600" crop="fill"  />
