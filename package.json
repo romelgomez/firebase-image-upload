@@ -20,7 +20,6 @@
     "cloudinary": "^1.2.6",
     "colors": "^1.1.2",
     "express": "^5.0.0-alpha.2",
-    "express-seojs": "0.0.5",
     "firebase": "^2.3.2",
     "formidable": "^1.0.17",
     "imagemin-pngquant": "^4.2.2",
