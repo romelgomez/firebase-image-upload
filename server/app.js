@@ -6,7 +6,6 @@ var path = require('path'); // normalize the paths : http://stackoverflow.com/qu
 var bodyParser = require('body-parser'); // pull information from HTML POST (express4)
 var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 var port = process.env.PORT || 9090;
-var seojs = require('express-seojs');
 
 // configuration =================
 app.use(express.static(path.join(process.cwd(), 'dist'))); // set the static files location /public/img will be /img for users
