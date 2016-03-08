@@ -62,39 +62,39 @@ angular.module('routes',['ngRoute'])
 
     $routeProvider
       .when('/', {
-        templateUrl: 'assets/views/main.html',
+        templateUrl: 'static/assets/views/main.html',
         controller: 'MainController'
       })
       .whenAuthenticated('/categories', {
-        templateUrl: 'assets/views/categories.html',
+        templateUrl: 'static/assets/views/categories.html',
         controller: 'TreeController'
       })
       .whenAuthenticated('/locations', {
-        templateUrl: 'assets/views/locations.html',
+        templateUrl: 'static/assets/views/locations.html',
         controller: 'TreeController'
       })
       .whenAuthenticated('/j-tree-test', {
-        templateUrl: 'assets/views/jtree-diretive-test.html',
+        templateUrl: 'static/assets/views/jtree-diretive-test.html',
         controller: 'TreeController'
       })
       .whenAuthenticated('/new-publication', {
-        templateUrl: 'assets/views/publication.html',
+        templateUrl: 'static/assets/views/publication.html',
         controller: 'PublicationsController'
       })
       .whenAuthenticated('/edit-publication/:publicationId', {
-        templateUrl: 'assets/views/publication.html',
+        templateUrl: 'static/assets/views/publication.html',
         controller: 'PublicationsController'
       })
       .when('/view-publication/:publicationId/:title', {
-        templateUrl: 'assets/views/viewPublication.html',
+        templateUrl: 'static/assets/views/viewPublication.html',
         controller: 'ViewPublicationController'
       })
       .when('/login', {
-        templateUrl: 'assets/views/login.html',
+        templateUrl: 'static/assets/views/login.html',
         controller: 'LoginController'
       })
       .whenAuthenticated('/account', {
-        templateUrl: 'assets/views/account.html',
+        templateUrl: 'static/assets/views/account.html',
         controller: 'AccountController'
       })
       .otherwise({redirectTo: '/'});
