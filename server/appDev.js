@@ -6,6 +6,7 @@ var path = require('path'); // normalize the paths : http://stackoverflow.com/qu
 var bodyParser = require('body-parser'); // pull information from HTML POST (express4)
 var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 var port = process.env.PORT || 8080;
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 // configuration =================
 app.use(express.static(path.join(process.cwd(), 'public'))); // set the static files location /public/img will be /img for users
@@ -15,8 +16,7 @@ app.use(bodyParser.urlencoded({'extended':'true'})); // parse application/x-www-
 app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 app.use(methodOverride());
-//app.use(require('prerender-node').set('prerenderToken', 'Ru0ksoIOrBjrq8Og6VGb'));
-
+app.use(require('prerender-node').set('prerenderToken', 'Ru0ksoIOrBjrq8Og6VGb'));
 
 require('./routes')(app);
 require('./cloudinary/cloudinary')(app);

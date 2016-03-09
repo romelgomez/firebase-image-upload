@@ -25,10 +25,10 @@ var lazypipe = require('lazypipe');
 
 
 var src = {
-  scripts : 'public/assets/scripts/**/*.js',
-  styles  : 'public/assets/styles/**/*.css',
-  images  : 'public/assets/images/**/*.*',
-  views   : 'public/assets/views/**/*.html',
+  scripts : 'public/static/assets/scripts/**/*.js',
+  styles  : 'public/static/assets/styles/**/*.css',
+  images  : 'public/static/assets/images/**/*.*',
+  views   : 'public/static/assets/views/**/*.html',
   fonts   : {
     fontAwesome: 'bower_components/font-awesome/fonts/fontawesome-webfont.*',
     bootstrap:   'bower_components/bootstrap/fonts/glyphicons-halflings-regular.*'
@@ -36,11 +36,11 @@ var src = {
 };
 
 var output = {
-  scripts : 'dist/assets/scripts',
-  styles  : 'dist/assets/styles',
-  images  : 'dist/assets/images',
-  views  : 'dist/assets/views',
-  fonts  : 'dist/assets/fonts',
+  scripts : 'dist/static/assets/scripts',
+  styles  : 'dist/static/assets/styles',
+  images  : 'dist/static/assets/images',
+  views  : 'dist/static/assets/views',
+  fonts  : 'dist/static/assets/fonts',
   dist    : 'dist'
 };
 
@@ -67,7 +67,7 @@ gulp.task('images', function () {
 });
 
 gulp.task('basic', function() {
-  return gulp.src('public/index.html')
+  return gulp.src('public/index1.html')
     .pipe(useref())
     .pipe(gulpif('*.js', uglify()))
     .pipe(gulpif('*.css', csso()))

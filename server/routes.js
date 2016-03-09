@@ -1,14 +1,29 @@
+var path = require('path');
+
+//process.cwd() : /home/romelgomez/workspace/projects/berlin
+//__dirname : /home/romelgomez/workspace/projects/berlin/server
+
 module.exports = function(app) {
 
-  //app.get('/', function(req, res) {
-  //  console.log('process.cwd() :',process.cwd());
-  //  console.log('__dirname :',__dirname);
-  //  res.send('Hello Romel Javier Gomez Herrera');
-  //});
+  var basePath = '';
+
+  switch(process.env.NODE_ENV) {
+    case 'production':
+      basePath = '/dist';
+      break;
+    case 'development':
+      basePath = '/public';
+      break;
+  }
+
+  app.get('/', function(req, res) {
+    res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
+  });
 
   //app.get('/me', function(req, res){
   //  res.send('Hello Romel Javier Gomez Herrera');
   //});
+
   //
   //app.get('/hi/:name', function(req, res){
   //  var name = req.params.name;
@@ -20,6 +35,7 @@ module.exports = function(app) {
   //});
 
   app.get('*', function(req, res){
+    //console.log(' all requests');
     res.send('#### 404 ####');
   });
 
