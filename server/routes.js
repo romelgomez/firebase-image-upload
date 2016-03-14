@@ -20,6 +20,33 @@ module.exports = function(app) {
     res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
   });
 
+
+  //app.get('/view-publication/:id/:title', function(req, res){
+  //  console.log('req.params.id',req.params.id);
+  //
+  //  //var publicationRef = new Firebase('berlin.firebaseio.com/publications/'+req.params.id);
+  //
+  //  //var source = "<p>Hello, my name is {{name}}. I am from {{hometown}}. I have " +
+  //  //  "{{kids.length}} kids:</p>" +
+  //  //  "<ul>{{#kids}}<li>{{name}} is {{age}}</li>{{/kids}}</ul>";
+  //
+  //  fs.readFile( path.join(process.cwd(), basePath, '/view.html'), function (err, source) {
+  //    if (err) {
+  //      throw err;
+  //    }
+  //
+  //    var template = handlebars.compile(source.toString());
+  //
+  //    var data = { "name": "Alan", "hometown": "Somewhere, TX",
+  //      "kids": [{"name": "Jimmy", "age": "12"}, {"name": "Sally", "age": "4"}]};
+  //
+  //    var result = template(data);
+  //
+  //    res.send(result);
+  //  })
+  //
+  //});
+
   //app.get('/me', function(req, res){
   //  res.send('Hello Romel Javier Gomez Herrera');
   //});
