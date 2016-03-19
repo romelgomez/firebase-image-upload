@@ -375,15 +375,14 @@ publicationsModule
             }
 
             search()
-              .then(null,function(err){
+              .then(function(){
+                deferred.resolve();
+                $scope.algolia.isReady = true;
+               },function(err){
                 notificationService.error(err);
               })
           });
 
-        })
-        .then(function(){
-          $scope.algolia.isReady = true;
-          deferred.resolve();
         });
 
       $scope.viewPublication = function (publicationId) {
