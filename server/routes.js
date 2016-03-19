@@ -20,6 +20,12 @@ module.exports = function(app) {
     res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
   });
 
+  app.get('*', function(req, res){
+    //console.log(' all requests');
+    //res.send('#### 404 ####');
+    res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
+  });
+
 
   //app.get('/view-publication/:id/:title', function(req, res){
   //  console.log('req.params.id',req.params.id);
@@ -61,10 +67,7 @@ module.exports = function(app) {
   //  res.send(__dirname); // /home/romelgomez/workspace/projects/berlin/server
   //});
 
-  app.get('*', function(req, res){
-    //console.log(' all requests');
-    res.send('#### 404 ####');
-  });
+
 
   // Publications
   //POST, GET, PUT, and DELETE
