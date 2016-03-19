@@ -41,7 +41,7 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
     };
 
     var redirect = function(){
-      $window.location = '#!/new-publication'
+      $window.location = '/new-publication'
     };
 
     /**

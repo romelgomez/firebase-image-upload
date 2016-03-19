@@ -23,6 +23,7 @@ publicationsModule
       configTasks.locations = fireData.locations.$loaded();
 
       $scope.algolia = {
+        isReady: false,
         req : {
           query: '',
           facets:'*',
@@ -374,15 +375,14 @@ publicationsModule
             }
 
             search()
-              .then(null,function(err){
+              .then(function(){
+                deferred.resolve();
+                $scope.algolia.isReady = true;
+               },function(err){
                 notificationService.error(err);
               })
           });
 
-        })
-        .then(function(){
-          $scope.thePublicationsAreReady = true;
-          deferred.resolve();
         });
 
       $scope.viewPublication = function (publicationId) {

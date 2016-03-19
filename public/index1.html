@@ -2,6 +2,7 @@
 <html class="no-js" ng-app="app">
 <head>
   <meta charset="utf-8">
+  <base href="/">
   <meta name="fragment" content="!" />
   <meta name="viewport" content="width=device-width">
 
@@ -78,8 +79,8 @@
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<div class="header container" ng-cloak="">
-  <div class="navbar navbar-default" role="navigation" style="margin-bottom: 0;">
+<div ng-cloak="" class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0;">
+  <div class="container" >
     <div class="navbar-header">
 
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#js-navbar-collapse">
@@ -89,14 +90,14 @@
         <span class="icon-bar"></span>
       </button>
 
-      <a class="navbar-brand font-raleway" ng-href="#!/">MarketOfLondon.UK</a>
+      <a class="navbar-brand font-raleway" ng-href="/">MarketOfLondon.UK</a>
     </div>
 
     <div class="collapse navbar-collapse" id="js-navbar-collapse">
       <ul class="nav navbar-nav">
-        <li><a ng-href="#!/new-publication" style="color: #337ab7;">New Publication</a></li>
-        <li ng-show-auth="" ><a ng-href="#!/account">Account <i class="fa fa-wrench"></i></a></li>
-        <li ng-hide-auth="" ><a ng-href="#!/login" style="color: #337ab7;" >Log in</a></li>
+        <li><a ng-href="/new-publication" style="color: #337ab7;">New Publication</a></li>
+        <li ng-show-auth="" ><a ng-href="/account">Account <i class="fa fa-wrench"></i></a></li>
+        <li ng-hide-auth="" ><a ng-href="/login" style="color: #337ab7;" >Log in</a></li>
         <li ng-show-auth="" ><a ng-click="logout()" style="cursor: pointer; color: red;" >logout</a></li>
       </ul>
     </div>
@@ -204,36 +205,18 @@
 
 <!-- build:js(public) static/assets/scripts/o.min.js -->
 <script src="static/assets/scripts/app.js"></script>
-
-<!-- build:js(public) static/assets/scripts/m.min.js -->
 <script src="static/assets/scripts/main.js"></script>
-
-<!-- build:js(public) static/assets/scripts/fil.min.js -->
 <script src="static/assets/scripts/filters.js"></script>
-
-<!-- build:js(public) static/assets/scripts/val.min.js -->
 <script src="static/assets/scripts/validators.js"></script>
-
-<!-- build:js(public) static/assets/scripts/fi.min.js -->
 <script src="static/assets/scripts/fire.js"></script>
-
-<!-- build:js(public) static/assets/scripts/ro.min.js -->
 <script src="static/assets/scripts/routes.js"></script>
-
-<!-- build:js(public) static/assets/scripts/t.min.js -->
 <script src="static/assets/scripts/tree.js"></script>
-
-<!-- build:js(public) static/assets/scripts/pu.min.js -->
 <script src="static/assets/scripts/publications.js"></script>
 <script src="static/assets/scripts/publications.view.js"></script>
 <script src="static/assets/scripts/publications.barcode.js"></script>
 <script src="static/assets/scripts/publications.images.js"></script>
 <script src="static/assets/scripts/publications.list.js"></script>
-
-<!-- build:js(public) static/assets/scripts/lg.min.js -->
 <script src="static/assets/scripts/login.js"></script>
-
-<!-- build:js(public) static/assets/scripts/ac.min.js -->
 <script src="static/assets/scripts/account.js"></script>
 <!-- endbuild -->
 

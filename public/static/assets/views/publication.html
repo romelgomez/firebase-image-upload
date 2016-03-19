@@ -1,6 +1,6 @@
-<section cg-busy="{promise: httpRequestPromise, message:'Just a moment'}">
+<div cg-busy="{promise: httpRequestPromise, message:'Just a moment'}">
 
-  <div class="panel panel-default uk-flag-background" ng-show="!publication.isReady" style="height: 300px;">
+  <div class="panel panel-default uk-flag-background" ng-show="!publication.isReady" style="height: 600px;">
     <div class="panel-body">
     </div>
   </div>
@@ -87,7 +87,7 @@
 
   <!--<pre>{{publication.model | json}}</pre>-->
 
-</section>
+</div>
 
 <script type="text/ng-template" id="discardPublication.html">
     <div class="modal-header">

@@ -58,7 +58,7 @@ angular.module('routes',['ngRoute'])
   // before trying to access that route
   .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
-    $locationProvider.hashPrefix('!');
+    $locationProvider.html5Mode(true).hashPrefix('!');
 
     $routeProvider
       .when('/', {
