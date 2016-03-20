@@ -1,39 +1,45 @@
-<div class="panel panel-default" cg-busy="{promise:account.httpRequestPromise,message:'Just a moment'}">
-  <div class="panel-heading">
-    <h3 class="panel-title">Account <i class="fa fa-wrench"></i></h3>
-  </div>
-  <div class="panel-body">
+<div class="container" style="margin-top: 17px;">
 
-    <uib-tabset>
-      <!-- Publications -->
-      <uib-tab>
-        <tab-heading>
-          Publications <i class="fa fa-files-o"></i>
-        </tab-heading>
+  <div class="panel panel-default" cg-busy="{promise:account.httpRequestPromise,message:'Just a moment'}">
+    <div class="panel-heading">
+      <h3 class="panel-title">Account <i class="fa fa-wrench"></i></h3>
+    </div>
+    <div class="panel-body">
 
-        <ng-include src="'static/assets/views/account/accountPublications.html'"></ng-include>
+      <uib-tabset>
+        <!-- Publications -->
+        <uib-tab>
+          <tab-heading>
+            Publications <i class="fa fa-files-o"></i>
+          </tab-heading>
 
-      </uib-tab>
-      <uib-tab>
-        <tab-heading>
-          Profile <i class="fa fa-user"></i>
-        </tab-heading>
+          <ng-include src="'static/assets/views/account/accountPublications.html'"></ng-include>
 
-        <ng-include src="'static/assets/views/account/accountProfile.html'"></ng-include>
+        </uib-tab>
+        <uib-tab>
+          <tab-heading>
+            Profile <i class="fa fa-user"></i>
+          </tab-heading>
 
-      </uib-tab>
-      <!--<uib-tab >-->
+          <ng-include src="'static/assets/views/account/accountProfile.html'"></ng-include>
+
+        </uib-tab>
+        <!--<uib-tab >-->
         <!--<tab-heading>-->
-          <!--Billing <i class="fa fa-gbp"></i>-->
+        <!--Billing <i class="fa fa-gbp"></i>-->
         <!--</tab-heading>-->
 
         <!--<ng-include src="'assets/views/account/accountBilling.html'"></ng-include>-->
 
-      <!--</uib-tab>-->
-    </uib-tabset>
+        <!--</uib-tab>-->
+      </uib-tabset>
 
+    </div>
   </div>
+
 </div>
+
+
 
 <!--<ng-include src=""></ng-include>-->
 

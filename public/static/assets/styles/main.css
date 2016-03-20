@@ -6,7 +6,7 @@
 }
 
 body {
-    padding: 70px 0 0;
+    padding: 50px 0 0;
     /*margin-bottom: 60px;*/
 }
 
@@ -28,6 +28,10 @@ body {
   margin-bottom: 0;
   line-height: 40px;
   padding-bottom: 19px;
+}
+
+.page-header {
+    border-bottom: 1px solid #959595;
 }
 
 /* Custom page footer */
