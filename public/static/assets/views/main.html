@@ -170,7 +170,7 @@
                                 <li ng-if="publication.department !== 'Services'">
                                   <h4>
                                     <!--<i class="fa fa-gbp"></i> -->
-                                    {{publication.price | currency : 'Â£' : 2 }}
+                                    {{publication.price | currency : '£' : 2 }}
                                   </h4>
                                 </li>
                                 <li ng-if="publication.department === 'Real Estate'">
@@ -195,13 +195,13 @@
                                 <li>
                                   <h4>
                                     <!--<i class="fa fa-gbp"></i>-->
-                                    {{publication.jobSalaryStartAt | currency : 'Â£' : 2 }} - {{publication.jobSalaryEndAt | currency : 'Â£' : 2 }}
+                                    {{publication.jobSalaryStartAt | currency : '£' : 2 }} - {{publication.jobSalaryEndAt | currency : '£' : 2 }}
                                     per {{publication.jobSalaryType == 'Annual' ? 'annum' : ''}}
                                     {{publication.jobSalaryType == 'Daily' ? 'day' : ''}}
                                     {{publication.jobSalaryType == 'Hourly' ? 'hour' : ''}}
                                     {{publication.jobHasBenefits ? '+ benefits' : ''}}
                                     {{publication.jobHasBonus ? '+ bonus' : ''}}
-                                    (Estimated Monthly Salary {{publication.jobEstimatedMonthlySalary | currency : 'Â£' : 2 }})
+                                    (Estimated Monthly Salary {{publication.jobEstimatedMonthlySalary | currency : '£' : 2 }})
                                   </h4>
                                 </li>
                                 <li><i class="fa fa-clock-o"></i> {{publication.jobType}}</li>
