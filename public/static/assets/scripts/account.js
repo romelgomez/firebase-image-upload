@@ -107,6 +107,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
     var original = angular.copy($scope.model = {
       profileDetails:{
+        pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
         names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
         lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
         mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
@@ -118,6 +119,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     $scope.submit = function(){
       if($scope.forms.profileDetails.$valid){
 
+        profile.pseudonym         = $scope.model.profileDetails.pseudonym;
         profile.names             = $scope.model.profileDetails.names;
         profile.lastNames         = $scope.model.profileDetails.lastNames;
         profile.mobilePhone       = $scope.model.profileDetails.mobilePhone;
