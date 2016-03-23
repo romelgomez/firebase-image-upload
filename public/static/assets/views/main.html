@@ -36,8 +36,8 @@
             <li ng-repeat="facet in algolia.faceting.currentFacets.locations" ng-click="algolia.faceting.treeFacetsMethods.removeFacet('locations', facet, $index)" ng-class="{'a-link': !$last}"> {{facet.name | capitalizeFirstChar}} </li>
           </ol>
 
-          <div ng-show="(algolia.res.query !== '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications for this query: <b>{{algolia.res.query}}</b>, <a href="#/new-publication">create new one here!</a>  </div>
-          <div ng-show="(algolia.res.query === '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications, <a href="#/new-publication">create new one here!</a>  </div>
+          <div ng-show="(algolia.res.query !== '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications for this query: <b>{{algolia.res.query}}</b>, <a href="/new-publication">create new one here!</a>  </div>
+          <div ng-show="(algolia.res.query === '' && algolia.res.nbHits === 0)" class="alert alert-info" role="alert" style="margin-bottom: 0;">There is not publications, <a href="/new-publication">create new one here!</a>  </div>
 
           <pre ng-show="algolia.res.nbPages > 0" style="margin-bottom: 10px"><b>Page:</b> {{algolia.pagination.currentPage}} of {{algolia.res.nbPages}} | <b>Hits:</b> {{algolia.res.nbHits}}</pre>
 
