@@ -1,8 +1,14 @@
-<div>
+<div ng-show="!publication.isReady" class="container" style="margin-top: 17px;">
+  <div class="panel panel-default uk-flag-background" style="height: 600px;" cg-busy="{promise: httpRequestPromise, message:'Just a moment'}">
+    <div class="panel-body">
+    </div>
+  </div>
+</div>
 
+<div ng-show="publication.isReady">
   <div style="margin-bottom: 20px; border-bottom: 1px solid #959595; background: #000;">
     <uib-carousel interval="5000" no-wrap="false">
-      <uib-slide ng-repeat="image in publicationImages">
+      <uib-slide ng-repeat="image in publication.images">
         <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_700,w_1200/{{image.$id}}.jpg" style="margin:auto;">
         <div class="carousel-caption">
           <h4>{{image.name | removeFileExtension | noSpecialChars | capitalizeFirstChar}}</h4>
@@ -12,13 +18,13 @@
   </div>
 
   <div class="container">
-    <div class="panel panel-default" cg-busy="{promise: httpRequestPromise, message:'Just a moment'}">
-      <div ng-show="publication.department === 'Real Estate' && publication.reHomeStatus === 'New'" class="ribbon"><span>NEW HOME</span></div>
+    <div class="panel panel-default">
+      <div ng-show="publication.res.department === 'Real Estate' && publication.res.reHomeStatus === 'New'" class="ribbon"><span>NEW HOME</span></div>
       <div class="panel-heading">
         <h3 class="panel-title" style="font-size: 25px;">
-          <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (publication.department === 'Marketplace'),'fa-suitcase': (publication.department === 'Jobs'),'fa-home': (publication.department === 'Real Estate'),'fa-car': (publication.department === 'Transport'),'fa-wrench': (publication.department === 'Services')}"></i>
-          - {{publication.title | capitalizeFirstChar}}
-          <span ng-show="publication.department === 'Real Estate'"> for {{publication.reHomeFor | uppercase}}</span>
+          <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (publication.res.department === 'Marketplace'),'fa-suitcase': (publication.res.department === 'Jobs'),'fa-home': (publication.res.department === 'Real Estate'),'fa-car': (publication.res.department === 'Transport'),'fa-wrench': (publication.res.department === 'Services')}"></i>
+          - {{publication.res.title | capitalizeFirstChar}}
+          <span ng-show="publication.res.department === 'Real Estate'"> for {{publication.res.reHomeFor | uppercase}}</span>
         </h3>
       </div>
       <div class="panel-body">
@@ -28,28 +34,32 @@
             <b>Details:</b>
           </div>
 
-          <h4 ng-if="publication.department !== 'Services' && publication.department !== 'Jobs'">
+          <h4 ng-if="publication.res.department !== 'Services' && publication.res.department !== 'Jobs'">
             Price:
-            {{publication.price | currency : '£' : 2 }}
+            {{publication.res.price | currency : '£' : 2 }}
           </h4>
-          <h5 ng-if="publication.department === 'Marketplace'" ><i class="fa fa-cubes"></i> Quantity in stock: {{publication.quantity}}</h5>
-          <h4 ng-if="publication.department === 'Jobs'">
+          <h5 ng-if="publication.res.department === 'Marketplace'" ><i class="fa fa-cubes"></i> Quantity in stock: {{publication.res.quantity}}</h5>
+          <h4 ng-if="publication.res.department === 'Jobs'">
             Salary:
-            {{publication.jobSalaryStartAt | currency : '£' : 2 }} - {{publication.jobSalaryEndAt | currency : '£' : 2 }}
-            per {{publication.jobSalaryType == 'Annual' ? 'annum' : ''}}
-            {{publication.jobSalaryType == 'Daily' ? 'day' : ''}}
-            {{publication.jobSalaryType == 'Hourly' ? 'hour' : ''}}
-            {{publication.jobHasBenefits ? '+ benefits' : ''}}
-            {{publication.jobHasBonus ? '+ bonus' : ''}}
-            (Estimated Monthly Salary {{publication.jobEstimatedMonthlySalary | currency : '£' : 2 }})
+            {{publication.res.jobSalaryStartAt | currency : '£' : 2 }} - {{publication.res.jobSalaryEndAt | currency : '£' : 2 }}
+            per {{publication.res.jobSalaryType == 'Annual' ? 'annum' : ''}}
+            {{publication.res.jobSalaryType == 'Daily' ? 'day' : ''}}
+            {{publication.res.jobSalaryType == 'Hourly' ? 'hour' : ''}}
+            {{publication.res.jobHasBenefits ? '+ benefits' : ''}}
+            {{publication.res.jobHasBonus ? '+ bonus' : ''}}
+            (Estimated Monthly Salary {{publication.res.jobEstimatedMonthlySalary | currency : '£' : 2 }})
           </h4>
-          <h5 ng-if="publication.department === 'Jobs'"><i class="fa fa-clock-o"></i> {{publication.jobType}}</h5>
-          <h5 ng-if="publication.department === 'Jobs'"><i class="fa fa-users"></i> {{publication.jobRecruiterType}}</h5>
+          <h5 ng-if="publication.res.department === 'Jobs'"><i class="fa fa-clock-o"></i> {{publication.res.jobType}}</h5>
+          <h5 ng-if="publication.res.department === 'Jobs'"><i class="fa fa-users"></i> {{publication.res.jobRecruiterType}}</h5>
           <h5>
             <i class="fa fa-map-marker"></i>
-            <span ng-repeat="location in publication.locations"> {{location | capitalizeFirstChar}} {{!$last ? '/': ''}} </span>
+            <span ng-repeat="location in publication.res.locations"> {{location | capitalizeFirstChar}} {{!$last ? '/': ''}} </span>
           </h5>
-          <h5><i class="fa fa-calendar"></i> Published: {{publication.releaseDate | date:'dd'}} / {{publication.releaseDate | date:'MM'}} / {{publication.releaseDate | date:'yy'}}  </h5>
+          <h5><i class="fa fa-calendar"></i> Published: {{publication.res.releaseDate | date:'dd'}} / {{publication.res.releaseDate | date:'MM'}} / {{publication.res.releaseDate | date:'yy'}}  </h5>
+          <div>
+            <a href="/all-publications-of/{{publication.res.userID}}/{{publication.user.pseudonym === undefined || publication.user.pseudonym === '' ? publication.user.names : publication.user.pseudonym | slug}}.html"><span class="label label-primary">More from: {{publication.user.pseudonym === undefined || publication.user.pseudonym === '' ? publication.user.names : publication.user.pseudonym}}</span></a>
+          </div>
+          <!--<pre>{{user | json}}</pre>-->
         </div>
         <div>
           <hr class="hr-xs">
@@ -57,15 +67,15 @@
             <b>Description:</b>
           </div>
 
-          <span ng-bind-html="publication.htmlDescription | unsafe"></span>
+          <span ng-bind-html="publication.res.htmlDescription | unsafe"></span>
         </div>
-        <div ng-show="publication.department === 'Marketplace'">
+        <div ng-show="publication.res.department === 'Marketplace'">
           <hr class="hr-xs">
           <div style="padding-bottom: 15px;">
             <b>Warranty:</b>
           </div>
 
-          <span ng-bind-html="publication.htmlWarranty | unsafe"></span>
+          <span ng-bind-html="publication.res.htmlWarranty | unsafe"></span>
         </div>
         <div>
           <hr class="hr-xs">
@@ -73,7 +83,7 @@
           <div style="padding-bottom: 15px;">
             <b>Publication barcode:</b>
           </div>
-          <barcode-img barcode-string="barcode.string" barcode-options="barcode.options" ></barcode-img>
+          <barcode-img barcode-string="publication.barcode.string" barcode-options="publication.barcode.options" ></barcode-img>
         </div>
         <!--<div>-->
         <!--<hr class="hr-xs">-->
@@ -91,25 +101,17 @@
   </div>
 </div>
 
-<!--<div id="banner" class="page-header" style="margin-top: 0; background: url('static/assets/images/uk.svg') no-repeat center center scroll; padding: 350px 20px 10px 20px; -webkit-background-size: cover; -moz-background-size: cover;   -o-background-size: cover;   background-size: cover;">-->
-  <!--<h1>-->
-    <!--<img src="https://scontent.xx.fbcdn.net/hprofile-xtf1/v/l/t1.0-1/p100x100/11403173_10204449442971880_1298831688006495876_n.jpg?oh=b102d8e0308ee6c0d30a75e8d92ef6c4&oe=5793F62C" alt="..." class="img-circle">-->
+<update-title title="{{publication.res.title | capitalize | trim}}{{publication.res.department === 'Real Estate'? ' for ' + (publication.res.reHomeFor | uppercase) : ''}} - MarketOfLondon.UK"></update-title>
+<update-meta property="og:title" content="{{publication.res.title | capitalize | trim}}{{publication.res.department === 'Real Estate'? ' for ' + (publication.res.reHomeFor | uppercase) : ''}} - See more in MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications"></update-meta>
+<update-meta property="og:url" content="https://londres.herokuapp.com/#/view-publication/{{publication.res.$id}}/{{publication.res.title | slug}}.html" ></update-meta>
+<update-meta property="og:description" content="{{publication.res.description}}"></update-meta>
+<update-meta property="og:image" content="{{publication.images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ publication.images[0].$id +'.jpg') : 'https://londres.herokuapp.com/static/assets/images/uk.svg' }}" ></update-meta>
+<update-meta name="twitter:title" content="{{publication.res.title | capitalize | trim}}{{publication.res.department === 'Real Estate'? ' for ' + (publication.res.reHomeFor | uppercase) : ''}} - See more in MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications" ></update-meta>
+<update-meta name="twitter:description" content="{{publication.res.description}}"></update-meta>
+<update-meta name="twitter:image:src" content="{{publication.images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ publication.images[0].$id +'.jpg') : 'https://londres.herokuapp.com/static/assets/images/uk.svg' }}" ></update-meta>
+<update-meta name="twitter:url" content="https://londres.herokuapp.com/#/view-publication/{{publication.res.$id}}/{{publication.res.title | slug}}.html" ></update-meta>
 
-    <!--<a href="/stock/54764b12-0298-4769-89bc-18cd7f000007" style="text-shadow: 0 0 3px rgba(0,0,0,.8); color: #fff;">Romel Stock</a>-->
-  <!--</h1>-->
+
+<!--<div class="container">-->
+  <!--<pre>{{publication | json}}</pre>-->
 <!--</div>-->
-
-
-
-<update-title title="{{publication.title | capitalize | trim}}{{publication.department === 'Real Estate'? ' for ' + (publication.reHomeFor | uppercase) : ''}} - MarketOfLondon.UK"></update-title>
-<update-meta property="og:title" content="{{publication.title | capitalize | trim}}{{publication.department === 'Real Estate'? ' for ' + (publication.reHomeFor | uppercase) : ''}} - See more in MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications"></update-meta>
-<update-meta property="og:url" content="https://londres.herokuapp.com/#/view-publication/{{publication.$id}}/{{publication.title | slug}}.html" ></update-meta>
-<update-meta property="og:description" content="{{publication.description}}"></update-meta>
-<update-meta property="og:image" content="{{publicationImages.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ publicationImages[0].$id +'.jpg') : 'https://londres.herokuapp.com/static/assets/images/uk.svg' }}" ></update-meta>
-<update-meta name="twitter:title" content="{{publication.title | capitalize | trim}}{{publication.department === 'Real Estate'? ' for ' + (publication.reHomeFor | uppercase) : ''}} - See more in MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications" ></update-meta>
-<update-meta name="twitter:description" content="{{publication.description}}"></update-meta>
-<update-meta name="twitter:image:src" content="{{publicationImages.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ publicationImages[0].$id +'.jpg') : 'https://londres.herokuapp.com/static/assets/images/uk.svg' }}" ></update-meta>
-<update-meta name="twitter:url" content="https://londres.herokuapp.com/#/view-publication/{{publication.$id}}/{{publication.title | slug}}.html" ></update-meta>
-
-<!--<pre>{{publication | json}}</pre>-->
-<!--<pre>{{publicationImages | json}}</pre>-->

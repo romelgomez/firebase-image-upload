@@ -6,35 +6,36 @@ publicationsModule
     '$filter',
     '$routeParams',
     '$location',
-    '$http',
     'FireRef',
-    '$firebaseArray',
     '$firebaseObject',
-    'rfc4122',
     'notificationService',
-    'Upload',
-    '$uibModal',
-    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, notificationService, $upload, $uibModal, $log){
+    function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseObject, notificationService){
 
       var publicationsRef  = FireRef.child('publications');
+      var usersRef         = FireRef.child('users');
 
-      $scope.c = {};
-
-      $scope.barcode = {
-        string:'',
-        options: {
-          width: 1,
-          height: 50,
-          quite: 10,
-          format: 'CODE128',
-          displayValue: true,
-          font: 'monospace',
-          textAlign: 'center',
-          fontSize: 12,
-          backgroundColor: '',
-          lineColor: '#000'
+      $scope.publication = {
+        isReady: false,
+        res:{},
+        images:[],
+        user:{},
+        barcode : {
+          string:'',
+          options: {
+            width: 1,
+            height: 50,
+            quite: 10,
+            format: 'CODE128',
+            displayValue: true,
+            font: 'monospace',
+            textAlign: 'center',
+            fontSize: 12,
+            backgroundColor: '',
+            lineColor: '#000'
+          }
         }
       };
+
 
       function loadPublication(publicationId) {
         var deferred   = $q.defer();
@@ -55,13 +56,31 @@ publicationsModule
         return deferred.promise;
       }
 
+      function loadUser(userID) {
+        var deferred   = $q.defer();
+
+        var userRef   = usersRef.child(userID);
+        var user      = $firebaseObject(userRef);
+
+        user.$loaded(function(){
+          deferred.resolve({user:user});
+        }, function (error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      }
+
       if(angular.isDefined($routeParams.publicationId)){
-        $scope.httpRequestPromise = loadPublication($routeParams.publicationId)
+
+        var deferred   = $q.defer();
+        $scope.httpRequestPromise = deferred.promise;
+
+        loadPublication($routeParams.publicationId)
           .then(function(the){
 
-            $scope.publication = the.publication;
-            $scope.publicationImages = [];
-            $scope.barcode.string = the.publication.barcode;
+            $scope.publication.res            = the.publication;
+            $scope.publication.barcode.string = the.publication.barcode;
 
             $scope.seo = {
               url: 'https://londres.herokuapp.com/#/view-publication/' + the.publication.$id + '/' + $filter('slug')(the.publication.title) + '.html'
@@ -70,12 +89,21 @@ publicationsModule
             angular.forEach(the.publication.images, function(imageData,imageID){
               imageData.$id = imageID;
               if(imageID !== the.publication.featuredImageId){
-                $scope.publicationImages.push(imageData);
+                $scope.publication.images.push(imageData);
               }else{
-                $scope.publicationImages.unshift(imageData)
+                $scope.publication.images.unshift(imageData)
               }
             });
 
+            loadUser(the.publication.userID)
+              .then(function(the){
+                $scope.publication.user = the.user;
+                $scope.publication.isReady = true;
+                deferred.resolve();
+              },function () {
+                notificationService.error('This action cannot be completed.');
+                $location.path('/');
+              });
           }, function () {
             notificationService.error('This action cannot be completed.');
             $location.path('/');
