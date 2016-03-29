@@ -9,8 +9,9 @@ publicationsModule
     '$firebaseArray',
     '$firebaseObject',
     '$routeParams',
+    'notificationService',
     '$filter',
-    function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray, $firebaseObject, $routeParams, $filter){
+    function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray, $firebaseObject, $routeParams, notificationService, $filter){
 
       var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
