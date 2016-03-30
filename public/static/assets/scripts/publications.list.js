@@ -21,8 +21,11 @@ publicationsModule
         locations: $firebaseArray(FireRef.child('locations').orderByChild('left'))
       };
 
-      configTasks.categories = fireData.categories.$loaded();
-      configTasks.locations = fireData.locations.$loaded();
+      $scope.lording.taskToDoFirst.categories = fireData.categories.$loaded();
+      $scope.lording.taskToDoFirst.locations = fireData.locations.$loaded();
+
+      //configTasks
+      //configTasks
 
       $scope.algolia = {
         isReady: false,
@@ -376,17 +379,19 @@ publicationsModule
           })
       };
 
-      var deferred   = $q.defer();
-      $scope.httpRequestPromise = deferred.promise;
+      //var deferred   = $q.defer();
+      //$scope.httpRequestPromise = deferred.promise;
+
+      $scope.lordingPromise = $scope.lording.promise;
 
       if (typeof $routeParams.userID !== 'undefined'){
-        configTasks.user = loadUser($routeParams.userID)
+        $scope.lording.taskToDoFirst.user = loadUser($routeParams.userID)
           .then(function(the){
             $scope.user = the.user;
           });
       }
 
-      $q.all(configTasks)
+      $q.all($scope.lording.taskToDoFirst)
         .then(function () {
 
           $scope.$watch(function(){
@@ -414,8 +419,12 @@ publicationsModule
 
             search()
               .then(function(){
-                deferred.resolve();
-                $scope.algolia.isReady = true;
+
+                //deferred.resolve();
+                //$scope.algolia.isReady = true;
+                $scope.lording.deferred.resolve();
+                $scope.lording.isDone = true;
+
                },function(err){
                 notificationService.error(err);
               })

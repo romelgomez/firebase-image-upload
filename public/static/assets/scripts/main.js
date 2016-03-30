@@ -1,7 +1,16 @@
 // FrontEnd Controller
 angular.module('main',[])
-  .controller('MainController',[function($scope){
-    // ...
+  .controller('MainController',['$scope','$q',function( $scope, $q){
+
+    $scope.lording = {
+      deferred: $q.defer(),
+      isDone: false,
+      taskToDoFirst:{}
+    };
+
+    $scope.lording.promise = $scope.lording.deferred.promise;
+
+
   }])
   .directive('inputFocus',[function(){
     return {
