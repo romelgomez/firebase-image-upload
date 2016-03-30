@@ -7,9 +7,11 @@ publicationsModule
     'algolia',
     'FireRef',
     '$firebaseArray',
+    '$firebaseObject',
     '$routeParams',
+    'notificationService',
     '$filter',
-    function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray, $routeParams, $filter){
+    function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray, $firebaseObject, $routeParams, notificationService, $filter){
 
       var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
@@ -19,8 +21,11 @@ publicationsModule
         locations: $firebaseArray(FireRef.child('locations').orderByChild('left'))
       };
 
-      configTasks.categories = fireData.categories.$loaded();
-      configTasks.locations = fireData.locations.$loaded();
+      $scope.lording.taskToDoFirst.categories = fireData.categories.$loaded();
+      $scope.lording.taskToDoFirst.locations = fireData.locations.$loaded();
+
+      //configTasks
+      //configTasks
 
       $scope.algolia = {
         isReady: false,
@@ -347,6 +352,25 @@ publicationsModule
         $scope.algolia.pagination.currentPage = 1;
       }
 
+      function loadUser(userID) {
+        var deferred   = $q.defer();
+
+        var usersRef  = FireRef.child('users');
+        var userRef   = usersRef.child(userID);
+        var user      = $firebaseObject(userRef);
+
+        user.$loaded(function(){
+          if (typeof user.provider === 'undefined'){
+            deferred.reject();
+          }  else {
+            deferred.resolve({user:user});
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
       $scope.submit = function(){
         resetQuerySettings();
         search()
@@ -355,10 +379,19 @@ publicationsModule
           })
       };
 
-      var deferred   = $q.defer();
-      $scope.httpRequestPromise = deferred.promise;
+      //var deferred   = $q.defer();
+      //$scope.httpRequestPromise = deferred.promise;
 
-      $q.all(configTasks)
+      $scope.lordingPromise = $scope.lording.promise;
+
+      if (typeof $routeParams.userID !== 'undefined'){
+        $scope.lording.taskToDoFirst.user = loadUser($routeParams.userID)
+          .then(function(the){
+            $scope.user = the.user;
+          });
+      }
+
+      $q.all($scope.lording.taskToDoFirst)
         .then(function () {
 
           $scope.$watch(function(){
@@ -366,9 +399,19 @@ publicationsModule
           },function(){
             resetQuerySettings();
 
+            var facetObj = {};
+
             if (typeof $scope.account !== 'undefined'){
-              var facetObj = {};
+              facetObj = {};
               facetObj.name = $scope.account.user.uid; // to match the requirements of updateFacetFilters function
+              $scope.algolia.faceting.currentFacets.userID = [];
+              $scope.algolia.faceting.currentFacets.userID.push(facetObj);
+              $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
+            }
+
+            if (typeof $routeParams.userID !== 'undefined'){
+              facetObj = {};
+              facetObj.name = $routeParams.userID; // to match the requirements of updateFacetFilters function
               $scope.algolia.faceting.currentFacets.userID = [];
               $scope.algolia.faceting.currentFacets.userID.push(facetObj);
               $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
@@ -376,13 +419,20 @@ publicationsModule
 
             search()
               .then(function(){
-                deferred.resolve();
-                $scope.algolia.isReady = true;
+
+                //deferred.resolve();
+                //$scope.algolia.isReady = true;
+                $scope.lording.deferred.resolve();
+                $scope.lording.isDone = true;
+
                },function(err){
                 notificationService.error(err);
               })
           });
 
+        }, function(){
+          notificationService.error('This action cannot be completed.');
+          $location.path('/');
         });
 
       $scope.viewPublication = function (publicationId) {

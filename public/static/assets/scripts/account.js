@@ -5,6 +5,14 @@ $.cloudinary.config().cloud_name = 'berlin';
 angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch'])
   .controller('AccountController',['$scope', '$q', 'user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log', function ($scope, $q, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
 
+    $scope.lording = {
+      deferred: $q.defer(),
+      isDone: false,
+      taskToDoFirst:{}
+    };
+
+    $scope.lording.promise = $scope.lording.deferred.promise;
+
     $scope.account = {
       user:user,
       profile: $firebaseObject(FireRef.child('users/'+user.uid)),
@@ -15,9 +23,12 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
   }])
   .controller('AccountProfileController',['$scope', '$uibModal','notificationService',function($scope, $uibModal, notificationService){
 
-    $scope.account.httpRequestPromise = $scope.account.profile.$loaded(null,function(error){
-      notificationService.error(error);
-    });
+    //$scope.account.httpRequestPromise = $scope.account.profile.$loaded(null,function(error){
+    //  notificationService.error(error);
+    //});
+
+    $scope.lording.taskToDoFirst.profile = $scope.account.profile.$loaded();
+
 
     var modalErrors = function(error){
       switch(error) {

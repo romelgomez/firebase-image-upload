@@ -89,6 +89,10 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'static/assets/views/viewPublication.html',
         controller: 'ViewPublicationController'
       })
+      .when('/all-publications-of/:userID/:pseudonymOrNames', {
+        templateUrl: 'static/assets/views/viewAllPublication.html',
+        controller: 'ViewAllPublicationController'
+      })
       .when('/login', {
         templateUrl: 'static/assets/views/login.html',
         controller: 'LoginController'

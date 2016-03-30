@@ -6,11 +6,18 @@
 
     <form id="profileDetails" name="forms.profileDetails" novalidate="" ng-submit="submit()">
 
+      <!--
+      picture
+      banner
+      twitter
+      facebook
+      -->
+
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.pseudonym.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.pseudonym.$invalid) }">
         <label class="control-label"> Pseudonym or Company name</label>
         <input type="text" name="pseudonym" ng-model="model.profileDetails.pseudonym" ng-trim class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.pseudonym.$valid),'glyphicon-remove': ( forms.profileDetails.pseudonym.$invalid) }" aria-hidden="true"></span>
-        <p class="help-block">Pseudonym or Company name input has precedence over name and last name inputs, that means, If this input is defined the name and the last name will not be shown to the clients.</p>
+        <p class="help-block">Pseudonym or Company name input has precedence over name and last name inputs, that means, If this input is defined the name and the last name will not be shown to the clients in some cases.</p>
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.names.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.names.$invalid) }">
