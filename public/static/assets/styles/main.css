@@ -180,12 +180,12 @@ ul.jqtree-tree span.jqtree-border {
 }
 
 
-/* http://www.bypeople.com/css-ribbon/ */
-.box {
-    width: 200px; height: 300px;
+/*
+    http://www.bypeople.com/css-ribbon/
+    http://www.cssportal.com/css-ribbon-generator/
+*/
+.ribbonBox {
     position: relative;
-    border: 1px solid #BBB;
-    background: #EEE;
 }
 .ribbon {
     position: absolute;
