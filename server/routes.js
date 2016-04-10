@@ -1,57 +1,155 @@
 var path = require('path');
+var fs = require('fs');
+var Q = require('q');
+var handlebars = require('handlebars');
+var Firebase = require("firebase");
+
+var basePath = '';
+
+switch(process.env.NODE_ENV) {
+  case 'production':
+    basePath = '/dist';
+    break;
+  case 'development':
+    basePath = '/public';
+    break;
+}
 
 //process.cwd() : /home/romelgomez/workspace/projects/berlin
 //__dirname : /home/romelgomez/workspace/projects/berlin/server
 
-module.exports = function(app) {
+var metaTags = {
+  title:        'MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications',
+  url:          'https://londres.herokuapp.com',
+  description:  'Jobs, Real Estate, Transport, Services, Marketplace related Publications',
+  image:        'https://londres.herokuapp.com/static/assets/images/uk.jpg'
+};
 
-  var basePath = '';
+function readFile(fileName){
+  var deferred = Q.defer();
 
-  switch(process.env.NODE_ENV) {
-    case 'production':
-      basePath = '/dist';
-      break;
-    case 'development':
-      basePath = '/public';
-      break;
+  fs.readFile( path.join(process.cwd(), basePath, fileName), function (error, source) {
+    if (error) {
+      deferred.reject(error);
+    }else{
+      deferred.resolve({source: source});
+    }
+  });
+
+  return deferred.promise;
+}
+
+function getPublication (uuid){
+  var deferred = Q.defer();
+
+  var publicationRef = new Firebase('berlin.firebaseio.com/publications/'+uuid);
+  publicationRef.once('value', function (dataSnapshot) {
+    deferred.resolve({publication: dataSnapshot.val()});
+  }, function (error) {
+    deferred.reject(error);
+  });
+
+  return deferred.promise;
+}
+
+function slug(input) {
+  return (!!input) ? String(input).toLowerCase().replace(/[^a-zá-źA-ZÁ-Ź0-9]/g, ' ').trim().replace(/\s{2,}/g, ' ').replace(/\s+/g, '-') : '';
+}
+
+function capitalize(input) {
+  return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
+}
+
+function setMetaTitle (publication){
+  metaTags.title = capitalize(publication.title).trim();
+  metaTags.title += publication.department === 'Real Estate'? ' for ' + (publication.res.reHomeFor | uppercase) : '';
+  metaTags.title += ' - MarketOfLondon.UK';
+}
+
+function setMetaURL (publicationID, publication){
+  metaTags.url = 'https://londres.herokuapp.com/view-publication/';
+  metaTags.url += publicationID + '/';
+  metaTags.url += slug(publication.title) + '.html';
+}
+
+function setMetaImage (publication){
+  var images = [];
+
+  for (var imageID in publication.images) {
+    if( publication.images.hasOwnProperty( imageID ) ) {
+      publication.images[imageID].$id = imageID;
+      if(imageID !== publication.featuredImageId){
+        images.push(publication.images[imageID]);
+      }else{
+        images.unshift(publication.images[imageID])
+      }
+    }
   }
 
+  metaTags.image = images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ images[0].$id +'.jpg') : 'https://londres.herokuapp.com/static/assets/images/uk.svg';
+}
+module.exports = function(app) {
+
   app.get('/', function(req, res) {
-    res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
+
+    readFile('index1.html')
+      .then(function(the){
+        var template = handlebars.compile(the.source.toString());
+        return Q.when({result: template(metaTags)})
+      })
+      .then(function(the){
+        res.send(the.result);
+      },function(error){
+        throw error;
+      });
+
+    //res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
   });
+
+  app.get('/view-publication/:id/:title', function(req, res){
+    console.log('req.params.id',req.params.id);
+
+    getPublication(req.params.id)
+      .then(function(the){
+
+        setMetaTitle(the.publication);
+        setMetaURL(req.params.id, the.publication);
+        metaTags.description = the.publication.description;
+        setMetaImage(the.publication);
+
+        return readFile('index1.html');
+      })
+      .then(function(the){
+        var template = handlebars.compile(the.source.toString());
+        return Q.when({result: template(metaTags)})
+      })
+      .then(function(the){
+        res.send(the.result);
+      },function(error){
+        throw error;
+      });
+
+  });
+
 
   app.get('*', function(req, res){
     //console.log(' all requests');
     //res.send('#### 404 ####');
-    res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
+
+    readFile('index1.html')
+      .then(function(the){
+        var template = handlebars.compile(the.source.toString());
+        return Q.when({result: template(metaTags)})
+      })
+      .then(function(the){
+        res.send(the.result);
+      },function(error){
+        throw error;
+      });
+
+
+    //res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
   });
-
-
-  //app.get('/view-publication/:id/:title', function(req, res){
-  //  console.log('req.params.id',req.params.id);
-  //
-  //  //var publicationRef = new Firebase('berlin.firebaseio.com/publications/'+req.params.id);
-  //
-  //  //var source = "<p>Hello, my name is {{name}}. I am from {{hometown}}. I have " +
-  //  //  "{{kids.length}} kids:</p>" +
-  //  //  "<ul>{{#kids}}<li>{{name}} is {{age}}</li>{{/kids}}</ul>";
-  //
-  //  fs.readFile( path.join(process.cwd(), basePath, '/view.html'), function (err, source) {
-  //    if (err) {
-  //      throw err;
-  //    }
-  //
-  //    var template = handlebars.compile(source.toString());
-  //
-  //    var data = { "name": "Alan", "hometown": "Somewhere, TX",
-  //      "kids": [{"name": "Jimmy", "age": "12"}, {"name": "Sally", "age": "4"}]};
-  //
-  //    var result = template(data);
-  //
-  //    res.send(result);
-  //  })
-  //
-  //});
 
   //app.get('/me', function(req, res){
   //  res.send('Hello Romel Javier Gomez Herrera');

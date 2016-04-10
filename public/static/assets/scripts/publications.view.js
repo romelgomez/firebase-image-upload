@@ -83,7 +83,7 @@ publicationsModule
             $scope.publication.barcode.string = the.publication.barcode;
 
             $scope.seo = {
-              url: 'https://londres.herokuapp.com/#/view-publication/' + the.publication.$id + '/' + $filter('slug')(the.publication.title) + '.html'
+              url: 'https://londres.herokuapp.com/view-publication/' + the.publication.$id + '/' + $filter('slug')(the.publication.title) + '.html'
             };
 
             angular.forEach(the.publication.images, function(imageData,imageID){
