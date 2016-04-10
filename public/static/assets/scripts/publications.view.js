@@ -123,10 +123,15 @@ publicationsModule
       },
       template:''+
       '<div class="fb-like" data-href="{{url}}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>',
-      link:function(){
+      link:function(scope){
 
         if (typeof $window.FB !== 'undefined'){
-          $window.FB.XFBML.parse();
+          scope.$watch(function(scope){
+            return scope.url;
+          },function(){
+            $window.FB.XFBML.parse();
+          });
+
         }
 
       }
