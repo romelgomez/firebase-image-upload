@@ -56,7 +56,7 @@
             <span ng-repeat="location in publication.res.locations"> {{location | capitalizeFirstChar}} {{!$last ? '/': ''}} </span>
           </h5>
           <h5><i class="fa fa-calendar"></i> Published: {{publication.res.releaseDate | date:'dd'}} / {{publication.res.releaseDate | date:'MM'}} / {{publication.res.releaseDate | date:'yy'}}  </h5>
-          <div>
+          <div class="non-printable" >
             <a href="/all-publications-of/{{publication.res.userID}}/{{publication.user.pseudonym === undefined || publication.user.pseudonym === '' ? publication.user.names : publication.user.pseudonym | slug}}.html"><span class="label label-primary">More from: {{publication.user.pseudonym === undefined || publication.user.pseudonym === '' ? publication.user.names : publication.user.pseudonym}}</span></a>
           </div>
           <!--<pre>{{user | json}}</pre>-->
@@ -85,7 +85,7 @@
           </div>
           <barcode-img barcode-string="publication.barcode.string" barcode-options="publication.barcode.options" ></barcode-img>
         </div>
-        <div>
+        <div class="non-printable">
           <hr class="hr-xs">
 
           <div style="padding-bottom: 15px;">
