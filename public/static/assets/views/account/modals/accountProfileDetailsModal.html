@@ -7,8 +7,6 @@
     <form id="profileDetails" name="forms.profileDetails" novalidate="" ng-submit="submit()">
 
       <!--
-      picture
-      banner
       twitter
       facebook
       -->
@@ -69,6 +67,18 @@
             - The <b>email</b> must be valid.
           </div>
         </div>
+      </div>
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.twitterAccount.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.twitterAccount.$invalid) }">
+        <label class="control-label"><i class="fa fa-twitter"></i> Twitter account</label>
+        <input type="text" name="twitterAccount" ng-model="model.profileDetails.twitterAccount" ng-trim class="form-control" placeholder="">
+        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.twitterAccount.$valid),'glyphicon-remove': ( forms.profileDetails.twitterAccount.$invalid) }" aria-hidden="true"></span>
+      </div>
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.facebookAccount.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.facebookAccount.$invalid) }">
+        <label class="control-label"><i class="fa fa-facebook-official"></i> Facebook account</label>
+        <input type="text" name="facebookAccount" ng-model="model.profileDetails.facebookAccount" ng-trim class="form-control" placeholder="">
+        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.facebookAccount.$valid),'glyphicon-remove': ( forms.profileDetails.facebookAccount.$invalid) }" aria-hidden="true"></span>
       </div>
 
     </form>

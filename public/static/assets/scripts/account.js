@@ -65,6 +65,44 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       });
     };
 
+    $scope.adminProfileBanners = function(size){
+      var modalInstance = $uibModal.open({
+        templateUrl: 'accountProfileBannersModal.html',
+        controller: 'accountProfileBannersModalController',
+        size: size,
+        resolve: {
+          profile: function () {
+            return $scope.account.profile;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+        notificationService.success('The profile banners has been updated.');
+      }, function (error) {
+        modalErrors(error);
+      });
+    };
+
+    $scope.adminProfileImages = function(size){
+      var modalInstance = $uibModal.open({
+        templateUrl: 'accountProfileImagesModal.html',
+        controller: 'accountProfileImagesModalController',
+        size: size,
+        resolve: {
+          profile: function () {
+            return $scope.account.profile;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+        notificationService.success('The profile images has been updated.');
+      }, function (error) {
+        modalErrors(error);
+      });
+    };
+
     $scope.changePassword = function(size){
       var modalInstance = $uibModal.open({
         templateUrl: 'accountProfilePasswordModal.html',
@@ -123,7 +161,9 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
         lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
         mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
         landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : '',
-        email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : ''
+        email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : '',
+        twitterAccount:       angular.isDefined(profile.twitterAccount) && profile.twitterAccount !== '' ? profile.twitterAccount : '',
+        facebookAccount:      angular.isDefined(profile.facebookAccount) && profile.facebookAccount !== '' ? profile.facebookAccount : ''
       }
     });
 
@@ -135,6 +175,8 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
         profile.lastNames         = $scope.model.profileDetails.lastNames;
         profile.mobilePhone       = $scope.model.profileDetails.mobilePhone;
         profile.landLineTelephone = $scope.model.profileDetails.landLineTelephone;
+        profile.twitterAccount    = $scope.model.profileDetails.twitterAccount;
+        profile.facebookAccount   = $scope.model.profileDetails.facebookAccount;
 
         if(profile.provider !== 'password'){
           profile.email = angular.isDefined($scope.model.profileDetails.email) ? $scope.model.profileDetails.email : '';
@@ -149,6 +191,108 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
       }
     };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss();
+    };
+
+  }])
+  .controller('accountProfileBannersModalController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
+
+    //$scope.forms = {
+    //  profileDetails: {}
+    //};
+
+    $scope.profile = profile;
+
+    //var original = angular.copy($scope.model = {
+    //  profileDetails:{
+    //    pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
+    //    names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
+    //    lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
+    //    mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
+    //    landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : '',
+    //    email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : '',
+    //    twitterAccount:       angular.isDefined(profile.twitterAccount) && profile.twitterAccount !== '' ? profile.twitterAccount : '',
+    //    facebookAccount:      angular.isDefined(profile.facebookAccount) && profile.facebookAccount !== '' ? profile.facebookAccount : ''
+    //  }
+    //});
+    //
+    //$scope.submit = function(){
+    //  if($scope.forms.profileDetails.$valid){
+    //
+    //    profile.pseudonym         = $scope.model.profileDetails.pseudonym;
+    //    profile.names             = $scope.model.profileDetails.names;
+    //    profile.lastNames         = $scope.model.profileDetails.lastNames;
+    //    profile.mobilePhone       = $scope.model.profileDetails.mobilePhone;
+    //    profile.landLineTelephone = $scope.model.profileDetails.landLineTelephone;
+    //    profile.twitterAccount    = $scope.model.profileDetails.twitterAccount;
+    //    profile.facebookAccount   = $scope.model.profileDetails.facebookAccount;
+    //
+    //    if(profile.provider !== 'password'){
+    //      profile.email = angular.isDefined($scope.model.profileDetails.email) ? $scope.model.profileDetails.email : '';
+    //    }
+    //
+    //    $scope.httpRequestPromise = profile.$save()
+    //      .then(function() {
+    //        $modalInstance.close();
+    //      }, function(error) {
+    //        $modalInstance.dismiss(error);
+    //      });
+    //
+    //  }
+    //};
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss();
+    };
+
+  }])
+  .controller('accountProfileImagesModalController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
+
+    //$scope.forms = {
+    //  profileDetails: {}
+    //};
+
+    $scope.profile = profile;
+
+    //var original = angular.copy($scope.model = {
+    //  profileDetails:{
+    //    pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
+    //    names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
+    //    lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
+    //    mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
+    //    landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : '',
+    //    email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : '',
+    //    twitterAccount:       angular.isDefined(profile.twitterAccount) && profile.twitterAccount !== '' ? profile.twitterAccount : '',
+    //    facebookAccount:      angular.isDefined(profile.facebookAccount) && profile.facebookAccount !== '' ? profile.facebookAccount : ''
+    //  }
+    //});
+    //
+    //$scope.submit = function(){
+    //  if($scope.forms.profileDetails.$valid){
+    //
+    //    profile.pseudonym         = $scope.model.profileDetails.pseudonym;
+    //    profile.names             = $scope.model.profileDetails.names;
+    //    profile.lastNames         = $scope.model.profileDetails.lastNames;
+    //    profile.mobilePhone       = $scope.model.profileDetails.mobilePhone;
+    //    profile.landLineTelephone = $scope.model.profileDetails.landLineTelephone;
+    //    profile.twitterAccount    = $scope.model.profileDetails.twitterAccount;
+    //    profile.facebookAccount   = $scope.model.profileDetails.facebookAccount;
+    //
+    //    if(profile.provider !== 'password'){
+    //      profile.email = angular.isDefined($scope.model.profileDetails.email) ? $scope.model.profileDetails.email : '';
+    //    }
+    //
+    //    $scope.httpRequestPromise = profile.$save()
+    //      .then(function() {
+    //        $modalInstance.close();
+    //      }, function(error) {
+    //        $modalInstance.dismiss(error);
+    //      });
+    //
+    //  }
+    //};
 
     $scope.cancel = function () {
       $modalInstance.dismiss();
