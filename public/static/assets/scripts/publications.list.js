@@ -13,19 +13,28 @@ publicationsModule
     '$filter',
     function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray, $firebaseObject, $routeParams, notificationService, $filter){
 
-      var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
 
       var fireData = {
-        categories: $firebaseArray(FireRef.child('categories').orderByChild('left')),
-        locations: $firebaseArray(FireRef.child('locations').orderByChild('left'))
+        categories: {},
+        locations: {}
       };
 
-      $scope.lording.taskToDoFirst.categories = fireData.categories.$loaded();
-      $scope.lording.taskToDoFirst.locations = fireData.locations.$loaded();
+      // Create a synchronized array, and then destroy the synchronization after having the data
+      var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
+      $scope.lording.taskToDoFirst.categories = categories.$loaded()
+        .then(function () {
+          fireData.categories = angular.copy(categories);
+          categories.$destroy();
+        });
 
-      //configTasks
-      //configTasks
+      // Create a synchronized array, and then destroy the synchronization after having the data
+      var locations = $firebaseArray(FireRef.child('locations').orderByChild('left'));
+      $scope.lording.taskToDoFirst.locations = locations.$loaded()
+        .then(function () {
+          fireData.locations = angular.copy(locations);
+          locations.$destroy();
+        });
 
       $scope.algolia = {
         isReady: false,

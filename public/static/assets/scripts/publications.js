@@ -94,8 +94,8 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         $id: '',
         categoryPath: [],
         locationPath: [],
-        categories: $firebaseArray(FireRef.child('categories').orderByChild('left')),
-        locations: $firebaseArray(FireRef.child('locations').orderByChild('left')),
+        categories: {},
+        locations: {},
         categorySelected: false,
         inEditMode: false,
         isReady: false,
@@ -112,8 +112,21 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         }
       };
 
-      var categories = $scope.publication.categories.$loaded();
-      var locations = $scope.publication.locations.$loaded();
+      // Create a synchronized array, and then destroy the synchronization after having the data
+      var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
+      categories.$loaded()
+        .then(function () {
+          $scope.publication.categories = angular.copy(categories);
+          categories.$destroy();
+        });
+
+      // Create a synchronized array, and then destroy the synchronization after having the data
+      var locations = $firebaseArray(FireRef.child('locations').orderByChild('left'));
+      locations.$loaded()
+        .then(function () {
+          $scope.publication.locations = angular.copy(locations);
+          locations.$destroy();
+        });
 
       $q.all([categories,locations])
         .then(function () {

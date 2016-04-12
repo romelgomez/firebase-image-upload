@@ -43,15 +43,19 @@ publicationsModule
         var publicationRef = publicationsRef.child(publicationId);
         var publication    = $firebaseObject(publicationRef);
 
-        publication.$loaded(function(){
-          if (typeof publication.releaseDate === 'undefined'){
-            deferred.reject();
-          }  else {
-            deferred.resolve({publication:publication});
-          }
-        }, function (error) {
-          deferred.reject(error);
-        });
+        publication.$loaded()
+          .then(function(){
+            if (typeof publication.releaseDate === 'undefined'){
+              deferred.reject();
+            }  else {
+              deferred.resolve({publication: angular.copy(publication)});
+            }
+          }, function (error) {
+            deferred.reject(error);
+          })
+          .then(function(){
+            publication.$destroy();
+          });
 
         return deferred.promise;
       }
