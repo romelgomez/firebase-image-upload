@@ -1,6 +1,6 @@
 var Q = require('q');
 var cloudinary = require('cloudinary');
-var formidable = require('formidable');
+//var formidable = require('formidable');
 
 cloudinary.config({
   cloud_name: 'berlin',
@@ -25,7 +25,7 @@ function $upload(file,fields){
     {
       public_id: fields.fileId,
       upload_preset: 'pmceswio',
-      context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name + '|$id=' + fields.fileId,
+      context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name,
       tags: [fields.publicationId]
     }
   );
@@ -98,8 +98,8 @@ module.exports = function(app){
         .then(function(the){
           res.json(the.result);
         });
-    } else if ( typeof req.query.publicationId !== "undefined") {
-      $deleteByTag(req.query.publicationId)
+    } else if ( typeof req.query.tag !== "undefined") {
+      $deleteByTag(req.query.tag)
         .then(function(the){
           res.json(the.result);
         });

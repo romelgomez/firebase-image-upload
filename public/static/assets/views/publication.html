@@ -77,7 +77,7 @@
 
           <barcode-input form-name="publicationForm" input-model="publication.model.barcode" select-model="publication.model.barcodeType" ></barcode-input>
 
-          <publication-images form-name="publicationForm" images="publication.images" publication-id="publication.$id" model="publication.model" http-request-promise="httpRequestPromise" ></publication-images>
+          <ng-images form-name="publicationForm" http-request-promise="httpRequestPromise" images="publication.images" images-tag="publication.$id" model="publication.model"  ></ng-images>
 
         </form>
 
@@ -89,6 +89,7 @@
 
     <!--<pre>{{publication.categories | json}}</pre>-->
     <!--<pre>{{test.categories | json}}</pre>-->
+    <!--<pre>{{publication.images | json}}</pre>-->
 
   </div>
 
@@ -120,11 +121,11 @@
 </script>
 
 
-<script type="text/ng-template" id="publicationImages.html">
+<script type="text/ng-template" id="ngImages.html">
   <section>
     <hr class="hr-xs">
 
-    <!--<pre>{{formName.files | json}}</pre>-->
+    <!-- <pre>{{formName.files | json}}</pre> -->
 
     <button class="btn btn-primary"
             ngf-select
@@ -140,7 +141,7 @@
       <i class="fa fa-picture-o"></i> Select the images</button>
 
     <button ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove in queue</button>
-    <button ng-show="imagesInfo().inServer > 0" type="button" class="btn btn-danger" ng-click="deleteAllPublicationImages()"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
+    <button ng-show="imagesInfo().isUploaded > 0" type="button" class="btn btn-danger" ng-click="deleteAllImages(imagesTag, 'publications/'+ imagesTag + '/images')"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
     <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove invalid</button>
 
 
@@ -176,7 +177,7 @@
           Images in queue to upload:
         </li>
         <li class="list-group-item">
-          <span class="badge">{{imagesInfo().inServer}}</span>
+          <span class="badge">{{imagesInfo().isUploaded}}</span>
           Images in server:
         </li>
         <li class="list-group-item">
@@ -202,7 +203,7 @@
                 <div ng-switch-when="false">
 
                   <div ng-if="value.$error !== undefined">
-                    <img class="img-thumbnail img-preview img-responsive" ng-src="assets/images/invalid_image.png" alt="{{value.name}}">
+                    <img class="img-thumbnail img-preview img-responsive" ng-src="/assets/images/invalid_image.png" alt="{{value.name}}">
                   </div>
 
                   <div ng-if="value.$id !== undefined">
@@ -227,7 +228,7 @@
               <!--</div>-->
               <!--</div>-->
 
-              <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.inServer)}">{{value.inServer ? 'In server' : 'In queue' }}</span></div>
+              <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.isUploaded)}">{{value.isUploaded ? 'In server' : 'In queue' }}</span></div>
               <div style="margin-bottom: 5px;"><span ng-show="model.featuredImageId === value.$id" class="label label-info">Primary image</span></div>
             </div>
             <div class="col-xs-8 col-md-10" style="padding-left: 5px;">
@@ -241,7 +242,7 @@
 
                 <div ng-show="!value.$error">
                   <div><b>Size: </b>{{value.size | bytes}}</div>
-                  <uib-progressbar ng-show="value.addedDate === undefined" class="progress-striped active" value="value.progress ? value.progress : 0" type="{{  value.progress < 100 ? 'info' : 'success' }}">{{value.progress}}%</uib-progressbar>
+                  <uib-progressbar ng-show="value.isUploaded === undefined" class="progress-striped active" value="value.progress ? value.progress : 0" type="{{  value.progress < 100 ? 'info' : 'success' }}">{{value.progress}}%</uib-progressbar>
                 </div>
 
                 <div ng-show="value.$error" class="bg-warning" style="padding: 7px;">
@@ -264,8 +265,8 @@
           </div>
         </div>
         <div class="panel-footer" style="padding: 5px; text-align: right">
-          <button ng-show="value.inServer && model.featuredImageId !== value.$id && imagesInfo().inServer > 1" type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(value.$id)" ><i class="fa fa-thumb-tack"></i> Set as featured Image</button>
-          <button type="button" class="btn btn-danger btn-xs" ng-click="removeFile(key,value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
+          <button ng-show="value.isUploaded && model.featuredImageId !== value.$id && imagesInfo().isUploaded > 1" type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage('publications/'+ imagesTag, value.$id)" ><i class="fa fa-thumb-tack"></i> Set as featured Image</button>
+          <button type="button" class="btn btn-danger btn-xs" ng-click="removeFile('publications/'+ imagesTag +'/images', 'publications/' + imagesTag, imagesTag, key, value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
         </div>
       </div>
 
