@@ -106,23 +106,30 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         }
       };
 
-      // Create a synchronized array, and then destroy the synchronization after having the data
+      var categoriesDeferredObject  = $q.defer();
+      var locationsDeferredObject    = $q.defer();
+
       var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
       categories.$loaded()
         .then(function () {
           $scope.publication.categories = angular.copy(categories);
+          categoriesDeferredObject.resolve();
           categories.$destroy();
+        },function(error){
+          deferred.reject(error);
         });
 
-      // Create a synchronized array, and then destroy the synchronization after having the data
       var locations = $firebaseArray(FireRef.child('locations').orderByChild('left'));
       locations.$loaded()
         .then(function () {
           $scope.publication.locations = angular.copy(locations);
+          locationsDeferredObject.resolve();
           locations.$destroy();
+        },function(error){
+          deferred.reject(error);
         });
 
-      $q.all([categories,locations])
+      $q.all([ categoriesDeferredObject.promise, locationsDeferredObject.promise])
         .then(function () {
           if(angular.isDefined($routeParams.publicationId)){
             return setPublication($routeParams.publicationId);
