@@ -4,11 +4,14 @@
   </div>
   <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
-    profile images
+    <form id="profileImages" name="forms.profileImages" novalidate="" ng-submit="submit()">
+      <upload-images form-name="forms.profileImages" http-request-promise="httpRequestPromise" images="images" images-tag="'profile-' +user.uid" images-path="'users/' + user.uid + '/images'" featured-image-id="profile.featuredImageId" featured-image-path="'users/' + user.uid"></upload-images>
+    </form>
 
   </div>
   <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    <!--<button form="profileDetails" class="btn btn-primary" type="submit">Save</button>-->
+    <button class="btn btn-warning" ng-click="cancel()">Close</button>
+    <button ng-show="imagesInfo().inQueue > 0" form="profileImages" class="btn btn-primary" type="submit">Upload</button>
   </div>
+
 </script>

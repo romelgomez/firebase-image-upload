@@ -2,7 +2,7 @@
 
 $.cloudinary.config().cloud_name = 'berlin';
 
-angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch'])
+angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch','images'])
   .controller('AccountController',['$scope', '$q', 'user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log', function ($scope, $q, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
 
     $scope.lording = {
@@ -73,6 +73,9 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
         resolve: {
           profile: function () {
             return $scope.account.profile;
+          },
+          user: function () {
+            return $scope.account.user;
           }
         }
       });
@@ -92,6 +95,9 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
         resolve: {
           profile: function () {
             return $scope.account.profile;
+          },
+          user: function () {
+            return $scope.account.user;
           }
         }
       });
@@ -154,33 +160,23 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
     $scope.profile = profile;
 
-    var original = angular.copy($scope.model = {
-      profileDetails:{
-        pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
-        names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
-        lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
-        mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
-        landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : '',
-        email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : '',
-        twitterAccount:       angular.isDefined(profile.twitterAccount) && profile.twitterAccount !== '' ? profile.twitterAccount : '',
-        facebookAccount:      angular.isDefined(profile.facebookAccount) && profile.facebookAccount !== '' ? profile.facebookAccount : ''
-      }
-    });
+    $scope.model = {
+      pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
+      names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
+      lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
+      mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
+      landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : '',
+      email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : '',
+      twitterAccount:       angular.isDefined(profile.twitterAccount) && profile.twitterAccount !== '' ? profile.twitterAccount : '',
+      facebookAccount:      angular.isDefined(profile.facebookAccount) && profile.facebookAccount !== '' ? profile.facebookAccount : ''
+    };
 
     $scope.submit = function(){
       if($scope.forms.profileDetails.$valid){
 
-        profile.pseudonym         = $scope.model.profileDetails.pseudonym;
-        profile.names             = $scope.model.profileDetails.names;
-        profile.lastNames         = $scope.model.profileDetails.lastNames;
-        profile.mobilePhone       = $scope.model.profileDetails.mobilePhone;
-        profile.landLineTelephone = $scope.model.profileDetails.landLineTelephone;
-        profile.twitterAccount    = $scope.model.profileDetails.twitterAccount;
-        profile.facebookAccount   = $scope.model.profileDetails.facebookAccount;
-
-        if(profile.provider !== 'password'){
-          profile.email = angular.isDefined($scope.model.profileDetails.email) ? $scope.model.profileDetails.email : '';
-        }
+        angular.forEach($scope.model, function(value, key){
+          profile[key] = value;
+        });
 
         $scope.httpRequestPromise = profile.$save()
           .then(function() {
@@ -197,64 +193,113 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     };
 
   }])
-  .controller('accountProfileBannersModalController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
+  .controller('accountProfileImagesModalController',['$scope','$modalInstance', '$q', 'imagesService','profile', 'user', 'notificationService', function($scope, $modalInstance, $q, imagesService, profile, user, notificationService){
 
-    //$scope.forms = {
-    //  profileDetails: {}
-    //};
+    $scope.forms = {
+      profileImages: {}
+    };
 
     $scope.profile = profile;
+    $scope.profile.featuredImageId =  typeof $scope.profile.featuredImageId  !== 'undefined'? $scope.profile.featuredImageId  : '';
+    $scope.user = user;
+    $scope.images = [];
 
-    //var original = angular.copy($scope.model = {
-    //  profileDetails:{
-    //    pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
-    //    names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
-    //    lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
-    //    mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
-    //    landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : '',
-    //    email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : '',
-    //    twitterAccount:       angular.isDefined(profile.twitterAccount) && profile.twitterAccount !== '' ? profile.twitterAccount : '',
-    //    facebookAccount:      angular.isDefined(profile.facebookAccount) && profile.facebookAccount !== '' ? profile.facebookAccount : ''
-    //  }
-    //});
-    //
-    //$scope.submit = function(){
-    //  if($scope.forms.profileDetails.$valid){
-    //
-    //    profile.pseudonym         = $scope.model.profileDetails.pseudonym;
-    //    profile.names             = $scope.model.profileDetails.names;
-    //    profile.lastNames         = $scope.model.profileDetails.lastNames;
-    //    profile.mobilePhone       = $scope.model.profileDetails.mobilePhone;
-    //    profile.landLineTelephone = $scope.model.profileDetails.landLineTelephone;
-    //    profile.twitterAccount    = $scope.model.profileDetails.twitterAccount;
-    //    profile.facebookAccount   = $scope.model.profileDetails.facebookAccount;
-    //
-    //    if(profile.provider !== 'password'){
-    //      profile.email = angular.isDefined($scope.model.profileDetails.email) ? $scope.model.profileDetails.email : '';
-    //    }
-    //
-    //    $scope.httpRequestPromise = profile.$save()
-    //      .then(function() {
-    //        $modalInstance.close();
-    //      }, function(error) {
-    //        $modalInstance.dismiss(error);
-    //      });
-    //
-    //  }
-    //};
+    $scope.imagesInfo = function() {
+      return imagesService.imagesInfo($scope.images);
+    };
+
+    if(angular.isDefined($scope.profile.images) && Object.keys($scope.profile.images).length > 0){
+      angular.forEach($scope.profile.images, function(value, key){
+        value.$id = key;
+        value.$ngfWidth   = value.width;
+        value.$ngfHeight  = value.height;
+        value.size        = typeof value.size !== 'undefined' ? value.size : value.bytes;
+        value.isUploaded  = true;
+        value.name        = typeof value.name !== 'undefined' ? value.name : value.original_filename + '.' + value.format;
+        $scope.images.push(value);
+      });
+    }
+
+    //processProfileImages();
+
+    $scope.submit = function(){
+      if($scope.forms.profileImages.$valid){
+
+        $scope.httpRequestPromise = imagesService.uploadFiles($scope.images, 'profile-' +user.uid)
+          .then(function (files) {
+            profile.images = typeof profile.images !== 'undefined' ? profile.images : {};
+            angular.forEach(files,function(fileData, fileID){
+              profile.images[fileID] = fileData;
+            });
+            return profile.$save();
+          })
+          .then(function () {
+            notificationService.success('The file(s) has been uploaded.');
+          },function(error){
+            notificationService.error(error);
+          });
+
+      }
+    };
 
     $scope.cancel = function () {
       $modalInstance.dismiss();
     };
 
   }])
-  .controller('accountProfileImagesModalController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
+  .controller('accountProfileBannersModalController',['$scope','$modalInstance', 'profile', 'user', function($scope, $modalInstance, profile, user){
+    //scope:{
+    //  formName:'=',
+    //    httpRequestPromise:'=',
+    //    images:'=',
+    //    imagesTag:'=',
+    //    imagesPath:'=', +++++   users/userID/images
+    //    featuredImageId:'=',
+    //    featuredImagePath:'=', ++++ users/userID
+    //},
 
+    //<upload-images form-name="forms.profileImages" http-request-promise="httpRequestPromise" images="images" images-tag="'profile-' +user.uid" images-path="'users/' + user.uid + '/images'" featured-image-id="profile.featuredImageId" featured-image-path="'users/' + user.uid"></upload-images>
+    //<upload-images form-name="forms.profileImages" http-request-promise="httpRequestPromise" images="images" images-tag="'profile-' +user.uid" featured-image-id="profile.featuredImageId"></upload-images>
+
+
+    //scope:{
+    //  formName:'=',
+    //    httpRequestPromise:'=',
+    //    images:'=',
+    //    imagesTag:'=',
+    //    imagesPath:'=', +++++   publications/publicationId/images
+    //    featuredImageId:'=',
+    //    featuredImagePath:'=', ++++  publications/publicationId
+    //},
+
+    //<upload-images form-name="publicationForm" http-request-promise="httpRequestPromise" images="publication.images" images-tag="publication.$id" images-path="'publications/' + publication.$id + '/images'" featured-image-id="publication.model.featuredImageId" featured-image-path="'publications/'+ publication.$id" ></upload-images>
+
+
+    //var deferred   = $q.defer();
+    //$scope.httpRequestPromise = deferred.promise;
+
+    //feature profile image
+    //profile Images
+    //
+    //feature banner
+    //banners
+
+
+
+    ////feature profile image
+    ////profile Images
+    ////
+    ////feature banner
+    ////banners
+    //
     //$scope.forms = {
-    //  profileDetails: {}
+    //  profileImages: {}
     //};
+    //
+    //$scope.profile        = profile;
+    //$scope.images         = typeof $scope.profile.images !== 'undefined'? $scope.profile.images : [];
+    //$scope.user           = user;
 
-    $scope.profile = profile;
 
     //var original = angular.copy($scope.model = {
     //  profileDetails:{

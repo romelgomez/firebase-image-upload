@@ -83,11 +83,30 @@ angular.module('images', ['uuid'])
           });
 
         return deferred.promise;
+      },
+      imagesInfo: function(images){
+        var info = {
+          'inQueue':0,
+          'isUploaded':0,
+          'invalid':0
+        };
+        angular.forEach(images,function(value){
+          if(!angular.isDefined(value.isUploaded) && !angular.isDefined(value.$error)){
+            info.inQueue += 1;
+          }else{
+            if(angular.isDefined(value.isUploaded)){
+              info.isUploaded += 1;
+            }else{
+              info.invalid += 1;
+            }
+          }
+        });
+        return info;
       }
     };
 
   }])
-  .directive('ngImages',['$q', '$filter', 'FireRef','notificationService', 'imagesService',function( $q, $filter, FireRef, notificationService , imagesService){
+  .directive('uploadImages',['$q', '$filter', 'FireRef','notificationService', 'imagesService',function( $q, $filter, FireRef, notificationService , imagesService){
 
     return {
       scope:{
@@ -95,39 +114,25 @@ angular.module('images', ['uuid'])
         httpRequestPromise:'=',
         images:'=',
         imagesTag:'=',
-        model:'='
+        imagesPath:'=',
+        featuredImageId:'=',
+        featuredImagePath:'='
       },
-      templateUrl: 'ngImages.html',
+      templateUrl: 'static/assets/views/directives/uploadImages.html',
       link: function (scope) {
 
         scope.imagesInfo = function(){
-          var info = {
-            'inQueue':0,
-            'isUploaded':0,
-            'invalid':0
-          };
-          angular.forEach(scope.images,function(value){
-            if(!angular.isDefined(value.isUploaded) && !angular.isDefined(value.$error)){
-              info.inQueue += 1;
-            }else{
-              if(angular.isDefined(value.isUploaded)){
-                info.isUploaded += 1;
-              }else{
-                info.invalid += 1;
-              }
-            }
-          });
-          return info;
+          return imagesService.imagesInfo(scope.images);
         };
 
         // Example: publicationId, publications/publicationId/images
-        scope.deleteAllImages = function (imagesTag, firePath) {
+        scope.deleteAllImages = function (imagesTag, imagesPath) {
           // deleting in cloudinary
           scope.httpRequestPromise = imagesService.deleteImages(imagesTag, null)
             .then(function(){
               console.log('never past for here');
               // deleting in firebase
-              var ref = FireRef.child(firePath);
+              var ref = FireRef.child(imagesPath);
               return ref.set({});
             })
             .then(function () {
@@ -142,7 +147,7 @@ angular.module('images', ['uuid'])
         scope.setAsPrimaryImage = function(featuredImagePath, imageId){
           scope.httpRequestPromise = imagesService.featuredImage( FireRef.child(featuredImagePath), imageId)
             .then(function(){
-              scope.model.featuredImageId = imageId;
+              scope.featuredImageId = imageId;
               notificationService.success('The file as been selected as featured image.');
             });
         };
@@ -157,10 +162,10 @@ angular.module('images', ['uuid'])
             var tasksToDo = [];
 
             // blankFeaturedImage
-            if(file.$id === scope.model.featuredImageId){
+            if(file.$id === scope.featuredImageId){
               var blankFeaturedImage = imagesService.featuredImage(FireRef.child(featuredImagePath)).
               then(function(){
-                scope.model.featuredImageId = '';
+                scope.featuredImageId = '';
               });
               tasksToDo.push(blankFeaturedImage);
             }
