@@ -67,14 +67,14 @@ angular.module('images', ['uuid'])
         });
         return $q.all(filesPromises);
       },
-      featuredImage: function( ref, imageId){
+      featuredImage: function( ref, featuredImageName, imageId){
         var deferred = $q.defer();
 
         var record = {};
         if(angular.isDefined(imageId) && imageId!==''){
-          record.featuredImageId = imageId;
+          record[featuredImageName] = imageId;
         }else{
-          record.featuredImageId = '';
+          record[featuredImageName] = '';
         }
 
         ref.update(record)
@@ -116,6 +116,7 @@ angular.module('images', ['uuid'])
         imagesTag:'=',
         imagesPath:'=',
         featuredImageId:'=',
+        featuredImageName:'=',
         featuredImagePath:'='
       },
       templateUrl: 'static/assets/views/directives/uploadImages.html',
@@ -145,7 +146,7 @@ angular.module('images', ['uuid'])
 
         // Example publications/publicationId, ...
         scope.setAsPrimaryImage = function(featuredImagePath, imageId){
-          scope.httpRequestPromise = imagesService.featuredImage( FireRef.child(featuredImagePath), imageId)
+          scope.httpRequestPromise = imagesService.featuredImage( FireRef.child(featuredImagePath), scope.featuredImageName, imageId)
             .then(function(){
               scope.featuredImageId = imageId;
               notificationService.success('The file as been selected as featured image.');

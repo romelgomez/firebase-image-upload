@@ -5,7 +5,14 @@
   <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
 
     <form id="profileImages" name="forms.profileImages" novalidate="" ng-submit="submit()">
-      <upload-images form-name="forms.profileImages" http-request-promise="httpRequestPromise" images="images" images-tag="'profile-' +user.uid" images-path="'users/' + user.uid + '/images'" featured-image-id="profile.featuredImageId" featured-image-path="'users/' + user.uid"></upload-images>
+      <upload-images
+        form-name="forms.profileImages"
+        http-request-promise="httpRequestPromise"
+        images="images" images-tag="'profile-' +user.uid"
+        images-path="'users/' + user.uid + '/images'"
+        featured-image-id="profile.featuredImageId"
+        featured-image-path="'users/' + user.uid"
+        featured-image-name="'featuredImageId'" ></upload-images>
     </form>
 
   </div>

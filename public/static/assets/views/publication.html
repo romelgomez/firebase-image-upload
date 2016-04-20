@@ -79,7 +79,15 @@
 
           <hr class="hr-xs">
 
-          <upload-images form-name="publicationForm" http-request-promise="httpRequestPromise" images="publication.images" images-tag="publication.$id" images-path="'publications/' + publication.$id + '/images'" featured-image-id="publication.model.featuredImageId" featured-image-path="'publications/'+ publication.$id" ></upload-images>
+          <upload-images
+            form-name="publicationForm"
+            http-request-promise="httpRequestPromise"
+            images="publication.images"
+            images-tag="publication.$id"
+            images-path="'publications/' + publication.$id + '/images'"
+            featured-image-id="publication.model.featuredImageId"
+            featured-image-path="'publications/'+ publication.$id"
+            featured-image-name="'featuredImageId'"></upload-images>
 
         </form>
 
