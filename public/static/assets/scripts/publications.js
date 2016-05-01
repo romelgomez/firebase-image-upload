@@ -1,6 +1,6 @@
 'use strict';
 
-var publicationsModule = angular.module('publications',['uuid','ngMessages','angular-redactor','ngFileUpload','cloudinary','algoliasearch'])
+var publicationsModule = angular.module('publications',['uuid','ngMessages','angular-redactor','ngFileUpload','cloudinary','algoliasearch', 'images'])
   .factory('publicationService',['$q', '$window', 'imagesService',function( $q, $window, imagesService){
 
     return {
@@ -40,16 +40,10 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       },
       removePublication : function( publicationsRef, publicationId){
         var deferred                            = $q.defer();
-        var tasksToDo                           = {};
+        var tasksToDo                           = [];
 
-        tasksToDo.deleteImages = imagesService.deleteImages(publicationId,null);
-        tasksToDo.detelePublication = publicationsRef.child(publicationId).remove(function (error) {
-          if (error) {
-            deferred.reject(error);
-          } else {
-            deferred.resolve();
-          }
-        });
+        tasksToDo.push(imagesService.deleteImages(publicationId,null));
+        tasksToDo.push(publicationsRef.child(publicationId).remove());
 
         $q.all(tasksToDo)
           .then(function(){
@@ -94,8 +88,8 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         $id: '',
         categoryPath: [],
         locationPath: [],
-        categories: $firebaseArray(FireRef.child('categories').orderByChild('left')),
-        locations: $firebaseArray(FireRef.child('locations').orderByChild('left')),
+        categories: {},
+        locations: {},
         categorySelected: false,
         inEditMode: false,
         isReady: false,
@@ -112,10 +106,30 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         }
       };
 
-      var categories = $scope.publication.categories.$loaded();
-      var locations = $scope.publication.locations.$loaded();
+      var categoriesDeferredObject  = $q.defer();
+      var locationsDeferredObject    = $q.defer();
 
-      $q.all([categories,locations])
+      var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
+      categories.$loaded()
+        .then(function () {
+          $scope.publication.categories = angular.copy(categories);
+          categoriesDeferredObject.resolve();
+          categories.$destroy();
+        },function(error){
+          deferred.reject(error);
+        });
+
+      var locations = $firebaseArray(FireRef.child('locations').orderByChild('left'));
+      locations.$loaded()
+        .then(function () {
+          $scope.publication.locations = angular.copy(locations);
+          locationsDeferredObject.resolve();
+          locations.$destroy();
+        },function(error){
+          deferred.reject(error);
+        });
+
+      $q.all([ categoriesDeferredObject.promise, locationsDeferredObject.promise])
         .then(function () {
           if(angular.isDefined($routeParams.publicationId)){
             return setPublication($routeParams.publicationId);
@@ -135,18 +149,26 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           publicationService.savePublication( $scope.publication.model, publicationsRef, $scope.publication.$id)
             .then(function(the){
               $scope.publication.$id = $scope.publication.$id !== '' ? $scope.publication.$id : the.publicationId;
-              return imagesService.saveFiles(publicationsRef, $scope.publication.$id, $scope.publication.images)
+              // Save files in Cloudinary
+              return imagesService.uploadFiles($scope.publication.images, $scope.publication.$id)
             })
-            .then(function () {
+            .then(function (files) {
+              // Save files data in Firebase
+              var publicationImagesRef = publicationsRef.child($scope.publication.$id).child('images');
+              var saveFilesData = [];
 
+              angular.forEach(files,function(fileData, fileID){
+                saveFilesData.push(publicationImagesRef.child(fileID).set(fileData));
+              });
+
+              return $q.all(saveFilesData);
+            })
+            .then(function(){
               notificationService.success('Data has been save');
               deferred.resolve();
-
             },function(error){
-
               notificationService.error(error);
               deferred.reject(error);
-
             });
 
           $scope.httpRequestPromise = deferred.promise;
@@ -220,6 +242,11 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
             $scope.publication.images = [];
             angular.forEach($scope.publication.model.images, function(value, key){
               value.$id = key;
+              value.$ngfWidth   = value.width;
+              value.$ngfHeight  = value.height;
+              value.size        = typeof value.size !== 'undefined' ? value.size : value.bytes;
+              value.isUploaded  = true;
+              value.name        = typeof value.name !== 'undefined' ? value.name : value.original_filename + '.' + value.format;
               $scope.publication.images.push(value);
             })
           })

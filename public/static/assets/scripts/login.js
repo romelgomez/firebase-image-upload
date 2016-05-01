@@ -130,7 +130,7 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
               break;
             case 'twitter':
               profile.names           = user['twitter'].displayName;
-              profile.twitterUserName = user['twitter'].username;
+              profile.twitterAccount  = user['twitter'].username;
               profile.provider        = user.provider;
               break;
             case 'password':

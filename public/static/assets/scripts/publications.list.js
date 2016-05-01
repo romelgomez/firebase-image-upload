@@ -13,19 +13,30 @@ publicationsModule
     '$filter',
     function( $scope, $q, $location, $window, algolia, FireRef , $firebaseArray, $firebaseObject, $routeParams, notificationService, $filter){
 
-      var configTasks = {};
       var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
 
       var fireData = {
-        categories: $firebaseArray(FireRef.child('categories').orderByChild('left')),
-        locations: $firebaseArray(FireRef.child('locations').orderByChild('left'))
+        categories: {},
+        locations: {}
       };
 
-      $scope.lording.taskToDoFirst.categories = fireData.categories.$loaded();
-      $scope.lording.taskToDoFirst.locations = fireData.locations.$loaded();
+      // Create a synchronized array, and then destroy the synchronization after having the data
+      var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
+      var categoriesLoadedPromise = categories.$loaded()
+        .then(function () {
+          fireData.categories = angular.copy(categories);
+          categories.$destroy();
+        });
+      $scope.lording.taskToDoFirst.push(categoriesLoadedPromise);
 
-      //configTasks
-      //configTasks
+      // Create a synchronized array, and then destroy the synchronization after having the data
+      var locations = $firebaseArray(FireRef.child('locations').orderByChild('left'));
+      var locationsLoadedPromise = locations.$loaded()
+        .then(function () {
+          fireData.locations = angular.copy(locations);
+          locations.$destroy();
+        });
+      $scope.lording.taskToDoFirst.push(locationsLoadedPromise);
 
       $scope.algolia = {
         isReady: false,
@@ -385,10 +396,46 @@ publicationsModule
       $scope.lordingPromise = $scope.lording.promise;
 
       if (typeof $routeParams.userID !== 'undefined'){
-        $scope.lording.taskToDoFirst.user = loadUser($routeParams.userID)
+        var loadUserPromise = loadUser($routeParams.userID)
           .then(function(the){
             $scope.user = the.user;
+            $scope.user.profileBanners = [];
+            $scope.user.profileImages = [];
+
+            /*
+              banners
+              profileBanners
+              featuredBannerId
+            */
+
+            angular.forEach(the.user.banners, function(imageData,imageID){
+              imageData.$id = imageID;
+              if(imageID !== the.user.featuredBannerId){
+                $scope.user.profileBanners.push(imageData);
+              }else{
+                $scope.user.profileBanners.unshift(imageData)
+              }
+            });
+
+            /*
+             images
+             profileImages
+             featuredImageId
+            */
+
+            angular.forEach(the.user.images, function(imageData,imageID){
+              imageData.$id = imageID;
+              if(imageID !== the.user.featuredImageId){
+                $scope.user.profileImages.push(imageData);
+              }else{
+                $scope.user.profileImages.unshift(imageData)
+              }
+            });
+
+            $scope.user.profileImage = ($scope.user.profileImages.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_200,w_200/' + $scope.user.profileImages[0].$id + '.jpg' : 'static/assets/images/uk.jpg';
+
           });
+        $scope.lording.taskToDoFirst.push(loadUserPromise);
       }
 
       $q.all($scope.lording.taskToDoFirst)

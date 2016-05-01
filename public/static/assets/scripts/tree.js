@@ -388,7 +388,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
               '</h3>' +
             '</div>' +
             '<div class="panel-body">' +
-              '<div ng-show="rawNodes.length === 0">Start add some data.</div>' +
+              '<div ng-show="rawUnsortedNodes.$value === null">Start add some data.</div>' +
               '<div id="tree"></div>' +
             '<div/>' +
           '<div/>' +
@@ -396,11 +396,11 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         '<section>' +
           '<div class="panel panel-default">' +
             '<div class="panel-heading">' +
-              '<h3 class="panel-title" style="line-height: 30px;">The <b>{{reference | capitalize}}</b> tree <b>Raw</b> data: </h3>' +
+              '<h3 class="panel-title" style="line-height: 30px;">The <b>{{reference | capitalize}}</b> tree <b>Raw Unsorted Nodes</b> data: </h3>' +
             '</div>' +
             '<div class="panel-body">' +
-              '<div><div class="alert alert-danger" role="alert"> For recovering purposes, after any changes, update the node service at code level, to avoid lost of this critical data.  </div></div>' +
-              '<pre>{{rawNodes | json }}</pre>' +
+              '<div><div class="alert alert-danger" role="alert"> For recovering purposes, after any changes, update the node service at code level, to avoid lost of this critical data.</div></div>' +
+              '<pre>{{rawUnsortedNodes | json }}</pre>' +
             '<div/>' +
           '<div/>' +
         '</section>' +
@@ -601,7 +601,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
          */
         treeData.rawNodes = $firebaseArray(FireRef.child(scope.reference).orderByChild('left'));
         // For recovery purposes
-        scope.rawNodes = $firebaseObject(FireRef.child(scope.reference).orderByChild('left'));
+        scope.rawUnsortedNodes = $firebaseObject(FireRef.child(scope.reference));
 
         scope.httpRequestPromise = treeData.rawNodes.$loaded(null,function(error){
           notificationService.error(error);

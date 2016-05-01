@@ -2,13 +2,13 @@
 
 $.cloudinary.config().cloud_name = 'berlin';
 
-angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch'])
+angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch','images'])
   .controller('AccountController',['$scope', '$q', 'user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log', function ($scope, $q, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
 
     $scope.lording = {
       deferred: $q.defer(),
       isDone: false,
-      taskToDoFirst:{}
+      taskToDoFirst:[]
     };
 
     $scope.lording.promise = $scope.lording.deferred.promise;
@@ -23,12 +23,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
   }])
   .controller('AccountProfileController',['$scope', '$uibModal','notificationService',function($scope, $uibModal, notificationService){
 
-    //$scope.account.httpRequestPromise = $scope.account.profile.$loaded(null,function(error){
-    //  notificationService.error(error);
-    //});
-
-    $scope.lording.taskToDoFirst.profile = $scope.account.profile.$loaded();
-
+    $scope.lording.taskToDoFirst.push($scope.account.profile.$loaded());
 
     var modalErrors = function(error){
       switch(error) {
@@ -62,6 +57,50 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
         notificationService.success('The profile has been updated.');
       }, function (error) {
         modalErrors(error);
+      });
+    };
+
+    $scope.adminProfileBanners = function(size){
+      var modalInstance = $uibModal.open({
+        templateUrl: 'accountProfileBannersModal.html',
+        controller: 'accountProfileBannersModalController',
+        size: size,
+        resolve: {
+          profile: function () {
+            return $scope.account.profile;
+          },
+          user: function () {
+            return $scope.account.user;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+        //notificationService.success('The profile banners has been updated.');
+      }, function (error) {
+        //modalErrors(error);
+      });
+    };
+
+    $scope.adminProfileImages = function(size){
+      var modalInstance = $uibModal.open({
+        templateUrl: 'accountProfileImagesModal.html',
+        controller: 'accountProfileImagesModalController',
+        size: size,
+        resolve: {
+          profile: function () {
+            return $scope.account.profile;
+          },
+          user: function () {
+            return $scope.account.user;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+        //notificationService.success('The profile images has been updated.');
+      }, function (error) {
+        //modalErrors(error);
       });
     };
 
@@ -116,35 +155,133 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
     $scope.profile = profile;
 
-    var original = angular.copy($scope.model = {
-      profileDetails:{
-        pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
-        names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
-        lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
-        mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
-        landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : '',
-        email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : ''
-      }
-    });
+    $scope.model = {
+      pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
+      names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
+      lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
+      mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
+      landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : '',
+      email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : '',
+      twitterAccount:       angular.isDefined(profile.twitterAccount) && profile.twitterAccount !== '' ? profile.twitterAccount : '',
+      facebookAccount:      angular.isDefined(profile.facebookAccount) && profile.facebookAccount !== '' ? profile.facebookAccount : ''
+    };
 
     $scope.submit = function(){
       if($scope.forms.profileDetails.$valid){
 
-        profile.pseudonym         = $scope.model.profileDetails.pseudonym;
-        profile.names             = $scope.model.profileDetails.names;
-        profile.lastNames         = $scope.model.profileDetails.lastNames;
-        profile.mobilePhone       = $scope.model.profileDetails.mobilePhone;
-        profile.landLineTelephone = $scope.model.profileDetails.landLineTelephone;
-
-        if(profile.provider !== 'password'){
-          profile.email = angular.isDefined($scope.model.profileDetails.email) ? $scope.model.profileDetails.email : '';
-        }
+        angular.forEach($scope.model, function(value, key){
+          profile[key] = value;
+        });
 
         $scope.httpRequestPromise = profile.$save()
           .then(function() {
             $modalInstance.close();
           }, function(error) {
             $modalInstance.dismiss(error);
+          });
+
+      }
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss();
+    };
+
+  }])
+  .controller('accountProfileImagesModalController',['$scope','$modalInstance', '$q', 'imagesService','profile', 'user', 'notificationService', function($scope, $modalInstance, $q, imagesService, profile, user, notificationService){
+
+    $scope.forms = {
+      profileImages: {}
+    };
+
+    $scope.profile = profile;
+    $scope.profile.featuredImageId =  typeof $scope.profile.featuredImageId  !== 'undefined'? $scope.profile.featuredImageId  : '';
+    $scope.user = user;
+    $scope.images = [];
+
+    $scope.imagesInfo = function() {
+      return imagesService.imagesInfo($scope.images);
+    };
+
+    if(angular.isDefined($scope.profile.images) && Object.keys($scope.profile.images).length > 0){
+      angular.forEach($scope.profile.images, function(value, key){
+        value.$id = key;
+        value.$ngfWidth   = value.width;
+        value.$ngfHeight  = value.height;
+        value.size        = typeof value.size !== 'undefined' ? value.size : value.bytes;
+        value.isUploaded  = true;
+        value.name        = typeof value.name !== 'undefined' ? value.name : value.original_filename + '.' + value.format;
+        $scope.images.push(value);
+      });
+    }
+
+    $scope.submit = function(){
+      if($scope.forms.profileImages.$valid){
+
+        $scope.httpRequestPromise = imagesService.uploadFiles($scope.images, 'profile-' +user.uid)
+          .then(function (files) {
+            profile.images = typeof profile.images !== 'undefined' ? profile.images : {};
+            angular.forEach(files,function(fileData, fileID){
+              profile.images[fileID] = fileData;
+            });
+            return profile.$save();
+          })
+          .then(function () {
+            notificationService.success('The file(s) has been uploaded.');
+          },function(error){
+            notificationService.error(error);
+          });
+
+      }
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss();
+    };
+
+  }])
+  .controller('accountProfileBannersModalController',['$scope','$modalInstance', '$q', 'imagesService','profile', 'user', 'notificationService', function($scope, $modalInstance, $q, imagesService, profile, user, notificationService){
+
+    $scope.forms = {
+      profileBanners: {}
+    };
+
+    $scope.profile = profile;
+    $scope.profile.featuredBannerId =  typeof $scope.profile.featuredBannerId  !== 'undefined'? $scope.profile.featuredBannerId  : '';
+    $scope.user = user;
+    $scope.images = [];
+
+    $scope.imagesInfo = function() {
+      return imagesService.imagesInfo($scope.images);
+    };
+
+    if(angular.isDefined($scope.profile.banners) && Object.keys($scope.profile.banners).length > 0){
+      angular.forEach($scope.profile.banners, function(value, key){
+        value.$id = key;
+        value.$ngfWidth   = value.width;
+        value.$ngfHeight  = value.height;
+        value.size        = typeof value.size !== 'undefined' ? value.size : value.bytes;
+        value.isUploaded  = true;
+        value.name        = typeof value.name !== 'undefined' ? value.name : value.original_filename + '.' + value.format;
+        $scope.images.push(value);
+      });
+    }
+
+    $scope.submit = function(){
+      if($scope.forms.profileBanners.$valid){
+
+        $scope.httpRequestPromise = imagesService.uploadFiles($scope.images, 'profile-banners-' +user.uid)
+          .then(function (files) {
+            profile.banners = typeof profile.banners !== 'undefined' ? profile.banners : {};
+            angular.forEach(files,function(fileData, fileID){
+              profile.banners[fileID] = fileData;
+            });
+            return profile.$save();
+          })
+          .then(function () {
+            notificationService.success('The file(s) has been uploaded.');
+          },function(error){
+            notificationService.error(error);
           });
 
       }

@@ -11,13 +11,25 @@
   </div>
 
   <div ng-show="lording.isDone">
-    <div class="page-header" style="margin-top: 0; background: url('https://pbs.twimg.com/profile_banners/192774776/1445226267/1500x500') no-repeat center center; padding: 300px 20px 10px 20px; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
+    <div class="page-header"
+         ng-style="{
+          'margin-top':0,
+          'padding':'300px 20px 10px 20px',
+          'background' : (user.profileBanners.length > 0) ? 'url(\'' + 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_500,w_1500/' + user.profileBanners[0].$id + '.jpg\') no-repeat center center' : 'url(\'' + 'https://pbs.twimg.com/profile_banners/192774776/1445226267/1500x500' + '\') no-repeat center center',
+          '-webkit-background-size':'cover',
+          '-moz-background-size':'cover',
+          '-o-background-size':'cover',
+          'background-size':'cover'
+        }"
+    >
+
       <div class="container">
         <h1>
-          <img width="100px" height="100px" src="static/assets/images/uk.jpg" alt="..." class="img-circle">
+          <img width="100px" height="100px" ng-src="{{user.profileImage}}" alt="..." class="img-circle">
           <span style="text-shadow: 0 0 3px rgba(0,0,0,.8); color: #fff;"> {{user.pseudonym === undefined || user.pseudonym === ''? user.names : user.pseudonym }}</span>
         </h1>
       </div>
+
     </div>
 
 
@@ -25,7 +37,6 @@
       <!--<pre>{{user | json}}</pre>-->
       <!--&lt;!&ndash;<pre>{{publication | json}}</pre>&ndash;&gt;-->
     <!--</div>-->
-
 
 
     <div class="container" >

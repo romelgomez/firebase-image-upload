@@ -7,7 +7,7 @@ publicationsModule
       $scope.lording = {
         deferred: $q.defer(),
         isDone: false,
-        taskToDoFirst:{}
+        taskToDoFirst:[]
       };
 
       $scope.lording.promise = $scope.lording.deferred.promise;

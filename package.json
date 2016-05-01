@@ -1,10 +1,10 @@
 {
   "name": "londonMarketPlace",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "- Market OF London : Any type publications.",
   "main": "server/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server/app.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "body-parser": "^1.14.1",
     "cloudinary": "^1.2.6",
     "colors": "^1.1.2",
-    "express": "^5.0.0-alpha.2",
+    "express": "4.13.4",
     "firebase": "^2.4.2",
     "formidable": "^1.0.17",
     "handlebars": "^4.0.5",

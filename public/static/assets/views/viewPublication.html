@@ -56,7 +56,7 @@
             <span ng-repeat="location in publication.res.locations"> {{location | capitalizeFirstChar}} {{!$last ? '/': ''}} </span>
           </h5>
           <h5><i class="fa fa-calendar"></i> Published: {{publication.res.releaseDate | date:'dd'}} / {{publication.res.releaseDate | date:'MM'}} / {{publication.res.releaseDate | date:'yy'}}  </h5>
-          <div>
+          <div class="non-printable" >
             <a href="/all-publications-of/{{publication.res.userID}}/{{publication.user.pseudonym === undefined || publication.user.pseudonym === '' ? publication.user.names : publication.user.pseudonym | slug}}.html"><span class="label label-primary">More from: {{publication.user.pseudonym === undefined || publication.user.pseudonym === '' ? publication.user.names : publication.user.pseudonym}}</span></a>
           </div>
           <!--<pre>{{user | json}}</pre>-->
@@ -85,14 +85,14 @@
           </div>
           <barcode-img barcode-string="publication.barcode.string" barcode-options="publication.barcode.options" ></barcode-img>
         </div>
-        <div>
-        <hr class="hr-xs">
+        <div class="non-printable">
+          <hr class="hr-xs">
 
-        <div style="padding-bottom: 15px;">
-        <b>Share on social networks:</b>
-        </div>
+          <div style="padding-bottom: 15px;">
+            <b>Share on social networks:</b>
+          </div>
 
-        <facebook data-url="seo.url"></facebook>
+          <facebook data-url="seo.url"></facebook>
 
         </div>
 
@@ -102,16 +102,7 @@
 </div>
 
 <update-title title="{{publication.res.title | capitalize | trim}}{{publication.res.department === 'Real Estate'? ' for ' + (publication.res.reHomeFor | uppercase) : ''}} - MarketOfLondon.UK"></update-title>
-<!--<update-meta property="og:title" content="{{publication.res.title | capitalize | trim}}{{publication.res.department === 'Real Estate'? ' for ' + (publication.res.reHomeFor | uppercase) : ''}} - See more in MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications"></update-meta>-->
-<!--<update-meta property="og:url" content="https://londres.herokuapp.com/#/view-publication/{{publication.res.$id}}/{{publication.res.title | slug}}.html" ></update-meta>-->
-<!--<update-meta property="og:description" content="{{publication.res.description}}"></update-meta>-->
-<!--<update-meta property="og:image" content="{{publication.images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ publication.images[0].$id +'.jpg') : 'https://londres.herokuapp.com/static/assets/images/uk.svg' }}" ></update-meta>-->
-<!--<update-meta name="twitter:title" content="{{publication.res.title | capitalize | trim}}{{publication.res.department === 'Real Estate'? ' for ' + (publication.res.reHomeFor | uppercase) : ''}} - See more in MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications" ></update-meta>-->
-<!--<update-meta name="twitter:description" content="{{publication.res.description}}"></update-meta>-->
-<!--<update-meta name="twitter:image:src" content="{{publication.images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ publication.images[0].$id +'.jpg') : 'https://londres.herokuapp.com/static/assets/images/uk.svg' }}" ></update-meta>-->
-<!--<update-meta name="twitter:url" content="https://londres.herokuapp.com/#/view-publication/{{publication.res.$id}}/{{publication.res.title | slug}}.html" ></update-meta>-->
-
 
 <!--<div class="container">-->
-  <!--<pre>{{publication | json}}</pre>-->
+<!--<pre>{{publication | json}}</pre>-->
 <!--</div>-->
