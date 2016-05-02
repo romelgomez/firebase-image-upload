@@ -4,13 +4,14 @@ publicationsModule
     '$q',
     function($scope, $q){
 
+      $scope.user = {};
+
       $scope.lording = {
         deferred: $q.defer(),
         isDone: false,
-        taskToDoFirst:[]
+        promises: []
       };
 
       $scope.lording.promise = $scope.lording.deferred.promise;
-
 
     }]);

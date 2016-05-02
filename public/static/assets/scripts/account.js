@@ -8,7 +8,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     $scope.lording = {
       deferred: $q.defer(),
       isDone: false,
-      taskToDoFirst:[]
+      promises: []
     };
 
     $scope.lording.promise = $scope.lording.deferred.promise;
@@ -23,7 +23,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
   }])
   .controller('AccountProfileController',['$scope', '$uibModal','notificationService',function($scope, $uibModal, notificationService){
 
-    $scope.lording.taskToDoFirst.push($scope.account.profile.$loaded());
+    $scope.lording.promises.push($scope.account.profile.$loaded());
 
     var modalErrors = function(error){
       switch(error) {
