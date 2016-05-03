@@ -23,17 +23,36 @@
 
     <div class="container">
       <h1>
-        <img width="100px" height="100px" ng-src="{{user.profileImage}}" alt="..." class="img-circle">
+        <img  ng-click="profileImages('lg')" ng-src="{{user.profileImage}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (user.profileImages.length > 0) ? 'pointer' : 'default' }" >
         <span style="text-shadow: 0 0 3px rgba(0,0,0,.8); color: #fff;"> {{user.pseudonym === undefined || user.pseudonym === ''? user.names : user.pseudonym }}</span>
       </h1>
     </div>
 
   </div>
 
-  <!--<div class="container">-->
-  <!--<pre>{{user | json}}</pre>-->
-  <!--&lt;!&ndash;<pre>{{publication | json}}</pre>&ndash;&gt;-->
-  <!--</div>-->
+  <div ng-show="(user.facebookAccount !== '') || (user.landLineTelephone !== '') || (user.mobilePhone  !== '') ||  (user.twitterAccount !== '')" class="container">
+    <div class="panel panel-default" >
+      <div class="panel-body">
+
+        <div ng-show="(user.landLineTelephone !== '')">
+          <i class="fa fa-phone"></i> {{user.landLineTelephone}}
+        </div>
+        <div ng-show="(user.mobilePhone  !== '')">
+          <hr class="hr-xs">
+          <i class="fa fa-mobile-phone"></i> {{user.mobilePhone}}
+        </div>
+        <div ng-show="(user.facebookAccount !== '')">
+          <hr class="hr-xs">
+          <i class="fa fa-facebook-official"></i> <a ng-href="{{user.facebookAccount}}">{{user.facebookAccount}}</a>
+        </div>
+        <div ng-show="(user.twitterAccount !== '')">
+          <hr class="hr-xs">
+          <i class="fa fa-twitter"></i> <a ng-href="https://twitter.com/{{user.twitterAccount}}" target="_blank">@{{user.twitterAccount}}</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <div class="container" >
     <div class="panel panel-default" >
@@ -47,3 +66,22 @@
 
 
 </div>
+
+
+<script type="text/ng-template" id="profileImagesModal.html">
+  <div class="modal-body">
+
+    <uib-carousel interval="5000" no-wrap="false">
+      <uib-slide ng-repeat="image in profileImages">
+        <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_500,w_500/{{image.public_id}}.jpg" style="margin:auto;">
+        <div class="carousel-caption">
+          <h4>{{image.name | removeFileExtension | noSpecialChars | capitalizeFirstChar}}</h4>
+        </div>
+      </uib-slide>
+    </uib-carousel>
+
+
+    <!--<pre>{{profileImages | json}}</pre>-->
+
+  </div>
+</script>

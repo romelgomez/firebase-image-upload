@@ -467,7 +467,7 @@ publicationsModule
                   }
                 });
 
-                $scope.user.profileImage = ($scope.user.profileImages.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_200,w_200/' + $scope.user.profileImages[0].$id + '.jpg' : 'static/assets/images/uk.jpg';
+                $scope.user.profileImage = ($scope.user.profileImages.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,w_150/' + $scope.user.profileImages[0].$id + '.jpg' : 'static/assets/images/profileImage.png';
 
               });
             $scope.lording.promises.push(loadUserPromise);

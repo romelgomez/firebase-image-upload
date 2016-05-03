@@ -71,8 +71,13 @@
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.twitterAccount.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.twitterAccount.$invalid) }">
         <label class="control-label"><i class="fa fa-twitter"></i> Twitter account</label>
-        <input type="text" name="twitterAccount" ng-model="model.twitterAccount" ng-trim class="form-control" placeholder="">
+        <input type="text" name="twitterAccount" ng-model="model.twitterAccount" ng-trim no-special-chars class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.twitterAccount.$valid),'glyphicon-remove': ( forms.profileDetails.twitterAccount.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.twitterAccount.$error" class="help-block">
+          <div data-ng-message="noSpecialChars">
+            - Not allowed to use special characters.
+          </div>
+        </div>
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.facebookAccount.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.facebookAccount.$invalid) }">
