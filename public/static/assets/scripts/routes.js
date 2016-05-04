@@ -101,6 +101,10 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'static/assets/views/account.html',
         controller: 'AccountController'
       })
+      .when('/:accountName', {
+        templateUrl: 'static/assets/views/main.html',
+        controller: 'MainController'
+      })
       .otherwise({redirectTo: '/'});
   }])
 

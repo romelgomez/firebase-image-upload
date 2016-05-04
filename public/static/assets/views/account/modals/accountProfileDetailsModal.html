@@ -11,11 +11,36 @@
       facebook
       -->
 
+      <!--<pre>{{forms.profileDetails | json}}</pre>-->
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.accountName.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.accountName.$invalid) }">
+        <label class="control-label">Account Name</label>
+        <input type="text" name="accountName" ng-model="model.accountName" required ng-trim no-special-chars camel-case is-account-name-available profile="profile" class="form-control" placeholder="E.g. londonServicesLTD">
+        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.accountName.$valid),'glyphicon-remove': ( forms.profileDetails.accountName.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.accountName.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>account name</b> is required.
+          </div>
+          <div data-ng-message="noSpecialChars">
+            - Not allowed to use special characters.
+          </div>
+          <div data-ng-message="isAccountNameAvailable">
+            - The account name is not available.
+          </div>
+        </div>
+      </div>
+
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.pseudonym.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.pseudonym.$invalid) }">
         <label class="control-label"> Pseudonym or Company name</label>
-        <input type="text" name="pseudonym" ng-model="model.pseudonym" ng-trim class="form-control" placeholder="">
+        <input type="text" name="pseudonym" ng-model="model.pseudonym" ng-trim class="form-control" placeholder="E.g. London Services LTD.">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.pseudonym.$valid),'glyphicon-remove': ( forms.profileDetails.pseudonym.$invalid) }" aria-hidden="true"></span>
         <p class="help-block">Pseudonym or Company name input has precedence over name and last name inputs, that means, If this input is defined the name and the last name will not be shown to the clients in some cases.</p>
+      </div>
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.bio.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.bio.$invalid) }">
+        <label class="control-label">Bio</label>
+        <input type="text" name="bio" ng-model="model.bio" ng-trim class="form-control" placeholder="E.g. The best services across uk, visit us at www.example.com">
+        <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.bio.$valid),'glyphicon-remove': ( forms.profileDetails.bio.$invalid) }" aria-hidden="true"></span>
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.names.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.names.$invalid) }">

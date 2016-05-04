@@ -147,7 +147,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
   .controller('AccountBillingController',['$scope', function($scope){
 
   }])
-  .controller('AccountProfileDetailsModalController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
+  .controller('AccountProfileDetailsModalController',['$scope','$modalInstance', '$q', 'profile' , 'FireRef', function($scope, $modalInstance, $q, profile, FireRef){
 
     $scope.forms = {
       profileDetails: {}
@@ -156,7 +156,9 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     $scope.profile = profile;
 
     $scope.model = {
+      accountName:          angular.isDefined(profile.accountName) && profile.accountName !== '' ? profile.accountName : '',
       pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
+      bio:                  angular.isDefined(profile.bio) && profile.bio !== '' ? profile.bio : '',
       names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
       lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
       mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
@@ -173,7 +175,10 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
           profile[key] = value;
         });
 
-        $scope.httpRequestPromise = profile.$save()
+        $scope.httpRequestPromise = $q.all([
+            profile.$save(),
+            FireRef.child('accountNames').child($scope.model.accountName).set(profile.$id)
+        ])
           .then(function() {
             $modalInstance.close();
           }, function(error) {
@@ -367,5 +372,42 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     $scope.cancel = function () {
       $modalInstance.dismiss();
     };
+
+  }])
+  .directive('isAccountNameAvailable',[ 'FireRef', '$q', function( FireRef, $q){
+
+    return {
+      require:'ngModel',
+      scope:{
+        profile:'=profile'
+      },
+      link:function($scope, element, attrs, ngModel){
+        ngModel.$asyncValidators.isAccountNameAvailable = function(modelValue , viewValue) {
+          var deferred  = $q.defer();
+
+          var userInput = modelValue || viewValue;
+
+          $q.all([
+              FireRef.child('accountNames').child(userInput).once('value'),
+              FireRef.child('users').child($scope.profile.$id).child('accountName').once('value')
+            ])
+            .then(function(snapshots){
+
+              if(!snapshots[0].exists()){
+                deferred.resolve(true);
+              }else if(snapshots[0].val() === snapshots[1].val()){
+                deferred.resolve(true);
+              }else{
+                deferred.reject(false);
+              }
+
+            },function(){
+              deferred.reject(false);
+            });
+
+          return deferred.promise;
+        }
+      }
+    }
 
   }]);
