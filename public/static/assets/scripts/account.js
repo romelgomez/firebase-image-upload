@@ -177,7 +177,8 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
         $scope.httpRequestPromise = $q.all([
             profile.$save(),
-            FireRef.child('accountNames').child($scope.model.accountName).set(profile.$id)
+            FireRef.child('accountNames').child($scope.model.accountName).set(profile.$id),
+            FireRef.child('accountNames').child($scope.model.accountName.toLowerCase()).set(profile.$id)
         ])
           .then(function() {
             $modalInstance.close();

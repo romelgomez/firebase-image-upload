@@ -371,7 +371,8 @@ publicationsModule
                 if(facetName === categoryObj.name){
                   // Children facets
                   if(angular.isDefined($scope.algolia.faceting.currentFacets[facetType]) && $scope.algolia.faceting.currentFacets[facetType].length > 0){
-                    var lastObj = $scope._($scope.algolia.faceting.currentFacets[facetType])
+                    // underscore $scope._ IS undefined if I use inside a directive
+                    var lastObj = $window._($scope.algolia.faceting.currentFacets[facetType])
                       .last();
                     if(categoryObj.parentId === lastObj.$id){
                       categoryObj.count = count;
