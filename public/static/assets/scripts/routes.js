@@ -102,8 +102,8 @@ angular.module('routes',['ngRoute'])
         controller: 'AccountController'
       })
       .when('/:accountName', {
-        templateUrl: 'static/assets/views/main.html',
-        controller: 'MainController'
+        templateUrl: 'static/assets/views/accountPublications.html',
+        controller: 'AccountPublicationsController'
       })
       .otherwise({redirectTo: '/'});
   }])

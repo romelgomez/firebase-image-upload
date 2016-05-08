@@ -14,7 +14,6 @@ publicationsModule
         restrict:'E',
         templateUrl: 'static/assets/views/directives/publicationsList.html',
         scope:{
-          user:'=',
           profile:'=',
           editMode:'=',
           lording:'=',
@@ -22,8 +21,7 @@ publicationsModule
         },
         link : function($scope) {
 
-          $scope.user     = typeof $scope.user !== 'undefined' ? $scope.user : {};
-          $scope.profile  = typeof $scope.profile !== 'undefined' ? $scope.profile : false;
+          $scope.profile  = typeof $scope.profile !== 'undefined' ? $scope.profile : {};
           $scope.editMode = typeof $scope.editMode !== 'undefined' ? $scope.editMode : false;
 
           $scope.sizeOf = function(obj) {
@@ -398,24 +396,23 @@ publicationsModule
             $scope.algolia.pagination.currentPage = 1;
           }
 
-          function loadUser(userID) {
-            var deferred   = $q.defer();
-
-            var usersRef  = FireRef.child('users');
-            var userRef   = usersRef.child(userID);
-            var user      = $firebaseObject(userRef);
-
-            user.$loaded(function(){
-              if (typeof user.provider === 'undefined'){
-                deferred.reject();
-              }  else {
-                deferred.resolve({user:user});
-              }
-            }, function (error) {
-              deferred.reject(error);
-            });
-            return deferred.promise;
-          }
+          //function loadUser(userID) {
+          //  var deferred   = $q.defer();
+          //
+          //  var profile = $firebaseObject(FireRef.child('users').child(userID));
+          //
+          //  profile.$loaded(function(){
+          //    if (typeof profile.provider === 'undefined'){
+          //      deferred.reject();
+          //    }  else {
+          //      deferred.resolve({profile:profile});
+          //    }
+          //  }, function (error) {
+          //    deferred.reject(error);
+          //  });
+          //
+          //  return deferred.promise;
+          //}
 
           $scope.submit = function(){
             resetQuerySettings();
@@ -424,55 +421,6 @@ publicationsModule
                 notificationService.error(err);
               })
           };
-
-          //var deferred   = $q.defer();
-          //$scope.httpRequestPromise = deferred.promise;
-
-          //$scope.lordingPromise = $scope.lording.promise;
-
-          if (typeof $routeParams.userID !== 'undefined'){
-
-            var loadUserPromise = loadUser($routeParams.userID)
-              .then(function(the){
-                $scope.user = the.user;
-                $scope.user.profileBanners = [];
-                $scope.user.profileImages = [];
-
-                /*
-                 banners
-                 profileBanners
-                 featuredBannerId
-                 */
-
-                angular.forEach(the.user.banners, function(imageData,imageID){
-                  imageData.$id = imageID;
-                  if(imageID !== the.user.featuredBannerId){
-                    $scope.user.profileBanners.push(imageData);
-                  }else{
-                    $scope.user.profileBanners.unshift(imageData)
-                  }
-                });
-
-                /*
-                 images
-                 profileImages
-                 featuredImageId
-                 */
-
-                angular.forEach(the.user.images, function(imageData,imageID){
-                  imageData.$id = imageID;
-                  if(imageID !== the.user.featuredImageId){
-                    $scope.user.profileImages.push(imageData);
-                  }else{
-                    $scope.user.profileImages.unshift(imageData)
-                  }
-                });
-
-                $scope.user.profileImage = ($scope.user.profileImages.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,w_150/' + $scope.user.profileImages[0].$id + '.jpg' : 'static/assets/images/profileImage.png';
-
-              });
-            $scope.lording.promises.push(loadUserPromise);
-          }
 
           $q.all($scope.lording.promises)
             .then(function () {
@@ -492,9 +440,9 @@ publicationsModule
                   $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
                 }
 
-                if (typeof $routeParams.userID !== 'undefined'){
+                if (typeof $scope.profile.$id !== 'undefined'){
                   facetObj = {};
-                  facetObj.name = $routeParams.userID; // to match the requirements of updateFacetFilters function
+                  facetObj.name = $scope.profile.$id; // to match the requirements of updateFacetFilters function
                   $scope.algolia.faceting.currentFacets.userID = [];
                   $scope.algolia.faceting.currentFacets.userID.push(facetObj);
                   $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);

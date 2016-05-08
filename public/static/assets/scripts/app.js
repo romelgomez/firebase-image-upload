@@ -14,7 +14,8 @@ angular.module('app',[
     'ui.bootstrap',
     'main',
     'angular-underscore',
-    'updateMeta'
+    'updateMeta',
+    'accountPublications'
   ])
   .controller('AppController',['$scope','FireAuth',function($scope,FireAuth){
 

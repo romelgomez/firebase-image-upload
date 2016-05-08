@@ -127,17 +127,20 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
             case 'facebook':
               profile.names     = user['facebook'].displayName;
               profile.provider  = user.provider;
+              profile.startedAt = Firebase.ServerValue.TIMESTAMP;
               break;
             case 'twitter':
               profile.names           = user['twitter'].displayName;
               profile.twitterAccount  = user['twitter'].username;
               profile.provider        = user.provider;
+              profile.startedAt       = Firebase.ServerValue.TIMESTAMP;
               break;
             case 'password':
               profile.email     = $scope.model.register.email;
               profile.names     = $scope.model.register.names;
               profile.lastNames = $scope.model.register.lastNames;
               profile.provider  = user.provider;
+              profile.startedAt = Firebase.ServerValue.TIMESTAMP;
               break;
           }
 
