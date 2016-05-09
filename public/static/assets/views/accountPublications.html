@@ -25,9 +25,6 @@
       <h1>
         <img  ng-click="profileImages('lg')" ng-src="{{profile.image}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
         <span style="text-shadow: 0 0 3px rgba(0,0,0,.8); color: #fff;"> {{profile.pseudonym === undefined || profile.pseudonym === ''? profile.names : profile.pseudonym }}</span>
-        <br>
-        <span style="text-shadow: 0 0 3px rgba(0,0,0,.8); color: #fff;"> {{profile.accountName}}</span>
-
       </h1>
     </div>
 
@@ -37,23 +34,27 @@
     <div class="panel panel-default" >
       <div class="panel-body">
 
-        <div ng-show="(profile.bio !== '')">
-          <i class="fa fa-phone"></i> {{profile.bio}}
-          <hr class="hr-xs">
+        <div ng-show="(profile.accountName !== undefined && profile.accountName !== '')">
+          <span style="text-shadow: 0 0 3px rgba(0,0,0,.8)"> @{{profile.accountName}}</span>
+          <hr ng-show="(profile.bio !== undefined && profile.bio !== '') || (profile.landLineTelephone !== undefined && profile.landLineTelephone !== '') || (profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
         </div>
-        <div ng-show="(profile.landLineTelephone !== '')">
+        <div ng-show="(profile.bio !== undefined && profile.bio !== '')">
+          <i class="fa fa-leanpub" aria-hidden="true"></i> {{profile.bio}}
+          <hr ng-show="(profile.landLineTelephone !== undefined && profile.landLineTelephone !== '') || (profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
+        </div>
+        <div ng-show="(profile.landLineTelephone !== undefined && profile.landLineTelephone !== '')">
           <i class="fa fa-phone"></i> {{profile.landLineTelephone}}
-          <hr class="hr-xs">
+          <hr ng-show="(profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
         </div>
-        <div ng-show="(profile.mobilePhone  !== '')">
+        <div ng-show="(profile.mobilePhone !== undefined && profile.mobilePhone  !== '')">
           <i class="fa fa-mobile-phone"></i> {{profile.mobilePhone}}
-          <hr class="hr-xs">
+          <hr ng-show="(profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
         </div>
-        <div ng-show="(profile.facebookAccount !== '')">
+        <div ng-show="(profile.facebookAccount !== undefined && profile.facebookAccount !== '')">
           <i class="fa fa-facebook-official"></i> <a ng-href="{{profile.facebookAccount}}">{{profile.facebookAccount}}</a>
-          <hr class="hr-xs">
+          <hr ng-show="(profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
         </div>
-        <div ng-show="(profile.twitterAccount !== '')">
+        <div ng-show="(profile.twitterAccount !== undefined && profile.twitterAccount !== '')">
           <i class="fa fa-twitter"></i> <a ng-href="https://twitter.com/{{profile.twitterAccount}}" target="_blank">@{{profile.twitterAccount}}</a>
         </div>
 

@@ -11,15 +11,11 @@ publicationsModule
     'notificationService',
     function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseObject, notificationService){
 
-      var publicationsRef  = FireRef.child('publications');
-      var usersRef         = FireRef.child('users');
-
       $scope.publication = {
-        isReady: false,
-        res:{},
-        images:[],
-        user:{},
-        barcode : {
+        $isReady: false,
+        data: {},
+        $images:[],
+        $barcode : {
           string:'',
           options: {
             width: 1,
@@ -33,44 +29,45 @@ publicationsModule
             backgroundColor: '',
             lineColor: '#000'
           }
+        },
+        $seo: {
+          url: ''
         }
       };
-
 
       function loadPublication(publicationId) {
         var deferred   = $q.defer();
 
-        var publicationRef = publicationsRef.child(publicationId);
-        var publication    = $firebaseObject(publicationRef);
+        FireRef.child('publications').child(publicationId).once('value')
+          .then(function(snapshot){
+            var publication = snapshot.val();
+            publication.$id = snapshot.key();
 
-        publication.$loaded()
-          .then(function(){
             if (typeof publication.releaseDate === 'undefined'){
               deferred.reject();
             }  else {
-              deferred.resolve({publication: angular.copy(publication)});
+              deferred.resolve({publication: publication});
             }
-          }, function (error) {
+
+          },function (error) {
             deferred.reject(error);
-          })
-          .then(function(){
-            publication.$destroy();
           });
 
         return deferred.promise;
       }
 
-      function loadUser(userID) {
+      function loadProfile(userID) {
         var deferred   = $q.defer();
 
-        var userRef   = usersRef.child(userID);
-        var user      = $firebaseObject(userRef);
+        FireRef.child('users').child(userID).once('value')
+          .then(function(snapshot){
+            var profile = snapshot.val();
+            profile.$id = snapshot.key();
 
-        user.$loaded(function(){
-          deferred.resolve({user:user});
-        }, function (error) {
-          deferred.reject(error);
-        });
+            deferred.resolve({profile: profile});
+          },function (error) {
+            deferred.reject(error);
+          });
 
         return deferred.promise;
       }
@@ -83,31 +80,29 @@ publicationsModule
         loadPublication($routeParams.publicationId)
           .then(function(the){
 
-            $scope.publication.res            = the.publication;
-            $scope.publication.barcode.string = the.publication.barcode;
-
-            $scope.seo = {
-              url: 'https://londres.herokuapp.com/view-publication/' + the.publication.$id + '/' + $filter('slug')(the.publication.title) + '.html'
-            };
+            $scope.publication.data             = the.publication;
+            $scope.publication.$barcode.string  = the.publication.barcode;
+            $scope.publication.$seo.url         = 'https://londres.herokuapp.com/view-publication/' + the.publication.$id + '/' + $filter('slug')(the.publication.title) + '.html'
 
             angular.forEach(the.publication.images, function(imageData,imageID){
               imageData.$id = imageID;
               if(imageID !== the.publication.featuredImageId){
-                $scope.publication.images.push(imageData);
+                $scope.publication.$images.push(imageData);
               }else{
-                $scope.publication.images.unshift(imageData)
+                $scope.publication.$images.unshift(imageData)
               }
             });
 
-            loadUser(the.publication.userID)
+            loadProfile(the.publication.userID)
               .then(function(the){
-                $scope.publication.user = the.user;
-                $scope.publication.isReady = true;
+                $scope.profile = the.profile;
+                $scope.publication.$isReady = true;
                 deferred.resolve();
               },function () {
                 notificationService.error('This action cannot be completed.');
                 $location.path('/');
               });
+
           }, function () {
             notificationService.error('This action cannot be completed.');
             $location.path('/');
