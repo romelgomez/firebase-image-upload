@@ -20,24 +20,31 @@
   <div class="container">
     <div class="panel panel-default ribbonBox">
       <div ng-show="publication.data.department === 'Real Estate' && publication.data.reHomeStatus === 'New'" class="ribbon"><span>NEW HOME</span></div>
-      <div class="panel-heading">
-        <h3 class="panel-title" style="font-size: 25px;">
-          <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (publication.data.department === 'Marketplace'),'fa-suitcase': (publication.data.department === 'Jobs'),'fa-home': (publication.data.department === 'Real Estate'),'fa-car': (publication.data.department === 'Transport'),'fa-wrench': (publication.data.department === 'Services')}"></i>
-          - {{publication.data.title | capitalizeFirstChar}}
-          <span ng-show="publication.data.department === 'Real Estate'"> for {{publication.data.reHomeFor | uppercase}}</span>
-        </h3>
-      </div>
       <div class="panel-body">
 
         <div>
-          <div>
-            <b>Details:</b>
-          </div>
+          <h3 class="panel-title" style="font-size: 25px; font-family: 'Lato', sans-serif;">
+            <div>
+              <!--<i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (publication.data.department === 'Marketplace'),'fa-suitcase': (publication.data.department === 'Jobs'),'fa-home': (publication.data.department === 'Real Estate'),'fa-car': (publication.data.department === 'Transport'),'fa-wrench': (publication.data.department === 'Services')}"></i>-->
+              {{publication.data.title | capitalizeFirstChar}}
+              <span ng-show="publication.data.department === 'Real Estate'"> for {{publication.data.reHomeFor | uppercase}}</span>
+            </div>
+          </h3>
 
-          <h4 ng-if="publication.data.department !== 'Services' && publication.data.department !== 'Jobs'">
+          <div class="non-printable" style="font-family: 'Lato', sans-serif;">
+            Publication by <a href="/{{profile.accountName !== undefined ? profile.accountName : profile.$id }}"> {{profile.pseudonym === undefined || profile.pseudonym === '' ? profile.names : profile.pseudonym}} </a>
+          </div>
+        </div>
+
+        <hr class="hr-xs">
+
+        <div>
+          <h4 ng-if="publication.data.department !== 'Services' && publication.data.department !== 'Jobs'" style="font-family: 'Lato', sans-serif;">
             Price:
             {{publication.data.price | currency : '£' : 2 }}
           </h4>
+
+
           <h5 ng-if="publication.data.department === 'Marketplace'" ><i class="fa fa-cubes"></i> Quantity in stock: {{publication.data.quantity}}</h5>
           <h4 ng-if="publication.data.department === 'Jobs'">
             Salary:
@@ -53,17 +60,16 @@
           <h5 ng-if="publication.data.department === 'Jobs'"><i class="fa fa-users"></i> {{publication.data.jobRecruiterType}}</h5>
           <h5>
             <i class="fa fa-map-marker"></i>
-            <span ng-repeat="location in publication.data.locations"> {{location | capitalizeFirstChar}} {{!$last ? '/': ''}} </span>
+            <span ng-repeat="location in publication.data.locations"> {{location | capitalizeFirstChar}} {{!$last ? '•' : ''}} </span>
           </h5>
-          <h5><i class="fa fa-calendar"></i> Published: {{publication.data.releaseDate | date:'dd'}} / {{publication.data.releaseDate | date:'MM'}} / {{publication.data.releaseDate | date:'yy'}}  </h5>
-          <div class="non-printable" >
-            <a href="/{{profile.accountName !== undefined ? profile.accountName : profile.$id }}"><span class="label label-primary">More from: {{profile.pseudonym === undefined || profile.pseudonym === '' ? profile.names : profile.pseudonym}}</span></a>
-          </div>
+          <h5><i class="fa fa-calendar"></i> Published: {{publication.data.releaseDate | date:'dd'}}/{{publication.data.releaseDate | date:'MM'}}/{{publication.data.releaseDate | date:'yyyy'}}  </h5>
 
           <!--<pre>{{profile | json}}</pre>-->
           <!--<pre>{{publication | json}}</pre>-->
 
         </div>
+
+
         <div>
           <hr class="hr-xs">
           <div style="padding-bottom: 15px;">
@@ -80,14 +86,14 @@
 
           <span ng-bind-html="publication.data.htmlWarranty | unsafe"></span>
         </div>
-        <div>
-          <hr class="hr-xs">
+        <!--<div>-->
+          <!--<hr class="hr-xs">-->
 
-          <div style="padding-bottom: 15px;">
-            <b>Publication barcode:</b>
-          </div>
-          <barcode-img barcode-string="publication.$barcode.string" barcode-options="publication.$barcode.options" ></barcode-img>
-        </div>
+          <!--<div style="padding-bottom: 15px;">-->
+            <!--<b>Publication barcode:</b>-->
+          <!--</div>-->
+          <!--<barcode-img barcode-string="publication.$barcode.string" barcode-options="publication.$barcode.options" ></barcode-img>-->
+        <!--</div>-->
         <div class="non-printable">
           <hr class="hr-xs">
 
