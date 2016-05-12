@@ -19,13 +19,13 @@ publicationsModule
           string:'',
           options: {
             width: 1,
-            height: 50,
+            height: 10,
             quite: 10,
             format: 'CODE128',
             displayValue: true,
             font: 'monospace',
             textAlign: 'center',
-            fontSize: 12,
+            fontSize: 10,
             backgroundColor: '',
             lineColor: '#000'
           }
