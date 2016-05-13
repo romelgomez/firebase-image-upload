@@ -523,7 +523,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       template:''+
       '<div class="form-group" >'+
         '<div class="row">'+
-          '<div class="col-xs-4">'+
+          '<div class="col-xs-12 col-sm-12 col-md-4">'+
             '<label class="control-label"><span class="glyphicon glyphicon-tag"></span> Price <sup style="color: red;">*</sup></label>'+
             '<div class="input-group">'+
               '<div class="input-group-addon">£</div>'+
@@ -730,7 +730,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
 
       '<label><i class="fa fa-random"></i> Home status</label>'+
         '<div class="row" style="margin-bottom: 10px;">'+
-        '<div class="col-xs-5">'+
+        '<div class="col-xs-12 col-sm-12 col-md-5">'+
           '<select class="form-control" ng-model="model.reHomeStatus">'+
             '<option ng-repeat="option in options" value="{{option}}">{{option}}</option>'+
           '</select>'+
@@ -764,7 +764,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
 
       '<label><i class="fa fa-random"></i> Home for</label>'+
         '<div class="row" style="margin-bottom: 10px;">'+
-        '<div class="col-xs-5">'+
+        '<div class="col-xs-12 col-sm-12 col-md-5">'+
           '<select class="form-control" ng-model="model.reHomeFor">'+
             '<option ng-repeat="option in options" value="{{option}}">{{option}}</option>'+
           '</select>'+

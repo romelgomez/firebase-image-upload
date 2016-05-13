@@ -10,9 +10,9 @@
   </form>
 
   <!--<pre>{{algoliaForm | json}}</pre>-->
-  <div class="visible-xs-block visible-sm-block">
+  <div ng-show="algolia.res.nbHits > 0" class="visible-xs-block visible-sm-block">
     <hr class="hr-xs">
-    <button type="button" class="btn btn-default btn-block responsive-width">Filter by categories, locations, and custom properties</button>
+    <button type="button" ng-click="responsiveFilters('lg')" class="btn btn-default btn-block responsive-width">Filter by categories, locations, and custom properties</button>
   </div>
 
   <div>
@@ -369,3 +369,121 @@
 
   </div>
 </div>
+
+
+
+
+<script type="text/ng-template" id="responsiveFiltersModal.html">
+  <div class="modal-body">
+
+    <div class="panel panel-default" style="margin-bottom: 0;">
+
+      <div class="panel-heading" ng-show="algolia.faceting.currentFacets.jobType.length > 0 || algolia.faceting.currentFacets.jobRecruiterType.length > 0 || algolia.faceting.currentFacets.jobSalaryType.length > 0 || algolia.faceting.currentFacets.reHomeStatus.length > 0 || algolia.faceting.currentFacets.reHomeStatus.length > 0 || algolia.faceting.currentFacets.reHomeFor.length > 0">
+        <i class="fa fa-filter"></i> Current Filters
+      </div>
+      <div class="list-group" ng-show="algolia.faceting.currentFacets.jobType.length > 0 || algolia.faceting.currentFacets.jobRecruiterType.length > 0 || algolia.faceting.currentFacets.jobSalaryType.length > 0 || algolia.faceting.currentFacets.reHomeStatus.length > 0 || algolia.faceting.currentFacets.reHomeStatus.length > 0 || algolia.faceting.currentFacets.reHomeFor.length > 0">
+        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobType')"  >
+          <i style="color: #ff0000" class="fa fa-times"></i> Job type: {{algolia.faceting.currentFacets.jobType[0].name}}
+        </button>
+        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobRecruiterType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobRecruiterType')"  >
+          <i style="color: #ff0000" class="fa fa-times"></i> Recruiter Type: {{algolia.faceting.currentFacets.jobRecruiterType[0].name}}
+        </button>
+        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobSalaryType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobSalaryType')"  >
+          <i style="color: #ff0000" class="fa fa-times"></i> Salary Type: {{algolia.faceting.currentFacets.jobSalaryType[0].name}}
+        </button>
+        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.reHomeStatus.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeStatus')"  >
+          <i style="color: #ff0000" class="fa fa-times"></i> Home Status: {{algolia.faceting.currentFacets.reHomeStatus[0].name}}
+        </button>
+        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.reHomeFor.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeFor')"  >
+          <i style="color: #ff0000" class="fa fa-times"></i> Home for: {{algolia.faceting.currentFacets.reHomeFor[0].name}}
+        </button>
+      </div>
+
+      <div class="panel-heading"><i class="fa fa-bars"></i> Categories <button ng-show="algolia.faceting.currentFacets.categories.length > 0" ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('categories')" type="button" style="padding-bottom: 0; padding-top: 0; color: #ff0000;" class="btn btn-link">Reset</button></div>
+      <div class="list-group">
+        <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('categories',facet);" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" >
+          <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (facet.name === 'Marketplace'),'fa-suitcase': (facet.name === 'Jobs'),'fa-home': (facet.name === 'Real Estate'),'fa-car': (facet.name === 'Transport'),'fa-wrench': (facet.name === 'Services')}"></i>
+          {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span>
+        </button>
+      </div>
+
+      <div class="panel-heading"><i class="fa fa-map-marker"></i> Locations <button ng-show="algolia.faceting.currentFacets.locations.length > 0" ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('locations')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
+      <div class="list-group">
+        <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('locations',facet);" ng-repeat="facet in algolia.faceting.facetsAvailables.locations" >
+          <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (facet.name === 'Marketplace'),'fa-suitcase': (facet.name === 'Jobs'),'fa-home': (facet.name === 'Real Estate'),'fa-car': (facet.name === 'Transport'),'fa-wrench': (facet.name === 'Services')}"></i>
+          {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Jobs Facets -->
+    <div ng-if="algolia.res.facets.jobType && sizeOf(algolia.res.facets.jobType) > 1 && algolia.faceting.currentFacets.categories.length > 0 && (algolia.faceting.currentFacets.categories[0].name === 'Jobs')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
+      <div class="panel-heading"><i class="fa fa-random"></i> Job type <button ng-show="algolia.faceting.currentFacets.jobType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobType')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
+      <div class="list-group">
+        <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobType',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.jobType" >
+          {{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>
+        </button>
+      </div>
+    </div>
+
+    <div ng-if="algolia.res.facets.jobRecruiterType && sizeOf(algolia.res.facets.jobRecruiterType) > 1 && algolia.faceting.currentFacets.categories.length > 0 && (algolia.faceting.currentFacets.categories[0].name === 'Jobs')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
+      <div class="panel-heading"><i class="fa fa-random"></i> Recruiter Type <button ng-show="algolia.faceting.currentFacets.jobRecruiterType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobRecruiterType')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
+      <div class="list-group">
+        <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobRecruiterType',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.jobRecruiterType" >
+          {{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>
+        </button>
+      </div>
+    </div>
+
+    <div ng-if="algolia.res.facets.jobSalaryType && sizeOf(algolia.res.facets.jobSalaryType) > 1 && algolia.faceting.currentFacets.categories.length > 0  && (algolia.faceting.currentFacets.categories[0].name === 'Jobs')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
+      <div class="panel-heading"><i class="fa fa-random"></i> Salary Type <button ng-show="algolia.faceting.currentFacets.jobSalaryType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobSalaryType')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
+      <div class="list-group">
+        <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobSalaryType',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.jobSalaryType" >
+          {{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>
+        </button>
+      </div>
+    </div>
+
+    <!--<div ng-if="algolia.res.facets.jobHasBenefits && sizeOf(algolia.res.facets.jobHasBenefits) > 1 && algolia.faceting.currentFacets.categories.length > 0  && (algolia.faceting.currentFacets.categories[0].name === 'Jobs')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">-->
+    <!--<div class="panel-heading"><i class="fa fa-random"></i> The job has benefits <button ng-show="algolia.faceting.currentFacets.jobHasBenefits.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobHasBenefits')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>-->
+    <!--<div class="list-group">-->
+    <!--<button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobHasBenefits',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.jobHasBenefits" >-->
+    <!--{{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>-->
+    <!--</button>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--<div ng-if="algolia.res.facets.jobHasBonus && sizeOf(algolia.res.facets.jobHasBonus) > 1 && algolia.faceting.currentFacets.categories.length > 0  && (algolia.faceting.currentFacets.categories[0].name === 'Jobs')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">-->
+    <!--<div class="panel-heading"><i class="fa fa-random"></i> The job has bonus <button ng-show="algolia.faceting.currentFacets.jobHasBonus.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobHasBonus')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>-->
+    <!--<div class="list-group">-->
+    <!--<button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobHasBonus',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.jobHasBonus" >-->
+    <!--{{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>-->
+    <!--</button>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!-- Real State Facets -->
+    <div ng-if="algolia.res.facets.reHomeStatus && sizeOf(algolia.res.facets.reHomeStatus) > 1 && algolia.faceting.currentFacets.categories.length > 0 && (algolia.faceting.currentFacets.categories[0].name === 'Real Estate')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
+      <div class="panel-heading"><i class="fa fa-random"></i> Home Status <button ng-show="algolia.faceting.currentFacets.reHomeStatus.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeStatus')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
+      <div class="list-group">
+        <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('reHomeStatus',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.reHomeStatus" >
+          {{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>
+        </button>
+      </div>
+    </div>
+
+    <div ng-if="algolia.res.facets.reHomeFor && sizeOf(algolia.res.facets.reHomeFor) > 1 && algolia.faceting.currentFacets.categories.length > 0 && (algolia.faceting.currentFacets.categories[0].name === 'Real Estate')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
+      <div class="panel-heading"><i class="fa fa-random"></i> Home for <button ng-show="algolia.faceting.currentFacets.reHomeFor.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeFor')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
+      <div class="list-group">
+        <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('reHomeFor',facetName);" ng-repeat="(facetName , count) in algolia.res.facets.reHomeFor" >
+          {{facetName | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{count}}</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Close</button>
+  </div>
+</script>

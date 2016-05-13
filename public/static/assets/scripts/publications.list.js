@@ -9,7 +9,9 @@ publicationsModule
     '$firebaseObject',
     '$routeParams',
     'notificationService',
-    '$filter',function($q, $location, $window, algolia, FireRef , $firebaseArray, $firebaseObject, $routeParams, notificationService, $filter){
+    '$filter',
+    '$uibModal',
+    function($q, $location, $window, algolia, FireRef , $firebaseArray, $firebaseObject, $routeParams, notificationService, $filter, $uibModal){
       return {
         restrict:'E',
         templateUrl: 'static/assets/views/directives/publicationsList.html',
@@ -474,7 +476,49 @@ publicationsModule
             $location.path('/edit-publication/'+publicationId);
           };
 
+          $scope.responsiveFilters = function(size){
+            if($scope.algolia.res.nbHits > 0 ){
+              var modalInstance = $uibModal.open({
+                templateUrl: 'responsiveFiltersModal.html',
+                controller: 'ResponsiveFiltersController',
+                size: size,
+                resolve: {
+                  algolia: function () {
+                    return $scope.algolia;
+                  }
+                }
+              });
+
+              modalInstance.result.then(function () {
+                //notificationService.success('');
+              }, function (error) {
+                //modalErrors(error);
+              });
+
+            }
+          };
 
         }
       };
-    }]);
+    }])
+  .controller('ResponsiveFiltersController',[ '$scope', '$modalInstance', 'algolia' ,function($scope, $modalInstance, algolia){
+
+    $scope.algolia = algolia;
+
+    $scope.sizeOf = function(obj) {
+      if (typeof obj === 'undefined'){
+        obj = {};
+      }
+      return Object.keys(obj).length;
+    };
+
+    $scope.firstObj = function (obj) {
+      for (var key in obj) if (obj.hasOwnProperty(key)) return key;
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss();
+    };
+
+  }]);
+

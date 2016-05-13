@@ -129,8 +129,6 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
             //modalErrors(error);
           });
 
-        }else{
-          notificationService.error('You have already all the '+ item.$id + ' inventory compromised.');
         }
       };
 
