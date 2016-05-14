@@ -85,7 +85,7 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
             }
           });
 
-          $scope.profile.image = ($scope.profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,w_150/' + $scope.profile.$images[0].$id + '.jpg' : 'static/assets/images/profileImage.png';
+          //$scope.profile.image = ;
 
         },function(){
           // 404
