@@ -495,7 +495,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       template:''+
       '<div class="form-group" >'+
         '<div class="row">'+
-          '<div class="col-xs-4">'+
+          '<div class="col-xs-12 col-sm-12 col-md-5">'+
             '<label class="control-label"><i class="fa fa-cubes"></i> Quantity in stock <sup style="color: red;">*</sup></label>'+
               '<div class="input-group">'+
                 '<div class="input-group-addon">Units</div>'+
@@ -523,7 +523,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       template:''+
       '<div class="form-group" >'+
         '<div class="row">'+
-          '<div class="col-xs-12 col-sm-12 col-md-4">'+
+          '<div class="col-xs-12 col-sm-12 col-md-5">'+
             '<label class="control-label"><span class="glyphicon glyphicon-tag"></span> Price <sup style="color: red;">*</sup></label>'+
             '<div class="input-group">'+
               '<div class="input-group-addon">£</div>'+
@@ -552,7 +552,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
 
       '<label><i class="fa fa-random"></i> Job type</label>'+
       '<div class="row" style="margin-bottom: 10px;">'+
-        '<div class="col-xs-5">'+
+        '<div class="col-xs-12 col-sm-12 col-md-5">'+
           '<select class="form-control" ng-model="model.jobType">'+
             '<option ng-repeat="type in jobTypes" value="{{type}}">{{type}}</option>'+
           '</select>'+
@@ -585,15 +585,13 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       '<hr class="hr-xs">'+
 
       '<div class="row">'+
-        '<div class="col-xs-8">'+
+        '<div class="col-xs-12 col-sm-12 col-md-5">'+
 
           '<label><i class="fa fa-gbp"></i> Salary</label>'+
-          '<div class="row" style="margin-bottom: 10px;">'+
-            '<div class="col-xs-5">'+
-              '<select class="form-control" ng-model="model.jobSalaryType">'+
-                '<option ng-repeat="salaryType in jobSalaryTypes" value="{{salaryType}}"> {{salaryType}} </option>'+
-              '</select>'+
-            '</div>'+
+          '<div style="margin-bottom: 10px;">'+
+            '<select class="form-control" ng-model="model.jobSalaryType">'+
+              '<option ng-repeat="salaryType in jobSalaryTypes" value="{{salaryType}}"> {{salaryType}} </option>'+
+            '</select>'+
           '</div>'+
 
           '<label><i class="fa fa-gbp"></i> From:</label>'+
@@ -697,7 +695,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
 
       '<label><i class="fa fa-random"></i> Recruiter type</label>'+
         '<div class="row" style="margin-bottom: 10px;">'+
-        '<div class="col-xs-5">'+
+        '<div class="col-xs-12 col-sm-12 col-md-5">'+
           '<select class="form-control" ng-model="model.jobRecruiterType">'+
             '<option ng-repeat="type in recruiterTypes" value="{{type}}">{{type}}</option>'+
           '</select>'+

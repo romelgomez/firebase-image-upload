@@ -56,7 +56,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       modalInstance.result.then(function () {
         notificationService.success('The profile has been updated.');
       }, function (error) {
-        modalErrors(error);
+        //modalErrors(error);
       });
     };
 
@@ -119,7 +119,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       modalInstance.result.then(function () {
         notificationService.success('The password has been updated.');
       }, function (error) {
-        modalErrors(error);
+        //modalErrors(error);
       });
     };
 
@@ -138,7 +138,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       modalInstance.result.then(function () {
         notificationService.success('The email has been updated.');
       }, function (error) {
-        modalErrors(error);
+        //modalErrors(error);
       });
     };
 
