@@ -8,7 +8,7 @@
   </div>
 </div>
 
-<div ng-show="lording.isDone">
+<div ng-show="lording.isDone" style="margin-bottom: 10px;">
   <div
        ng-style="{
           'margin-top':0,
@@ -24,8 +24,8 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-xs-5 col-xs-5 col-md-2 col-lg-2">
-          <img ng-click="profileImages('lg')" ng-src="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,w_400/' + profile.$images[0].$id + '.jpg' : 'static/assets/images/profileImage.png'}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
+        <div class="col-xs-5 col-sm-5 col-md-2 col-lg-2">
+          <img ng-click="profileImages('lg', profile.$images.length-1)" ng-src="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,w_400/' + profile.$images[0].$id + '.jpg' : 'static/assets/images/profileImage.png'}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
         </div>
         <!--<div  class="col-lg-9">-->
         <!--</div>-->
@@ -37,18 +37,18 @@
 
   <!--<pre>{{profile | json}}</pre>-->
 
-  <div>
-    <div style="border-bottom: 1px solid #D4D4D4; background: white; padding: 10px; margin-bottom: 10px;">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3"></div>
-          <div class="col-lg-9">
-            <div>Publications</div>
-            <div>24</div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div style="margin-top: 20px;" >
+    <!--<div style="border-bottom: 1px solid #D4D4D4; background: white; padding: 10px; margin-bottom: 10px;">-->
+      <!--<div class="container">-->
+        <!--<div class="row">-->
+          <!--<div class="col-lg-3"></div>-->
+          <!--<div class="col-lg-9">-->
+            <!--<div>Publications</div>-->
+            <!--<div>24</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
     <div class="container">
       <div class="row">
         <div class="col-lg-3">
@@ -63,10 +63,20 @@
               </div>
               <div ng-show="(profile.bio !== undefined && profile.bio !== '')">
                 <i class="fa fa-leanpub" aria-hidden="true"></i> {{profile.bio}}
-                <hr ng-show="(profile.landLineTelephone !== undefined && profile.landLineTelephone !== '') || (profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
+                <hr class="hr-xs">
               </div>
               <div>
                 <i class="fa fa-calendar" aria-hidden="true"></i> Joined {{profile.startedAt | date : 'MMMM'}} {{profile.startedAt | date : 'yyyy'}}
+                <hr ng-show="(profile.landLineTelephone !== undefined && profile.landLineTelephone !== '') || (profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
+              </div>
+              <div ng-show="profile.$images.length > 0">
+                <div style="margin-bottom: 5px;"><i class="fa fa-camera" aria-hidden="true"></i> Photos</div>
+
+                <div class="row" style="padding-left: 10px; padding-right: 10px;">
+                  <div ng-repeat="image in profile.$images | reverse | limitTo: 6" class="col-xs-6 col-md-4" style="padding-right:5px; padding-left: 5px;" >
+                    <img ng-click="profileImages( 'lg', $index)"  class="img-responsive thumbnail" ng-style="{ cursor: 'pointer'}" ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,w_400/{{image.public_id}}.jpg" style="margin-bottom: 10px;">
+                  </div>
+                </div>
                 <hr ng-show="(profile.landLineTelephone !== undefined && profile.landLineTelephone !== '') || (profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
               </div>
               <div ng-show="(profile.landLineTelephone !== undefined && profile.landLineTelephone !== '')">
@@ -99,45 +109,23 @@
 
 
 
-
-  <!--<div ng-show="(profile.facebookAccount !== '') || (profile.landLineTelephone !== '') || (profile.mobilePhone  !== '') ||  (profile.twitterAccount !== '')" class="container">-->
-    <!--<div class="panel panel-default" >-->
-      <!--<div class="panel-body">-->
-
-
-
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-
-  <!--<div class="container" >-->
-    <!--<div class="panel panel-default" >-->
-      <!--<div class="panel-body">-->
-
-        <!--<list-publications ng-show="profile.startedAt !== undefined" profile="profile" lording="lording"></list-publications>-->
-
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-
-
 </div>
 
 
 <script type="text/ng-template" id="profileImagesModal.html">
   <div class="modal-body">
 
-    <uib-carousel interval="5000" no-wrap="false">
-      <uib-slide ng-repeat="image in profileImages">
-        <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_500,w_500/{{image.public_id}}.jpg" style="margin:auto;">
+    <uib-carousel active="active" interval="5000" no-wrap="false">
+      <uib-slide ng-repeat="image in profileImages | reverse  track by $index" index="$index">
+        <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_800,w_900/{{image.public_id}}.jpg" style="margin:auto;">
         <div class="carousel-caption">
           <h4>{{image.name | removeFileExtension | noSpecialChars | capitalizeFirstChar}}</h4>
         </div>
       </uib-slide>
     </uib-carousel>
 
-
-    <!--<pre>{{profileImages | json}}</pre>-->
-
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Close</button>
   </div>
 </script>

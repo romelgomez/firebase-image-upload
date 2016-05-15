@@ -110,7 +110,7 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
         }
       }
 
-      $scope.profileImages = function(size){
+      $scope.profileImages = function(size, active){
         if(angular.isDefined($scope.profile.$images) && $scope.profile.$images.length > 0){
           var modalInstance = $uibModal.open({
             templateUrl: 'profileImagesModal.html',
@@ -119,6 +119,9 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
             resolve: {
               profileImages: function () {
                 return $scope.profile.$images;
+              },
+              active: function () {
+                return active;
               }
             }
           });
@@ -133,8 +136,14 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
       };
 
     }])
-  .controller('ProfileImagesController',[ '$scope', '$modalInstance', 'profileImages' ,function($scope, $modalInstance, profileImages){
+  .controller('ProfileImagesController',[ '$scope', '$uibModalInstance', 'profileImages', 'active',function($scope, $uibModalInstance, profileImages, active){
 
     $scope.profileImages = profileImages;
+
+    $scope.active = typeof active !== 'undefined' ? active : 0;
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss();
+    };
 
   }]);
