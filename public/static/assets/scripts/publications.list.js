@@ -501,7 +501,7 @@ publicationsModule
         }
       };
     }])
-  .controller('ResponsiveFiltersController',[ '$scope', '$modalInstance', 'algolia' ,function($scope, $modalInstance, algolia){
+  .controller('ResponsiveFiltersController',[ '$scope', '$uibModalInstance', 'algolia' ,function($scope, $uibModalInstance, algolia){
 
     $scope.algolia = algolia;
 
@@ -517,7 +517,7 @@ publicationsModule
     };
 
     $scope.cancel = function () {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
 
   }]);
