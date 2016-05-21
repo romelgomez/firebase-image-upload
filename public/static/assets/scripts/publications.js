@@ -1,11 +1,46 @@
 'use strict';
 
 var publicationsModule = angular.module('publications',['uuid','ngMessages','angular-redactor','ngFileUpload','cloudinary','algoliasearch', 'images'])
-  .factory('publicationService',['$q', '$window', 'imagesService',function( $q, $window, imagesService){
+  .factory('publicationService',['$q', '$window', 'FireRef', 'imagesService', function( $q, $window, FireRef, imagesService){
+
+    var publicationsRef = FireRef.child('publications');
+
+
+    function updateCount( userID, newOne){
+      var deferred = $q.defer();
+
+      var publicationsCountRef = FireRef.child('users').child(userID).child('publicationsCount');
+
+      publicationsCountRef.once('value',function(snapshot){
+        var count;
+        if(snapshot.exists()){
+          count = snapshot.val();
+        }else{
+          count = 0;
+        }
+
+        if(typeof newOne !== 'undefined' && newOne === true){
+          count += 1;
+        } else {
+          count -= 1;
+        }
+
+        publicationsCountRef.set(count)
+          .then(function(){
+            deferred.resolve();
+          },function(error){
+            deferred.reject(error);
+          });
+
+      });
+
+      return deferred.promise;
+    }
+
 
     return {
-      savePublication: function(publicationModel, publicationsRef, publicationId) {
-        var deferred = $q.defer();
+      savePublication: function(publicationModel, publicationId, userID) {
+        var deferred                            = $q.defer();
 
         if(angular.isDefined(publicationId) && publicationId !== ''){
           // update record
@@ -26,31 +61,69 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
           // new record
           var newPublicationRef = publicationsRef.push(); // like array element
           publicationModel.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
-          newPublicationRef.set(publicationModel, function (error) {
-            if (error) {
-              deferred.reject(error);
-            } else {
+          newPublicationRef.set(publicationModel)
+            .then(function(){
+              return updateCount(userID, true);
+            })
+            .then(function(){
               deferred.resolve({publicationId: newPublicationRef.key()});
-            }
-          });
-
+            },function(error){
+              deferred.reject(error);
+            });
         }
 
         return deferred.promise;
       },
-      removePublication : function( publicationsRef, publicationId){
+      removePublication : function( publicationId, userID){
         var deferred                            = $q.defer();
-        var tasksToDo                           = [];
+        var promises                            = [];
 
-        tasksToDo.push(imagesService.deleteImages(publicationId,null));
-        tasksToDo.push(publicationsRef.child(publicationId).remove());
+        promises.push(imagesService.deleteImages(publicationId,null));
+        promises.push(publicationsRef.child(publicationId).remove());
+        promises.push(updateCount(userID));
 
-        $q.all(tasksToDo)
+        $q.all(promises)
           .then(function(){
             deferred.resolve();
           }, function (error) {
             notificationService.error(error);
           });
+
+        return deferred.promise;
+      },
+      saveFilesData : function( publicationID, files) {
+        var deferred                            = $q.defer();
+
+        var publicationImagesRef = publicationsRef.child(publicationID).child('images');
+        var saveFilesData = [];
+
+        angular.forEach(files,function(fileData, fileID){
+          saveFilesData.push(publicationImagesRef.child(fileID).set(fileData));
+        });
+
+        $q.all(saveFilesData)
+          .then(function(){
+            deferred.resolve();
+          });
+
+        return deferred.promise;
+      },
+      loadPublication : function (userID, publicationID) {
+        var deferred   = $q.defer();
+
+        publicationsRef.child(publicationID).once('value',function(snapshot){
+          var publication = snapshot.val();
+          if(snapshot.exists()){
+            if(userID === publication.userID){
+              deferred.resolve({publication:publication});
+            }else{
+              deferred.reject('401');
+            }
+          } else {
+            deferred.reject('404');
+          }
+
+        });
 
         return deferred.promise;
       }
@@ -80,7 +153,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
     '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, publicationService, imagesService, $log){
 
       var deferred = $q.defer();
-      var publicationsRef = FireRef.child('publications');
+      //var publicationsRef = FireRef.child('publications');
 
       $scope.httpRequestPromise = deferred.promise;
 
@@ -146,22 +219,14 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         if($scope.publicationForm.$valid){
           var deferred    = $q.defer();
 
-          publicationService.savePublication( $scope.publication.model, publicationsRef, $scope.publication.$id)
+          publicationService.savePublication( $scope.publication.model, $scope.publication.$id, user.uid)
             .then(function(the){
               $scope.publication.$id = $scope.publication.$id !== '' ? $scope.publication.$id : the.publicationId;
               // Save files in Cloudinary
               return imagesService.uploadFiles($scope.publication.images, $scope.publication.$id)
             })
             .then(function (files) {
-              // Save files data in Firebase
-              var publicationImagesRef = publicationsRef.child($scope.publication.$id).child('images');
-              var saveFilesData = [];
-
-              angular.forEach(files,function(fileData, fileID){
-                saveFilesData.push(publicationImagesRef.child(fileID).set(fileData));
-              });
-
-              return $q.all(saveFilesData);
+              return publicationService.saveFilesData($scope.publication.$id, files);
             })
             .then(function(){
               notificationService.success('Data has been save');
@@ -178,6 +243,8 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       };
 
       $scope.discard = function(){
+        console.log($scope.publication.model.title !== '' && $scope.publication.model.title !== undefined  ? $scope.publication.model.title : 'Untitled');
+
         var modalInstance = $uibModal.open({
           templateUrl: 'discardPublication.html',
           controller: 'DiscardPublicationController',
@@ -190,9 +257,10 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
             }
           }
         });
+
         modalInstance.result.then(function(){
           if($scope.publication.$id !== ''){
-            $scope.httpRequestPromise = publicationService.removePublication(publicationsRef, $scope.publication.$id)
+            $scope.httpRequestPromise = publicationService.removePublication($scope.publication.$id, user.uid)
               .then(function(){
                 notificationService.success('The publication has been deleted.');
                 $location.path('/');
@@ -206,31 +274,32 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         });
       };
 
-      function loadPublication(publicationId) {
-        var deferred   = $q.defer();
-
-        var publicationRef = publicationsRef.child(publicationId);
-        var publication = $firebaseObject(publicationRef);
-
-        publication.$loaded(function(){
-          if (typeof publication.releaseDate === 'undefined'){
-            deferred.reject('404');
-          } else if (user.uid !== publication.userID) {
-            deferred.reject('401');
-          } else {
-            deferred.resolve({publication:publication});
-          }
-        }, function (error) {
-          deferred.reject(error);
-        });
-
-        return deferred.promise;
-      }
+      //function loadPublication(publicationID){
+      //  var deferred   = $q.defer();
+      //
+      //  var publicationRef = publicationsRef.child(publicationID);
+      //
+      //  publicationRef.once('value',function(snapshot){
+      //    var publication = snapshot.val();
+      //    if(snapshot.exists()){
+      //      if(user.uid === publication.userID){
+      //        deferred.resolve({publication:publication});
+      //      }else{
+      //        deferred.reject('401');
+      //      }
+      //    } else {
+      //      deferred.reject('404');
+      //    }
+      //
+      //  });
+      //
+      //  return deferred.promise;
+      //}
 
       function setPublication(publicationId){
         var deferred   = $q.defer();
 
-        loadPublication(publicationId)
+        publicationService.loadPublication( user.uid, publicationId)
           .then(function (the) {
             angular.forEach(the.publication, function ( value, key) {
               if(key !== 'releaseDate'){
@@ -281,7 +350,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       }
 
     }])
-  .controller('DiscardPublicationController',['$scope', '$modalInstance', 'publicationId', 'title',function($scope, $modalInstance, publicationId, title){
+  .controller('DiscardPublicationController',['$scope', '$uibModalInstance', 'publicationId', 'title',function($scope, $uibModalInstance, publicationId, title){
 
     $scope.publication = {
       $id: publicationId,
@@ -289,11 +358,11 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
     };
 
     $scope.confirm  = function () {
-      $modalInstance.close();
+      $uibModalInstance.close();
     };
 
     $scope.cancel   = function () {
-      $modalInstance.dismiss('This has be cancel');
+      $uibModalInstance.dismiss('This has be cancel');
     };
 
   }])

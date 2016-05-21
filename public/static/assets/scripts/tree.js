@@ -41,7 +41,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     }
 
   }])
-  .controller('EditNodeController',['$scope', '$q', '$modalInstance', 'node', 'nodeRef',function($scope, $q, $modalInstance, node, nodeRef){
+  .controller('EditNodeController',['$scope', '$q', '$uibModalInstance', 'node', 'nodeRef',function($scope, $q, $uibModalInstance, node, nodeRef){
 
     function updateNode(node){
       var deferred = $q.defer();
@@ -68,20 +68,20 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
         $scope.httpRequestPromise = updateNode($scope.model)
           .then(function(){
-            $modalInstance.close();
+            $uibModalInstance.close();
           },function(error){
-            $modalInstance.dismiss(error);
+            $uibModalInstance.dismiss(error);
           });
 
       }
     };
 
     $scope.cancel   = function () {
-      $modalInstance.dismiss('The editing is been canceled');
+      $uibModalInstance.dismiss('The editing is been canceled');
     };
 
   }])
-  .controller('DeleteNodeController',['$scope','$modalInstance','node',function($scope,$modalInstance,node){
+  .controller('DeleteNodeController',['$scope','$uibModalInstance','node',function($scope,$uibModalInstance,node){
 
     $scope.node           = node;
     $scope.branchCheckBox = (($scope.node.left+1) !== ($scope.node.right));
@@ -90,11 +90,11 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     };
 
     $scope.confirm  = function () {
-      $modalInstance.close({node: node, branch: $scope.model.branch});
+      $uibModalInstance.close({node: node, branch: $scope.model.branch});
     };
 
     $scope.cancel   = function () {
-      $modalInstance.dismiss('Delete action has be cancel');
+      $uibModalInstance.dismiss('Delete action has be cancel');
     };
 
   }])

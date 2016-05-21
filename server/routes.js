@@ -44,7 +44,14 @@ function getPublication (uuid){
 
   var publicationRef = new Firebase('berlin.firebaseio.com/publications/'+uuid);
   publicationRef.once('value', function (dataSnapshot) {
-    deferred.resolve({publication: dataSnapshot.val()});
+    //console.log('dataSnapshot.val()',dataSnapshot.val());
+
+    if(dataSnapshot.exists()){
+      deferred.resolve({publication: dataSnapshot.val()});
+    }else{
+      deferred.reject();
+    }
+
   }, function (error) {
     deferred.reject(error);
   });
@@ -126,7 +133,8 @@ module.exports = function(app) {
       .then(function(the){
         res.send(the.result);
       },function(error){
-        throw error;
+        //throw error;
+        res.redirect('/');
       });
 
   });

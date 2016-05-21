@@ -60,7 +60,7 @@ publicationsModule
       };
 
     }])
-    .controller('ProfileImagesController',[ '$scope', '$modalInstance', 'profileImages' ,function($scope, $modalInstance, profileImages){
+    .controller('ProfileImagesController',[ '$scope', '$uibModalInstance', 'profileImages' ,function($scope, $uibModalInstance, profileImages){
 
       $scope.profileImages = profileImages;
 
