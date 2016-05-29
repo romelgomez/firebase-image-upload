@@ -3,14 +3,31 @@
 var publicationsModule = angular.module('accountPublications',['algoliasearch'])
   .controller('AccountPublicationsController',[
     '$scope',
+    '$timeout',
     '$q',
     '$uibModal',
     '$routeParams',
     '$location',
     'FireRef',
-    function($scope, $q, $uibModal, $routeParams, $location, FireRef){
+    '$firebaseObject',
+    function($scope, $timeout, $q, $uibModal, $routeParams, $location, FireRef, $firebaseObject){
+
+      //https://www.firebase.com/docs/web/libraries/angular/api.html#angularfire-firebaseobject-watchcallback-context
+
+      //$scope.profile = {};
+      //$scope.$profileBanners = [];
+      //$scope.$profileImages  = [];
+      //$scope.accountPublications = {
+      //  thereAreNew : false
+      //};
 
       $scope.profile = {};
+
+      $scope.publications = {
+        more : false,
+        count: 0,
+        countDifference : 0
+      };
 
       $scope.lording = {
         deferred: $q.defer(),
@@ -25,67 +42,124 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
 
         var accountNameRef = FireRef.child('accountNames').child($routeParams.accountName);
 
+        function setProfile(userID){
+          $scope.profile = $firebaseObject(FireRef.child('users').child(userID));
+          $scope.profile.$banners = [];
+          $scope.profile.$images  = [];
+
+          //angular.extend($scope.profile, $firebaseObject(FireRef.child('users').child(userID)));
+          //$scope.account.profile = ;
+        }
+
         accountNameRef.once('value')
           .then(function(snapshot){
             if(snapshot.exists()){
               // get profile data by the id (snapshot.val() - facebook:10204911533563856)
-              return FireRef.child('users').child(snapshot.val()).once('value');
+              setProfile(snapshot.val());
+              //angular.extend($scope.profile, $firebaseObject(FireRef.child('users').child(snapshot.val())));
+              return  $scope.profile.$loaded();
             }else{
               // maybe is a userID
-              return FireRef.child('users').child($routeParams.accountName).once('value');
+              //angular.extend($scope.profile, $firebaseObject(FireRef.child('users').child($routeParams.accountName)));
+              setProfile($routeParams.accountName);
+              return  $scope.profile.$loaded();
             }
           })
-          .then(function(snapshot){
-            if(snapshot.exists()){
-              var profile = snapshot.val(); // {accountName: "londonServicesLTD", banners: Object, bio: "", email: "bmxquiksilver7185@gmail.com", facebookAccount: "https://www.facebook.com/romelgomez"…}
-              profile.$id = snapshot.key(); // facebook:10204911533563856
-              deferred.resolve({profile: profile});
-            }else{
-              deferred.reject();
+          .then(function(){
+            if(typeof $scope.profile.startedAt !== 'undefined'){
+                deferred.resolve();
+            }else {
+                deferred.reject();
             }
           });
 
         return deferred.promise;
       }
 
+      function setProfileBanners (){
+        /*
+         banners
+         profileBanners
+         featuredBannerId
+         */
+        var profileBanners = [];
+        angular.forEach($scope.profile.banners, function(imageData,imageID){
+          imageData.$id = imageID;
+          if(imageID !== $scope.profile.featuredBannerId){
+            profileBanners.push(imageData);
+          }else{
+            profileBanners.unshift(imageData)
+          }
+        });
+        $scope.profile.$banners  = profileBanners;
+      }
+
+      function setProfileImages (){
+        /*
+         images
+         profileImages
+         featuredImageId
+         */
+        var profileImages = [];
+        //console.log('$scope.profile.images', $scope.profile.images);
+        angular.forEach($scope.profile.images, function(imageData,imageID){
+          imageData.$id = imageID;
+          if(imageID !== $scope.profile.featuredImageId){
+            profileImages.push(imageData);
+          }else{
+            profileImages.unshift(imageData)
+          }
+        });
+        $scope.profile.$images = profileImages;
+        //console.log('$scope.$profileImages', $scope.$profileImages);
+      }
+
+      function setPublicationsCount (count) {
+        $scope.publications.count = count;
+      }
+
       var getProfilePromise = getProfile()
-        .then(function(the){
-          $scope.profile = the.profile;
+        .then(function(){
 
-          $scope.profile.$banners = [];
-          $scope.profile.$images  = [];
+          setPublicationsCount($scope.profile.publicationsCount);
 
-          /*
-           banners
-           profileBanners
-           featuredBannerId
-           */
+          var timeoutDoor = true;
 
-          angular.forEach(the.profile.banners, function(imageData,imageID){
-            imageData.$id = imageID;
-            if(imageID !== the.profile.featuredBannerId){
-              $scope.profile.$banners.push(imageData);
-            }else{
-              $scope.profile.$banners.unshift(imageData)
+          $scope.$watch(function(){
+            return $scope.profile.publicationsCount;
+          },function(newValue, oldValue){
+            if(newValue > oldValue){
+              if(timeoutDoor){
+                timeoutDoor = false;
+                $timeout(function(){
+                  timeoutDoor = true;
+
+                  setPublicationsCount($scope.profile.publicationsCount);
+                  $scope.publications.countDifference = newValue - $scope.publications.count;
+                  $scope.publications.more = true;
+
+                  //$scope.accountPublications.thereAreNew = true;
+                  //$scope.accountPublications.newCount = newValue;
+                  //$scope.accountPublications.newCountDifference = newValue - $scope.algolia.res.nbHits;
+
+                }, 10000);
+              }
+
             }
           });
 
-          /*
-           images
-           profileImages
-           featuredImageId
-           */
-
-          angular.forEach(the.profile.images, function(imageData,imageID){
-            imageData.$id = imageID;
-            if(imageID !== the.profile.featuredImageId){
-              $scope.profile.$images.push(imageData);
-            }else{
-              $scope.profile.$images.unshift(imageData)
-            }
+          $scope.$watch(function(){
+            return $scope.profile.images;
+          },function(){
+            //console.log('setProfileImages is called');
+            setProfileImages();
           });
 
-          //$scope.profile.image = ;
+          $scope.$watch(function(){
+            return $scope.profile.banners;
+          },function(){
+            setProfileBanners();
+          });
 
         },function(){
           // 404

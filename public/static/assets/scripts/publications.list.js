@@ -19,7 +19,9 @@ publicationsModule
           profile:'=',
           editMode:'=',
           lording:'=',
-          account:'='
+          account:'=',
+          submit:'=',
+          publications:'='
         },
         link : function($scope) {
 
@@ -339,6 +341,11 @@ publicationsModule
           }
 
           function search (){
+            // accountPublications.js
+            if(typeof $scope.publications !== 'undefined'){
+              $scope.publications.more = false;
+            }
+
             var deferred   = $q.defer();
             var index  = client.initIndex($scope.algolia.sortOrder.currentIndexName);
             function startSearch (){
@@ -398,26 +405,29 @@ publicationsModule
             $scope.algolia.pagination.currentPage = 1;
           }
 
-          //function loadUser(userID) {
-          //  var deferred   = $q.defer();
-          //
-          //  var profile = $firebaseObject(FireRef.child('users').child(userID));
-          //
-          //  profile.$loaded(function(){
-          //    if (typeof profile.provider === 'undefined'){
-          //      deferred.reject();
-          //    }  else {
-          //      deferred.resolve({profile:profile});
-          //    }
-          //  }, function (error) {
-          //    deferred.reject(error);
-          //  });
-          //
-          //  return deferred.promise;
-          //}
-
           $scope.submit = function(){
+
             resetQuerySettings();
+
+            var facetObj = {};
+
+            // account.js
+            if (typeof $scope.account !== 'undefined'){
+              facetObj = {};
+              facetObj.name = $scope.account.user.uid; // to match the requirements of updateFacetFilters function
+              $scope.algolia.faceting.currentFacets.userID = [];
+              $scope.algolia.faceting.currentFacets.userID.push(facetObj);
+              $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
+            }
+
+            if (typeof $scope.profile.$id !== 'undefined'){
+              facetObj = {};
+              facetObj.name = $scope.profile.$id; // to match the requirements of updateFacetFilters function
+              $scope.algolia.faceting.currentFacets.userID = [];
+              $scope.algolia.faceting.currentFacets.userID.push(facetObj);
+              $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
+            }
+
             search()
               .then(null,function(err){
                 notificationService.error(err);
@@ -453,10 +463,10 @@ publicationsModule
                 search()
                   .then(function(){
 
-                    //deferred.resolve();
-                    //$scope.algolia.isReady = true;
-                    $scope.lording.deferred.resolve();
-                    $scope.lording.isDone = true;
+                    if($scope.lording.isDone === false){
+                      $scope.lording.deferred.resolve();
+                      $scope.lording.isDone = true;
+                    }
 
                   },function(err){
                     notificationService.error(err);

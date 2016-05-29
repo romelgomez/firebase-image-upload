@@ -46,7 +46,7 @@
             <div class="row">
               <div class="col-lg-2" style="text-align: center;">
                 <div>Publications</div>
-                <div>{{profile.publicationsCount}}</div>
+                <div>{{publications.count}}</div>
               </div>
             </div>
           </div>
@@ -102,8 +102,11 @@
         </div>
         <div class="col-lg-9">
 
-          <list-publications ng-show="profile.startedAt !== undefined" profile="profile" lording="lording"></list-publications>
+          <div ng-show="publications.more" style="margin-bottom: 20px;">
+            <button type="button" ng-click="submit(); publications.more = false;" class="btn btn-default btn-block">View {{publications.countDifference}} new Publications!</button>
+          </div>
 
+          <list-publications ng-show="profile.startedAt !== undefined" profile="profile" lording="lording" account="account" submit="submit" publications="publications"></list-publications>
 
         </div>
       </div>

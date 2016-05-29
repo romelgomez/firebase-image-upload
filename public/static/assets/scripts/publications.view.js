@@ -40,15 +40,18 @@ publicationsModule
 
         FireRef.child('publications').child(publicationId).once('value')
           .then(function(snapshot){
-            var publication = snapshot.val();
-            publication.$id = snapshot.key();
+            if(snapshot.exists()){
+              var publication = snapshot.val();
+              publication.$id = snapshot.key();
 
-            if (typeof publication.releaseDate === 'undefined'){
+              if (typeof publication.releaseDate === 'undefined'){
+                deferred.reject();
+              }  else {
+                deferred.resolve({publication: publication});
+              }
+            }else{
               deferred.reject();
-            }  else {
-              deferred.resolve({publication: publication});
             }
-
           },function (error) {
             deferred.reject(error);
           });
