@@ -114,15 +114,23 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
         //console.log('$scope.$profileImages', $scope.$profileImages);
       }
 
-      function setPublicationsCount (count) {
+      $scope.publications.setCount = function (count, viewCount) {
         $scope.publications.count = count;
-      }
+
+        console.log('1 $scope.publications.viewCount', $scope.publications.viewCount);
+        if(viewCount){
+          $scope.publications.viewCount = count;
+        }
+        console.log('2 $scope.publications.viewCount', $scope.publications.viewCount);
+      };
 
       var getProfilePromise = getProfile()
         .then(function(){
 
-          setPublicationsCount($scope.profile.publicationsCount);
+          // Establecer publicaciones actuales
+          //$scope.publications.setCount($scope.profile.publicationsCount, true);
 
+          // bloqueador para que el $timeout no se ejecute mas de dos veces al mismo tiempo.
           var timeoutDoor = true;
 
           $scope.$watch(function(){
@@ -130,12 +138,29 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
           },function(newValue, oldValue){
             if(newValue > oldValue){
               if(timeoutDoor){
+
+                // cierra la puerta para que $timeout no se ejecute nuevamente hasta este finalice
                 timeoutDoor = false;
                 $timeout(function(){
+
+                  // habre la puerta
                   timeoutDoor = true;
 
-                  setPublicationsCount($scope.profile.publicationsCount);
-                  $scope.publications.countDifference = newValue - $scope.publications.count;
+                  $scope.publications.countDifference = $scope.profile.publicationsCount - $scope.publications.viewCount;
+
+                  //if(typeof  $scope.publications.viewCount !== 'undefined'){
+                  //  // direrencia = actual count -  count inicial
+                  //  $scope.publications.countDifference = $scope.profile.publicationsCount - $scope.publications.viewCount;
+                  //}else{
+                  //  setPublicationsCount($scope.profile.publicationsCount);
+                  //  $scope.publications.countDifference = $scope.profile.publicationsCount - $scope.publications.viewCount;
+                  //}
+
+                  //$scope.publications.countDifference = newValue - $scope.publications.viewCount;
+
+                  $scope.publications.setCount($scope.profile.publicationsCount);
+
+                  // muestra el botton para actualizar los resultados.
                   $scope.publications.more = true;
 
                   //$scope.accountPublications.thereAreNew = true;
