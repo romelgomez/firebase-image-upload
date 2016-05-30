@@ -62,7 +62,7 @@
               <span style="color: #000; font-size: 22px; font-weight: 600; font-family: Raleway;"> {{profile.pseudonym === undefined || profile.pseudonym === ''? profile.names : profile.pseudonym }}</span>
 
               <div ng-show="(profile.accountName !== undefined && profile.accountName !== '')">
-                <span style="text-shadow: 0 0 3px rgba(0,0,0,.8)"> @{{profile.accountName}}</span>
+                <span style="text-shadow: 0 0 0.3px rgba(0,0,0,.8)"> <a ng-href="/{{profile.accountName}}">@{{profile.accountName}}</a></span>
                 <hr ng-show="(profile.bio !== undefined && profile.bio !== '') || (profile.landLineTelephone !== undefined && profile.landLineTelephone !== '') || (profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
               </div>
               <div ng-show="(profile.bio !== undefined && profile.bio !== '')">

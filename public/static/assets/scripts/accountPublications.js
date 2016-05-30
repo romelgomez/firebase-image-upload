@@ -12,21 +12,19 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
     '$firebaseObject',
     function($scope, $timeout, $q, $uibModal, $routeParams, $location, FireRef, $firebaseObject){
 
-      //https://www.firebase.com/docs/web/libraries/angular/api.html#angularfire-firebaseobject-watchcallback-context
-
-      //$scope.profile = {};
-      //$scope.$profileBanners = [];
-      //$scope.$profileImages  = [];
-      //$scope.accountPublications = {
-      //  thereAreNew : false
-      //};
-
       $scope.profile = {};
 
       $scope.publications = {
         more : false,
         count: 0,
-        countDifference : 0
+        countDifference : 0,
+        lastCount: 0,
+        setCount: function (count, lastCount) {
+          $scope.publications.count = count;
+          if(lastCount){
+            $scope.publications.lastCount = count;
+          }
+        }
       };
 
       $scope.lording = {
@@ -46,9 +44,6 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
           $scope.profile = $firebaseObject(FireRef.child('users').child(userID));
           $scope.profile.$banners = [];
           $scope.profile.$images  = [];
-
-          //angular.extend($scope.profile, $firebaseObject(FireRef.child('users').child(userID)));
-          //$scope.account.profile = ;
         }
 
         accountNameRef.once('value')
@@ -56,11 +51,9 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
             if(snapshot.exists()){
               // get profile data by the id (snapshot.val() - facebook:10204911533563856)
               setProfile(snapshot.val());
-              //angular.extend($scope.profile, $firebaseObject(FireRef.child('users').child(snapshot.val())));
               return  $scope.profile.$loaded();
             }else{
               // maybe is a userID
-              //angular.extend($scope.profile, $firebaseObject(FireRef.child('users').child($routeParams.accountName)));
               setProfile($routeParams.accountName);
               return  $scope.profile.$loaded();
             }
@@ -101,7 +94,6 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
          featuredImageId
          */
         var profileImages = [];
-        //console.log('$scope.profile.images', $scope.profile.images);
         angular.forEach($scope.profile.images, function(imageData,imageID){
           imageData.$id = imageID;
           if(imageID !== $scope.profile.featuredImageId){
@@ -111,62 +103,25 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
           }
         });
         $scope.profile.$images = profileImages;
-        //console.log('$scope.$profileImages', $scope.$profileImages);
       }
 
-      $scope.publications.setCount = function (count, viewCount) {
-        $scope.publications.count = count;
 
-        console.log('1 $scope.publications.viewCount', $scope.publications.viewCount);
-        if(viewCount){
-          $scope.publications.viewCount = count;
-        }
-        console.log('2 $scope.publications.viewCount', $scope.publications.viewCount);
-      };
 
       var getProfilePromise = getProfile()
         .then(function(){
 
-          // Establecer publicaciones actuales
-          //$scope.publications.setCount($scope.profile.publicationsCount, true);
-
-          // bloqueador para que el $timeout no se ejecute mas de dos veces al mismo tiempo.
           var timeoutDoor = true;
-
           $scope.$watch(function(){
             return $scope.profile.publicationsCount;
           },function(newValue, oldValue){
             if(newValue > oldValue){
               if(timeoutDoor){
-
-                // cierra la puerta para que $timeout no se ejecute nuevamente hasta este finalice
                 timeoutDoor = false;
                 $timeout(function(){
-
-                  // habre la puerta
                   timeoutDoor = true;
-
-                  $scope.publications.countDifference = $scope.profile.publicationsCount - $scope.publications.viewCount;
-
-                  //if(typeof  $scope.publications.viewCount !== 'undefined'){
-                  //  // direrencia = actual count -  count inicial
-                  //  $scope.publications.countDifference = $scope.profile.publicationsCount - $scope.publications.viewCount;
-                  //}else{
-                  //  setPublicationsCount($scope.profile.publicationsCount);
-                  //  $scope.publications.countDifference = $scope.profile.publicationsCount - $scope.publications.viewCount;
-                  //}
-
-                  //$scope.publications.countDifference = newValue - $scope.publications.viewCount;
-
+                  $scope.publications.countDifference = $scope.profile.publicationsCount - $scope.publications.lastCount;
                   $scope.publications.setCount($scope.profile.publicationsCount);
-
-                  // muestra el botton para actualizar los resultados.
                   $scope.publications.more = true;
-
-                  //$scope.accountPublications.thereAreNew = true;
-                  //$scope.accountPublications.newCount = newValue;
-                  //$scope.accountPublications.newCountDifference = newValue - $scope.algolia.res.nbHits;
-
                 }, 10000);
               }
 

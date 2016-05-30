@@ -343,13 +343,8 @@ publicationsModule
           function search (){
             // accountPublications.js
             if(typeof $scope.publications !== 'undefined'){
-              console.log('this logic is executed');
               $scope.publications.more = false;
               $scope.publications.setCount($scope.profile.publicationsCount, true);
-
-              //delete $scope.publications.viewCount;
-              //console.log('3 $scope.publications.viewCount', $scope.publications.viewCount);
-
             }
 
             var deferred   = $q.defer();
