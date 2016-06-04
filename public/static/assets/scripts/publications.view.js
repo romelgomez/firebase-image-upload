@@ -35,10 +35,10 @@ publicationsModule
         }
       };
 
-      function loadPublication(publicationId) {
+      function loadPublication(publicationID) {
         var deferred   = $q.defer();
 
-        FireRef.child('publications').child(publicationId).once('value')
+        FireRef.child('publications').child(publicationID).once('value')
           .then(function(snapshot){
             if(snapshot.exists()){
               var publication = snapshot.val();
@@ -75,17 +75,16 @@ publicationsModule
         return deferred.promise;
       }
 
-      if(angular.isDefined($routeParams.publicationId)){
+      if(angular.isDefined($routeParams.publicationID)){
 
         var deferred   = $q.defer();
         $scope.httpRequestPromise = deferred.promise;
 
-        loadPublication($routeParams.publicationId)
+        loadPublication($routeParams.publicationID)
           .then(function(the){
 
             $scope.publication.data             = the.publication;
             $scope.publication.$barcode.string  = the.publication.barcode;
-            $scope.publication.$seo.url         = 'https://londres.herokuapp.com/view-publication/' + the.publication.$id + '/' + $filter('slug')(the.publication.title) + '.html'
 
             angular.forEach(the.publication.images, function(imageData,imageID){
               imageData.$id = imageID;
@@ -96,47 +95,37 @@ publicationsModule
               }
             });
 
-            loadProfile(the.publication.userID)
-              .then(function(the){
-                $scope.profile = the.profile;
-                $scope.publication.$isReady = true;
-                deferred.resolve();
-              },function () {
-                notificationService.error('This action cannot be completed.');
-                $location.path('/');
-              });
+            return loadProfile(the.publication.userID);
+          })
+          .then(function(the){
+            $scope.profile = the.profile;
 
-          }, function () {
+            var seoUrl = 'https://londres.herokuapp.com/';
+
+            var categoriesAndLocations = '';
+            var categories = $window._.join($scope.publication.data.categories, ' ');
+            var locations  = $window._.join($scope.publication.data.locations, ' ');
+            categoriesAndLocations += categories;
+            categoriesAndLocations += ' in ';
+            categoriesAndLocations += locations;
+
+            seoUrl += typeof the.profile.accountName !== 'undefined' && the.profile.accountName !== '' ? the.profile.accountName + '/': the.profile.$id + '/';
+            seoUrl += $filter('slug')(categoriesAndLocations) + '/';
+            seoUrl += $scope.publication.data.$id + '/';
+            seoUrl += $filter('slug')($scope.publication.data.title) + '.html';
+
+            $scope.publication.$seo.url = seoUrl;
+
+            $scope.publication.$isReady = true;
+            deferred.resolve();
+          },function () {
             notificationService.error('This action cannot be completed.');
             $location.path('/');
           });
+
       }else{
         notificationService.error('This action cannot be completed.');
         $location.path('/');
       }
 
-    }])
-  .directive('facebook',['$window', function ($window) {
-
-    return {
-      restrict:'E',
-      scope:{
-        url:'='
-      },
-      template:''+
-      '<div class="fb-like" data-href="{{url}}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>',
-      link:function(scope){
-
-        if (typeof $window.FB !== 'undefined'){
-          scope.$watch(function(scope){
-            return scope.url;
-          },function(){
-            $window.FB.XFBML.parse();
-          });
-
-        }
-
-      }
-    }
-
-  }]);
+    }]);

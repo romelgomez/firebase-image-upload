@@ -55,6 +55,7 @@
     "JsBarcode": "jsbarcode#*",
     "angular-barcode": "~0.0.2",
     "angular-scanner-detection": "~0.0.2",
-    "angular-update-meta": "^1.8.0"
+    "angular-update-meta": "^1.8.0",
+    "lodash": "^4.13.1"
   }
 }

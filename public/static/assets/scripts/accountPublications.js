@@ -38,15 +38,13 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
       function getProfile(){
         var deferred = $q.defer();
 
-        var accountNameRef = FireRef.child('accountNames').child($routeParams.accountName);
-
         function setProfile(userID){
           $scope.profile = $firebaseObject(FireRef.child('users').child(userID));
           $scope.profile.$banners = [];
           $scope.profile.$images  = [];
         }
 
-        accountNameRef.once('value')
+        FireRef.child('accountNames').child($routeParams.accountName).once('value')
           .then(function(snapshot){
             if(snapshot.exists()){
               // get profile data by the id (snapshot.val() - facebook:10204911533563856)
@@ -60,9 +58,9 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
           })
           .then(function(){
             if(typeof $scope.profile.startedAt !== 'undefined'){
-                deferred.resolve();
+              deferred.resolve();
             }else {
-                deferred.reject();
+              deferred.reject();
             }
           });
 
@@ -110,6 +108,7 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
       var getProfilePromise = getProfile()
         .then(function(){
 
+          // new publications count
           var timeoutDoor = true;
           $scope.$watch(function(){
             return $scope.profile.publicationsCount;
@@ -124,7 +123,6 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
                   $scope.publications.more = true;
                 }, 10000);
               }
-
             }
           });
 

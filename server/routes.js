@@ -3,6 +3,9 @@ var fs = require('fs');
 var Q = require('q');
 var handlebars = require('handlebars');
 var Firebase = require("firebase");
+var FireRef = new Firebase('berlin.firebaseio.com/');
+var _ = require('lodash');
+
 
 var basePath = '';
 
@@ -42,19 +45,69 @@ function readFile(fileName){
 function getPublication (uuid){
   var deferred = Q.defer();
 
-  var publicationRef = new Firebase('berlin.firebaseio.com/publications/'+uuid);
-  publicationRef.once('value', function (dataSnapshot) {
-    //console.log('dataSnapshot.val()',dataSnapshot.val());
+  FireRef.child('publications/'+uuid).once('value')
+    .then(function(snapshot){
 
-    if(dataSnapshot.exists()){
-      deferred.resolve({publication: dataSnapshot.val()});
-    }else{
-      deferred.reject();
-    }
+      var publication = snapshot.val();
+      publication.$id = snapshot.key();
 
-  }, function (error) {
-    deferred.reject(error);
-  });
+      if(snapshot.exists()){
+        deferred.resolve({publication: publication});
+      }else{
+        deferred.reject('Error in getPublication function');
+      }
+
+    }, function (error) {
+      deferred.reject(error);
+    });
+
+  return deferred.promise;
+}
+
+
+function getUser (uuid){
+  var deferred = Q.defer();
+
+  FireRef.child('users/'+uuid).once('value')
+    .then(function(snapshot){
+      var user = snapshot.val();
+      user.$id = snapshot.key();
+
+      if(snapshot.exists()){
+        deferred.resolve({user: user});
+      }else{
+        deferred.reject('User does not exist');
+      }
+
+    }, function (error) {
+      deferred.reject(error);
+    });
+
+  return deferred.promise;
+}
+
+function getProfile(accountName){
+  var deferred = $q.defer();
+
+  FireRef.child('accountNames').child(accountName).once('value')
+    .then(function(snapshot){
+      if(snapshot.exists()){
+        // get profile data by the id (snapshot.val() - facebook:10204911533563856)
+        return  getUser(snapshot.val());
+      }else{
+        // maybe is a userID
+        return  getUser(accountName);
+      }
+    })
+    .then(function(the){
+      if(typeof the.user.startedAt !== 'undefined'){
+        deferred.resolve({profile : the.user});
+      }else {
+        deferred.reject();
+      }
+    }, function (error) {
+      deferred.reject(error);
+    });
 
   return deferred.promise;
 }
@@ -75,6 +128,28 @@ function setMetaTitle (publication){
 
 function setMetaURL (publicationID, publication){
   metaTags.url = 'https://londres.herokuapp.com/view-publication/';
+  metaTags.url += publicationID + '/';
+  metaTags.url += slug(publication.title) + '.html';
+}
+
+function setMetaURL2 (publicationID, publication, user){
+  metaTags.url = 'https://londres.herokuapp.com/';
+
+  /*
+   http://localhost:8080/walesServicesLTD/transport-specialized-other-brands-in-scotland-central-scotland/-KIz5P7HuvRD7k6D8rPB/wethepeople-envy-35.html
+   locations: [ 'Scotland', 'North East Scotland', 'Dundee East' ],
+   categories: [ 'Transport', 'Specialized', 'Others' ],
+  */
+
+  var categoriesAndLocations = '';
+  var categories = _.join(publication.categories, ' ');
+  var locations  = _.join(publication.locations, ' ');
+  categoriesAndLocations += categories;
+  categoriesAndLocations += ' in ';
+  categoriesAndLocations += locations;
+
+  metaTags.url += typeof user.accountName !== 'undefined' && user.accountName !== '' ? user.accountName + '/': user.$id + '/';
+  metaTags.url += slug(categoriesAndLocations) + '/';
   metaTags.url += publicationID + '/';
   metaTags.url += slug(publication.title) + '.html';
 }
@@ -114,7 +189,7 @@ module.exports = function(app) {
   });
 
   app.get('/view-publication/:id/:title', function(req, res){
-    console.log('req.params.id',req.params.id);
+    //console.log('req.params.id',req.params.id);
 
     getPublication(req.params.id)
       .then(function(the){
@@ -138,6 +213,75 @@ module.exports = function(app) {
       });
 
   });
+
+  // http://localhost:8080/walesServicesLTD
+
+  app.get('/:accountName', function(req, res){
+    //console.log(' all requests');
+    //res.send('#### 404 ####');
+
+    var user = {};
+
+
+    readFile('index1.html')
+      .then(function(the){
+        var template = handlebars.compile(the.source.toString());
+        return Q.when({result: template(metaTags)})
+      })
+      .then(function(the){
+        res.send(the.result);
+      },function(error){
+        throw error;
+      });
+
+
+    //res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
+  });
+
+  //http://localhost:8080/walesServicesLTD/transport-specialized-in-scotland-central-scotland/-KIz5P7HuvRD7k6D8rPB/wethepeople-envy-35.html
+
+
+  app.get('/:accountName/:categoriesAndLocations/:publicationID/:title', function(req, res){
+    //console.log('***** /:accountName/:categoriesAndLocations/:publicationID/:title *****');
+
+    var publication = {};
+    var user = {};
+
+    getPublication(req.params.publicationID)
+      .then(function(the){
+        publication = the.publication;
+        //console.log('publication', publication);
+        return getUser(publication.userID)
+      })
+      .then(function(the){
+        user = the.user;
+
+        setMetaTitle(publication);
+        setMetaURL2(req.params.publicationID, publication, user);
+        metaTags.description = publication.description;
+        setMetaImage(publication);
+
+        //console.log('user', user);
+        //console.log('metas', metaTags);
+
+        return readFile('index1.html');
+      })
+      .then(function(the){
+
+        var template = handlebars.compile(the.source.toString());
+        return Q.when({result: template(metaTags)})
+
+      })
+      .then(function(the){
+        res.send(the.result);
+      },function(error){
+        //throw error;
+        res.redirect('/');
+      });
+
+    //res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
+  });
+
 
 
   app.get('*', function(req, res){

@@ -158,16 +158,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
       });
 
-      //// TODO AÑADIR DATOS RELEVANTES AL PERFIL DEL USUARIO
-      //$log.info('createProfile var user: ', user);
-      //
-      //return reference.set({
-      //  email: $scope.model.register.email,
-      //  names: $scope.model.register.names,
-      //  lastNames: $scope.model.register.lastNames,
-      //  provider:user.provider
-      //});
-
       return deferred.promise;
     };
 

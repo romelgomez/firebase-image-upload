@@ -24,7 +24,7 @@
     "formidable": "^1.0.17",
     "handlebars": "^4.0.5",
     "imagemin-pngquant": "^4.2.2",
-    "lodash": "^4.3.0",
+    "lodash": "^4.13.1",
     "method-override": "^2.3.5",
     "moment": "^2.10.6",
     "morgan": "^1.6.1",

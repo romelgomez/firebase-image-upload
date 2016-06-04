@@ -101,6 +101,10 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'static/assets/views/account.html',
         controller: 'AccountController'
       })
+      .when('/:accountName/:categoriesAndLocations/:publicationID/:title', {
+        templateUrl: 'static/assets/views/viewPublication.html',
+        controller: 'ViewPublicationController'
+      })
       .when('/:accountName', {
         templateUrl: 'static/assets/views/accountPublications.html',
         controller: 'AccountPublicationsController'
