@@ -161,8 +161,6 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         $id: '',
         categoryPath: [],
         locationPath: [],
-        categories: {},
-        locations: {},
         categorySelected: false,
         inEditMode: false,
         isReady: false,

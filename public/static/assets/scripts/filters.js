@@ -220,4 +220,9 @@ angular.module('filters',[])
     return function(fileName) {
       return  fileName ? $filter('stringReplace')(fileName,'.'+fileName.split('.').pop(),'').trim() : '';
     };
+  }])
+  .filter('lodashJoin', ['$window',function($window) {
+    return function(matrix, separator) {
+      return  matrix ? $window._.join(matrix, separator).trim() : '';
+    };
   }]);

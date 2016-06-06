@@ -169,7 +169,7 @@
                     <div>
                       <div class="row">
                         <div class="col-xs-12">
-                          <a ng-href="/view-publication/{{publication.objectID}}/{{publication.title | slug}}.html">
+                          <a ng-href="/v/{{publication.categories | lodashJoin:' ' | slug }}-in-{{publication.locations | lodashJoin:' ' | slug }}/{{publication.objectID}}/{{publication.title | slug}}.html">
                             <h4>
                               <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (publication.department === 'Marketplace'),'fa-suitcase': (publication.department === 'Jobs'),'fa-home': (publication.department === 'Real Estate'),'fa-car': (publication.department === 'Transport'),'fa-wrench': (publication.department === 'Services')}"></i>
                               - <span ng-bind-html="publication._highlightResult.title.value | unsafe"></span>
@@ -182,7 +182,7 @@
                       <div ng-if="(publication.department === 'Marketplace') || (publication.department === 'Real Estate') || (publication.department === 'Transport') || (publication.department === 'Services')">
                         <div class="row">
                           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                            <a ng-href="/view-publication/{{publication.objectID}}/{{publication.title | slug}}.html">
+                            <a ng-href="/v/{{publication.categories | lodashJoin:' ' | slug }}-in-{{publication.locations | lodashJoin:' ' | slug }}/{{publication.objectID}}/{{publication.title | slug}}.html">
                               <img ng-show="sizeOf(publication.images) === 0" src="static/assets/images/noImageAvailableBig.jpg" alt="..." class="img-responsive img-thumbnail">
                               <cl-image ng-show="sizeOf(publication.images) > 0"  public-id="{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images) }}" class="inline img-responsive img-thumbnail" format="jpg">
                                 <cl-transformation height="300" width="600" crop="fill"  />
@@ -267,7 +267,7 @@
             <div ng-if="!editMode">
               <div class="panel panel-default" style="margin-bottom: 0;">
                 <div class="list-group">
-                  <a ng-href="/view-publication/{{publication.objectID}}/{{publication.title | slug}}.html" class="list-group-item" ng-repeat="publication in algolia.res.hits">
+                  <a ng-href="/v/{{publication.categories | lodashJoin:' ' | slug }}-in-{{publication.locations | lodashJoin:' ' | slug }}/{{publication.objectID}}/{{publication.title | slug}}.html" class="list-group-item" ng-repeat="publication in algolia.res.hits">
                     <!-- publication -->
                     <div>
                       <div class="row">

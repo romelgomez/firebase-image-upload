@@ -85,7 +85,7 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'static/assets/views/publication.html',
         controller: 'PublicationsController'
       })
-      .when('/view-publication/:publicationId/:title', {
+      .when('/view-publication/:publicationID/:title', {
         templateUrl: 'static/assets/views/viewPublication.html',
         controller: 'ViewPublicationController'
       })

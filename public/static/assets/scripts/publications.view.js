@@ -119,12 +119,12 @@ publicationsModule
             $scope.publication.$isReady = true;
             deferred.resolve();
           },function () {
-            notificationService.error('This action cannot be completed.');
+            notificationService.error('This action cannot be completed. 1');
             $location.path('/');
           });
 
       }else{
-        notificationService.error('This action cannot be completed.');
+        notificationService.error('This action cannot be completed. 0');
         $location.path('/');
       }
 
