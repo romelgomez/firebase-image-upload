@@ -11,134 +11,121 @@ publicationsModule
     'notificationService',
     function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseObject, notificationService){
 
-      var publicationsRef  = FireRef.child('publications');
-      var usersRef         = FireRef.child('users');
-
       $scope.publication = {
-        isReady: false,
-        res:{},
-        images:[],
-        user:{},
-        barcode : {
+        $isReady: false,
+        data: {},
+        $images:[],
+        $barcode : {
           string:'',
           options: {
             width: 1,
-            height: 50,
+            height: 10,
             quite: 10,
             format: 'CODE128',
             displayValue: true,
             font: 'monospace',
             textAlign: 'center',
-            fontSize: 12,
+            fontSize: 10,
             backgroundColor: '',
             lineColor: '#000'
           }
+        },
+        $seo: {
+          url: ''
         }
       };
 
-
-      function loadPublication(publicationId) {
+      function loadPublication(publicationID) {
         var deferred   = $q.defer();
 
-        var publicationRef = publicationsRef.child(publicationId);
-        var publication    = $firebaseObject(publicationRef);
+        FireRef.child('publications').child(publicationID).once('value')
+          .then(function(snapshot){
+            if(snapshot.exists()){
+              var publication = snapshot.val();
+              publication.$id = snapshot.key();
 
-        publication.$loaded()
-          .then(function(){
-            if (typeof publication.releaseDate === 'undefined'){
+              if (typeof publication.releaseDate === 'undefined'){
+                deferred.reject();
+              }  else {
+                deferred.resolve({publication: publication});
+              }
+            }else{
               deferred.reject();
-            }  else {
-              deferred.resolve({publication: angular.copy(publication)});
             }
-          }, function (error) {
+          },function (error) {
             deferred.reject(error);
-          })
-          .then(function(){
-            publication.$destroy();
           });
 
         return deferred.promise;
       }
 
-      function loadUser(userID) {
+      function loadProfile(userID) {
         var deferred   = $q.defer();
 
-        var userRef   = usersRef.child(userID);
-        var user      = $firebaseObject(userRef);
+        FireRef.child('users').child(userID).once('value')
+          .then(function(snapshot){
+            var profile = snapshot.val();
+            profile.$id = snapshot.key();
 
-        user.$loaded(function(){
-          deferred.resolve({user:user});
-        }, function (error) {
-          deferred.reject(error);
-        });
+            deferred.resolve({profile: profile});
+          },function (error) {
+            deferred.reject(error);
+          });
 
         return deferred.promise;
       }
 
-      if(angular.isDefined($routeParams.publicationId)){
+      if(angular.isDefined($routeParams.publicationID)){
 
         var deferred   = $q.defer();
         $scope.httpRequestPromise = deferred.promise;
 
-        loadPublication($routeParams.publicationId)
+        loadPublication($routeParams.publicationID)
           .then(function(the){
 
-            $scope.publication.res            = the.publication;
-            $scope.publication.barcode.string = the.publication.barcode;
-
-            $scope.seo = {
-              url: 'https://londres.herokuapp.com/view-publication/' + the.publication.$id + '/' + $filter('slug')(the.publication.title) + '.html'
-            };
+            $scope.publication.data             = the.publication;
+            $scope.publication.$barcode.string  = the.publication.barcode;
 
             angular.forEach(the.publication.images, function(imageData,imageID){
               imageData.$id = imageID;
               if(imageID !== the.publication.featuredImageId){
-                $scope.publication.images.push(imageData);
+                $scope.publication.$images.push(imageData);
               }else{
-                $scope.publication.images.unshift(imageData)
+                $scope.publication.$images.unshift(imageData)
               }
             });
 
-            loadUser(the.publication.userID)
-              .then(function(the){
-                $scope.publication.user = the.user;
-                $scope.publication.isReady = true;
-                deferred.resolve();
-              },function () {
-                notificationService.error('This action cannot be completed.');
-                $location.path('/');
-              });
-          }, function () {
-            notificationService.error('This action cannot be completed.');
+            return loadProfile(the.publication.userID);
+          })
+          .then(function(the){
+            $scope.profile = the.profile;
+
+            var seoUrl = 'https://londres.herokuapp.com/';
+
+            var categoriesAndLocations = '';
+            var categories = $window._.join($scope.publication.data.categories, ' ');
+            var locations  = $window._.join($scope.publication.data.locations, ' ');
+            categoriesAndLocations += categories;
+            categoriesAndLocations += ' in ';
+            categoriesAndLocations += locations;
+
+            seoUrl += typeof the.profile.accountName !== 'undefined' && the.profile.accountName !== '' ? the.profile.accountName + '/': the.profile.$id + '/';
+            seoUrl += $filter('slug')(categoriesAndLocations) + '/';
+            seoUrl += $scope.publication.data.$id + '/';
+            seoUrl += $filter('slug')($scope.publication.data.title) + '.html';
+
+            $scope.publication.$seo.url = seoUrl;
+
+            $scope.publication.$isReady = true;
+            deferred.resolve();
+          },function () {
+            notificationService.error('This action cannot be completed. 1');
             $location.path('/');
           });
+
       }else{
-        notificationService.error('This action cannot be completed.');
+        notificationService.error('This action cannot be completed. 0');
         $location.path('/');
       }
 
-    }])
-  .directive('facebook',['$window', function ($window) {
-
-    return {
-      restrict:'E',
-      scope:{
-        url:'='
-      },
-      template:''+
-      '<div class="fb-like" data-href="{{url}}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>',
-      link:function(scope){
-
-        if (typeof $window.FB !== 'undefined'){
-          scope.$watch(function(scope){
-            return scope.url;
-          },function(){
-            $window.FB.XFBML.parse();
-          });
-
-        }
-
-      }
-    }
-
-  }]);
+    }]);

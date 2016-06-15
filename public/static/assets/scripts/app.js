@@ -13,8 +13,8 @@ angular.module('app',[
     'account',
     'ui.bootstrap',
     'main',
-    'angular-underscore',
-    'updateMeta'
+    'updateMeta',
+    'accountPublications'
   ])
   .controller('AppController',['$scope','FireAuth',function($scope,FireAuth){
 
@@ -33,5 +33,30 @@ angular.module('app',[
       for (var key in obj) if (obj.hasOwnProperty(key)) return key;
     };
 
+  }])
+  .directive('facebook',['$window', function ($window) {
+
+    return {
+      restrict:'E',
+      scope:{
+        url:'='
+      },
+      template:''+
+      '<div class="fb-like" data-href="{{url}}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>',
+      link:function(scope){
+
+        if (typeof $window.FB !== 'undefined'){
+          scope.$watch(function(scope){
+            return scope.url;
+          },function(){
+            $window.FB.XFBML.parse();
+          });
+
+        }
+
+      }
+    }
+
   }]);
+
 

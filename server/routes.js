@@ -3,6 +3,9 @@ var fs = require('fs');
 var Q = require('q');
 var handlebars = require('handlebars');
 var Firebase = require("firebase");
+var FireRef = new Firebase('berlin.firebaseio.com/');
+var _ = require('lodash');
+
 
 var basePath = '';
 
@@ -19,10 +22,11 @@ switch(process.env.NODE_ENV) {
 //__dirname : /home/romelgomez/workspace/projects/berlin/server
 
 var metaTags = {
-  title:        'MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications',
-  url:          'https://londres.herokuapp.com',
-  description:  'Jobs, Real Estate, Transport, Services, Marketplace related Publications',
-  image:        'https://londres.herokuapp.com/static/assets/images/uk.jpg'
+  title:          'MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications',
+  url:            'https://londres.herokuapp.com',
+  description:    'Jobs, Real Estate, Transport, Services, Marketplace related Publications',
+  image:          'https://londres.herokuapp.com/static/assets/images/uk.jpg',
+  twitterAccount: '@MarketOfLondon'
 };
 
 function readFile(fileName){
@@ -39,15 +43,71 @@ function readFile(fileName){
   return deferred.promise;
 }
 
-function getPublication (uuid){
+function getPublicationByUUDID (uuid){
   var deferred = Q.defer();
 
-  var publicationRef = new Firebase('berlin.firebaseio.com/publications/'+uuid);
-  publicationRef.once('value', function (dataSnapshot) {
-    deferred.resolve({publication: dataSnapshot.val()});
-  }, function (error) {
-    deferred.reject(error);
-  });
+  FireRef.child('publications/'+uuid).once('value')
+    .then(function(snapshot){
+
+      var publication = snapshot.val();
+      publication.$id = snapshot.key();
+
+      if(snapshot.exists()){
+        deferred.resolve(publication);
+      }else{
+        deferred.reject('Error in getPublication function');
+      }
+
+    }, function (error) {
+      deferred.reject(error);
+    });
+
+  return deferred.promise;
+}
+
+function getUserByUUID (uuid){
+  var deferred = Q.defer();
+
+  FireRef.child('users/'+uuid).once('value')
+    .then(function(snapshot){
+      var user = snapshot.val();
+      user.$id = snapshot.key();
+
+      if(snapshot.exists()){
+        deferred.resolve(user);
+      }else{
+        deferred.reject('User does not exist');
+      }
+
+    }, function (error) {
+      deferred.reject(error);
+    });
+
+  return deferred.promise;
+}
+
+function getUserByAccountName (accountName){
+  var deferred = Q.defer();
+
+  FireRef.child('accountNames').child(accountName).once('value')
+    .then(function(snapshot){
+      if(snapshot.exists()){
+        // get profile data by the id (snapshot.val() - facebook:10204911533563856)
+        return  getUserByUUID(snapshot.val());
+      }else{
+        // maybe is a userID
+        return  getUserByUUID(accountName);
+      }
+    })
+    .then(function(user){
+      if(typeof user.startedAt !== 'undefined'){
+        deferred.resolve(user);
+      }else {
+        deferred.reject();
+      }
+    }, function (error) {
+      deferred.reject(error);
+    });
 
   return deferred.promise;
 }
@@ -60,62 +120,98 @@ function capitalize(input) {
   return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
 }
 
-function setMetaTitle (publication){
-  metaTags.title = capitalize(publication.title).trim();
-  metaTags.title += publication.department === 'Real Estate'? ' for ' + (publication.res.reHomeFor | uppercase) : '';
-  metaTags.title += ' - MarketOfLondon.UK';
-}
+function setMetaImage (images, featuredImageId){
+  var $images = [];
 
-function setMetaURL (publicationID, publication){
-  metaTags.url = 'https://londres.herokuapp.com/view-publication/';
-  metaTags.url += publicationID + '/';
-  metaTags.url += slug(publication.title) + '.html';
-}
-
-function setMetaImage (publication){
-  var images = [];
-
-  for (var imageID in publication.images) {
-    if( publication.images.hasOwnProperty( imageID ) ) {
-      publication.images[imageID].$id = imageID;
-      if(imageID !== publication.featuredImageId){
-        images.push(publication.images[imageID]);
+  for (var imageID in images) {
+    if( images.hasOwnProperty( imageID ) ) {
+      images[imageID].$id = imageID;
+      if(imageID !== featuredImageId){
+        $images.push(images[imageID]);
       }else{
-        images.unshift(publication.images[imageID])
+        $images.unshift(images[imageID])
       }
     }
   }
 
-  metaTags.image = images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ images[0].$id +'.jpg') : 'https://londres.herokuapp.com/static/assets/images/uk.svg';
+  metaTags.image = $images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ $images[0].$id +'.jpg') : 'https://londres.herokuapp.com/static/assets/images/uk.jpg';
 }
+
+function defaultRoute(req, res){
+  readFile('index1.html')
+    .then(function(the){
+      var template = handlebars.compile(the.source.toString());
+      return Q.when({result: template(metaTags)})
+    })
+    .then(function(the){
+      res.send(the.result);
+    },function(error){
+      throw error;
+    });
+
+  //res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
+}
+
 module.exports = function(app) {
 
   app.get('/', function(req, res) {
+     defaultRoute(req, res);
+  });
 
-    readFile('index1.html')
-      .then(function(the){
-        var template = handlebars.compile(the.source.toString());
-        return Q.when({result: template(metaTags)})
-      })
-      .then(function(the){
-        res.send(the.result);
-      },function(error){
-        throw error;
-      });
+  app.get('/categories', function(req, res){
+    defaultRoute(req, res);
+  });
 
-    //res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
+  app.get('/locations', function(req, res){
+    defaultRoute(req, res);
+  });
+
+  app.get('/j-tree-test', function(req, res){
+    defaultRoute(req, res);
+  });
+
+  app.get('/new-publication', function(req, res){
+    defaultRoute(req, res);
+  });
+
+  app.get('/edit-publication/:publicationId', function(req, res){
+    defaultRoute(req, res);
+  });
+
+  app.get('/login', function(req, res){
+    defaultRoute(req, res);
+  });
+
+  app.get('/account', function(req, res){
+    defaultRoute(req, res);
   });
 
   app.get('/view-publication/:id/:title', function(req, res){
-    console.log('req.params.id',req.params.id);
 
-    getPublication(req.params.id)
-      .then(function(the){
+    getPublicationByUUDID(req.params.id)
+      .then(function(publication){
 
-        setMetaTitle(the.publication);
-        setMetaURL(req.params.id, the.publication);
-        metaTags.description = the.publication.description;
-        setMetaImage(the.publication);
+        // META TITLE
+        // ***********************************
+        var metaTitle = capitalize(publication.title).trim();
+        metaTitle += publication.department === 'Real Estate'? ' for ' + (publication.reHomeFor | uppercase) : '';
+        metaTitle += ' - MarketOfLondon.UK';
+        metaTags.title = metaTitle;
+
+        // META URL
+        // ***********************************
+        var metaURL = 'https://londres.herokuapp.com/view-publication/';
+        metaURL += publication.$id + '/';
+        metaURL += slug(publication.title) + '.html';
+        metaTags.url = metaURL;
+
+        // META Description
+        // ***********************************
+        metaTags.description = publication.description;
+
+        // META Image
+        // ***********************************
+        setMetaImage(publication.images, publication.featuredImageId);
 
         return readFile('index1.html');
       })
@@ -126,67 +222,131 @@ module.exports = function(app) {
       .then(function(the){
         res.send(the.result);
       },function(error){
-        throw error;
+        //throw error;
+        res.redirect('/');
       });
 
   });
 
+  // http://localhost:8080/walesServicesLTD
 
-  app.get('*', function(req, res){
-    //console.log(' all requests');
-    //res.send('#### 404 ####');
+  app.get('/:accountName', function(req, res){
 
-    readFile('index1.html')
+    getUserByAccountName(req.params.accountName)
+      .then(function (user) {
+
+        // META Title
+        // ***********************************
+        var metaTitle = 'Look @';
+        metaTitle += typeof user.accountName !== 'undefined' && user.accountName !== '' ? user.accountName : user.$id;
+        metaTitle += ' Publications in MarketOfLondon.UK';
+        metaTags.title = metaTitle;
+
+        // META URL
+        // ***********************************
+        var metaURL = 'https://londres.herokuapp.com/';
+        metaURL += typeof user.accountName !== 'undefined' && user.accountName !== '' ? user.accountName : user.$id;
+        metaTags.url = metaURL;
+
+        // META Description
+        // ***********************************
+        metaTags.description = typeof user.bio !== 'undefined' && user.bio !== '' ? user.bio : 'MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications';
+
+        // META image
+        // ***********************************
+        setMetaImage(user.images, user.featuredImageId);
+
+        // META twitter
+        // ***********************************
+        metaTags.twitterAccount = typeof user.twitterAccount !== 'undefined' && user.twitterAccount !== '' ? '@' + user.twitterAccount : metaTags.twitterAccount;
+
+        return readFile('index1.html');
+      })
       .then(function(the){
         var template = handlebars.compile(the.source.toString());
         return Q.when({result: template(metaTags)})
       })
       .then(function(the){
         res.send(the.result);
-      },function(error){
-        throw error;
+      },function(){
+        res.redirect('/');
       });
 
-
-    //res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
   });
 
-  //app.get('/me', function(req, res){
-  //  res.send('Hello Romel Javier Gomez Herrera');
-  //});
+  /**
+   * Example url: http://localhost:8080/walesServicesLTD/transport-specialized-in-scotland-central-scotland/-KIz5P7HuvRD7k6D8rPB/wethepeople-envy-35.html
+  */
+  app.get('/:accountName/:categoriesAndLocations/:publicationID/:title', function(req, res){
 
-  //
-  //app.get('/hi/:name', function(req, res){
-  //  var name = req.params.name;
-  //  res.send('Hi ' + name);
-  //});
-  //
-  //app.get('/html-2', function(req, res){
-  //  res.send(__dirname); // /home/romelgomez/workspace/projects/berlin/server
-  //});
+    var publication = {};
+    var user = {};
 
+    getPublicationByUUDID(req.params.publicationID)
+      .then(function(_publication_){
+        publication = _publication_;
+        return getUserByUUID(publication.userID);
+      })
+      .then(function(_user_){
+        user = _user_;
 
+        // META TITLE
+        // ***********************************
+        var metaTitle = capitalize(publication.title).trim();
+        metaTitle += publication.department === 'Real Estate'? ' for ' + (publication.reHomeFor | uppercase) : '';
+        metaTitle += ' - MarketOfLondon.UK';
+        metaTags.title = metaTitle;
 
-  // Publications
-  //POST, GET, PUT, and DELETE
+        // META URL
+        // ***********************************
+        var metaURL = 'https://londres.herokuapp.com/';
 
-  //var Firebase = require("firebase");
-  //
-  //// get all publications
-  //app.get('/v1/publications', function(req, res){
-  //
-  //});
-  //
-  //// create a publication
-  //app.post('/v1/publications', function(req, res){
-  //  var mockModel = {
-  //
-  //  };
-  //});
-  //
-  //// delete a publication
-  //app.delete('/v1/publications/:publicationId', function(req, res){
-  //
-  //});
+        /*
+         locations: [ 'Scotland', 'North East Scotland', 'Dundee East' ],
+         categories: [ 'Transport', 'Specialized', 'Others' ],
+         */
+        var categoriesAndLocations = '';
+        var categories = _.join(publication.categories, ' ');
+        var locations  = _.join(publication.locations, ' ');
+        categoriesAndLocations += categories;
+        categoriesAndLocations += ' in ';
+        categoriesAndLocations += locations;
+
+        metaURL += typeof user.accountName !== 'undefined' && user.accountName !== '' ? user.accountName + '/': user.$id + '/';
+        metaURL += slug(categoriesAndLocations) + '/';
+        metaURL += publication.$id + '/';
+        metaURL += slug(publication.title) + '.html';
+        metaTags.url = metaURL;
+
+        // META Description
+        // ***********************************
+        metaTags.description = publication.description;
+
+        // META Image
+        // ***********************************
+        setMetaImage(publication.images, publication.featuredImageId);
+
+        // META twitter
+        // ***********************************
+        metaTags.twitterAccount = typeof user.twitterAccount !== 'undefined' && user.twitterAccount !== '' ? '@' + user.twitterAccount : metaTags.twitterAccount;
+
+        return readFile('index1.html');
+      })
+      .then(function(the){
+        var template = handlebars.compile(the.source.toString());
+        return Q.when({result: template(metaTags)});
+      })
+      .then(function(the){
+        res.send(the.result);
+      },function(error){
+        //throw error;
+        res.redirect('/');
+      });
+
+  });
+
+  app.get('*', function(req, res){
+    defaultRoute(req, res);
+  });
 
 };

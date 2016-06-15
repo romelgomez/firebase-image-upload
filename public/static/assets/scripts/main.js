@@ -5,11 +5,10 @@ angular.module('main',[])
     $scope.lording = {
       deferred: $q.defer(),
       isDone: false,
-      taskToDoFirst:[]
+      promises: []
     };
 
     $scope.lording.promise = $scope.lording.deferred.promise;
-
 
   }])
   .directive('inputFocus',[function(){

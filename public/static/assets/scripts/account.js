@@ -8,7 +8,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     $scope.lording = {
       deferred: $q.defer(),
       isDone: false,
-      taskToDoFirst:[]
+      promises: []
     };
 
     $scope.lording.promise = $scope.lording.deferred.promise;
@@ -23,7 +23,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
   }])
   .controller('AccountProfileController',['$scope', '$uibModal','notificationService',function($scope, $uibModal, notificationService){
 
-    $scope.lording.taskToDoFirst.push($scope.account.profile.$loaded());
+    $scope.lording.promises.push($scope.account.profile.$loaded());
 
     var modalErrors = function(error){
       switch(error) {
@@ -56,7 +56,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       modalInstance.result.then(function () {
         notificationService.success('The profile has been updated.');
       }, function (error) {
-        modalErrors(error);
+        //modalErrors(error);
       });
     };
 
@@ -119,7 +119,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       modalInstance.result.then(function () {
         notificationService.success('The password has been updated.');
       }, function (error) {
-        modalErrors(error);
+        //modalErrors(error);
       });
     };
 
@@ -138,7 +138,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       modalInstance.result.then(function () {
         notificationService.success('The email has been updated.');
       }, function (error) {
-        modalErrors(error);
+        //modalErrors(error);
       });
     };
 
@@ -147,7 +147,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
   .controller('AccountBillingController',['$scope', function($scope){
 
   }])
-  .controller('AccountProfileDetailsModalController',['$scope','$modalInstance', 'profile', function($scope, $modalInstance, profile){
+  .controller('AccountProfileDetailsModalController',['$scope','$uibModalInstance', '$q', 'profile' , 'FireRef', function($scope, $uibModalInstance, $q, profile, FireRef){
 
     $scope.forms = {
       profileDetails: {}
@@ -156,7 +156,9 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     $scope.profile = profile;
 
     $scope.model = {
+      accountName:          angular.isDefined(profile.accountName) && profile.accountName !== '' ? profile.accountName : '',
       pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
+      bio:                  angular.isDefined(profile.bio) && profile.bio !== '' ? profile.bio : '',
       names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
       lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
       mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
@@ -173,22 +175,26 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
           profile[key] = value;
         });
 
-        $scope.httpRequestPromise = profile.$save()
+        $scope.httpRequestPromise = $q.all([
+            profile.$save(),
+            FireRef.child('accountNames').child($scope.model.accountName).set(profile.$id),
+            FireRef.child('accountNames').child($scope.model.accountName.toLowerCase()).set(profile.$id)
+        ])
           .then(function() {
-            $modalInstance.close();
+            $uibModalInstance.close();
           }, function(error) {
-            $modalInstance.dismiss(error);
+            $uibModalInstance.dismiss(error);
           });
 
       }
     };
 
     $scope.cancel = function () {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
 
   }])
-  .controller('accountProfileImagesModalController',['$scope','$modalInstance', '$q', 'imagesService','profile', 'user', 'notificationService', function($scope, $modalInstance, $q, imagesService, profile, user, notificationService){
+  .controller('accountProfileImagesModalController',['$scope','$uibModalInstance', '$q', 'imagesService','profile', 'user', 'notificationService', function($scope, $uibModalInstance, $q, imagesService, profile, user, notificationService){
 
     $scope.forms = {
       profileImages: {}
@@ -236,11 +242,11 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     };
 
     $scope.cancel = function () {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
 
   }])
-  .controller('accountProfileBannersModalController',['$scope','$modalInstance', '$q', 'imagesService','profile', 'user', 'notificationService', function($scope, $modalInstance, $q, imagesService, profile, user, notificationService){
+  .controller('accountProfileBannersModalController',['$scope','$uibModalInstance', '$q', 'imagesService','profile', 'user', 'notificationService', function($scope, $uibModalInstance, $q, imagesService, profile, user, notificationService){
 
     $scope.forms = {
       profileBanners: {}
@@ -288,11 +294,11 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     };
 
     $scope.cancel = function () {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
 
   }])
-  .controller('AccountProfilePasswordModalController',['$scope','$modalInstance','FireAuth','profile',function($scope, $modalInstance, FireAuth, profile){
+  .controller('AccountProfilePasswordModalController',['$scope','$uibModalInstance','FireAuth','profile',function($scope, $uibModalInstance, FireAuth, profile){
 
     $scope.forms = {
       accountPassword: {}
@@ -311,20 +317,20 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
         $scope.httpRequestPromise = FireAuth.$changePassword({email: profile.email, oldPassword: $scope.model.accountPassword.oldPassword, newPassword: $scope.model.accountPassword.newPassword})
           .then(function() {
-            $modalInstance.close();
+            $uibModalInstance.close();
           }, function(error){
-            $modalInstance.dismiss(error);
+            $uibModalInstance.dismiss(error);
           });
 
       }
     };
 
     $scope.cancel = function () {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
 
   }])
-  .controller('AccountProfileEmailModalController',['$q', '$scope', '$modalInstance', 'FireAuth', 'profile',function( $q, $scope, $modalInstance, FireAuth, profile){
+  .controller('AccountProfileEmailModalController',['$q', '$scope', '$uibModalInstance', 'FireAuth', 'profile',function( $q, $scope, $uibModalInstance, FireAuth, profile){
 
     $scope.forms = {
       emailAccount: {}
@@ -348,10 +354,10 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
             return profile.$save();
           })
           .then(function() {
-            $modalInstance.close();
+            $uibModalInstance.close();
             deferred.resolve();
           }, function(error){
-            $modalInstance.dismiss(error);
+            $uibModalInstance.dismiss(error);
             deferred.reject(error);
           });
 
@@ -365,7 +371,58 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     };
 
     $scope.cancel = function () {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
+
+  }])
+  .directive('isAccountNameAvailable',[ 'FireRef', '$q', function( FireRef, $q){
+
+    return {
+      require:'ngModel',
+      scope:{
+        profile:'=profile'
+      },
+      link:function($scope, element, attrs, ngModel){
+        ngModel.$asyncValidators.isAccountNameAvailable = function(modelValue , viewValue) {
+          var deferred  = $q.defer();
+
+          var userInput = modelValue || viewValue;
+
+          $q.all([
+              FireRef.child('accountNames').child(userInput).once('value'),
+              FireRef.child('users').child($scope.profile.$id).child('accountName').once('value')
+            ])
+            .then(function(snapshots){
+
+              //console.log('snapshots[0].val()', snapshots[0].val());
+              //console.log('snapshots[0].key()', snapshots[0].key());
+              //console.log('snapshots[1].val()', snapshots[1].val());
+              //console.log('snapshots[1].key()', snapshots[1].key());
+              //console.log('----------------------------------------');
+
+              /*
+               snapshots[0].val() is userID in accountNames path e.g accountNames/londonServicesLTD/userID
+               snapshots[0].key() is accountName key in accountNames e.g accountNames/londonServicesLTD
+
+               snapshots[1].val() is the current accountName value in user/userID/accountName e.g londonServicesLTD
+               snapshots[1].key() is 'accountName' key in user/userID/
+              */
+
+              if(!snapshots[0].exists()){
+                deferred.resolve(true);
+              }else if(snapshots[0].val() === $scope.profile.$id){
+                deferred.resolve(true);
+              }else{
+                deferred.reject(false);
+              }
+
+            },function(){
+              deferred.reject(false);
+            });
+
+          return deferred.promise;
+        }
+      }
+    }
 
   }]);
