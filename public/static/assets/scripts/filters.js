@@ -156,6 +156,26 @@ angular.module('filters',[])
       return  (!!input) ? input.trim().replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) { if (+match === 0){ return ''; } return index === 0 ? match.toLowerCase() : match.toUpperCase(); }) : '';
     };
   }])
+  /**
+   * @Description camelCase filter, receives one string like: 'hello word' and return 'helloWord'
+   * @source http://stackoverflow.com/a/14425022/2513972
+   */
+  .directive('camelCase', ['$filter',function($filter){
+    return {
+      require: 'ngModel',
+      link: function(scope, element, attrs, modelCtrl) {
+
+        modelCtrl.$parsers.push(function (inputValue) {
+          var transformedInput = $filter('camelCase')(inputValue);
+          if (transformedInput!=inputValue) {
+            modelCtrl.$setViewValue(transformedInput);
+            modelCtrl.$render();
+          }
+          return transformedInput;
+        });
+      }
+    };
+  }])
 /**
  * @Description lispCase To CamelCase, receives one string like: 'hello-word' and return 'helloWord'
  * @param  {String}
@@ -199,5 +219,10 @@ angular.module('filters',[])
   .filter('removeFileExtension', ['$filter',function($filter) {
     return function(fileName) {
       return  fileName ? $filter('stringReplace')(fileName,'.'+fileName.split('.').pop(),'').trim() : '';
+    };
+  }])
+  .filter('lodashJoin', ['$window',function($window) {
+    return function(matrix, separator) {
+      return  matrix ? $window._.join(matrix, separator).trim() : '';
     };
   }]);

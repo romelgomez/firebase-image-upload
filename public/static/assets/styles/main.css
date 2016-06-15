@@ -89,24 +89,24 @@ ul.jqtree-tree span.jqtree-border {
     border-radius: 3px;
 }
 
-/* FileUpload START */
-.file-name{
-    white-space: nowrap;
-//font-weight: bold;
-    width: 300px;
-    margin-bottom: 2px;
-}
-.file-name:not(:hover) {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+/*!* FileUpload START *!*/
+/*.file-name{*/
+    /*white-space: nowrap;*/
+/*//font-weight: bold;*/
+    /*width: 300px;*/
+    /*margin-bottom: 2px;*/
+/*}*/
+/*.file-name:not(:hover) {*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+/*}*/
 .remove-button{
     padding-top: 10px;
 }
 .img-preview{
-    height:100px;
-    max-height: 250px;
-    max-width: 250px;
+    /*height:100px;*/
+    /*max-height: 250px;*/
+    /*max-width: 250px;*/
     margin-bottom: 5px;
 }
 .file-input{
@@ -229,6 +229,38 @@ ul.jqtree-tree span.jqtree-border {
     border-right: 3px solid #1e5799;
     border-bottom: 3px solid transparent;
     border-top: 3px solid #1e5799;
+}
+
+/*
+ responsive text in button bootstrap
+ http://stackoverflow.com/questions/25632331/how-to-make-bootstrap-3-button-text-responsive
+*/
+.responsive-width {
+    font-size: 3vw;
+}
+
+
+
+/* How to Make Bootstrap 3 img logo Responsive
+  https://codepen.io/bootstrapped/pen/KwYGwq
+*/
+.navbar-brand {
+    padding: 0;
+}
+.navbar-brand>img {
+    height: 100%;
+    padding: 15px;
+    width: auto;
+}
+
+.navbar-brand>img {
+    padding: 7px 15px;
+}
+
+@media (min-width: 768px) {
+    .navbar-brand>img {
+        padding: 0 15px;
+    }
 }
 
 @media print

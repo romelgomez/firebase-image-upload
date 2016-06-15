@@ -16,7 +16,7 @@
   <meta property="og:site_name" content="MarketOfLondon.UK" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@romelgomez07" />
+  <meta name="twitter:site" content="{{twitterAccount}}" />
 
   <meta name="twitter:title" content="{{title}}" />
   <meta name="twitter:url" content="{{url}}" />
@@ -72,6 +72,7 @@
 
   <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
 </head>
 <body ng-controller="AppController" style="background: url('static/assets/images/brickwall.png')">
 <div id="fb-root"></div>
@@ -91,8 +92,8 @@
         <span class="icon-bar"></span>
       </button>
 
-      <!--<a class="navbar-brand font-raleway" ng-href="/">MarketOfLondon.UK</a>-->
-      <a class="navbar-brand font-raleway" ng-href="/" style="padding: 6px;"><img src="static/assets/images/logo4.png" class="img-responsive" style="height: 40px;"></a>
+      <a class="navbar-brand font-raleway" ng-href="/" style="padding: 6px;"><img src="static/assets/images/logo4.png" class="img-responsive"></a>
+
     </div>
 
     <div class="collapse navbar-collapse" id="js-navbar-collapse">
@@ -138,10 +139,13 @@
 <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
 <!-- endbuild -->
 
+<!--&lt;!&ndash; build:js(.) static/assets/scripts/_.min.js &ndash;&gt;-->
+<!--<script src="/bower_components/underscore/underscore.js"></script>-->
+<!--<script src="/bower_components/angular-underscore/angular-underscore.js"></script>-->
+<!--&lt;!&ndash; endbuild &ndash;&gt;-->
+
 <!-- build:js(.) static/assets/scripts/_.min.js -->
-<script src="/bower_components/underscore/underscore.js"></script>
-<script src="/bower_components/angular-underscore/angular-underscore.js"></script>
-<!-- endbuild -->
+<script src="/bower_components/lodash/lodash.js"></script>
 
 <!-- build:js(.) static/assets/scripts/q.min.js -->
 <script src="/bower_components/algoliasearch/dist/algoliasearch.angular.min.js"></script>
@@ -221,6 +225,7 @@
 <script src="static/assets/scripts/publications.list.js"></script>
 <script src="static/assets/scripts/login.js"></script>
 <script src="static/assets/scripts/account.js"></script>
+<script src="static/assets/scripts/accountPublications.js"></script>
 <!-- endbuild -->
 
 <!-- build:js(public) static/assets/scripts/pg.min.js -->

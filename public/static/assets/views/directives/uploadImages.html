@@ -1,22 +1,52 @@
 <section>
   <!-- <pre>{{formName.files | json}}</pre> -->
 
-  <button class="btn btn-primary"
-          ngf-select
-          data-ng-model="images"
-          name="files"
-          data-ngf-multiple="true"
-          data-accept="image/*"
-          data-ngf-keep="true"
-          data-ngf-keep-distinct="true"
-          data-ngf-validate="{size: {max: '10MB'}, width: {min: 500, max:5000}, height: {min: 500, max: 5000}}"
-          data-ngf-validate-force="true"
-          required>
-    <i class="fa fa-picture-o"></i> Select the images</button>
+  <div class="hidden-md hidden-lg">
+    <div>
+      <button ng-style="{'margin-bottom': (imagesInfo().inQueue > 0) || (imagesInfo().invalid > 0) || (imagesInfo().isUploaded > 0) ? '10px' : 0 }" class="btn btn-primary"
+              ngf-select
+              data-ng-model="images"
+              name="files"
+              data-ngf-multiple="true"
+              data-accept="image/*"
+              data-ngf-keep="true"
+              data-ngf-keep-distinct="true"
+              data-ngf-validate="{size: {max: '10MB'}, width: {min: 500, max:5000}, height: {min: 500, max: 5000}}"
+              data-ngf-validate-force="true"
+              required>
+        <i class="fa fa-picture-o"></i> Select the images</button>
+    </div>
+    <div>
+      <button ng-style="{'margin-bottom': (imagesInfo().invalid > 0) || (imagesInfo().isUploaded > 0) ? '10px' : 0 }" ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove in queue</button>
+    </div>
+    <div>
+      <button ng-style="{'margin-bottom': (imagesInfo().invalid > 0) ? '10px' : 0 }" ng-show="imagesInfo().isUploaded > 0" type="button" class="btn btn-danger" ng-click="deleteAllImages(imagesTag, imagesPath)"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
+    </div>
+    <div>
+      <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove invalid</button>
+    </div>
+  </div>
 
-  <button ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove in queue</button>
-  <button ng-show="imagesInfo().isUploaded > 0" type="button" class="btn btn-danger" ng-click="deleteAllImages(imagesTag, imagesPath)"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
-  <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove invalid</button>
+  <div class="hidden-xs hidden-sm">
+    <button class="btn btn-primary"
+            ngf-select
+            data-ng-model="images"
+            name="files"
+            data-ngf-multiple="true"
+            data-accept="image/*"
+            data-ngf-keep="true"
+            data-ngf-keep-distinct="true"
+            data-ngf-validate="{size: {max: '10MB'}, width: {min: 500, max:5000}, height: {min: 500, max: 5000}}"
+            data-ngf-validate-force="true"
+            required>
+      <i class="fa fa-picture-o"></i> Select the images</button>
+
+    <button ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove in queue</button>
+    <button ng-show="imagesInfo().isUploaded > 0" type="button" class="btn btn-danger" ng-click="deleteAllImages(imagesTag, imagesPath)"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
+    <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove invalid</button>
+  </div>
+
+
 
 
   <div data-ng-messages="formName.$submitted && formName.files.$error" class="help-block">
@@ -67,7 +97,7 @@
     <div class="panel panel-default" ng-repeat="(key, value) in images" style="margin-bottom: 10px;">
       <div class="panel-body" style="padding: 5px;">
         <div class="row">
-          <div class="col-xs-4 col-md-2" style="padding-right: 5px;">
+          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
 
 
             <div ng-switch="value.blobUrl !== undefined">
@@ -82,7 +112,7 @@
 
                 <div ng-if="value.$id !== undefined">
                   <cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="jpg">
-                    <cl-transformation height="120" width="160" crop="fill"/>
+                    <cl-transformation height="400" width="440" crop="fill"/>
                   </cl-image>
                 </div>
 
@@ -105,11 +135,12 @@
             <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.isUploaded)}">{{value.isUploaded ? 'In server' : 'In queue' }}</span></div>
             <div style="margin-bottom: 5px;"><span ng-show="featuredImageId === value.$id" class="label label-info">Primary image</span></div>
           </div>
-          <div class="col-xs-8 col-md-10" style="padding-left: 5px;">
+          <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
             <div class="file-name">
-              {{value.name}}
+              <span class="hidden-md hidden-lg"><b>Name: </b> {{value.name | limitTo: 20 }}{{value.name.length > 20 ? ' ...' : ''}} </span>
+              <span class="hidden-xs hidden-sm">{{value.name}}</span>
             </div>
-            <hr style="margin-top: 5px; margin-bottom: 5px;">
+            <hr class="hidden-xs hidden-sm" style="margin-top: 5px; margin-bottom: 5px;">
             <div>
 
               <!--<pre>{{value}}</pre>-->
