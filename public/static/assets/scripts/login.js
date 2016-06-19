@@ -167,17 +167,17 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
     var createUser = function(){
       var deferred  = $q.defer();
 
-      FireAuth.$createUser({email: $scope.model.register.email, password: $scope.model.register.password})
-          .then(function () {
-            // Authenticate so we have permission to write to FireBase
-            return FireAuth.$authWithPassword({email: $scope.model.register.email, password: $scope.model.register.password}, {rememberMe: true});
-          })
-          .then(createProfile)
-          .then(function(){
-            deferred.resolve();
-          }, function(error){
-            deferred.reject(error);
-          });
+      FireAuth.$createUserWithEmailAndPassword({email: $scope.model.register.email, password: $scope.model.register.password})
+        .then(function () {
+          // Authenticate so we have permission to write to FireBase
+          return FireAuth.$signInWithEmailAndPassword({email: $scope.model.register.email, password: $scope.model.register.password}, {rememberMe: true});
+        })
+        .then(createProfile)
+        .then(function(){
+          deferred.resolve();
+        }, function(error){
+          deferred.reject(error);
+        });
 
       return deferred.promise;
     };
@@ -187,11 +187,11 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       if($scope.forms.register.$valid){
 
         $scope.httpRequestPromise = createUser()
-            .then(function(){
-              redirect();
-            },function(error){
-              showError(error);
-            });
+          .then(function(){
+            redirect();
+          },function(error){
+            showError(error);
+          });
 
         //$log.info('ok fromJson', angular.fromJson($scope.model.register));
         //$log.info('ok toJson', angular.toJson($scope.model.register));
@@ -203,15 +203,15 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
       var remember = $scope.model.signIn.rememberMe ? 'default' : 'sessionOnly';
 
-      FireAuth.$authWithPassword({email: $scope.model.signIn.email, password: $scope.model.signIn.password},{remember: remember})
-          .then(function(authData){
+      FireAuth.$signInWithEmailAndPassword({email: $scope.model.signIn.email, password: $scope.model.signIn.password})
+        .then(function(authData){
 
-            $log.info('authData', authData);
+          $log.info('authData', authData);
 
-            deferred.resolve();
-          },function(error){
-            deferred.reject(error);
-          });
+          deferred.resolve();
+        },function(error){
+          deferred.reject(error);
+        });
 
       return deferred.promise;
     };
@@ -221,11 +221,11 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       if($scope.forms.signIn.$valid){
 
         $scope.httpRequestPromise = signIn()
-            .then(function(){
-              redirect();
-            },function(error){
-              showError(error);
-            });
+          .then(function(){
+            redirect();
+          },function(error){
+            showError(error);
+          });
 
         $log.info('ok fromJson', angular.fromJson($scope.model.signIn));
         $log.info('ok toJson', angular.toJson($scope.model.signIn));
@@ -236,7 +236,7 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
     var recover = function (){
       var deferred  = $q.defer();
 
-      FireAuth.$resetPassword({
+      FireAuth.$updatePassword({
         email: $scope.model.recoverAccount.email
       }).then(function() {
         deferred.resolve();
@@ -252,11 +252,11 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       if($scope.forms.recoverAccount.$valid){
 
         $scope.httpRequestPromise = recover()
-            .then(function(){
-              notificationService.success('Password reset email sent successfully!');
-            },function(error){
-              showError(error);
-            });
+          .then(function(){
+            notificationService.success('Password reset email sent successfully!');
+          },function(error){
+            showError(error);
+          });
 
         $log.info('ok fromJson', angular.fromJson($scope.model.recoverAccount));
         $log.info('ok toJson', angular.toJson($scope.model.recoverAccount));
@@ -264,11 +264,12 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
     };
 
     $scope.oauthLogin = function(provider) {
-      FireAuth.$authWithOAuthPopup(provider, {rememberMe: true})
-          .then(function(user){
-            return createProfile(user);
-          })
-          .then(redirect, showError);
+      //FireAuth.$signInWithRedirect(provider, {rememberMe: true})
+      FireAuth.$signInWithPopup(provider)
+        .then(function(result){
+          return createProfile(result.user);
+        })
+        .then(redirect, showError);
     };
 
   }]);

@@ -24,7 +24,7 @@ angular.module('app',[
 
     //https://github.com/firebase/angularfire/blob/master/docs/guide/user-auth.md#retrieving-authentication-state
 
-    $scope.logout = function() { FireAuth.$unauth(); };
+    $scope.logout = function() { FireAuth.$signOut(); };
 
     $scope.inProduction = false;
 
