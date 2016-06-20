@@ -18,8 +18,8 @@ angular.module('app',[
   ])
   .controller('AppController',[ '$scope', 'FireAuth',function( $scope, FireAuth){
 
-    FireAuth.$onAuthStateChanged(function(authenticatedUser) {
-      $scope.authenticatedUser = authenticatedUser;
+    FireAuth.$onAuthStateChanged(function(firebaseUser) {
+      $scope.firebaseUser = firebaseUser;
     });
 
     //https://github.com/firebase/angularfire/blob/master/docs/guide/user-auth.md#retrieving-authentication-state

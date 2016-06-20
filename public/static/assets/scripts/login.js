@@ -40,82 +40,43 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       $scope.forms.signIn.$setPristine();
     };
 
-    var redirect = function(){
+    function redirect(){
       $window.location = '/new-publication'
-    };
+    }
 
     /**
      * show error
      * @param {Object} error
      **/
-    var showError = function(error) {
+    function showError(error) {
 
       switch (error.code) {
-        case 'AUTHENTICATION_DISABLED':
-          notificationService.error('The requested authentication provider is disabled for this Firebase application.');
+        case 'auth/invalid-email':
+          notificationService.error('The email is invalid.');
           break;
-        case 'EMAIL_TAKEN':
-          notificationService.error('The new user account cannot be created because the email is already in use.');
+        case 'auth/user-disabled':
+          notificationService.error('This account has been suspended');
           break;
-        case 'INVALID_ARGUMENTS':
-          notificationService.error('The specified credentials are malformed or incomplete. Please refer to the error message, error details, and Firebase documentation for the required arguments for authenticating with this provider.');
+        case 'auth/user-not-found':
+          notificationService.error('There is not user for this email.');
           break;
-        case 'INVALID_CONFIGURATION':
-          notificationService.error('The requested authentication provider is misconfigured, and the request cannot complete. Please confirm that the provider \'s client ID and secret are correct in your App Dashboard and the app is properly set up on the provider \'s website.');
-          break;
-        case 'INVALID_CREDENTIALS':
-          notificationService.error('The requested authentication provider is misconfigured, and the request cannot complete. Please confirm that the provider \'s client ID and secret are correct in your App Dashboard and the app is properly set up on the provider \'s website.');
-          break;
-        case 'INVALID_EMAIL':
-          notificationService.error('The specified email is not a valid email.');
-          break;
-        case 'INVALID_ORIGIN':
-          notificationService.error('A security error occurred while processing the authentication request. The web origin for the request is not in your list of approved request origins. To approve this origin, visit the Login & Auth tab in your App Dashboard.');
-          break;
-        case 'INVALID_PASSWORD':
-          notificationService.error('The specified user account password is incorrect.');
-          break;
-        case 'INVALID_PROVIDER':
-          notificationService.error('The requested authentication provider does not exist. Please consult the Firebase Authentication documentation for a list of supported providers.');
-          break;
-        case 'INVALID_TOKEN':
-          notificationService.error('The specified authentication token is invalid. This can occur when the token is malformed, expired, or the Firebase app secret that was used to generate it has been revoked.');
-          break;
-        case 'INVALID_USER':
-          notificationService.error('The specified user account does not exist.');
-          break;
-        case 'NETWORK_ERROR':
-          notificationService.error('An error occurred while attempting to contact the authentication server.');
-          break;
-        case 'PROVIDER_ERROR':
-          notificationService.error('A third-party provider error occurred. Please refer to the error message and error details for more information.');
-          break;
-        case 'TRANSPORT_UNAVAILABLE':
-          notificationService.error('The requested login method is not available in the user\'s browser environment. Popups are not available in Chrome for iOS, iOS Preview Panes, or local, file:// URLs. Redirects are not available in PhoneGap / Cordova, or local, file:// URLs.');
-          break;
-        case 'UNKNOWN_ERROR':
-          notificationService.error('An unknown error occurred. Please refer to the error message and error details for more information.');
-          break;
-        case 'USER_CANCELLED':
-          notificationService.error('The current authentication request was cancelled by the user.');
-          break;
-        case 'USER_DENIED':
-          notificationService.error('The user did not authorize the application. This error can occur when the user has cancelled an OAuth authentication request.');
+        case 'auth/wrong-password':
+          notificationService.error('The password is invalid');
           break;
         default:
-          notificationService.error('Undefined Error: ',error);
+          notificationService.error('Undefined Error');
       }
 
-    };
+    }
 
     /**
-     * create the profile
-     * @param {Object} user
+     * Create the profile
+     * @param {Object} firebaseUser
      **/
-    var createProfile = function (user) {
+    function createProfile(firebaseUser) {
       var deferred  = $q.defer();
 
-      var reference = FireRef.child('users').child(user.uid);
+      var reference = FireRef.child('users').child(firebaseUser.uid);
 
       var profile = {};
 
@@ -159,117 +120,53 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       });
 
       return deferred.promise;
-    };
-
-    /**
-     * create the user
-     * */
-    var createUser = function(){
-      var deferred  = $q.defer();
-
-      FireAuth.$createUserWithEmailAndPassword({email: $scope.model.register.email, password: $scope.model.register.password})
-        .then(function () {
-          // Authenticate so we have permission to write to FireBase
-          return FireAuth.$signInWithEmailAndPassword({email: $scope.model.register.email, password: $scope.model.register.password}, {rememberMe: true});
-        })
-        .then(createProfile)
-        .then(function(){
-          deferred.resolve();
-        }, function(error){
-          deferred.reject(error);
-        });
-
-      return deferred.promise;
-    };
+    }
 
     $scope.register = function(){
       $scope.forms.register.$setSubmitted(true);
       if($scope.forms.register.$valid){
 
-        $scope.httpRequestPromise = createUser()
-          .then(function(){
-            redirect();
-          },function(error){
-            showError(error);
-          });
+        $scope.httpRequestPromise = FireAuth.$createUserWithEmailAndPassword({email: $scope.model.register.email, password: $scope.model.register.password})
+          //.then(function(firebaseUser){
+          //  return createProfile(firebaseUser)
+          //})
+          .then(redirect, showError);
 
-        //$log.info('ok fromJson', angular.fromJson($scope.model.register));
-        //$log.info('ok toJson', angular.toJson($scope.model.register));
       }
-    };
-
-    var signIn  = function(){
-      var deferred  = $q.defer();
-
-      var remember = $scope.model.signIn.rememberMe ? 'default' : 'sessionOnly';
-
-      FireAuth.$signInWithEmailAndPassword({email: $scope.model.signIn.email, password: $scope.model.signIn.password})
-        .then(function(authData){
-
-          $log.info('authData', authData);
-
-          deferred.resolve();
-        },function(error){
-          deferred.reject(error);
-        });
-
-      return deferred.promise;
     };
 
     $scope.signIn = function(){
       $scope.forms.signIn.$setSubmitted(true);
       if($scope.forms.signIn.$valid){
 
-        $scope.httpRequestPromise = signIn()
-          .then(function(){
-            redirect();
-          },function(error){
-            showError(error);
-          });
-
-        $log.info('ok fromJson', angular.fromJson($scope.model.signIn));
-        $log.info('ok toJson', angular.toJson($scope.model.signIn));
+        $scope.httpRequestPromise  = FireAuth.$signInWithEmailAndPassword({email: $scope.model.signIn.email, password: $scope.model.signIn.password})
+          .then(redirect, showError);
 
       }
-    };
-
-    var recover = function (){
-      var deferred  = $q.defer();
-
-      FireAuth.$updatePassword({
-        email: $scope.model.recoverAccount.email
-      }).then(function() {
-        deferred.resolve();
-      }).catch(function(error) {
-        deferred.reject(error);
-      });
-
-      return deferred.promise;
     };
 
     $scope.recover = function(){
       $scope.forms.recoverAccount.$setSubmitted(true);
       if($scope.forms.recoverAccount.$valid){
 
-        $scope.httpRequestPromise = recover()
+        $scope.httpRequestPromise = FireAuth.$sendPasswordResetEmail($scope.model.recoverAccount.email)
           .then(function(){
             notificationService.success('Password reset email sent successfully!');
           },function(error){
             showError(error);
           });
 
-        $log.info('ok fromJson', angular.fromJson($scope.model.recoverAccount));
-        $log.info('ok toJson', angular.toJson($scope.model.recoverAccount));
       }
     };
 
     $scope.oauthLogin = function(provider) {
-      //FireAuth.$signInWithRedirect(provider, {rememberMe: true})
+
       FireAuth.$signInWithPopup(provider)
-        .then(function(result){
-          return createProfile(result.user);
-        })
+        //.then(function(result){
+        //  return createProfile(result.user);
+        //})
         .then(redirect, showError);
+
     };
 
   }]);
