@@ -3,7 +3,7 @@
 
     <div style="text-align: center; margin-top: -60px;">
       <div class="photo" style="padding: 4px; border: solid 1px #A0A0A0; background: #FFFFFF;">
-        <img ng-src="{{account.user[account.user.provider].profileImageURL}}" alt="avatar">
+        <img ng-src="{{firebaseUser.providerData[0].photoURL}}" alt="avatar">
       </div>
       <div>
         Hi <span style="color: #F0563D;">{{account.profile.names | capitalize}} {{account.profile.lastNames | capitalize}}</span>

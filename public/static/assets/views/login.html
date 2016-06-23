@@ -66,13 +66,24 @@
             <div class="text-center">OR</div>
             <hr style="margin-top: 0;">
 
-            <a class="btn btn-block btn-social btn-facebook" ng-click="oauthLogin('facebook')" >
-              <i class="fa fa-facebook"></i> Sign in with Facebook
-            </a>
+            <div class="visible-xs-block visible-sm-block">
+              <a class="btn btn-block btn-social btn-facebook" ng-click="oauthLogin('facebook', true)" >
+                <i class="fa fa-facebook"></i> Sign in with Facebook
+              </a>
 
-            <a class="btn btn-block btn-social btn-twitter" ng-click="oauthLogin('twitter')" >
-              <i class="fa fa-twitter"></i> Sign in with Twitter
-            </a>
+              <a class="btn btn-block btn-social btn-twitter" ng-click="oauthLogin('twitter', true)" >
+                <i class="fa fa-twitter"></i> Sign in with Twitter
+              </a>
+            </div>
+            <div class="visible-md-block visible-lg-block">
+              <a class="btn btn-block btn-social btn-facebook" ng-click="oauthLogin('facebook')" >
+                <i class="fa fa-facebook"></i> Sign in with Facebook
+              </a>
+
+              <a class="btn btn-block btn-social btn-twitter" ng-click="oauthLogin('twitter')" >
+                <i class="fa fa-twitter"></i> Sign in with Twitter
+              </a>
+            </div>
 
             <hr>
             <div class="alert alert-info alert-xs" style="margin-bottom: 10px; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>

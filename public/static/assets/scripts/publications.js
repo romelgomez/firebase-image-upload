@@ -60,13 +60,13 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         }else{
           // new record
           var newPublicationRef = publicationsRef.push(); // like array element
-          publicationModel.releaseDate = $window.Firebase.ServerValue.TIMESTAMP;
+          publicationModel.releaseDate = $window.firebase.database.ServerValue.TIMESTAMP;
           newPublicationRef.set(publicationModel)
             .then(function(){
               return updateCount(userID, true);
             })
             .then(function(){
-              deferred.resolve({publicationId: newPublicationRef.key()});
+              deferred.resolve({publicationId: newPublicationRef.key});
             },function(error){
               deferred.reject(error);
             });
