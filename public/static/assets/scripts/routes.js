@@ -111,10 +111,6 @@ angular.module('routes',['ngRoute'])
           $location.path(LOGIN_REDIRECT_PATH);
         }
 
-        if( authenticatedUser !== null && $location.path('/login')) {
-          $location.path('/new-publication');
-        }
-
       });
 
       // some of our routes may reject resolve promises with the special {authRequired: true} error

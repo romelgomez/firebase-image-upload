@@ -2,7 +2,16 @@
 
 angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswordStrength'])
   .controller('LoginController', ['$scope','FireAuth','$location','$q','FireRef','notificationService','$window','$log',function ($scope, FireAuth, $location, $q, FireRef, notificationService, $window, $log) {
-    // Manages authentication to any active providers.
+
+    // watch for login status changes and redirect if appropriate
+    FireAuth.$onAuthStateChanged(function (authenticatedUser) {
+      if( authenticatedUser !== null) {
+        $scope.httpRequestPromise = createProfile(authenticatedUser)
+          .then(function(){
+            $location.path('/new-publication');
+          });
+      }
+    });
 
     var original = angular.copy($scope.model = {
       signIn:{
@@ -54,12 +63,33 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
       console.log('error:', error);
 
+      // The provider's account email, can be used in case of
+      // auth/account-exists-with-different-credential to fetch the providers
+      // linked to the email:
+      var email = error.email;
+      // The provider's credential:
+      var credential = error.credential;
+      // In case of auth/account-exists-with-different-credential error,
+      // you can fetch the providers using this:
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        $window.firebase.auth().fetchProvidersForEmail(email).then(function(providers) {
+
+          console.log('Error in getRedirectResult.', error);
+          console.log('email.', email);
+          console.log('A list of the available providers linked to the email address.', providers);
+
+          // The returned 'providers' is a list of the available providers
+          // linked to the email address. Please refer to the guide for a more
+          // complete explanation on how to recover from this error.
+        });
+      }
+
       switch (error.code) {
         case 'auth/invalid-email':
           notificationService.error('The email is invalid.');
           break;
         case 'auth/user-disabled':
-          notificationService.error('This account has been suspended');
+          notificationService.error('This account has been suspended.');
           break;
         case 'auth/user-not-found':
           notificationService.error('There is not user for this email.');
@@ -103,6 +133,16 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
             case 'twitter.com':
               profile.names           = firebaseUser.providerData[0].displayName;
               //profile.twitterAccount  = user['twitter'].username;
+              profile.provider        = firebaseUser.providerData[0].providerId;
+              profile.startedAt       = $window.firebase.database.ServerValue.TIMESTAMP;
+              break;
+            case 'google.com':
+              profile.names           = firebaseUser.providerData[0].displayName;
+              profile.provider        = firebaseUser.providerData[0].providerId;
+              profile.startedAt       = $window.firebase.database.ServerValue.TIMESTAMP;
+              break;
+            case 'github.com':
+              profile.names           = firebaseUser.providerData[0].displayName;
               profile.provider        = firebaseUser.providerData[0].providerId;
               profile.startedAt       = $window.firebase.database.ServerValue.TIMESTAMP;
               break;
@@ -164,48 +204,42 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       if($scope.forms.register.$valid){
 
         $scope.httpRequestPromise = FireAuth.$createUserWithEmailAndPassword($scope.model.register.email, $scope.model.register.password)
-          .then(function(firebaseUser){
-            return createProfile(firebaseUser)
-          })
           .then(null, showError);
 
       }
     };
 
     $scope.oauthLogin = function(provider, signInWithRedirect) {
+      console.log('provider', provider);
+
 
       if(typeof signInWithRedirect !== 'undefined' && signInWithRedirect === true){
 
         $scope.httpRequestPromise = FireAuth.$signInWithRedirect(provider)
-          .then(null, function () {
-                // The provider's account email, can be used in case of
-                // auth/account-exists-with-different-credential to fetch the providers
-                // linked to the email:
-                var email = error.email;
-                // The provider's credential:
-                var credential = error.credential;
-                // In case of auth/account-exists-with-different-credential error,
-                // you can fetch the providers using this:
-                if (error.code === 'auth/account-exists-with-different-credential') {
-                  $window.firebase.auth().fetchProvidersForEmail(email).then(function(providers) {
-
-                    console.log('Error in getRedirectResult.', error);
-                    console.log('email.', email);
-                    console.log('A list of the available providers linked to the email address.', providers);
-
-                    // The returned 'providers' is a list of the available providers
-                    // linked to the email address. Please refer to the guide for a more
-                    // complete explanation on how to recover from this error.
-                  });
-                }
-          });
+          .then(null, showError);
 
       }else{
+        var authProvider;
 
-        $scope.httpRequestPromise = FireAuth.$signInWithPopup(provider)
-          .then(function(result){
-            return createProfile(result.user);
-          })
+        switch(provider) {
+          case 'facebook':
+            authProvider = new $window.firebase.auth.FacebookAuthProvider();
+            authProvider.addScope('email');
+            break;
+          case 'twitter':
+            authProvider = new $window.firebase.auth.TwitterAuthProvider();
+            break;
+          case 'google':
+            authProvider = new firebase.auth.GoogleAuthProvider();
+            break;
+          case 'github':
+            // https://developer.github.com/v3/oauth/
+            authProvider = new $window.firebase.auth.GithubAuthProvider();
+            authProvider.addScope('user:email');
+            break;
+        }
+
+        $scope.httpRequestPromise = FireAuth.$signInWithPopup(authProvider)
           .then(null, showError);
 
       }
