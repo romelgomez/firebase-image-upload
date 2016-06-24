@@ -95,15 +95,26 @@ angular.module('routes',['ngRoute'])
    * for changes in auth status which might require us to navigate away from a path
    * that we can no longer view.
    */
-  .run(['$rootScope', '$location', 'FireAuth', 'SECURED_ROUTES', 'LOGIN_REDIRECT_PATH',
+  .run([
+    '$rootScope',
+    '$location',
+    'FireAuth',
+    'SECURED_ROUTES',
+    'LOGIN_REDIRECT_PATH',
     function($rootScope, $location, FireAuth, SECURED_ROUTES, LOGIN_REDIRECT_PATH) {
 
       // watch for login status changes and redirect if appropriate
       FireAuth.$onAuthStateChanged(function (authenticatedUser) {
+
         // authenticatedUser : object or null
         if( !authenticatedUser && SECURED_ROUTES.hasOwnProperty($location.path())) {
           $location.path(LOGIN_REDIRECT_PATH);
         }
+
+        if( authenticatedUser !== null && $location.path('/login')) {
+          $location.path('/new-publication');
+        }
+
       });
 
       // some of our routes may reject resolve promises with the special {authRequired: true} error

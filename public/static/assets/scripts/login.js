@@ -46,10 +46,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       $scope.forms.recoverAccount.$setPristine();
     }
 
-    function redirect(){
-      $window.location = '/new-publication'
-    }
-
     /**
      * show error
      * @param {Object} error
@@ -142,7 +138,7 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       if($scope.forms.signIn.$valid){
 
         $scope.httpRequestPromise  = FireAuth.$signInWithEmailAndPassword($scope.model.signIn.email, $scope.model.signIn.password)
-          .then(redirect, showError);
+          .then(null, showError);
 
       }
     };
@@ -171,7 +167,7 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
           .then(function(firebaseUser){
             return createProfile(firebaseUser)
           })
-          .then(redirect, showError);
+          .then(null, showError);
 
       }
     };
@@ -180,53 +176,28 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
       if(typeof signInWithRedirect !== 'undefined' && signInWithRedirect === true){
 
-        var authProvider;
+        $scope.httpRequestPromise = FireAuth.$signInWithRedirect(provider)
+          .then(null, function () {
+                // The provider's account email, can be used in case of
+                // auth/account-exists-with-different-credential to fetch the providers
+                // linked to the email:
+                var email = error.email;
+                // The provider's credential:
+                var credential = error.credential;
+                // In case of auth/account-exists-with-different-credential error,
+                // you can fetch the providers using this:
+                if (error.code === 'auth/account-exists-with-different-credential') {
+                  $window.firebase.auth().fetchProvidersForEmail(email).then(function(providers) {
 
-        switch(provider) {
-          case 'facebook':
+                    console.log('Error in getRedirectResult.', error);
+                    console.log('email.', email);
+                    console.log('A list of the available providers linked to the email address.', providers);
 
-            authProvider = new $window.firebase.auth().FacebookAuthProvider();
-
-            authProvider.addScope('email');
-            authProvider.addScope('public_profile');
-            authProvider.addScope('user_friends');
-
-            break;
-          case 'twitter':
-
-            authProvider = new $window.firebase.auth().TwitterAuthProvider();
-
-            break;
-        }
-
-        $window.firebase.auth().signInWithRedirect(authProvider);
-
-        $window.firebase.auth().getRedirectResult()
-          .then(function(result){
-            return createProfile(result.user);
-          })
-          .then(redirect, function(error) {
-            // The provider's account email, can be used in case of
-            // auth/account-exists-with-different-credential to fetch the providers
-            // linked to the email:
-            var email = error.email;
-            // The provider's credential:
-            var credential = error.credential;
-            // In case of auth/account-exists-with-different-credential error,
-            // you can fetch the providers using this:
-            if (error.code === 'auth/account-exists-with-different-credential') {
-              $window.firebase.auth().fetchProvidersForEmail(email).then(function(providers) {
-
-
-                console.log('Error in getRedirectResult.', error);
-                console.log('email.', email);
-                console.log('A list of the available providers linked to the email address.', providers);
-
-                // The returned 'providers' is a list of the available providers
-                // linked to the email address. Please refer to the guide for a more
-                // complete explanation on how to recover from this error.
-              });
-            }
+                    // The returned 'providers' is a list of the available providers
+                    // linked to the email address. Please refer to the guide for a more
+                    // complete explanation on how to recover from this error.
+                  });
+                }
           });
 
       }else{
@@ -235,11 +206,22 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
           .then(function(result){
             return createProfile(result.user);
           })
-          .then(redirect, showError);
+          .then(null, showError);
 
       }
 
     };
+
+
+  }]);
+
+
+
+//var deferred = $q.defer();
+//$scope.httpRequestPromise = deferred.promise;
+//FireAuth.$onAuthStateChanged(function() {
+//  deferred.resolve();
+//});
 
 
     /*
@@ -327,5 +309,3 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
        signInWithRedirect
 
      */
-
-  }]);

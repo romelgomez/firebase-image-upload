@@ -19,9 +19,7 @@ angular.module('app',[
   .controller('AppController',[ '$scope', 'FireAuth',function( $scope, FireAuth){
 
     FireAuth.$onAuthStateChanged(function(firebaseUser) {
-
       if(firebaseUser){
-
         //console.log('firebaseUser',
         //  'displayName: ' + firebaseUser.displayName + ', \n' +
         //  'email: ' + firebaseUser.email + ', \n' +
@@ -32,13 +30,12 @@ angular.module('app',[
         //  'providerId: ' + firebaseUser.providerId + ', \n' +
         //  'refreshToken: ' + firebaseUser.refreshToken + ', \n' +
         //  'uid: ' + firebaseUser.uid
-
         //);
 
         //console.log('firebaseUser.providerData: ', firebaseUser.providerData[0]);
 
       }else{
-        console.log('firebaseUser', firebaseUser);
+        //console.log('firebaseUser', firebaseUser);
       }
 
       $scope.firebaseUser = firebaseUser;
