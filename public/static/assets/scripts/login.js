@@ -16,10 +16,15 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       FireAuth.$onAuthStateChanged(function (authenticatedUser) {
         console.log('authenticatedUser', authenticatedUser);
         if( authenticatedUser !== null) {
+
+
           $scope.httpRequestPromise = createProfile(authenticatedUser)
             .then(function(){
               $location.path('/new-publication');
             });
+
+
+
         }
       });
 
@@ -211,18 +216,21 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
           }
         });
 
-        modalInstance.result.then(function () {
-          //notificationService.success('The profile has been updated.');
+        modalInstance.result.then(function (result) {
+
+          if(result.redirect){
+            $window.sessionStorage.setItem(email, result.credential);
+          }
+
+          $scope.oauthLogin(result.provider, result.redirect);
+
+          console.log('result', result);
         }, function (error) {
           //modalErrors(error);
         });
       }
 
-      function attemptLinkCredential (email, credential, sessionStorage){
-
-        //if(sessionStorage){
-        //  $window.sessionStorage.setItem(email, credential);
-        //}
+      function attemptLinkCredential (email, credential){
 
         $window.firebase.auth().fetchProvidersForEmail(email).then(function(providers) {
           promptForLinkCredential('lg', email, credential, providers);
@@ -258,7 +266,7 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       $window.firebase.auth().getRedirectResult()
         .then(null,function(error){
           console.log('error - getRedirectResult', error);
-          attemptLinkCredential(error.email, error.credential, true);
+          attemptLinkCredential(error.email, error.credential);
         });
 
 
@@ -275,17 +283,17 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
           var authProvider;
 
           switch(provider) {
-            case 'facebook':
+            case 'facebook.com':
               authProvider = new $window.firebase.auth.FacebookAuthProvider();
               authProvider.addScope('email');
               break;
-            case 'twitter':
+            case 'twitter.com':
               authProvider = new $window.firebase.auth.TwitterAuthProvider();
               break;
-            case 'google':
+            case 'google.com':
               authProvider = new firebase.auth.GoogleAuthProvider();
               break;
-            case 'github':
+            case 'github.com':
               // https://developer.github.com/v3/oauth/
               authProvider = new $window.firebase.auth.GithubAuthProvider();
               authProvider.addScope('user:email');
@@ -304,47 +312,16 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
     }])
   .controller('PromptForLinkCredentialController',['$scope','$uibModalInstance', '$q', 'providers', 'credential',  function($scope, $uibModalInstance, $q, providers, credential){
 
-    //$scope.forms = {
-    //  profileDetails: {}
-    //};
-
     $scope.providers = providers;
     $scope.credential     = credential;
 
-    //
-    //$scope.model = {
-    //  accountName:          angular.isDefined(profile.accountName) && profile.accountName !== '' ? profile.accountName : '',
-    //  pseudonym:            angular.isDefined(profile.pseudonym) && profile.pseudonym !== '' ? profile.pseudonym : '',
-    //  bio:                  angular.isDefined(profile.bio) && profile.bio !== '' ? profile.bio : '',
-    //  names:                angular.isDefined(profile.names) && profile.names !== '' ? profile.names : '',
-    //  lastNames:            angular.isDefined(profile.lastNames) && profile.lastNames !== '' ? profile.lastNames : '',
-    //  mobilePhone:          angular.isDefined(profile.mobilePhone) && profile.mobilePhone !== '' ? profile.mobilePhone : '',
-    //  landLineTelephone:    angular.isDefined(profile.landLineTelephone) && profile.landLineTelephone !== '' ? profile.landLineTelephone : '',
-    //  email:                angular.isDefined(profile.email) && profile.email !== '' ? profile.email : '',
-    //  twitterAccount:       angular.isDefined(profile.twitterAccount) && profile.twitterAccount !== '' ? profile.twitterAccount : '',
-    //  facebookAccount:      angular.isDefined(profile.facebookAccount) && profile.facebookAccount !== '' ? profile.facebookAccount : ''
-    //};
-    //
-    //$scope.submit = function(){
-    //  if($scope.forms.profileDetails.$valid){
-    //
-    //    angular.forEach($scope.model, function(value, key){
-    //      profile[key] = value;
-    //    });
-    //
-    //    $scope.httpRequestPromise = $q.all([
-    //        profile.$save(),
-    //        FireRef.child('accountNames').child($scope.model.accountName).set(profile.$id),
-    //        FireRef.child('accountNames').child($scope.model.accountName.toLowerCase()).set(profile.$id)
-    //      ])
-    //      .then(function() {
-    //        $uibModalInstance.close();
-    //      }, function(error) {
-    //        $uibModalInstance.dismiss(error);
-    //      });
-    //
-    //  }
-    //};
+    $scope.loginWith = function(provider, redirect){
+      $uibModalInstance.close({
+        provider: provider,
+        redirect: typeof redirect !== 'undefined'? redirect : false,
+        credential: credential
+      });
+    };
 
     $scope.cancel = function () {
       $uibModalInstance.dismiss();
