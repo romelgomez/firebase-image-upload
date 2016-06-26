@@ -257,4 +257,25 @@
 </div>
 
 
+<script type="text/ng-template" id="promptForLinkCredentialModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">An account already exists with the same email address but different sign-in provider.</h3>
+  </div>
+  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
+
+    <p>
+      You can link you <span ng-bind="credential.provider"></span> account,
+      to the account already exists in this site, then you can login using whichever account you have registered in this site.
+    </p>
+
+
+    {{providers | json}}
+
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+  </div>
+</script>
+
 
