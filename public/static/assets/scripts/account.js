@@ -142,6 +142,17 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
       });
     };
 
+    $scope.unlinkProvider = function(providerId){
+
+      $scope.httpRequestPromise = $scope.firebaseUser.unlink(providerId)
+        .then(function(){
+          notificationService.success('The provider has been unlink.');
+        }, function (error) {
+          notificationService.error(error);
+        });
+
+    };
+
 
   }])
   .controller('AccountBillingController',['$scope', function($scope){

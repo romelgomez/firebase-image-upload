@@ -15,17 +15,63 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
       // watch for login status changes and redirect if appropriate
       FireAuth.$onAuthStateChanged(function (authenticatedUser) {
         console.log('authenticatedUser', authenticatedUser);
+
         if( authenticatedUser !== null) {
 
+          var deferred  = $q.defer();
+          $scope.httpRequestPromise = deferred.promise;
+          var promises  = [];
+          //var pendingCredential = {};
+          var credential;
 
-          $scope.httpRequestPromise = createProfile(authenticatedUser)
+          //https://firebase.google.com/docs/auth/web/account-linking#link-auth-provider-credentials-to-a-user-account
+
+          if(authenticatedUser.email !== null){
+            credential = firebase.auth.FacebookAuthProvider.credential($window.sessionStorage.getItem(authenticatedUser.email));
+
+            //pendingCredential.provider    = $window.sessionStorage.getItem(authenticatedUser.email+'?provider');
+            //pendingCredential.accessToken = ;
+
+            if(typeof credential !== 'undefined' && credential !== null){
+              //console.log('pendingCredential', pendingCredential);
+              //console.log('pendingCredential.accessToken', pendingCredential.accessToken);
+              //console.log('pendingCredential.provider', pendingCredential.provider);
+
+              //var credential = firebase.auth.FacebookAuthProvider.credential();
+
+              //var credential = new $window.firebase.auth.AuthCredential();
+              //credential.provider = pendingCredential.provider;
+              //credential.accessToken = pendingCredential.accessToken;
+
+              ////var credential = $window.sessionStorage.getItem(authenticatedUser.email+'?accessToken');
+              console.log('credential', credential);
+
+              promises.push(authenticatedUser.link(credential))
+            }
+
+          }
+
+          promises.push(createProfile(authenticatedUser));
+
+          $q.all(promises)
             .then(function(){
+              if(typeof credential !== 'undefined' && credential !== null){
+                //$window.sessionStorage.removeItem(authenticatedUser.email+'?provider');
+                //$window.sessionStorage.removeItem(authenticatedUser.email+'?accessToken');
+                $window.sessionStorage.removeItem(authenticatedUser.email);
+              }
+
+              deferred.resolve();
               $location.path('/new-publication');
             });
 
-
+          //$scope.httpRequestPromise = createProfile(authenticatedUser)
+          //  .then(function(){
+          //    $location.path('/new-publication');
+          //  });
 
         }
+
       });
 
       var original = angular.copy($scope.model = {
@@ -218,9 +264,14 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
         modalInstance.result.then(function (result) {
 
-          if(result.redirect){
-            $window.sessionStorage.setItem(email, result.credential);
-          }
+          $scope.providerToLink = result.provider;
+
+          console.log('modalInstance.result.then - result.credential ', result.credential);
+
+          //$window.sessionStorage.setItem(email+'?accessToken', result.credential.accessToken);
+          //$window.sessionStorage.setItem(email+'?provider', result.credential.provider);
+
+          $window.sessionStorage.setItem(email, result.credential.accessToken);
 
           $scope.oauthLogin(result.provider, result.redirect);
 
@@ -237,7 +288,7 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
           //console.log('Error in getRedirectResult.', error);
           //console.log('email.', email);
-          //console.log('credential.', credential);
+          console.log('attemptLinkCredential - credential.', credential);
 
           //console.log('A list of the available providers linked to the email address.', providers);
           //["google.com", "password"]
@@ -272,33 +323,34 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
       $scope.oauthLogin = function(provider, signInWithRedirect) {
         console.log('provider', provider);
+        var authProvider;
+
+        switch(provider) {
+          case 'facebook.com':
+            authProvider = new $window.firebase.auth.FacebookAuthProvider();
+            authProvider.addScope('email');
+            break;
+          case 'twitter.com':
+            authProvider = new $window.firebase.auth.TwitterAuthProvider();
+            break;
+          case 'google.com':
+            authProvider = new firebase.auth.GoogleAuthProvider();
+            break;
+          case 'github.com':
+            // https://developer.github.com/v3/oauth/
+            authProvider = new $window.firebase.auth.GithubAuthProvider();
+            authProvider.addScope('user:email');
+            break;
+        }
 
         if(typeof signInWithRedirect !== 'undefined' && signInWithRedirect === true){
 
           // returns firebase.Promise containing void
-          $scope.httpRequestPromise = FireAuth.$signInWithRedirect(provider)
+          $scope.httpRequestPromise = FireAuth.$signInWithRedirect(authProvider)
             .then(null, showError);
 
         }else{
-          var authProvider;
 
-          switch(provider) {
-            case 'facebook.com':
-              authProvider = new $window.firebase.auth.FacebookAuthProvider();
-              authProvider.addScope('email');
-              break;
-            case 'twitter.com':
-              authProvider = new $window.firebase.auth.TwitterAuthProvider();
-              break;
-            case 'google.com':
-              authProvider = new firebase.auth.GoogleAuthProvider();
-              break;
-            case 'github.com':
-              // https://developer.github.com/v3/oauth/
-              authProvider = new $window.firebase.auth.GithubAuthProvider();
-              authProvider.addScope('user:email');
-              break;
-          }
 
           // returns firebase.auth.UserCredential {user: nullable firebase.User, credential: nullable firebase.auth.AuthCredential}
           $scope.httpRequestPromise = FireAuth.$signInWithPopup(authProvider)
