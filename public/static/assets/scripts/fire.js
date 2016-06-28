@@ -4,10 +4,10 @@
 
 angular.module('fire2',['firebase'])
   .constant('FIRE_BASE_CONFIG', {
-    apiKey: "AIzaSyBAuBLwxWaynoLI6AQeR60k9xPG5JnIgTA",
-    authDomain: "berlin.firebaseapp.com",
-    databaseURL: "https://berlin.firebaseio.com",
-    storageBucket: "project-966415674961578791.appspot.com"
+    apiKey: 'AIzaSyBAuBLwxWaynoLI6AQeR60k9xPG5JnIgTA',
+    authDomain: 'berlin.firebaseapp.com',
+    databaseURL: 'https://berlin.firebaseio.com',
+    storageBucket: 'project-966415674961578791.appspot.com'
   })
   .config(['FIRE_BASE_CONFIG', function (FIRE_BASE_CONFIG) {
     firebase.initializeApp(FIRE_BASE_CONFIG);
