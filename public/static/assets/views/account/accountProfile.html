@@ -19,14 +19,13 @@
       <button type="button" class="list-group-item" ng-click="changeEmail()" ng-show="account.user.provider === 'password'">Change Email</button>
     </div>
 
+    <!--<hr style="margin-top: 10px; margin-bottom: 10px;">-->
 
-    <hr style="margin-top: 10px; margin-bottom: 10px;">
-
-    <ul class="list-unstyled">
-      <li ng-repeat="provider in firebaseUser.providerData">
-        <button type="button" class="list-group-item" ng-click="unlinkProvider(provider.providerId)">Unlink <span ng-bind="provider.providerId"></span></button>
-      </li>
-    </ul>
+    <!--<ul class="list-unstyled">-->
+      <!--<li ng-repeat="provider in firebaseUser.providerData">-->
+        <!--<button type="button" class="list-group-item" ng-click="unlinkProvider(provider.providerId)">Unlink <span ng-bind="provider.providerId"></span></button>-->
+      <!--</li>-->
+    <!--</ul>-->
 
   </div>
   <div class="panel-footer" ng-show="account.user.provider === 'password'">

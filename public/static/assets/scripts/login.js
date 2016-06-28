@@ -14,39 +14,41 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
       // watch for login status changes and redirect if appropriate
       FireAuth.$onAuthStateChanged(function (authenticatedUser) {
-        console.log('authenticatedUser', authenticatedUser);
 
         if( authenticatedUser !== null) {
 
           var deferred  = $q.defer();
           $scope.httpRequestPromise = deferred.promise;
           var promises  = [];
-          //var pendingCredential = {};
           var credential;
 
           //https://firebase.google.com/docs/auth/web/account-linking#link-auth-provider-credentials-to-a-user-account
 
           if(authenticatedUser.email !== null){
-            credential = firebase.auth.FacebookAuthProvider.credential($window.sessionStorage.getItem(authenticatedUser.email));
 
-            //pendingCredential.provider    = $window.sessionStorage.getItem(authenticatedUser.email+'?provider');
-            //pendingCredential.accessToken = ;
+            var provider = $window.sessionStorage.getItem(authenticatedUser.email+'?provider');
 
-            if(typeof credential !== 'undefined' && credential !== null){
-              //console.log('pendingCredential', pendingCredential);
-              //console.log('pendingCredential.accessToken', pendingCredential.accessToken);
-              //console.log('pendingCredential.provider', pendingCredential.provider);
-
-              //var credential = firebase.auth.FacebookAuthProvider.credential();
-
-              //var credential = new $window.firebase.auth.AuthCredential();
-              //credential.provider = pendingCredential.provider;
-              //credential.accessToken = pendingCredential.accessToken;
-
-              ////var credential = $window.sessionStorage.getItem(authenticatedUser.email+'?accessToken');
-              console.log('credential', credential);
-
-              promises.push(authenticatedUser.link(credential))
+            if(provider !== null){
+              switch (provider) {
+                case 'facebook.com':
+                  credential = firebase.auth.FacebookAuthProvider.credential($window.sessionStorage.getItem(authenticatedUser.email+'?accessToken'));
+                  break;
+                case 'google.com':
+                  console.log('TODO set credential for: google.com');
+                  notificationService.error('TODO set credential for: google.com');
+                  break;
+                case 'twitter.com':
+                  console.log('TODO set credential for: twitter.com');
+                  notificationService.error('TODO set credential for: twitter.com');
+                  break;
+                case 'github.com':
+                  console.log('TODO set credential for: github.com');
+                  notificationService.error('TODO set credential for: github.com');
+                  break;
+              }
+              if(typeof credential !== 'undefined' && credential !== null){
+                promises.push(authenticatedUser.link(credential));
+              }
             }
 
           }
@@ -56,19 +58,13 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
           $q.all(promises)
             .then(function(){
               if(typeof credential !== 'undefined' && credential !== null){
-                //$window.sessionStorage.removeItem(authenticatedUser.email+'?provider');
-                //$window.sessionStorage.removeItem(authenticatedUser.email+'?accessToken');
-                $window.sessionStorage.removeItem(authenticatedUser.email);
+                $window.sessionStorage.removeItem(authenticatedUser.email+'?provider');
+                $window.sessionStorage.removeItem(authenticatedUser.email+'?accessToken');
               }
 
               deferred.resolve();
               $location.path('/new-publication');
             });
-
-          //$scope.httpRequestPromise = createProfile(authenticatedUser)
-          //  .then(function(){
-          //    $location.path('/new-publication');
-          //  });
 
         }
 
@@ -121,11 +117,7 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
        * @param {Object} error
        **/
       function showError(error) {
-        console.log('error:', error);
-
-        if (error.code === 'auth/account-exists-with-different-credential') {
-          attemptLinkCredential(error.email, error.credential);
-        }
+        //console.log('error:', error);
 
         switch (error.code) {
           case 'auth/invalid-email':
@@ -147,7 +139,10 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
             notificationService.error('A network error has occurred.');
             break;
           case 'auth/account-exists-with-different-credential':
-            notificationService.error('An account already exists with the same email address but different sign-in provider.');
+            attemptLinkCredential(error.email, error.credential);
+            break;
+          case 'auth/email-already-in-use':
+            notificationService.error('The email address is already in use by another account.');
             break;
           default:
             notificationService.error('Undefined Error');
@@ -264,18 +259,13 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
         modalInstance.result.then(function (result) {
 
-          $scope.providerToLink = result.provider;
+          $window.sessionStorage.setItem(email+'?provider', result.credential.provider);
+          $window.sessionStorage.setItem(email+'?accessToken', result.credential.accessToken);
 
-          console.log('modalInstance.result.then - result.credential ', result.credential);
+          if(result.credential.provider !== 'password'){
+            $scope.oauthLogin(result.provider, result.redirect);
+          }
 
-          //$window.sessionStorage.setItem(email+'?accessToken', result.credential.accessToken);
-          //$window.sessionStorage.setItem(email+'?provider', result.credential.provider);
-
-          $window.sessionStorage.setItem(email, result.credential.accessToken);
-
-          $scope.oauthLogin(result.provider, result.redirect);
-
-          console.log('result', result);
         }, function (error) {
           //modalErrors(error);
         });
@@ -285,21 +275,9 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
         $window.firebase.auth().fetchProvidersForEmail(email).then(function(providers) {
           promptForLinkCredential('lg', email, credential, providers);
-
-          //console.log('Error in getRedirectResult.', error);
-          //console.log('email.', email);
-          console.log('attemptLinkCredential - credential.', credential);
-
-          //console.log('A list of the available providers linked to the email address.', providers);
-          //["google.com", "password"]
-
         });
 
       }
-
-      //function postLogin(){
-      //
-      //}
 
       $scope.register = function(){
         $scope.forms.register.$setSubmitted(true);
@@ -316,13 +294,12 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
        */
       $window.firebase.auth().getRedirectResult()
         .then(null,function(error){
-          console.log('error - getRedirectResult', error);
+          console.log('error', error);
           attemptLinkCredential(error.email, error.credential);
         });
 
 
       $scope.oauthLogin = function(provider, signInWithRedirect) {
-        console.log('provider', provider);
         var authProvider;
 
         switch(provider) {
@@ -350,7 +327,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
             .then(null, showError);
 
         }else{
-
 
           // returns firebase.auth.UserCredential {user: nullable firebase.User, credential: nullable firebase.auth.AuthCredential}
           $scope.httpRequestPromise = FireAuth.$signInWithPopup(authProvider)
