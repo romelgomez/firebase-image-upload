@@ -66,13 +66,40 @@
             <div class="text-center">OR</div>
             <hr style="margin-top: 0;">
 
-            <a class="btn btn-block btn-social btn-facebook" ng-click="oauthLogin('facebook')" >
-              <i class="fa fa-facebook"></i> Sign in with Facebook
-            </a>
+            <div class="visible-xs-block visible-sm-block">
+              <a class="btn btn-block btn-social btn-facebook" ng-click="oauthLogin('facebook.com', true)" >
+                <i class="fa fa-facebook" aria-hidden="true"></i> Sign in with Facebook
+              </a>
 
-            <a class="btn btn-block btn-social btn-twitter" ng-click="oauthLogin('twitter')" >
-              <i class="fa fa-twitter"></i> Sign in with Twitter
-            </a>
+              <a class="btn btn-block btn-social btn-twitter" ng-click="oauthLogin('twitter.com', true)" >
+                <i class="fa fa-twitter" aria-hidden="true"></i> Sign in with Twitter
+              </a>
+
+              <a class="btn btn-block btn-social btn-google" ng-click="oauthLogin('google.com', true)" >
+                <i class="fa fa-google" aria-hidden="true"></i> Sign in with Google
+              </a>
+
+              <a class="btn btn-block btn-social btn-github" ng-click="oauthLogin('github.com', true)" >
+                <i class="fa fa-github" aria-hidden="true"></i> Sign in with Github
+              </a>
+            </div>
+            <div class="visible-md-block visible-lg-block">
+              <a class="btn btn-block btn-social btn-facebook" ng-click="oauthLogin('facebook.com')" >
+                <i class="fa fa-facebook" aria-hidden="true"></i> Sign in with Facebook
+              </a>
+
+              <a class="btn btn-block btn-social btn-twitter" ng-click="oauthLogin('twitter.com')" >
+                <i class="fa fa-twitter" aria-hidden="true"></i> Sign in with Twitter
+              </a>
+
+              <a class="btn btn-block btn-social btn-google" ng-click="oauthLogin('google.com')" >
+                <i class="fa fa-google" aria-hidden="true"></i> Sign in with Google
+              </a>
+
+              <a class="btn btn-block btn-social btn-github" ng-click="oauthLogin('github.com')" >
+                <i class="fa fa-github" aria-hidden="true"></i> Sign in with Github
+              </a>
+            </div>
 
             <hr>
             <div class="alert alert-info alert-xs" style="margin-bottom: 10px; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, is required.</div>
@@ -229,5 +256,70 @@
 
 </div>
 
+
+<script type="text/ng-template" id="promptForLinkCredentialModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">An account already exists with the same email address but different sign-in provider.</h3>
+  </div>
+  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
+
+    <p style="margin-bottom: 0;">
+      You can link you <span ng-bind="credential.provider"></span> account,
+      to the account already exists in this site, then you can login using whichever account you have registered in this site.
+    </p>
+
+    <ul class="list-unstyled">
+      <li ng-repeat="provider in providers" style="margin-top: 10px;">
+
+        <a ng-show="provider === 'password'" class="btn btn-block btn-social btn-reddit" ng-click="loginWith('password')">
+          <i class="fa fa-user" aria-hidden="true"></i> User email and Password
+        </a>
+
+        <div ng-show="provider !== 'password'">
+          <div class="visible-xs-block visible-sm-block">
+            <a ng-show="provider === 'facebook.com'" class="btn btn-block btn-social btn-facebook" ng-click="loginWith('facebook.com', true)" >
+              <i class="fa fa-facebook" aria-hidden="true"></i> Sign in with Facebook
+            </a>
+
+            <a ng-show="provider === 'twitter.com'" class="btn btn-block btn-social btn-twitter" ng-click="loginWith('twitter.com', true)" >
+              <i class="fa fa-twitter" aria-hidden="true"></i> Sign in with Twitter
+            </a>
+
+            <a ng-show="provider === 'google.com'" class="btn btn-block btn-social btn-google" ng-click="loginWith('google.com', true)" >
+              <i class="fa fa-google" aria-hidden="true"></i> Sign in with Google
+            </a>
+
+            <a ng-show="provider === 'github.com'" class="btn btn-block btn-social btn-github" ng-click="loginWith('github.com', true)" >
+              <i class="fa fa-github" aria-hidden="true"></i> Sign in with Github
+            </a>
+
+          </div>
+          <div class="visible-md-block visible-lg-block">
+            <a ng-show="provider === 'facebook.com'" class="btn btn-block btn-social btn-facebook" ng-click="loginWith('facebook.com')" >
+              <i class="fa fa-facebook" aria-hidden="true"></i> Sign in with Facebook
+            </a>
+
+            <a ng-show="provider === 'twitter.com'" class="btn btn-block btn-social btn-twitter" ng-click="loginWith('twitter.com')">
+              <i class="fa fa-twitter" aria-hidden="true"></i> Sign in with Twitter
+            </a>
+
+            <a ng-show="provider === 'google.com'" class="btn btn-block btn-social btn-google" ng-click="loginWith('google.com')" >
+              <i class="fa fa-google" aria-hidden="true"></i> Sign in with Google
+            </a>
+
+            <a ng-show="provider === 'github.com'" class="btn btn-block btn-social btn-github" ng-click="loginWith('github.com')" >
+              <i class="fa fa-github" aria-hidden="true"></i> Sign in with Github
+            </a>
+          </div>
+        </div>
+
+      </li>
+    </ul>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+  </div>
+</script>
 
 

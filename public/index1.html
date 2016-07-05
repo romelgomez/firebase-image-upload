@@ -99,9 +99,9 @@
     <div class="collapse navbar-collapse" id="js-navbar-collapse">
       <ul class="nav navbar-nav">
         <li><a ng-href="/new-publication" style="color: #337ab7;">Publish Something!</a></li>
-        <li ng-show-auth="" ><a ng-href="/account">Account <i class="fa fa-wrench"></i></a></li>
-        <li ng-hide-auth="" ><a ng-href="/login" style="color: #337ab7;" >Log in</a></li>
-        <li ng-show-auth="" ><a ng-click="logout()" style="cursor: pointer; color: red;" >logout</a></li>
+        <li ng-cloak ng-show="firebaseUser" ><a ng-href="/account">Account <i class="fa fa-wrench"></i></a></li>
+        <li ng-cloak ng-show="!firebaseUser" ><a ng-href="/login" style="color: #337ab7;" >Log in</a></li>
+        <li ng-cloak ng-show="firebaseUser" ><a ng-click="logout()" style="cursor: pointer; color: red;" >logout</a></li>
       </ul>
     </div>
   </div>
@@ -121,15 +121,15 @@
 <script src="/bower_components/jquery/dist/jquery.js"></script>
 <!-- endbuild -->
 
-<!-- build:js(.) static/assets/scripts/bc.min.js -->
-<script src="/bower_components/JsBarcode/CODE39.js"></script>
-<script src="/bower_components/JsBarcode/CODE128.js"></script>
-<script src="/bower_components/JsBarcode/EAN_UPC.js"></script>
-<script src="/bower_components/JsBarcode/ITF.js"></script>
-<script src="/bower_components/JsBarcode/ITF14.js"></script>
-<script src="/bower_components/JsBarcode/pharmacode.js"></script>
-<script src="/bower_components/JsBarcode/JsBarcode.js"></script>
-<!-- endbuild -->
+
+<!--<script src="/bower_components/JsBarcode/CODE39.js"></script>-->
+<!--<script src="/bower_components/JsBarcode/CODE128.js"></script>-->
+<!--<script src="/bower_components/JsBarcode/EAN_UPC.js"></script>-->
+<!--<script src="/bower_components/JsBarcode/ITF.js"></script>-->
+<!--<script src="/bower_components/JsBarcode/ITF14.js"></script>-->
+<!--<script src="/bower_components/JsBarcode/pharmacode.js"></script>-->
+<!--<script src="/bower_components/JsBarcode/JsBarcode.js"></script>-->
+
 
 <!-- build:js(.) static/assets/scripts/ng.min.js -->
 <script src="/bower_components/angular/angular.js"></script>

@@ -3,7 +3,7 @@
 
     <div style="text-align: center; margin-top: -60px;">
       <div class="photo" style="padding: 4px; border: solid 1px #A0A0A0; background: #FFFFFF;">
-        <img ng-src="{{account.user[account.user.provider].profileImageURL}}" alt="avatar">
+        <img ng-src="{{firebaseUser.providerData[0].photoURL !== null? firebaseUser.providerData[0].photoURL : firebaseUser.photoURL}}" alt="avatar">
       </div>
       <div>
         Hi <span style="color: #F0563D;">{{account.profile.names | capitalize}} {{account.profile.lastNames | capitalize}}</span>
@@ -18,6 +18,14 @@
       <button type="button" class="list-group-item" ng-click="changePassword()" ng-show="account.user.provider === 'password'">Change Password</button>
       <button type="button" class="list-group-item" ng-click="changeEmail()" ng-show="account.user.provider === 'password'">Change Email</button>
     </div>
+
+    <!--<hr style="margin-top: 10px; margin-bottom: 10px;">-->
+
+    <!--<ul class="list-unstyled">-->
+      <!--<li ng-repeat="provider in firebaseUser.providerData">-->
+        <!--<button type="button" class="list-group-item" ng-click="unlinkProvider(provider.providerId)">Unlink <span ng-bind="provider.providerId"></span></button>-->
+      <!--</li>-->
+    <!--</ul>-->
 
   </div>
   <div class="panel-footer" ng-show="account.user.provider === 'password'">

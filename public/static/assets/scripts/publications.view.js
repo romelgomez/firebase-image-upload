@@ -42,7 +42,7 @@ publicationsModule
           .then(function(snapshot){
             if(snapshot.exists()){
               var publication = snapshot.val();
-              publication.$id = snapshot.key();
+              publication.$id = snapshot.key;
 
               if (typeof publication.releaseDate === 'undefined'){
                 deferred.reject();
@@ -65,7 +65,7 @@ publicationsModule
         FireRef.child('users').child(userID).once('value')
           .then(function(snapshot){
             var profile = snapshot.val();
-            profile.$id = snapshot.key();
+            profile.$id = snapshot.key;
 
             deferred.resolve({profile: profile});
           },function (error) {
@@ -119,12 +119,12 @@ publicationsModule
             $scope.publication.$isReady = true;
             deferred.resolve();
           },function () {
-            notificationService.error('This action cannot be completed. 1');
+            notificationService.error('This action cannot be completed.');
             $location.path('/');
           });
 
       }else{
-        notificationService.error('This action cannot be completed. 0');
+        notificationService.error('This action cannot be completed.');
         $location.path('/');
       }
 

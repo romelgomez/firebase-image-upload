@@ -16,12 +16,12 @@ publicationsModule
         restrict:'E',
         templateUrl: 'static/assets/views/directives/publicationsList.html',
         scope:{
-          profile:'=',
-          editMode:'=',
+          profile:'=?',
+          editMode:'=?',
           lording:'=',
-          account:'=',
-          submit:'=',
-          publications:'='
+          account:'=?',
+          submit:'=?',
+          publications:'=?'
         },
         link : function($scope) {
 

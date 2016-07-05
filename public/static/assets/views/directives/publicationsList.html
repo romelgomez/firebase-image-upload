@@ -1,13 +1,16 @@
 <div>
-  <form name="algoliaForm" novalidate="" ng-submit="submit()">
-    <div class="input-group">
-      <input type="text" class="form-control input-without-focus" ng-model="algolia.req.query" placeholder="Any Keywords" tabindex="1" input-focus>
-      <div class="input-group-addon">
-        <span ng-show="algolia.req.query === '';" class="glyphicon glyphicon-search" aria-hidden="true"></span>
-        <span ng-show="algolia.req.query !== '';" ng-click="algolia.req.query = '';" class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+
+  <div ng-show="!(algolia.res.query === '' && algolia.res.nbHits === 0)">
+    <form name="algoliaForm" novalidate="" ng-submit="submit()">
+      <div class="input-group">
+        <input type="text" class="form-control input-without-focus" ng-model="algolia.req.query" placeholder="Any Keywords" tabindex="1" input-focus>
+        <div class="input-group-addon">
+          <span ng-show="algolia.req.query === '';" class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          <span ng-show="algolia.req.query !== '';" ng-click="algolia.req.query = '';" class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
 
   <!--<pre>{{algoliaForm | json}}</pre>-->
   <div ng-show="algolia.res.nbHits > 0" class="visible-xs-block visible-sm-block">

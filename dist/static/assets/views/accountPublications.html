@@ -1,7 +1,7 @@
 <div class="container" style="margin-top: 17px" ng-show="!lording.isDone"><div cg-busy="{promise: lording.promise, message:'Just a moment'}"><div class="panel panel-default uk-flag-background" style="height: 600px"><div class="panel-body"></div></div></div></div><div ng-show="lording.isDone" style="margin-bottom: 10px"><div ng-style="{
           'margin-top':0,
           'padding':'300px 0 10px 0',
-          'background' : (profile.$banners.length > 0) ? 'url(\'' + 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_500,w_1500/' + profile.$banners[0].$id + '.jpg\') no-repeat center center' : 'url(\'' + 'https://pbs.twimg.com/profile_banners/192774776/1445226267/1500x500' + '\') no-repeat center center',
+          'background' : (profile.$banners.length > 0) ? 'url(\'' + 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_500,w_1500/' + profile.$banners[0].$id + '.jpg\') no-repeat center center' : 'url(\'' + '/static/assets/images/iceland.jpg' + '\') no-repeat center center',
           '-webkit-background-size':'cover',
           '-moz-background-size':'cover',
           '-o-background-size':'cover',

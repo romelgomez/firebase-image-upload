@@ -5,7 +5,7 @@ angular.module('app',[
     'filters',
     'validators',
     'firebase',
-    'fire',
+    'fire2',
     'routes',
     'tree',
     'publications',
@@ -16,9 +16,18 @@ angular.module('app',[
     'updateMeta',
     'accountPublications'
   ])
-  .controller('AppController',['$scope','FireAuth',function($scope,FireAuth){
+  .controller('AppController',[ '$scope', 'FireAuth',function( $scope, FireAuth){
 
-    $scope.logout = function() { FireAuth.$unauth(); };
+    FireAuth.$onAuthStateChanged(function(firebaseUser) {
+
+      //console.log('firebaseUser', firebaseUser);
+
+      $scope.firebaseUser = firebaseUser;
+    });
+
+    //https://github.com/firebase/angularfire/blob/master/docs/guide/user-auth.md#retrieving-authentication-state
+
+    $scope.logout = function() { FireAuth.$signOut(); };
 
     $scope.inProduction = false;
 

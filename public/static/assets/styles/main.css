@@ -156,7 +156,7 @@ ul.jqtree-tree span.jqtree-border {
 
 .uk-flag-background{
     background-size:     cover;
-    background: url(/static/assets/images/uk.svg);
+    background: url(/static/assets/images/loading.gif);
     background-size:     cover;
     background-repeat:   no-repeat;
     background-position: center center;
