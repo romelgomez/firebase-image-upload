@@ -60,7 +60,7 @@
           <h5 ng-if="publication.data.department === 'Jobs'"><i class="fa fa-users"></i> {{publication.data.jobRecruiterType}}</h5>
           <h5>
             <i class="fa fa-map-marker"></i>
-            <span ng-repeat="location in publication.data.locations"> {{location | capitalizeFirstChar}} {{!$last ? '•' : ''}} </span>
+            <span ng-repeat="location in publication.data.locations"> {{location | capitalizeFirstChar}}{{!$last ? ' • ' : ''}}</span>
           </h5>
           <h5><i class="fa fa-calendar"></i> Published: {{publication.data.releaseDate | date:'dd'}}/{{publication.data.releaseDate | date:'MM'}}/{{publication.data.releaseDate | date:'yyyy'}}  </h5>
 

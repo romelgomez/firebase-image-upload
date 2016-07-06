@@ -2,8 +2,12 @@ var path = require('path');
 var fs = require('fs');
 var Q = require('q');
 var handlebars = require('handlebars');
-var Firebase = require("firebase");
-var FireRef = new Firebase('berlin.firebaseio.com/');
+
+//var Firebase = require("firebase");
+//var FireRef = new Firebase('berlin.firebaseio.com/');
+var firebase = require('./fire');
+
+
 var _ = require('lodash');
 
 
@@ -46,11 +50,11 @@ function readFile(fileName){
 function getPublicationByUUDID (uuid){
   var deferred = Q.defer();
 
-  FireRef.child('publications/'+uuid).once('value')
+  firebase.FireRef.child('publications/'+uuid).once('value')
     .then(function(snapshot){
 
       var publication = snapshot.val();
-      publication.$id = snapshot.key();
+      publication.$id = snapshot.key;
 
       if(snapshot.exists()){
         deferred.resolve(publication);
@@ -68,10 +72,10 @@ function getPublicationByUUDID (uuid){
 function getUserByUUID (uuid){
   var deferred = Q.defer();
 
-  FireRef.child('users/'+uuid).once('value')
+  firebase.FireRef.child('users/'+uuid).once('value')
     .then(function(snapshot){
       var user = snapshot.val();
-      user.$id = snapshot.key();
+      user.$id = snapshot.key;
 
       if(snapshot.exists()){
         deferred.resolve(user);
@@ -89,7 +93,7 @@ function getUserByUUID (uuid){
 function getUserByAccountName (accountName){
   var deferred = Q.defer();
 
-  FireRef.child('accountNames').child(accountName).once('value')
+  firebase.FireRef.child('accountNames').child(accountName).once('value')
     .then(function(snapshot){
       if(snapshot.exists()){
         // get profile data by the id (snapshot.val() - facebook:10204911533563856)

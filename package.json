@@ -20,7 +20,7 @@
     "cloudinary": "^1.2.6",
     "colors": "^1.1.2",
     "express": "4.13.4",
-    "firebase": "^2.4.2",
+    "firebase": "^3.1.0",
     "formidable": "^1.0.17",
     "handlebars": "^4.0.5",
     "imagemin-pngquant": "^4.2.2",

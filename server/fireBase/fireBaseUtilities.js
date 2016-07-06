@@ -1,10 +1,13 @@
 var Q = require('q');
-var Firebase = require('firebase');
+
+//var Firebase = require('firebase');
+
+var firebase = require('./../fire');
+
 var _ = require('lodash');
 var async = require('async');
 var moment = require('moment');
 var colors = require('colors');
-
 
 module.exports = {
   reImport: reImport
@@ -37,19 +40,18 @@ function elapsedTime(note){
 function reImport( taskTitle, firePath, data) {
   var deferred = Q.defer();
   console.log('['+moment().format('h:mm:ss').gray+'] Starting \''+ taskTitle.green +'\'...');
-  var ref = new Firebase(firePath);
 
-  function onComplete(error) {
-    if (error) {
-      elapsedTime('['+moment().format('h:mm:ss').gray+'] Error \''+ taskTitle.red +'\' after ');
-      deferred.reject(error);
-    } else {
+  //var ref = new Firebase(firePath);
+  var ref = firebase.FireRef.child(firePath);
+
+  ref.set(data)
+    .then(function(){
       elapsedTime('['+moment().format('h:mm:ss').gray+'] Finished \''+ taskTitle.green +'\' after ');
       deferred.resolve();
-    }
-  }
-
-  ref.set(data, onComplete);
+    }, function (error) {
+      elapsedTime('['+moment().format('h:mm:ss').gray+'] Error \''+ taskTitle.red +'\' after ');
+      deferred.reject(error);
+    });
 
   return deferred.promise;
 }
