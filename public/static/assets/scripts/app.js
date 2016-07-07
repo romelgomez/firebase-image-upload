@@ -13,6 +13,7 @@ angular.module('app',[
     'account',
     'ui.bootstrap',
     'main',
+    'search',
     'updateMeta',
     'accountPublications'
   ])
@@ -66,6 +67,14 @@ angular.module('app',[
       }
     }
 
+  }])
+  .directive('inputFocus',[function(){
+    return {
+      restrict:'A',
+      link : function(scope, element) {
+        element.focus();
+      }
+    };
   }]);
 
 

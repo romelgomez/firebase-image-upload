@@ -43,6 +43,10 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'static/assets/views/main.html',
         controller: 'MainController'
       })
+      .when('/search', {
+        templateUrl: 'static/assets/views/search.html',
+        controller: 'SearchController'
+      })
       .whenAuthenticated('/categories', {
         templateUrl: 'static/assets/views/categories.html',
         controller: 'TreeController'

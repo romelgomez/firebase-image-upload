@@ -1,27 +1,27 @@
-<div style="margin-top: 17px;">
-  <div class="container" ng-show="!lording.isDone">
-    <div cg-busy="{promise: lording.promise, message:'Just a moment'}">
-      <div class="panel panel-default uk-flag-background"  style="height: 600px;">
-        <div class="panel-body">
+<div style="margin-top: 17px; margin-bottom: 10px;">
 
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <img src="static/assets/images/jobs.png" class="img-responsive">
+      </div>
+      <div class="col-xs-12">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 nopadding" >
+          <img src="static/assets/images/transport.png" class="img-responsive">
         </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 nopadding">
+          <img src="static/assets/images/realState.png" class="img-responsive">
+        </div>
+      </div>
+      <div class="col-xs-12">
+        <img src="static/assets/images/services.png" class="img-responsive">
+      </div>
+      <div class="col-xs-12">
+        <img src="static/assets/images/marketplace.png" class="img-responsive">
       </div>
     </div>
   </div>
 
-  <div ng-show="lording.isDone">
-
-    <div class="container" >
-      <div class="panel panel-default" >
-        <div class="panel-body">
-
-          <list-publications lording="lording"></list-publications>
-
-        </div>
-      </div>
-    </div>
-
-  </div>
 </div>
 
 <update-title title="MarketOfLondon.UK"></update-title>

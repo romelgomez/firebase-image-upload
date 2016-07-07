@@ -162,6 +162,10 @@ module.exports = function(app) {
      defaultRoute(req, res);
   });
 
+  app.get('/search', function(req, res) {
+     defaultRoute(req, res);
+  });
+
   app.get('/categories', function(req, res){
     defaultRoute(req, res);
   });
