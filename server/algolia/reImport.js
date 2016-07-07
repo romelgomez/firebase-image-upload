@@ -1,7 +1,8 @@
 var Q = require('q');
 var utilities = require('./../utilities');
 var algoliaSettings = require('./algoliaSettings');
-var Firebase = require('firebase');
+//var Firebase = require('firebase');
+var firebase = require('./../fire');
 var _ = require('lodash');
 var async = require('async');
 
@@ -19,14 +20,15 @@ function reImport( taskTitle, firePath, indexName, mainIndexSettings) {
   var deferred = Q.defer();
   utilities.startProcess(taskTitle);
   var tempIndex = algoliaSettings.client.initIndex(indexName+'Temp');
-  var ref = new Firebase(firePath);
-  ref.once('value', function(dataSnapshot){
+  //var ref = new Firebase(firePath);
+  var ref = firebase.FireRef.child(firePath);
+  ref.once('value', function(snapshot){
     tempIndex.clearIndex()
       .then(function(){
         return tempIndex.setSettings(mainIndexSettings)
       })
       .then(function(){
-        return addObjectIDs(dataSnapshot)
+        return addObjectIDs(snapshot)
       })
       .then(function(the){
         var _deferred = Q.defer();
@@ -65,17 +67,17 @@ function reImport( taskTitle, firePath, indexName, mainIndexSettings) {
 
 /**
  * Set for every object the objectID required for Algolia, and return all as array of objects.
- * @param {Object} dataSnapshot
+ * @param {Object} snapshot
  * @return {Promise<Array>}
  * */
-function addObjectIDs(dataSnapshot){
+function addObjectIDs(snapshot){
   var deferred = Q.defer();
 
   // Array of objects to index
   var objectsToIndex = [];
 
   // Get all objects
-  var values = dataSnapshot.val();
+  var values = snapshot.val();
 
   // Process each Firebase object
   for (var key in values) {
@@ -103,7 +105,7 @@ function main(){
   var publicationsMainSettings = indexesSettings.allSettings.publications;
   delete publicationsMainSettings.slaves; // http://stackoverflow.com/questions/34954127/how-to-properly-reimport-data-and-kept-the-settings-in-algolia
 
-  reImport('reImport publications data', 'berlin.firebaseio.com/publications', 'publications', publicationsMainSettings)
+  reImport('reImport publications data', 'publications', 'publications', publicationsMainSettings)
     .then(function(){
       console.log('······· The reImport was satisfactory ·······');
       process.exit();
