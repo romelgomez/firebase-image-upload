@@ -150,7 +150,9 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
     '$uibModal',
     'publicationService',
     'imagesService',
-    '$log',function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, publicationService, imagesService, $log){
+    'CATEGORIES',
+    'LOCATIONS',
+    function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, publicationService, imagesService, CATEGORIES, LOCATIONS){
 
       var deferred = $q.defer();
       //var publicationsRef = FireRef.child('publications');
@@ -161,6 +163,8 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         $id: '',
         categoryPath: [],
         locationPath: [],
+        categories: CATEGORIES,
+        locations: LOCATIONS,
         categorySelected: false,
         inEditMode: false,
         isReady: false,
@@ -177,41 +181,53 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         }
       };
 
-      var categoriesDeferredObject  = $q.defer();
-      var locationsDeferredObject    = $q.defer();
+      //var categoriesDeferredObject  = $q.defer();
+      //var locationsDeferredObject    = $q.defer();
+      //
+      //var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
+      //categories.$loaded()
+      //  .then(function () {
+      //    $scope.publication.categories = angular.copy(categories);
+      //    categoriesDeferredObject.resolve();
+      //    categories.$destroy();
+      //  },function(error){
+      //    deferred.reject(error);
+      //  });
+      //
+      //var locations = $firebaseArray(FireRef.child('locations').orderByChild('left'));
+      //locations.$loaded()
+      //  .then(function () {
+      //    $scope.publication.locations = angular.copy(locations);
+      //    locationsDeferredObject.resolve();
+      //    locations.$destroy();
+      //  },function(error){
+      //    deferred.reject(error);
+      //  });
+      //
+      //$q.all([ categoriesDeferredObject.promise, locationsDeferredObject.promise])
+      //  .then(function () {
+      //    if(angular.isDefined($routeParams.publicationId)){
+      //      return setPublication($routeParams.publicationId);
+      //    }else{
+      //      $scope.publication.images = []; // If this definition is moved to the main object the images in edit mode after F5 are not recognized.
+      //    }
+      //  })
+      //  .then(function(){
+      //    $scope.publication.isReady = true;
+      //    deferred.resolve();
+      //  });
 
-      var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
-      categories.$loaded()
-        .then(function () {
-          $scope.publication.categories = angular.copy(categories);
-          categoriesDeferredObject.resolve();
-          categories.$destroy();
-        },function(error){
-          deferred.reject(error);
-        });
-
-      var locations = $firebaseArray(FireRef.child('locations').orderByChild('left'));
-      locations.$loaded()
-        .then(function () {
-          $scope.publication.locations = angular.copy(locations);
-          locationsDeferredObject.resolve();
-          locations.$destroy();
-        },function(error){
-          deferred.reject(error);
-        });
-
-      $q.all([ categoriesDeferredObject.promise, locationsDeferredObject.promise])
-        .then(function () {
-          if(angular.isDefined($routeParams.publicationId)){
-            return setPublication($routeParams.publicationId);
-          }else{
-            $scope.publication.images = []; // If this definition is moved to the main object the images in edit mode after F5 are not recognized.
-          }
-        })
-        .then(function(){
-          $scope.publication.isReady = true;
-          deferred.resolve();
-        });
+      if(angular.isDefined($routeParams.publicationId)){
+        setPublication($routeParams.publicationId)
+          .then(function(){
+            $scope.publication.isReady = true;
+            deferred.resolve();
+          });
+      }else{
+        $scope.publication.images = []; // If this definition is moved to the main object the images in edit mode after F5 are not recognized.
+        $scope.publication.isReady = true;
+        deferred.resolve();
+      }
 
       $scope.submit = function(){
         if($scope.publicationForm.$valid){

@@ -5,6 +5,7 @@ publicationsModule
     '$window',
     'algolia',
     'FireRef',
+    'FireAuth',
     '$firebaseArray',
     '$firebaseObject',
     '$route',
@@ -12,7 +13,9 @@ publicationsModule
     'notificationService',
     '$filter',
     '$uibModal',
-    function($q, $location, $window, algolia, FireRef , $firebaseArray, $firebaseObject, $route, $routeParams, notificationService, $filter, $uibModal){
+    'CATEGORIES',
+    'LOCATIONS',
+    function($q, $location, $window, algolia, FireRef , FireAuth, $firebaseArray, $firebaseObject, $route, $routeParams, notificationService, $filter, $uibModal, CATEGORIES, LOCATIONS){
       return {
         restrict:'E',
         templateUrl: 'static/assets/views/directives/publicationsList.html',
@@ -53,27 +56,27 @@ publicationsModule
           var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
 
           var fireData = {
-            categories: {},
-            locations: {}
+            categories: CATEGORIES,
+            locations: LOCATIONS
           };
 
-          // Create a synchronized array, and then destroy the synchronization after having the data
-          var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
-          var categoriesLoadedPromise = categories.$loaded()
-            .then(function () {
-              fireData.categories = angular.copy(categories);
-              categories.$destroy();
-            });
-          $scope.lording.promises.push(categoriesLoadedPromise);
-
-          // Create a synchronized array, and then destroy the synchronization after having the data
-          var locations = $firebaseArray(FireRef.child('locations').orderByChild('left'));
-          var locationsLoadedPromise = locations.$loaded()
-            .then(function () {
-              fireData.locations = angular.copy(locations);
-              locations.$destroy();
-            });
-          $scope.lording.promises.push(locationsLoadedPromise);
+          //// Create a synchronized array, and then destroy the synchronization after having the data
+          //var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
+          //var categoriesLoadedPromise = categories.$loaded()
+          //  .then(function () {
+          //    fireData.categories = angular.copy(categories);
+          //    categories.$destroy();
+          //  });
+          //$scope.lording.promises.push(categoriesLoadedPromise);
+          //
+          //// Create a synchronized array, and then destroy the synchronization after having the data
+          //var locations = $firebaseArray(FireRef.child('locations').orderByChild('left'));
+          //var locationsLoadedPromise = locations.$loaded()
+          //  .then(function () {
+          //    fireData.locations = angular.copy(locations);
+          //    locations.$destroy();
+          //  });
+          //$scope.lording.promises.push(locationsLoadedPromise);
 
           $scope.algolia = {
             isReady: false,
@@ -446,6 +449,14 @@ publicationsModule
                 if($scope.algolia.req.query !== ''){
                   //$route.updateParams({'q':$scope.algolia.req.query});
                   $location.search('q', $scope.algolia.req.query);
+                }
+
+                var firebaseUser = FireAuth.$getAuth();
+
+                if (firebaseUser) {
+                  console.log("Signed in as:", firebaseUser.uid);
+                } else {
+                  console.log("Signed out");
                 }
 
                 resetQuerySettings();

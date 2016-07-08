@@ -36,7 +36,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
     * /j-tree-test
     * */
 
-    if(user.uid !== 'facebook:10204911533563856'){
+    if(user.uid !== 'yTpoh7FnbWRUSlCSKUs8ttNQUkW2'){
       $location.path('/');
     }
 
@@ -99,10 +99,6 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
 
   }])
   .directive('jTree',[ '$q', '$templateCache', '$compile', '$uibModal', 'FireRef', '$firebaseArray', '$firebaseObject', 'notificationService', '$log', function( $q, $templateCache, $compile, $uibModal, FireRef, $firebaseArray, $firebaseObject, notificationService, $log){
-
-    var treeData = {
-      rawNodes:[]
-    };
 
     var nodeSelected = {};
     var reference = '';
@@ -388,7 +384,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
               '</h3>' +
             '</div>' +
             '<div class="panel-body">' +
-              '<div ng-show="rawUnsortedNodes.$value === null">Start add some data.</div>' +
+              '<div ng-show="treeData.rawUnsortedNodes.$value === null">Start add some data.</div>' +
               '<div id="tree"></div>' +
             '<div/>' +
           '<div/>' +
@@ -396,11 +392,23 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         '<section>' +
           '<div class="panel panel-default">' +
             '<div class="panel-heading">' +
-              '<h3 class="panel-title" style="line-height: 30px;">The <b>{{reference | capitalize}}</b> tree <b>Raw Unsorted Nodes</b> data: </h3>' +
+              '<h3 class="panel-title" style="line-height: 30px;">The <b>{{reference | capitalize}}</b> tree <b>Raw Sorted and Unsorted Nodes</b> data: </h3>' +
             '</div>' +
             '<div class="panel-body">' +
-              '<div><div class="alert alert-danger" role="alert"> For recovering purposes, after any changes, update the node service at code level, to avoid lost of this critical data.</div></div>' +
-              '<pre>{{rawUnsortedNodes | json }}</pre>' +
+              '<div><div class="alert alert-danger" role="alert"> For recovering purposes, after end the changes, update the node service at the code level, to avoid loss of this critical data.</div></div>' +
+              '<div><div class="alert alert-danger" role="alert"> After end the changes, update the constant at code level (Sorted Nodes), to represent this data Ad hoc, thus we not have to load from firebase every time that is required.</div></div>' +
+
+              '<uib-tabset active="active">' +
+                '<uib-tab index="0" heading="Unsorted">' +
+                '<br>' +
+                '<pre>{{treeData.rawUnsortedNodes | json }}</pre>' +
+              '</uib-tab>' +
+              '<uib-tab index="1" heading="Sorted">' +
+                '<br>' +
+                '<pre>{{treeData.rawNodes | json }}</pre>' +
+                '</uib-tab>' +
+              '</uib-tabset>' +
+
             '<div/>' +
           '<div/>' +
         '</section>' +
@@ -412,6 +420,11 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         if (typeof scope.reference === 'undefined') {
           throw '>>> The reference attr is undefined >>>';
         }
+
+        scope.treeData = {
+          rawNodes:[],
+          rawUnsortedNodes:{}
+        };
 
         reference = scope.reference;
 
@@ -536,7 +549,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           });
           modalInstance.result.then(function(result){
             scope.nodeSelected = {};
-            var newData = excludeNode( sourceDataAsJqTreeData(treeData.rawNodes), result.node.id, result.branch);
+            var newData = excludeNode( sourceDataAsJqTreeData(scope.treeData.rawNodes), result.node.id, result.branch);
             normalize(newData.targetTree);
             var newTree = prepareDataForFireBase(newData.targetTree);
             scope.httpRequestPromise = updateAllTree(newTree)
@@ -558,7 +571,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
           submitForm:function(){
             if(scope.nodeForm.$valid){
 
-              var nodesLength = treeData.rawNodes.length;
+              var nodesLength = scope.treeData.rawNodes.length;
               var left, right;
 
               if(nodesLength >= 1){
@@ -577,7 +590,7 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
                 name:     scope.nodeFormSettings.model.nodeName
               };
 
-              scope.httpRequestPromise = treeData.rawNodes.$add(node).then(function() {
+              scope.httpRequestPromise = scope.treeData.rawNodes.$add(node).then(function() {
                 scope.nodeSelected = {};
                 notificationService.success('Data has been saved.');
                 scope.nodeFormSettings.resetForm();
@@ -599,20 +612,21 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify'])
         /**
          * The real time data front fireBase
          */
-        treeData.rawNodes = $firebaseArray(FireRef.child(scope.reference).orderByChild('left'));
+        scope.treeData.rawNodes = $firebaseArray(FireRef.child(scope.reference).orderByChild('left'));
         // For recovery purposes
-        scope.rawUnsortedNodes = $firebaseObject(FireRef.child(scope.reference));
+        scope.treeData.rawUnsortedNodes = $firebaseObject(FireRef.child(scope.reference));
+        // For update the client
 
-        scope.httpRequestPromise = treeData.rawNodes.$loaded(null,function(error){
+        scope.httpRequestPromise = scope.treeData.rawNodes.$loaded(null,function(error){
           notificationService.error(error);
         });
 
         /**
          * Observing changes in nodes var, which has first [] empty array, after some time is get server data.
          */
-        treeData.rawNodes.$watch(function(){
+        scope.treeData.rawNodes.$watch(function(){
           //scope.rawNodesLength = treeData.rawNodes.length;
-          replaceWholeTree(treeElement,sourceDataAsJqTreeData(treeData.rawNodes));
+          replaceWholeTree(treeElement,sourceDataAsJqTreeData(scope.treeData.rawNodes));
         });
 
       }
