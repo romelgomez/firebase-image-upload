@@ -7,11 +7,12 @@ publicationsModule
     'FireRef',
     '$firebaseArray',
     '$firebaseObject',
+    '$route',
     '$routeParams',
     'notificationService',
     '$filter',
     '$uibModal',
-    function($q, $location, $window, algolia, FireRef , $firebaseArray, $firebaseObject, $routeParams, notificationService, $filter, $uibModal){
+    function($q, $location, $window, algolia, FireRef , $firebaseArray, $firebaseObject, $route, $routeParams, notificationService, $filter, $uibModal){
       return {
         restrict:'E',
         templateUrl: 'static/assets/views/directives/publicationsList.html',
@@ -439,7 +440,16 @@ publicationsModule
               $scope.$watch(function(){
                 return $scope.algolia.req.query;
               },function(){
+
+                // TODO ADD support TO deep link urls
+                console.log('$routeParams', $routeParams);
+                if($scope.algolia.req.query !== ''){
+                  //$route.updateParams({'q':$scope.algolia.req.query});
+                  $location.search('q', $scope.algolia.req.query);
+                }
+
                 resetQuerySettings();
+
 
                 var facetObj = {};
 

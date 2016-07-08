@@ -45,7 +45,8 @@ angular.module('routes',['ngRoute'])
       })
       .when('/search', {
         templateUrl: 'static/assets/views/search.html',
-        controller: 'SearchController'
+        controller: 'SearchController',
+        reloadOnSearch: false
       })
       .whenAuthenticated('/categories', {
         templateUrl: 'static/assets/views/categories.html',
