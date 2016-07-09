@@ -446,14 +446,12 @@ publicationsModule
 
                 var firebaseUser = FireAuth.$getAuth();
 
-
                 // TODO ADD support TO deep link urls
-                console.log('$routeParams', $routeParams);
-                if($scope.algolia.req.query !== ''){
-                  //$route.updateParams({'q':$scope.algolia.req.query});
-                  $location.search('q', $scope.algolia.req.query);
-                }
-
+                //console.log('$routeParams', $routeParams);
+                //if($scope.algolia.req.query !== ''){
+                //  //$route.updateParams({'q':$scope.algolia.req.query});
+                //  $location.search('q', $scope.algolia.req.query);
+                //}
 
                 resetQuerySettings();
 
