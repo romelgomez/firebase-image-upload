@@ -444,6 +444,9 @@ publicationsModule
                 return $scope.algolia.req.query;
               },function(){
 
+                var firebaseUser = FireAuth.$getAuth();
+
+
                 // TODO ADD support TO deep link urls
                 console.log('$routeParams', $routeParams);
                 if($scope.algolia.req.query !== ''){
@@ -451,27 +454,20 @@ publicationsModule
                   $location.search('q', $scope.algolia.req.query);
                 }
 
-                var firebaseUser = FireAuth.$getAuth();
-
-                if (firebaseUser) {
-                  console.log("Signed in as:", firebaseUser.uid);
-                } else {
-                  console.log("Signed out");
-                }
 
                 resetQuerySettings();
 
-
                 var facetObj = {};
 
-                if (typeof $scope.account !== 'undefined'){
+                if(firebaseUser && $location.path() === '/account'){
                   facetObj = {};
-                  facetObj.name = $scope.account.user.uid; // to match the requirements of updateFacetFilters function
+                  facetObj.name = firebaseUser.uid; // to match the requirements of updateFacetFilters function
                   $scope.algolia.faceting.currentFacets.userID = [];
                   $scope.algolia.faceting.currentFacets.userID.push(facetObj);
                   $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
                 }
 
+                // Profile view
                 if (typeof $scope.profile.$id !== 'undefined'){
                   facetObj = {};
                   facetObj.name = $scope.profile.$id; // to match the requirements of updateFacetFilters function
