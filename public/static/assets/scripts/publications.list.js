@@ -15,7 +15,9 @@ publicationsModule
     '$uibModal',
     'CATEGORIES',
     'LOCATIONS',
-    function($q, $location, $window, algolia, FireRef , FireAuth, $firebaseArray, $firebaseObject, $route, $routeParams, notificationService, $filter, $uibModal, CATEGORIES, LOCATIONS){
+    'CATEGORIES_ROUTE_PARAMETERS',
+    'LOCATIONS_ROUTE_PARAMETERS',
+    function($q, $location, $window, algolia, FireRef , FireAuth, $firebaseArray, $firebaseObject, $route, $routeParams, notificationService, $filter, $uibModal, CATEGORIES, LOCATIONS, CATEGORIES_ROUTE_PARAMETERS, LOCATIONS_ROUTE_PARAMETERS){
       return {
         restrict:'E',
         templateUrl: 'static/assets/views/directives/publicationsList.html',
@@ -55,28 +57,15 @@ publicationsModule
 
           var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
 
-          var fireData = {
+          var allFacets = {
             categories: CATEGORIES,
             locations: LOCATIONS
           };
 
-          //// Create a synchronized array, and then destroy the synchronization after having the data
-          //var categories = $firebaseArray(FireRef.child('categories').orderByChild('left'));
-          //var categoriesLoadedPromise = categories.$loaded()
-          //  .then(function () {
-          //    fireData.categories = angular.copy(categories);
-          //    categories.$destroy();
-          //  });
-          //$scope.lording.promises.push(categoriesLoadedPromise);
-          //
-          //// Create a synchronized array, and then destroy the synchronization after having the data
-          //var locations = $firebaseArray(FireRef.child('locations').orderByChild('left'));
-          //var locationsLoadedPromise = locations.$loaded()
-          //  .then(function () {
-          //    fireData.locations = angular.copy(locations);
-          //    locations.$destroy();
-          //  });
-          //$scope.lording.promises.push(locationsLoadedPromise);
+          var routeParameters = {
+            categories: CATEGORIES_ROUTE_PARAMETERS,
+            locations: LOCATIONS_ROUTE_PARAMETERS
+          };
 
           $scope.algolia = {
             isReady: false,
@@ -379,20 +368,20 @@ publicationsModule
             angular.forEach($scope.algolia.res.facets[facetType], function (count, facetName) {
 
               // haystack
-              angular.forEach(fireData[facetType], function(categoryObj){
-                if(facetName === categoryObj.name){
+              angular.forEach(allFacets[facetType], function(facet){
+                if(facetName === facet.name){
                   // Children facets
                   if(angular.isDefined($scope.algolia.faceting.currentFacets[facetType]) && $scope.algolia.faceting.currentFacets[facetType].length > 0){
-                    var lastObj = $window._.last($scope.algolia.faceting.currentFacets[facetType]);
-                    if(categoryObj.parentId === lastObj.$id){
-                      categoryObj.count = count;
-                      $scope.algolia.faceting.facetsAvailables[facetType].push(categoryObj);
+                    var lastFacet = $window._.last($scope.algolia.faceting.currentFacets[facetType]);
+                    if(facet.parentId === lastFacet.$id){
+                      facet.count = count;
+                      $scope.algolia.faceting.facetsAvailables[facetType].push(facet);
                     }
                   }else{
                     // Root facets
-                    if(categoryObj.parentId === ''){
-                      categoryObj.count = count;
-                      $scope.algolia.faceting.facetsAvailables[facetType].push(categoryObj);
+                    if(facet.parentId === ''){
+                      facet.count = count;
+                      $scope.algolia.faceting.facetsAvailables[facetType].push(facet);
                     }
                   }
                 }
@@ -454,6 +443,47 @@ publicationsModule
                 //}
 
                 resetQuerySettings();
+
+                //$route.updateParams({'c':null});
+
+                // Categories
+                //if(typeof $routeParams.c !== 'undefined'){
+                //
+                //  switch(typeof $routeParams.c) {
+                //    case 'object':
+                //
+                //      break;
+                //    case 'string':
+                //
+                //      var facetName = '';
+                //
+                //      switch($routeParams.c) {
+                //        case 'jobs':
+                //          facetName = 'Jobs';
+                //          break;
+                //        case 'transport':
+                //          facetName = 'Transport';
+                //          break;
+                //        case 'marketplace':
+                //          facetName = 'Marketplace';
+                //          break;
+                //        case 'real-estate':
+                //          facetName = 'Real Estate';
+                //          break;
+                //        case 'services':
+                //          facetName = 'Services';
+                //          break;
+                //      }
+                //
+                //      $scope.algolia.faceting.treeFacetsMethods.addFacet('categories',{
+                //        name: facetName,
+                //        parentId: ''
+                //      }, true);
+                //
+                //      break;
+                //  }
+                //}
+
 
                 var facetObj = {};
 

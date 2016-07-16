@@ -34,7 +34,7 @@
     "angular-uuid-service": "~0.1.0",
     "angular-validation-match": "~1.6.0",
     "angularfire": "2.0.1",
-    "firebase": "^3.0.5",
+    "firebase": "^3.1.0",
     "bootstrap-social": "5.0.0",
     "font-awesome": "4.6.3",
     "hover": "2.0.2",
@@ -52,6 +52,7 @@
     "angular-barcode": "~0.0.2",
     "angular-scanner-detection": "~0.0.2",
     "angular-update-meta": "^1.8.0",
-    "lodash": "^4.13.1"
+    "lodash": "^4.13.1",
+    "angular-clipboard": "^1.4.2"
   }
 }
