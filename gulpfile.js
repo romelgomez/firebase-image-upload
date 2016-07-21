@@ -45,7 +45,13 @@ var output = {
 };
 
 gulp.task('lint', function() {
-  return gulp.src(src.scripts)
+  return gulp.src([
+      src.scripts,
+      '!public/static/assets/scripts/publications.list.categories.js',
+      '!public/static/assets/scripts/publications.list.locations.js',
+      '!public/static/assets/scripts/publications.list.categories.routeParameters.js',
+      '!public/static/assets/scripts/publications.list.locations.routeParameters.js'
+  ])
     .pipe(eslint())
     .pipe(eslint.format('stylish'));
 });
