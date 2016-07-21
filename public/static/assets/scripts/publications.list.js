@@ -64,7 +64,15 @@ publicationsModule
 
           var routeParameters = {
             categories: CATEGORIES_ROUTE_PARAMETERS,
-            locations: LOCATIONS_ROUTE_PARAMETERS
+            locations: LOCATIONS_ROUTE_PARAMETERS,
+            sortOrder: {
+              'price-asc': 'publications_by_price_asc',
+              'price-desc': 'publications_by_price_desc',
+              'salary-desc': 'publications_by_salary_desc',
+              'salary-asc': 'publications_by_salary_asc',
+              'release-date-desc': 'publications_by_releaseDate_desc',
+              'release-date-asc': 'publications_by_releaseDate_asc'
+            }
           };
 
           $scope.algolia = {
@@ -110,103 +118,126 @@ publicationsModule
                 'Marketplace': [
                   {
                     title:'Relevance',
-                    indexName:'publications'
+                    indexName:'publications',
+                    slug: null
                   },
                   {
                     title:'Low prices publications',
-                    indexName:'publications_by_price_asc'
+                    indexName:'publications_by_price_asc',
+                    slug: 'price-asc'
                   },
                   {
                     title:'Highest prices publications',
-                    indexName:'publications_by_price_desc'
+                    indexName:'publications_by_price_desc',
+                    slug: 'price-desc'
                   },
                   {
                     title:'Latest publications',
-                    indexName:'publications_by_releaseDate_desc'
+                    indexName:'publications_by_releaseDate_desc',
+                    slug: 'release-date-desc'
                   },
                   {
                     title:'Old publications',
-                    indexName:'publications_by_releaseDate_asc'
+                    indexName:'publications_by_releaseDate_asc',
+                    slug: 'release-date-asc'
                   }
                 ],
                 'Jobs':[
                   {
                     title:'Relevance',
-                    indexName:'publications'
+                    indexName:'publications',
+                    slug: null
                   },
                   {
                     title:'Highest salary publications',
-                    indexName:'publications_by_salary_desc'
+                    indexName:'publications_by_salary_desc',
+                    slug: 'salary-desc'
                   },
                   {
                     title:'Low salary publications',
-                    indexName:'publications_by_salary_asc'
+                    indexName:'publications_by_salary_asc',
+                    slug: 'salary-asc'
                   },
                   {
                     title:'Latest publications',
-                    indexName:'publications_by_releaseDate_desc'
+                    indexName:'publications_by_releaseDate_desc',
+                    slug: 'release-date-desc'
                   },
                   {
                     title:'Old publications',
-                    indexName:'publications_by_releaseDate_asc'
+                    indexName:'publications_by_releaseDate_asc',
+                    slug: 'release-date-asc'
                   }
                 ],
                 'Real Estate':[
                   {
                     title:'Relevance',
-                    indexName:'publications'
+                    indexName:'publications',
+                    slug: null
                   },
                   {
                     title:'Low prices publications',
-                    indexName:'publications_by_price_asc'
+                    indexName:'publications_by_price_asc',
+                    slug: 'price-asc'
                   },
                   {
                     title:'Highest prices publications',
-                    indexName:'publications_by_price_desc'
+                    indexName:'publications_by_price_desc',
+                    slug: 'price-desc'
                   },
                   {
                     title:'Latest publications',
-                    indexName:'publications_by_releaseDate_desc'
+                    indexName:'publications_by_releaseDate_desc',
+                    slug: 'release-date-desc'
                   },
                   {
                     title:'Old publications',
-                    indexName:'publications_by_releaseDate_asc'
+                    indexName:'publications_by_releaseDate_asc',
+                    slug: 'release-date-asc'
                   }
                 ],
                 'Transport':[
                   {
                     title:'Relevance',
-                    indexName:'publications'
+                    indexName:'publications',
+                    slug: null
                   },
                   {
                     title:'Low prices publications',
-                    indexName:'publications_by_price_asc'
+                    indexName:'publications_by_price_asc',
+                    slug: 'price-asc'
                   },
                   {
                     title:'Highest prices publications',
-                    indexName:'publications_by_price_desc'
+                    indexName:'publications_by_price_desc',
+                    slug: 'price-desc'
                   },
                   {
                     title:'Latest publications',
-                    indexName:'publications_by_releaseDate_desc'
+                    indexName:'publications_by_releaseDate_desc',
+                    slug: 'release-date-desc'
                   },
                   {
                     title:'Old publications',
-                    indexName:'publications_by_releaseDate_asc'
+                    indexName:'publications_by_releaseDate_asc',
+                    slug: 'release-date-asc'
                   }
                 ],
                 'Services':[
                   {
                     title:'Relevance',
-                    indexName:'publications'
+                    indexName:'publications',
+                    slug: null
                   },
                   {
                     title:'Latest publications',
-                    indexName:'publications_by_releaseDate_desc'
+                    indexName:'publications_by_releaseDate_desc',
+                    slug: 'release-date-desc'
                   },
                   {
                     title:'Old publications',
-                    indexName:'publications_by_releaseDate_asc'
+                    indexName:'publications_by_releaseDate_asc',
+                    slug: 'release-date-asc'
                   }
                 ]
               }
@@ -293,14 +324,17 @@ publicationsModule
               },
               facetsMethods: {
                 // add facet to main request string
-                addFacet: function(facetType,facetName){
+                addFacet: function(facetType, facetName, _search_){
                   // facet : {"left":5,"name":"Real Estate","parentId":"","right":10,"$id":"-K5pzphvGtzcQhxopgpD","$priority":null,"count":1}
                   var facetObj = {};
                   facetObj.name = facetName; // to match the requirements of updateFacetFilters function
                   $scope.algolia.faceting.currentFacets[facetType] = angular.isDefined($scope.algolia.faceting.currentFacets[facetType]) ? $scope.algolia.faceting.currentFacets[facetType] : [];
                   $scope.algolia.faceting.currentFacets[facetType].push(facetObj);
                   $scope.algolia.req.facetFilters.push(facetType+':'+facetObj.name);
-                  search();
+
+                  if(typeof _search_ !== 'undefined' && _search_ === true){
+                    search();
+                  }
                 },
                 removeFacet: function (facetType) {
                   angular.copy([],$scope.algolia.faceting.currentFacets[facetType]);
@@ -389,36 +423,53 @@ publicationsModule
             });
           }
 
-          function resetQuerySettings (){
+
+          /** Los diferentes parametros de busqueda
+           *  facetas
+           *   categorías
+           *   locaciones
+           *   personalizadas
+           *
+           *  índice
+           *
+           *  búsqueda
+           */
+
+
+          /**
+           * @Description  set all query to default.
+           * @param {Boolean} keepAccountPublicationsOnly keep only user account publications
+           * @return {Undefined}
+           * */
+          function resetQuerySettings (keepAccountPublicationsOnly){
             $scope.algolia.sortOrder.changeIndexName('publications');
             angular.copy({},$scope.algolia.faceting.currentFacets);
             $scope.algolia.req.facetFilters = [];
             $scope.algolia.req.page = 0;
             $scope.algolia.pagination.currentPage = 1;
+
+            if(keepAccountPublicationsOnly){
+
+              var facetName = '';
+              if(typeof $scope.account !== 'undefined'){
+                facetName = $scope.account.user.uid;
+              }
+
+              if(typeof $scope.profile.$id !== 'undefined'){
+                facetName = $scope.profile.$id;
+              }
+
+              if(facetName !== ''){
+                $scope.algolia.faceting.facetsMethods.addFacet('userID', facetName, false);
+              }
+
+            }
+
           }
 
           $scope.submit = function(){
 
-            resetQuerySettings();
-
-            var facetObj = {};
-
-            // account.js
-            if (typeof $scope.account !== 'undefined'){
-              facetObj = {};
-              facetObj.name = $scope.account.user.uid; // to match the requirements of updateFacetFilters function
-              $scope.algolia.faceting.currentFacets.userID = [];
-              $scope.algolia.faceting.currentFacets.userID.push(facetObj);
-              $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
-            }
-
-            if (typeof $scope.profile.$id !== 'undefined'){
-              facetObj = {};
-              facetObj.name = $scope.profile.$id; // to match the requirements of updateFacetFilters function
-              $scope.algolia.faceting.currentFacets.userID = [];
-              $scope.algolia.faceting.currentFacets.userID.push(facetObj);
-              $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
-            }
+            resetQuerySettings(true);
 
             search()
               .then(null,function(err){
@@ -426,83 +477,28 @@ publicationsModule
               })
           };
 
+          /**
+           * MAIN FUNCTION
+           */
           $q.all($scope.lording.promises)
             .then(function () {
+
+              // parse the URL, then > parsedURL: true
 
               $scope.$watch(function(){
                 return $scope.algolia.req.query;
               },function(){
 
-                var firebaseUser = FireAuth.$getAuth();
-
-                // TODO ADD support TO deep link urls
-                //console.log('$routeParams', $routeParams);
-                //if($scope.algolia.req.query !== ''){
-                //  //$route.updateParams({'q':$scope.algolia.req.query});
-                //  $location.search('q', $scope.algolia.req.query);
-                //}
-
-                resetQuerySettings();
-
-                //$route.updateParams({'c':null});
-
-                // Categories
-                //if(typeof $routeParams.c !== 'undefined'){
-                //
-                //  switch(typeof $routeParams.c) {
-                //    case 'object':
-                //
-                //      break;
-                //    case 'string':
-                //
-                //      var facetName = '';
-                //
-                //      switch($routeParams.c) {
-                //        case 'jobs':
-                //          facetName = 'Jobs';
-                //          break;
-                //        case 'transport':
-                //          facetName = 'Transport';
-                //          break;
-                //        case 'marketplace':
-                //          facetName = 'Marketplace';
-                //          break;
-                //        case 'real-estate':
-                //          facetName = 'Real Estate';
-                //          break;
-                //        case 'services':
-                //          facetName = 'Services';
-                //          break;
-                //      }
-                //
-                //      $scope.algolia.faceting.treeFacetsMethods.addFacet('categories',{
-                //        name: facetName,
-                //        parentId: ''
-                //      }, true);
-                //
-                //      break;
-                //  }
-                //}
+                /*
+                 * if parsedURL is undefined
+                 *   parse url, then, parsedURL: true, and search
+                 * else
+                 *   reset facets, index, and query string; set new url that represent the current state, and search
+                 *   resetQuerySettings
+                 * */
 
 
-                var facetObj = {};
-
-                if(firebaseUser && $location.path() === '/account'){
-                  facetObj = {};
-                  facetObj.name = firebaseUser.uid; // to match the requirements of updateFacetFilters function
-                  $scope.algolia.faceting.currentFacets.userID = [];
-                  $scope.algolia.faceting.currentFacets.userID.push(facetObj);
-                  $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
-                }
-
-                // Profile view
-                if (typeof $scope.profile.$id !== 'undefined'){
-                  facetObj = {};
-                  facetObj.name = $scope.profile.$id; // to match the requirements of updateFacetFilters function
-                  $scope.algolia.faceting.currentFacets.userID = [];
-                  $scope.algolia.faceting.currentFacets.userID.push(facetObj);
-                  $scope.algolia.req.facetFilters.push('userID:'+facetObj.name);
-                }
+                resetQuerySettings(true);
 
                 search()
                   .then(function(){
@@ -575,4 +571,52 @@ publicationsModule
     };
 
   }]);
+
+
+// TODO ADD support TO deep link urls
+//console.log('$routeParams', $routeParams);
+//if($scope.algolia.req.query !== ''){
+//  //$route.updateParams({'q':$scope.algolia.req.query});
+//  $location.search('q', $scope.algolia.req.query);
+//}
+
+//$route.updateParams({'c':null});
+
+// Categories
+//if(typeof $routeParams.c !== 'undefined'){
+//
+//  switch(typeof $routeParams.c) {
+//    case 'object':
+//
+//      break;
+//    case 'string':
+//
+//      var facetName = '';
+//
+//      switch($routeParams.c) {
+//        case 'jobs':
+//          facetName = 'Jobs';
+//          break;
+//        case 'transport':
+//          facetName = 'Transport';
+//          break;
+//        case 'marketplace':
+//          facetName = 'Marketplace';
+//          break;
+//        case 'real-estate':
+//          facetName = 'Real Estate';
+//          break;
+//        case 'services':
+//          facetName = 'Services';
+//          break;
+//      }
+//
+//      $scope.algolia.faceting.treeFacetsMethods.addFacet('categories',{
+//        name: facetName,
+//        parentId: ''
+//      }, true);
+//
+//      break;
+//  }
+//}
 

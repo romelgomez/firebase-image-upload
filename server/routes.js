@@ -162,6 +162,14 @@ module.exports = function(app) {
      defaultRoute(req, res);
   });
 
+  app.get('/privacy-policy', function(req, res) {
+    defaultRoute(req, res);
+  });
+
+  app.get('/terms-of-service', function(req, res) {
+    defaultRoute(req, res);
+  });
+
   app.get('/search', function(req, res) {
      defaultRoute(req, res);
   });

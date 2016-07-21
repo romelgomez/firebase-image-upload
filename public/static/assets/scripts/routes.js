@@ -48,6 +48,16 @@ angular.module('routes',['ngRoute'])
         controller: 'SearchController',
         reloadOnSearch: false
       })
+      .when('/privacy-policy', {
+        templateUrl: 'static/assets/views/privacyPolicy.html',
+        controller: 'MainController',
+        reloadOnSearch: false
+      })
+      .when('/terms-of-service', {
+        templateUrl: 'static/assets/views/termsOfService.html',
+        controller: 'MainController',
+        reloadOnSearch: false
+      })
       .whenAuthenticated('/categories', {
         templateUrl: 'static/assets/views/categories.html',
         controller: 'TreeController'
