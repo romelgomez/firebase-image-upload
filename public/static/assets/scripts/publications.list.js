@@ -62,6 +62,13 @@ publicationsModule
             locations: LOCATIONS
           };
 
+
+          //  jobSalaryType:[],
+          //  reHomeStatus:[],
+          //  reHomeFor:[],
+          //  jobHasBenefits:[],
+          //  jobHasBonus:[]
+
           var routeParameters = {
             categories: CATEGORIES_ROUTE_PARAMETERS,
             locations: LOCATIONS_ROUTE_PARAMETERS,
@@ -72,6 +79,16 @@ publicationsModule
               'salary-asc': 'publications_by_salary_asc',
               'release-date-desc': 'publications_by_releaseDate_desc',
               'release-date-asc': 'publications_by_releaseDate_asc'
+            },
+            customFacets: {
+              'job-type': {
+                 'permanent': true,
+                 'contract': true
+              },
+              'job-recruiter-type': {
+                'agency':true,
+                'direct-employer':true
+              }
             }
           };
 
@@ -272,12 +289,16 @@ publicationsModule
               },
               treeFacetsMethods: {
                 // add facet to main request string
-                addFacet: function(facetType,facet){
+                addFacet: function(facetType,facet, _search_){
+                  console.log('facet', facet);
                   // facet : {"left":5,"name":"Real Estate","parentId":"","right":10,"$id":"-K5pzphvGtzcQhxopgpD","$priority":null,"count":1}
                   $scope.algolia.faceting.currentFacets[facetType] = angular.isDefined($scope.algolia.faceting.currentFacets[facetType]) ? $scope.algolia.faceting.currentFacets[facetType] : [];
                   $scope.algolia.faceting.currentFacets[facetType].push(facet);
                   $scope.algolia.req.facetFilters.push(facetType+':'+facet.name);
-                  search();
+
+                  if(typeof _search_ !== 'undefined' && _search_ === true){
+                    search();
+                  }
                 },
                 // Remove al facets
                 removeAllFacet: function (facetType) {
@@ -325,6 +346,9 @@ publicationsModule
               facetsMethods: {
                 // add facet to main request string
                 addFacet: function(facetType, facetName, _search_){
+                  console.log('facetType', facetType);
+                  console.log('facetName', facetName);
+
                   // facet : {"left":5,"name":"Real Estate","parentId":"","right":10,"$id":"-K5pzphvGtzcQhxopgpD","$priority":null,"count":1}
                   var facetObj = {};
                   facetObj.name = facetName; // to match the requirements of updateFacetFilters function
@@ -432,50 +456,140 @@ publicationsModule
            *
            *  índice
            *
+           *  pagina
+           *
            *  búsqueda
            */
 
 
           /**
            * @Description  set all query to default.
-           * @param {Boolean} keepAccountPublicationsOnly keep only user account publications
            * @return {Undefined}
            * */
-          function resetQuerySettings (keepAccountPublicationsOnly){
+          function resetQuerySettings (){
             $scope.algolia.sortOrder.changeIndexName('publications');
             angular.copy({},$scope.algolia.faceting.currentFacets);
             $scope.algolia.req.facetFilters = [];
             $scope.algolia.req.page = 0;
             $scope.algolia.pagination.currentPage = 1;
 
-            if(keepAccountPublicationsOnly){
-
-              var facetName = '';
-              if(typeof $scope.account !== 'undefined'){
-                facetName = $scope.account.user.uid;
-              }
-
-              if(typeof $scope.profile.$id !== 'undefined'){
-                facetName = $scope.profile.$id;
-              }
-
-              if(facetName !== ''){
-                $scope.algolia.faceting.facetsMethods.addFacet('userID', facetName, false);
-              }
-
+            var facetName = '';
+            if(typeof $scope.account !== 'undefined'){
+              facetName = $scope.account.user.uid;
             }
 
+            if(typeof $scope.profile.$id !== 'undefined'){
+              facetName = $scope.profile.$id;
+            }
+
+            if(facetName !== ''){
+              $scope.algolia.faceting.facetsMethods.addFacet('userID', facetName, false);
+            }
           }
 
           $scope.submit = function(){
 
-            resetQuerySettings(true);
+            resetQuerySettings();
 
-            search()
+            parseURL()
               .then(null,function(err){
                 notificationService.error(err);
               })
           };
+
+          $scope._parseURL = function(){
+            console.log('$location.search()', $location.search());
+
+            var searchObj = $location.search();
+
+            console.log('typeof searchObj.c', typeof searchObj.c);
+            console.log('typeof searchObj.l', typeof searchObj.l);
+            console.log('routeParameters.locations(searchObj.l)', routeParameters.locations[searchObj.l]);
+
+            //$location.search({c: ['jobs', 'mecanico']})
+            //$location.search({c: ['jobs', 'mecanico', 'doctor']})
+            //$location.search({c: ['jobs', 'mecanico']})
+          };
+
+          var parsedURL = '';
+
+          /*
+
+          Al principo la URL se refleja en el estado interno,
+          luego el estado interno se refleja en la url.
+
+
+           */
+
+          function parseURL (_searchObj_) {
+            //var deferred   = $q.defer();
+
+            //var searchObj = typeof _searchObj_ !== 'undefined' ? _searchObj_ : $location.search();
+            if(parsedURL === ''){
+              parsedURL = true;
+              // URL se refleja en el estado interno.
+
+              var searchObj = $location.search();
+              //var
+
+              // Categories
+              switch(typeof searchObj.c) {
+                case 'string':
+                  // Search facet in routeParameters.categories
+                  if(typeof routeParameters.categories[searchObj.c] !== 'undefined'){
+                    $scope.algolia.faceting.treeFacetsMethods.addFacet('categories', routeParameters.categories[searchObj.c], false);
+                  }
+                  break;
+                case 'object':
+                  // Search facets in routeParameters.categories
+                  angular.forEach(searchObj.c, function (slugfacetName) {
+                    if(typeof routeParameters.categories[slugfacetName] !== 'undefined'){
+                      $scope.algolia.faceting.treeFacetsMethods.addFacet('categories', routeParameters.categories[slugfacetName], false);
+                    }
+                  });
+                  break;
+              }
+
+              // Locations
+              switch(typeof searchObj.l) {
+                case 'string':
+                  // Search facet in routeParameters.categories
+                  if(typeof routeParameters.categories[searchObj.l] !== 'undefined'){
+                    $scope.algolia.faceting.treeFacetsMethods.addFacet('categories', routeParameters.categories[searchObj.c], false);
+                  }
+                  break;
+                case 'object':
+                  // Search facets in routeParameters.categories
+                  angular.forEach(searchObj.l, function (slugfacetName) {
+                    if(typeof routeParameters.categories[slugfacetName] !== 'undefined'){
+                      $scope.algolia.faceting.treeFacetsMethods.addFacet('categories', routeParameters.categories[slugfacetName], false);
+                    }
+                  });
+                  break;
+              }
+
+              // Custom Facets
+                //  jobType:[],
+                //  jobRecruiterType:[],
+                //  jobSalaryType:[],
+                //  reHomeStatus:[],
+                //  reHomeFor:[],
+                //  jobHasBenefits:[],
+                //  jobHasBonus:[]
+
+              // index or sortOrder
+
+              // search string
+
+              // page
+
+            }else{
+              // estado interno se refleja en la url
+
+            }
+
+            return search();
+          }
 
           /**
            * MAIN FUNCTION
@@ -497,10 +611,9 @@ publicationsModule
                  *   resetQuerySettings
                  * */
 
+                resetQuerySettings();
 
-                resetQuerySettings(true);
-
-                search()
+                parseURL()
                   .then(function(){
 
                     if($scope.lording.isDone === false){
@@ -511,6 +624,8 @@ publicationsModule
                   },function(err){
                     notificationService.error(err);
                   })
+
+
               });
 
             }, function(){
