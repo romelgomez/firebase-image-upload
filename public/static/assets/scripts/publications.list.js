@@ -799,9 +799,9 @@ publicationsModule
 
                 // Query string
                 if($scope.algolia.req.query !== ''){
-                  currentURLState.search = $filter('slug')($scope.algolia.req.query);
+                  currentURLState.q = $filter('slug')($scope.algolia.req.query);
                 }else{
-                  currentURLState.search = null;
+                  currentURLState.q = null;
                 }
 
                 //console.log('currentURLState', currentURLState);
@@ -848,8 +848,8 @@ publicationsModule
 
               // We need call this before set the watcher in the search query string
               var searchObj = $location.search();
-              if(typeof searchObj.search === 'string'){
-                $scope.algolia.req.query = searchObj.search;
+              if(typeof searchObj.q === 'string'){
+                $scope.algolia.req.query = searchObj.q;
                 //$scope.algolia.req.query = $filter('noSpecialChars')(searchObj.search)
               }
 
