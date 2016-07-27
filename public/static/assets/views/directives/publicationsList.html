@@ -13,6 +13,9 @@
   </div>
 
   <!--<hr class="hr-xs">-->
+    <!--<button ng-click="_parseURL()" type="button" class="btn btn-default">Debug Route</button>-->
+  <hr class="hr-xs">
+
   <!--<pre>{{algolia.req | json}}</pre>-->
   <!--<pre>jobHasBenefits {{algolia.res.facets.jobHasBenefits | json}}</pre>-->
   <!--<pre>jobHasBonus  {{algolia.res.facets.jobHasBonus | json}}</pre>-->
@@ -78,7 +81,7 @@
 
             <div class="panel-heading"><i class="fa fa-bars"></i> Categories <button ng-show="algolia.faceting.currentFacets.categories.length > 0" ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('categories')" type="button" style="padding-bottom: 0; padding-top: 0; color: #ff0000;" class="btn btn-link">Reset</button></div>
             <div class="list-group">
-              <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('categories',facet);" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" >
+              <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('categories', facet, true);" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" >
                 <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (facet.name === 'Marketplace'),'fa-suitcase': (facet.name === 'Jobs'),'fa-home': (facet.name === 'Real Estate'),'fa-car': (facet.name === 'Transport'),'fa-wrench': (facet.name === 'Services')}"></i>
                 {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span>
               </button>
@@ -86,7 +89,7 @@
 
             <div class="panel-heading"><i class="fa fa-map-marker"></i> Locations <button ng-show="algolia.faceting.currentFacets.locations.length > 0" ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('locations')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
             <div class="list-group">
-              <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('locations',facet);" ng-repeat="facet in algolia.faceting.facetsAvailables.locations" >
+              <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('locations', facet, true);" ng-repeat="facet in algolia.faceting.facetsAvailables.locations" >
                 <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (facet.name === 'Marketplace'),'fa-suitcase': (facet.name === 'Jobs'),'fa-home': (facet.name === 'Real Estate'),'fa-car': (facet.name === 'Transport'),'fa-wrench': (facet.name === 'Services')}"></i>
                 {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span>
               </button>
@@ -424,7 +427,7 @@
 
       <div class="panel-heading"><i class="fa fa-bars"></i> Categories <button ng-show="algolia.faceting.currentFacets.categories.length > 0" ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('categories')" type="button" style="padding-bottom: 0; padding-top: 0; color: #ff0000;" class="btn btn-link">Reset</button></div>
       <div class="list-group">
-        <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('categories',facet);" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" >
+        <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('categories', facet, true);" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" >
           <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (facet.name === 'Marketplace'),'fa-suitcase': (facet.name === 'Jobs'),'fa-home': (facet.name === 'Real Estate'),'fa-car': (facet.name === 'Transport'),'fa-wrench': (facet.name === 'Services')}"></i>
           {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span>
         </button>
@@ -432,7 +435,7 @@
 
       <div class="panel-heading"><i class="fa fa-map-marker"></i> Locations <button ng-show="algolia.faceting.currentFacets.locations.length > 0" ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('locations')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
       <div class="list-group">
-        <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('locations',facet);" ng-repeat="facet in algolia.faceting.facetsAvailables.locations" >
+        <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('locations', facet, true);" ng-repeat="facet in algolia.faceting.facetsAvailables.locations" >
           <i style="color: #286090" class="fa" ng-class="{'fa-shopping-cart': (facet.name === 'Marketplace'),'fa-suitcase': (facet.name === 'Jobs'),'fa-home': (facet.name === 'Real Estate'),'fa-car': (facet.name === 'Transport'),'fa-wrench': (facet.name === 'Services')}"></i>
           {{facet.name | capitalizeFirstChar}} - <span class="badge" style="float: inherit;">{{facet.count}}</span>
         </button>

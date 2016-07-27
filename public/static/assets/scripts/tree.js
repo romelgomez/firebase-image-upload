@@ -657,9 +657,9 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify', 'angular-clipboa
                 normalize(newData.targetTree);
                 var newTree = prepareDataForFireBase(newData.targetTree);
 
-                var uniqueParameterNames = FireRef.child('uniqueParameterNames/'+ scope.reference );
+                var uniqueParameterNamesRef = FireRef.child('uniqueParameterNames/'+ scope.reference );
 
-                scope.httpRequestPromise = $q.all([uniqueParameterNames.set(newTree.routeParams), updateAllTree(newTree.defaultTree)])
+                scope.httpRequestPromise = $q.all([uniqueParameterNamesRef.set(newTree.routeParams), updateAllTree(newTree.defaultTree)])
                   .then(function(){
                     notificationService.success('The tree or nodes has been update');
                   },function(error){
