@@ -18,8 +18,10 @@
       to the account already exists in this site, then you can login using whichever account you have registered in this site.
     </p>
 
+    {{providers | json}}
+
     <ul class="list-unstyled">
-      <li ng-repeat="provider in providers" style="margin-top: 10px;">
+      <li ng-repeat="provider in providers track by $index"  style="margin-top: 10px;">
 
         <a ng-show="provider === 'password'" class="btn btn-block btn-social btn-reddit" ng-click="loginWith('password')">
           <i class="fa fa-user" aria-hidden="true"></i> User email and Password
