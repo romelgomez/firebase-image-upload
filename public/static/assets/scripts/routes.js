@@ -45,13 +45,11 @@ angular.module('routes',['ngRoute'])
       })
       .when('/search', {
         templateUrl: 'static/assets/views/search.html',
-        controller: 'SearchController',
-        reloadOnSearch: false
+        controller: 'SearchController'
       })
       .when('/privacy-policy', {
         templateUrl: 'static/assets/views/privacyPolicy.html',
-        controller: 'MainController',
-        reloadOnSearch: false
+        controller: 'MainController'
       })
       .when('/terms-of-service', {
         templateUrl: 'static/assets/views/termsOfService.html',
@@ -92,7 +90,8 @@ angular.module('routes',['ngRoute'])
       })
       .whenAuthenticated('/account', {
         templateUrl: 'static/assets/views/account.html',
-        controller: 'AccountController'
+        controller: 'AccountController',
+        reloadOnSearch: false
       })
       .when('/:accountName/:categoriesAndLocations/:publicationID/:title', {
         templateUrl: 'static/assets/views/viewPublication.html',
@@ -100,7 +99,8 @@ angular.module('routes',['ngRoute'])
       })
       .when('/:accountName', {
         templateUrl: 'static/assets/views/accountPublications.html',
-        controller: 'AccountPublicationsController'
+        controller: 'AccountPublicationsController',
+        reloadOnSearch: false
       })
       .otherwise({redirectTo: '/'});
   }])
