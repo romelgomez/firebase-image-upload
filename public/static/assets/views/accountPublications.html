@@ -42,9 +42,14 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-3" style="text-align: center;">
-            <div class="visible-md-block visible-lg-block" style="margin-top: 10px;"></div>
-            <div style="margin-bottom: 10px;">
-              <facebook data-url="profile.$seoURL"></facebook>
+            <div class="visible-md-block visible-lg-block"></div>
+            <div>
+              <a class="twitter-share-button" href="https://twitter.com/intent/tweet">Tweet</a>
+
+              <div>
+                <facebook data-url="profile.$seoURL"></facebook>
+              </div>
+
             </div>
           </div>
           <div class="col-lg-9">
@@ -144,4 +149,7 @@
 
 
 
-<update-title title="Look @{{profile.accountName !== undefined && profile.accountName !== ''? profile.accountName : profile.$id }} Publications in MarketOfLondon.UK"></update-title>
+<!-- This extra line is necessary to avoid the flicking when we setting the head title use by the twitter share button, the ng-cloak directive don't work  -->
+<div ng-if="profile.accountName !== undefined && profile.accountName !== ''">
+  <update-title title="Look @{{profile.accountName !== undefined && profile.accountName !== ''? profile.accountName : profile.$id }} Publications in MarketOfLondon.UK"></update-title>
+</div>

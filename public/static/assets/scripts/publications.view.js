@@ -128,4 +128,13 @@ publicationsModule
         $location.path('/');
       }
 
+
+      // Twitter share button
+      setTimeout(function() {
+        if(typeof $window.twttr.widgets !== 'undefined'){
+          $window.twttr.widgets.load();
+        }
+      });
+
+
     }]);

@@ -10,7 +10,8 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
     '$location',
     'FireRef',
     '$firebaseObject',
-    function($scope, $timeout, $q, $uibModal, $routeParams, $location, FireRef, $firebaseObject){
+    '$window',
+    function($scope, $timeout, $q, $uibModal, $routeParams, $location, FireRef, $firebaseObject, $window){
 
       $scope.profile = {};
 
@@ -190,6 +191,15 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
 
         }
       };
+
+
+      // Twitter share button
+      setTimeout(function() {
+        if(typeof $window.twttr.widgets !== 'undefined'){
+          $window.twttr.widgets.load();
+        }
+      });
+
 
     }])
   .controller('ProfileImagesController',[ '$scope', '$uibModalInstance', 'profileImages', 'active',function($scope, $uibModalInstance, profileImages, active){
