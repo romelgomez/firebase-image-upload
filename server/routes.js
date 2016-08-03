@@ -26,7 +26,7 @@ switch(process.env.NODE_ENV) {
 //__dirname : /home/romelgomez/workspace/projects/berlin/server
 
 var metaTags = {
-  title:          'MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications',
+  title:          'MarketOfLondon.co.uk - Jobs, Real Estate, Transport, Services, Marketplace related Publications',
   url:            'https://londres.herokuapp.com',
   description:    'Jobs, Real Estate, Transport, Services, Marketplace related Publications',
   image:          'https://londres.herokuapp.com/static/assets/images/uk.jpg',
@@ -211,7 +211,7 @@ module.exports = function(app) {
         // ***********************************
         var metaTitle = capitalize(publication.title).trim();
         metaTitle += publication.department === 'Real Estate'? ' for ' + (publication.reHomeFor | uppercase) : '';
-        metaTitle += ' - MarketOfLondon.UK';
+        metaTitle += ' - MarketOfLondon.co.uk';
         metaTags.title = metaTitle;
 
         // META URL
@@ -255,7 +255,7 @@ module.exports = function(app) {
         // ***********************************
         var metaTitle = 'Look @';
         metaTitle += typeof user.accountName !== 'undefined' && user.accountName !== '' ? user.accountName : user.$id;
-        metaTitle += ' Publications in MarketOfLondon.UK';
+        metaTitle += ' Publications in MarketOfLondon.co.uk';
         metaTags.title = metaTitle;
 
         // META URL
@@ -266,7 +266,7 @@ module.exports = function(app) {
 
         // META Description
         // ***********************************
-        metaTags.description = typeof user.bio !== 'undefined' && user.bio !== '' ? user.bio : 'MarketOfLondon.UK - Jobs, Real Estate, Transport, Services, Marketplace related Publications';
+        metaTags.description = typeof user.bio !== 'undefined' && user.bio !== '' ? user.bio : 'MarketOfLondon.co.uk - Jobs, Real Estate, Transport, Services, Marketplace related Publications';
 
         // META image
         // ***********************************
@@ -310,7 +310,7 @@ module.exports = function(app) {
         // ***********************************
         var metaTitle = capitalize(publication.title).trim();
         metaTitle += publication.department === 'Real Estate'? ' for ' + (publication.reHomeFor | uppercase) : '';
-        metaTitle += ' - MarketOfLondon.UK';
+        metaTitle += ' - MarketOfLondon.co.uk';
         metaTags.title = metaTitle;
 
         // META URL
