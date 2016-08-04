@@ -182,15 +182,24 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     $scope.submit = function(){
       if($scope.forms.profileDetails.$valid){
 
+        var promises = [];
+
+        var accountName = profile.accountName;
+
+        if(angular.isDefined(profile.accountName) && profile.accountName !== ''){
+          promises.push(FireRef.child('accountNames').child(accountName).remove());
+          promises.push(FireRef.child('accountNames').child(accountName.toLowerCase()).remove());
+        }
+
         angular.forEach($scope.model, function(value, key){
           profile[key] = value;
         });
 
-        $scope.httpRequestPromise = $q.all([
-            profile.$save(),
-            FireRef.child('accountNames').child($scope.model.accountName).set(profile.$id),
-            FireRef.child('accountNames').child($scope.model.accountName.toLowerCase()).set(profile.$id)
-        ])
+        promises.push(profile.$save());
+        promises.push(FireRef.child('accountNames').child($scope.model.accountName).set(profile.$id));
+        promises.push(FireRef.child('accountNames').child($scope.model.accountName.toLowerCase()).set(profile.$id));
+
+        $scope.httpRequestPromise = $q.all(promises)
           .then(function() {
             $uibModalInstance.close();
           }, function(error) {
