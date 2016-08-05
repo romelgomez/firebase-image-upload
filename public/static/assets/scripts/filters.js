@@ -225,4 +225,16 @@ angular.module('filters',[])
     return function(matrix, separator) {
       return  matrix ? $window._.join(matrix, separator).trim() : '';
     };
+  }])
+  /**
+   * @Description Truncates string if it’s longer than the given maximum string length. The last characters of the truncated string are replaced with the omission string which defaults to "…".
+   * */
+  .filter('lodashTruncates', ['$window', '$filter', function($window, $filter) {
+    return function(text, length) {
+      var _text = $window._.truncate(text, {
+        length: length,
+        separator: /,? +/
+      });
+      return $filter('capitalizeFirstChar')(_text);
+    };
   }]);
