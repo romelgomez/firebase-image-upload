@@ -225,9 +225,9 @@
                                 <i class="fa fa-home"></i> <b>{{publication.reHomeStatus}} Home for {{publication.reHomeFor}}</b>
                               </li>
                               <li><h5><i class="fa fa-map-marker"></i>
-                                <span ng-repeat="location in publication.locations"> {{location | capitalizeFirstChar}} {{!$last ? '/': ''}} </span>
+                                <span ng-repeat="location in publication.locations"> {{location | capitalizeFirstChar}} {{!$last ? ' • ': ''}} </span>
                               </h5></li>
-                              <li><h5><i class="fa fa-calendar"></i> Since: {{publication.releaseDate | date:'dd'}} / {{publication.releaseDate | date:'MM'}} / {{publication.releaseDate | date:'yy'}}  </h5></li>
+                              <li><h5><i class="fa fa-calendar"></i> Since: {{publication.releaseDate | date:'dd'}}/{{publication.releaseDate | date:'MM'}}/{{publication.releaseDate | date:'yy'}} </h5></li>
                               <li ng-if="algolia.faceting.currentFacets.userID.length > 0">
                                 <button type="button" class="btn btn-warning btn-xs" ng-click="editPublication(publication.objectID)">Edit</button>
                               </li>
@@ -254,7 +254,7 @@
                               </li>
                               <li><i class="fa fa-clock-o"></i> {{publication.jobType}}</li>
                               <li><h5><i class="fa fa-map-marker"></i>
-                                <span ng-repeat="location in publication.locations"> {{location | capitalizeFirstChar}} {{!$last ? '•': ''}} </span>
+                                <span ng-repeat="location in publication.locations"> {{location | capitalizeFirstChar}} {{!$last ? ' • ': ''}} </span>
                               </h5></li>
                               <li><h5><i class="fa fa-calendar"></i> Since: {{publication.releaseDate | date:'dd'}}/{{publication.releaseDate | date:'MM'}}/{{publication.releaseDate | date:'yyyy'}}  </h5></li>
                               <li ng-if="algolia.faceting.currentFacets.userID.length > 0">
@@ -352,7 +352,7 @@
                               </li>
                               <li><i class="fa fa-clock-o"></i> {{publication.jobType}}</li>
                               <li><h5><i class="fa fa-map-marker"></i>
-                                <span ng-repeat="location in publication.locations"> {{location | capitalizeFirstChar}} {{!$last ? '•': ''}} </span>
+                                <span ng-repeat="location in publication.locations"> {{location | capitalizeFirstChar}} {{!$last ? ' • ': ''}} </span>
                               </h5></li>
                               <li><h5><i class="fa fa-calendar"></i> Since: {{publication.releaseDate | date:'dd'}}/{{publication.releaseDate | date:'MM'}}/{{publication.releaseDate | date:'yyyy'}}  </h5></li>
                             </ul>
