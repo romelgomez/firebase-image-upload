@@ -12,7 +12,7 @@
 
   <div class="panel panel-default" ng-show="lording.isDone">
     <div class="panel-heading">
-      <h3 class="panel-title">Account <i class="fa fa-wrench"></i></h3>
+      <h3 class="panel-title"> <a style="color: #337ab7;" href="/{{account.profile.accountName !== undefined ? account.profile.accountName : profile.$id }}"> {{account.profile.pseudonym === undefined || account.profile.pseudonym === '' ? account.profile.names : account.profile.pseudonym}}</a> - Account <i class="fa fa-wrench"></i></h3>
     </div>
     <div class="panel-body">
 
