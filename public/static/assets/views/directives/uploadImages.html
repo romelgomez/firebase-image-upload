@@ -145,7 +145,7 @@
               <!--<pre>{{value}}</pre>-->
 
               <div ng-show="!value.$error">
-                <div><b>Size: </b>{{value.size | bytes}}</div>
+                <div><b>Size: </b>{{ ' ' + (value.size | bytes)}}</div>
                 <uib-progressbar ng-show="value.isUploaded === undefined" class="progress-striped active" value="value.progress ? value.progress : 0" type="{{  value.progress < 100 ? 'info' : 'success' }}">{{value.progress}}%</uib-progressbar>
               </div>
 
@@ -161,7 +161,7 @@
                           <span ng-switch-default>Undefined</span>
                         </span>
                 </div>
-                <div style="margin-bottom: 3px"><b>Size:</b> {{value.size | bytes}}</div>
+                <div style="margin-bottom: 3px"><b>Size: </b> {{' ' + (value.size | bytes)}}</div>
               </div>
 
             </div>
