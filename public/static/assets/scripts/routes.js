@@ -45,7 +45,8 @@ angular.module('routes',['ngRoute'])
       })
       .when('/search', {
         templateUrl: 'static/assets/views/search.html',
-        controller: 'SearchController'
+        controller: 'SearchController',
+        reloadOnSearch: false
       })
       .when('/privacy-policy', {
         templateUrl: 'static/assets/views/privacyPolicy.html',
@@ -53,8 +54,7 @@ angular.module('routes',['ngRoute'])
       })
       .when('/terms-of-service', {
         templateUrl: 'static/assets/views/termsOfService.html',
-        controller: 'MainController',
-        reloadOnSearch: false
+        controller: 'MainController'
       })
       .whenAuthenticated('/categories', {
         templateUrl: 'static/assets/views/categories.html',

@@ -694,9 +694,11 @@ publicationsModule
               // Page
               if(typeof searchObj.page === 'string'){
                 var page = parseInt(searchObj.page);
-                if(!isNaN(page) && page > 1){
-                  $scope.algolia.req.page = page;
-                  $scope.algolia.pagination.currentPage = page + 1;
+                if(!isNaN(page) && page > 0){
+                  $scope.algolia.req.page = page - 1;
+                  $scope.algolia.pagination.currentPage = page;
+                  // TODO 999 At first the loading parseURL function set currentPage to the correct value, but the pagination directive fuck everything, setting to default value, and I have set this ugly fix.
+                  $scope.algolia.pagination.currentPage2 = page;
                 }
               }
 
@@ -791,8 +793,8 @@ publicationsModule
                 }
 
                 // Page
-                if($scope.algolia.req.page > 1){
-                  currentURLState.page = $scope.algolia.req.page;
+                if($scope.algolia.req.page > 0){
+                  currentURLState.page = $scope.algolia.req.page + 1;
                 }else{
                   currentURLState.page = null;
                 }
@@ -865,10 +867,18 @@ publicationsModule
                  *   resetQuerySettings
                  * */
 
-                resetQuerySettings();
+                if(parsedURL === true){
+                  resetQuerySettings();
+                }
 
                 parseURL()
                   .then(function(){
+
+                    // TODO 999 At first the loading parseURL function set currentPage to the correct value, but the pagination directive fuck everything, setting to default value, and I have set this ugly fix.
+                    if(typeof $scope.algolia.pagination.currentPage2 !== 'undefined'){
+                      $scope.algolia.pagination.currentPage = $scope.algolia.pagination.currentPage2;
+                      delete $scope.algolia.pagination.currentPage2;
+                    }
 
                     if($scope.lording.isDone === false){
                       $scope.lording.deferred.resolve();
