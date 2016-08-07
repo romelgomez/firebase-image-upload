@@ -867,9 +867,7 @@ publicationsModule
                  *   resetQuerySettings
                  * */
 
-                if(parsedURL === true){
-                  resetQuerySettings();
-                }
+                resetQuerySettings();
 
                 parseURL()
                   .then(function(){

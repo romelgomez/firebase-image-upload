@@ -132,14 +132,14 @@
 <script type="text/ng-template" id="profileImagesModal.html">
   <div class="modal-body">
 
-    <uib-carousel active="active" interval="5000" no-wrap="false">
-      <uib-slide ng-repeat="image in profileImages | reverse  track by $index" index="$index">
+    <div uib-carousel active="active" interval="5000" no-wrap="false">
+      <div uib-slide ng-repeat="image in profileImages | reverse  track by $index" index="$index">
         <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_800,w_900/{{image.public_id}}.jpg" style="margin:auto;">
         <!--<div class="carousel-caption">-->
           <!--<h4>{{image.name | removeFileExtension | noSpecialChars | capitalizeFirstChar}}</h4>-->
         <!--</div>-->
-      </uib-slide>
-    </uib-carousel>
+      </div>
+    </div>
 
   </div>
   <div class="modal-footer">
