@@ -396,8 +396,32 @@ publicationsModule
             function startSearch (){
               index.search($scope.algolia.req)
                 .then(function(res) {
-                  if(res.query !== $scope.algolia.req.query){
-                    startSearch();
+                  if((res.query !== $scope.algolia.req.query) || (res.hits.length === 0 && res.nbHits > 0)){
+                    if((res.hits.length === 0 && res.nbHits > 0)){
+                      $scope.algolia.req.page = res.nbPages - 1;
+                      $scope.algolia.pagination.currentPage = res.nbPages;
+                      $scope.algolia.pagination.currentPage2 = res.nbPages;
+
+                      var currentURLState = getCurrentURLState({
+                        'c':'categories',
+                        'l':'locations',
+                        'job-type':'jobType',
+                        'job-recruiter-type':'jobRecruiterType',
+                        'job-salary-type':'jobSalaryType',
+                        'job-has-benefits':'jobHasBenefits',
+                        'job-has-bonus':'jobHasBonus',
+                        're-home-status':'reHomeStatus',
+                        're-home-for':'reHomeFor'
+                      });
+                      currentURLState.page = res.nbPages;
+                      $location.search(currentURLState);
+
+                      //$scope.currentURLState.page = res.nbPages;
+                      //$location.search($scope.currentURLState);
+                      startSearch();
+                    }else{
+                      startSearch();
+                    }
                   }else{
                     //console.log('this never hapen');
                     $scope.algolia.res = res;
@@ -523,6 +547,69 @@ publicationsModule
             //$location.search({c: ['jobs', 'mecanico', 'doctor']})
             //$location.search({c: ['jobs', 'mecanico']})
           };
+
+
+          function getCurrentURLState(facetsNames){
+            var currentURLState = {};
+
+            // facets
+            angular.forEach(facetsNames, function (facetName, facetNameIdentifier) {
+
+              var facets = [];
+              angular.forEach($scope.algolia.faceting.currentFacets[facetName], function (facet) {
+                facets.push($filter('slug')(facet.name));
+              });
+
+              if(facets.length > 0){
+                currentURLState[facetNameIdentifier] = facets;
+              }else{
+                currentURLState[facetNameIdentifier] = null;
+              }
+
+            });
+
+            // Index or sortOrder
+            switch($scope.algolia.sortOrder.currentIndexName) {
+              case 'publications_by_price_asc':
+                currentURLState.i = 'price-asc';
+                break;
+              case 'publications_by_price_desc':
+                currentURLState.i = 'price-desc';
+                break;
+              case 'publications_by_salary_desc':
+                currentURLState.i = 'salary-desc';
+                break;
+              case 'publications_by_salary_asc':
+                currentURLState.i = 'salary-asc';
+                break;
+              case 'publications_by_releaseDate_desc':
+                currentURLState.i = 'release-date-desc';
+                break;
+              case 'publications_by_releaseDate_asc':
+                currentURLState.i = 'release-date-asc';
+                break;
+              default:
+                currentURLState.i = null;
+            }
+
+            // Page
+            if($scope.algolia.req.page > 0){
+              currentURLState.page = $scope.algolia.req.page + 1;
+            }else{
+              currentURLState.page = null;
+            }
+
+            // Query string
+            if($scope.algolia.req.query !== ''){
+              currentURLState.q = $filter('slug')($scope.algolia.req.query);
+            }else{
+              currentURLState.q = null;
+            }
+
+            //console.log('currentURLState', currentURLState);
+            return currentURLState;
+          }
+
 
           var parsedURL = '';
 
@@ -749,66 +836,6 @@ publicationsModule
               //  jobHasBenefitsFacets.push($filter('slug')(facet.name));
               //});
 
-              function getCurrentURLState(facetsNames){
-                var currentURLState = {};
-
-                // facets
-                angular.forEach(facetsNames, function (facetName, facetNameIdentifier) {
-
-                  var facets = [];
-                  angular.forEach($scope.algolia.faceting.currentFacets[facetName], function (facet) {
-                    facets.push($filter('slug')(facet.name));
-                  });
-
-                  if(facets.length > 0){
-                    currentURLState[facetNameIdentifier] = facets;
-                  }else{
-                    currentURLState[facetNameIdentifier] = null;
-                  }
-
-                });
-
-                // Index or sortOrder
-                switch($scope.algolia.sortOrder.currentIndexName) {
-                  case 'publications_by_price_asc':
-                    currentURLState.i = 'price-asc';
-                    break;
-                  case 'publications_by_price_desc':
-                    currentURLState.i = 'price-desc';
-                    break;
-                  case 'publications_by_salary_desc':
-                    currentURLState.i = 'salary-desc';
-                    break;
-                  case 'publications_by_salary_asc':
-                    currentURLState.i = 'salary-asc';
-                    break;
-                  case 'publications_by_releaseDate_desc':
-                    currentURLState.i = 'release-date-desc';
-                    break;
-                  case 'publications_by_releaseDate_asc':
-                    currentURLState.i = 'release-date-asc';
-                    break;
-                  default:
-                    currentURLState.i = null;
-                }
-
-                // Page
-                if($scope.algolia.req.page > 0){
-                  currentURLState.page = $scope.algolia.req.page + 1;
-                }else{
-                  currentURLState.page = null;
-                }
-
-                // Query string
-                if($scope.algolia.req.query !== ''){
-                  currentURLState.q = $filter('slug')($scope.algolia.req.query);
-                }else{
-                  currentURLState.q = null;
-                }
-
-                //console.log('currentURLState', currentURLState);
-                return currentURLState;
-              }
 
               /*
                currentFacets: {
