@@ -237,4 +237,12 @@ angular.module('filters',[])
       });
       return $filter('capitalizeFirstChar')(_text);
     };
+  }])
+  /**
+   * @Description add class="img-responsive" to all images <img
+   * */
+  .filter('imgResponsive', ['$window', '$filter', function($window, $filter) {
+    return function(text) {
+      return typeof text !== 'undefined' ? $filter('stringReplace')(text, '<img ', '<img class="img-responsive" ' ) : text;
+    };
   }]);

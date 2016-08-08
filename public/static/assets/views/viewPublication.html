@@ -76,7 +76,7 @@
             <b>Description:</b>
           </div>
 
-          <span ng-bind-html="publication.data.htmlDescription | unsafe"></span>
+          <span ng-bind-html="publication.data.htmlDescription | imgResponsive | unsafe"></span>
         </div>
         <div ng-show="publication.data.department === 'Marketplace'">
           <hr class="hr-xs">
@@ -84,7 +84,7 @@
             <b>Warranty:</b>
           </div>
 
-          <span ng-bind-html="publication.data.htmlWarranty | unsafe"></span>
+          <span ng-bind-html="publication.data.htmlWarranty | imgResponsive | unsafe"></span>
         </div>
         <!--<div>-->
           <!--<hr class="hr-xs">-->
