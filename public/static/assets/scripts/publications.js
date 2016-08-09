@@ -284,7 +284,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
             $location.path('/');
           }
         }, function (error) {
-          notificationService.error(error);
+          //notificationService.error(error);
         });
       };
 
@@ -380,7 +380,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
     };
 
     $scope.cancel   = function () {
-      //$uibModalInstance.dismiss('This has be cancel');
+      $uibModalInstance.dismiss('This has be cancel');
     };
 
   }])
