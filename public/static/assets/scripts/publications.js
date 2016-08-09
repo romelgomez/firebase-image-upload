@@ -288,6 +288,10 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         });
       };
 
+      $scope.tempView = function (){
+        $location.path('/v/temp/' + $scope.publication.$id + '/view.html');
+      };
+
       //function loadPublication(publicationID){
       //  var deferred   = $q.defer();
       //
@@ -376,7 +380,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
     };
 
     $scope.cancel   = function () {
-      $uibModalInstance.dismiss('This has be cancel');
+      //$uibModalInstance.dismiss('This has be cancel');
     };
 
   }])
