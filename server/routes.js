@@ -174,20 +174,33 @@ module.exports = function(app) {
      Given links back to my website
      app.post('/thank-you')
 
+     FRAUD_STATUS_CHANGED
+     ORDER_CREATED
+     INVOICE_STATUS_CHANGED invoice_status: 'deposited'
+
     */
 
+    console.log('');
+    console.log('************************************ 2Checkout Approved URL *********************************************');
     console.log('2Checkout Approved URL req.method:', req.method);
     console.log('2Checkout Approved URL req.url:', req.url);
-    console.log('2Checkout Approved URL req.body:', req.body);
+    console.log('2Checkout Approved URL req.body: \n', req.body);
+    console.log('#################################### 2Checkout Approved URL ##############################################');
+    console.log('');
 
     defaultRoute(req, res);
   });
 
   // 2Checkout Instant Notification Service
   app.post('/2co-ins', function(req, res) {
+
+    console.log('');
+    console.log('************************************ 2Checkout Instant Notification Service *********************************************');
     console.log('2Checkout Instant Notification Service req:', req.method);
     console.log('2Checkout Instant Notification Service req:', req.url);
-    console.log('2Checkout Instant Notification Service req:', req.body);
+    console.log('2Checkout Instant Notification Service req: \n', req.body);
+    console.log('#################################### 2Checkout Instant Notification Service ##############################################');
+    console.log('');
 
     defaultRoute(req, res);
   });
