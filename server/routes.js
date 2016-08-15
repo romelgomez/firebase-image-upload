@@ -29,7 +29,7 @@ var metaTags = {
   title:          'MarketOfLondon.co.uk - Jobs, Real Estate, Transport, Services, Marketplace related Publications',
   url:            'http://www.marketoflondon.co.uk',
   description:    'Jobs, Real Estate, Transport, Services, Marketplace related Publications',
-  image:          'http://www.marketoflondon.co.uk/static/assets/images/uk.jpg',
+  image:          'http://res.cloudinary.com/berlin/image/upload/c_scale,e_sepia:77,h_630,q_100,w_1200/v1471288313/Market_Of_London_share_image_xan9wg.jpg',
   twitterAccount: '@MarketOfLondon'
 };
 
