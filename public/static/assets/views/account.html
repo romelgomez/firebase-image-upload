@@ -12,13 +12,33 @@
 
   <div class="panel panel-default" ng-show="lording.isDone">
     <div class="panel-heading">
-      <h3 class="panel-title"> <a style="color: #337ab7;" href="/{{account.profile.accountName !== undefined ? account.profile.accountName : account.profile.$id }}"> {{account.profile.pseudonym === undefined || account.profile.pseudonym === '' ? account.profile.names : account.profile.pseudonym}}</a> - Account <i class="fa fa-wrench"></i></h3>
+
+      <h3 class="panel-title visible-md-block visible-lg-block">
+        <a style="color: #337ab7;" href="/{{account.profile.accountName !== undefined ? account.profile.accountName : account.profile.$id }}"> {{account.profile.pseudonym === undefined || account.profile.pseudonym === '' ? account.profile.names : account.profile.pseudonym}}</a>
+        -
+        <b ng-bind="account.profile.vip !== undefined && account.profile.vip === true ? 'VIP Account' : 'Essential Account'"></b>
+        <span ng-show="(account.profile.vip === undefined || account.profile.vip === false) && (active !== 1)" >-</span>
+        <span ng-show="(account.profile.vip === undefined || account.profile.vip === false) && (active !== 1)" class="upgrade-to-vip" ng-click="active = 1">Upgrade to VIP</span>
+      </h3>
+
+      <div class="panel-title visible-xs-block visible-sm-block">
+        <div>
+          <a style="color: #337ab7;" href="/{{account.profile.accountName !== undefined ? account.profile.accountName : account.profile.$id }}"> {{account.profile.pseudonym === undefined || account.profile.pseudonym === '' ? account.profile.names : account.profile.pseudonym}}</a>
+        </div>
+        <div>
+          <b ng-bind="account.profile.vip !== undefined && account.profile.vip === true ? 'VIP Account' : 'Essential Account'"></b>
+        </div>
+        <div>
+          <span ng-show="(account.profile.vip === undefined || account.profile.vip === false) && (active !== 1)" class="upgrade-to-vip" ng-click="active = 1">Upgrade to VIP</span>
+        </div>
+      </div>
+
     </div>
     <div class="panel-body">
 
-      <uib-tabset>
+      <uib-tabset active="active">
         <!-- Publications -->
-        <uib-tab>
+        <uib-tab index="0">
           <uib-tab-heading>
             Publications <i class="fa fa-files-o"></i>
           </uib-tab-heading>
@@ -26,9 +46,9 @@
           <ng-include src="'static/assets/views/account/accountPublications.html'"></ng-include>
 
         </uib-tab>
-        <uib-tab>
+        <uib-tab index="1">
           <uib-tab-heading>
-            Profile <i class="fa fa-user"></i>
+            Details <i class="fa fa-user"></i>
           </uib-tab-heading>
 
           <ng-include src="'static/assets/views/account/accountProfile.html'"></ng-include>

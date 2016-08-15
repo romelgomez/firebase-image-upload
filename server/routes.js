@@ -162,6 +162,18 @@ module.exports = function(app) {
      defaultRoute(req, res);
   });
 
+  // 2Checkout Approved URL
+  app.get('/thank-you', function(req, res) {
+    console.log('2Checkout Approved URL req:', req);
+    defaultRoute(req, res);
+  });
+
+  // 2Checkout Instant Notification Service
+  app.get('/2co-ins', function(req, res) {
+    console.log('2Checkout Instant Notification Service req:', req);
+    defaultRoute(req, res);
+  });
+
   app.get('/privacy-policy', function(req, res) {
     defaultRoute(req, res);
   });
