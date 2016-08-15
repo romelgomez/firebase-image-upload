@@ -91,7 +91,12 @@ gulp.task('favicon', function() {
     .pipe(gulp.dest(output.dist));
 });
 
-gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts', 'favicon'], function() {
+gulp.task('robots.txt', function() {
+  return gulp.src('public/robots.txt')
+    .pipe(gulp.dest(output.dist));
+});
+
+gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts', 'favicon', 'robots.txt'], function() {
   return gulp.src('dist/**/*')
     .pipe(size({title: 'build', gzip: true}));
 });
