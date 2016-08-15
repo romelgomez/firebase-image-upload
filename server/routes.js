@@ -171,20 +171,24 @@ module.exports = function(app) {
      app.get('/thank-you')
      GET /thank-you?middle_initial=&sid=901325544&fixed=N&cart_weight=0&key=AA86C2002853AC30B0BDAED7090C8D15&state=monagas&last_name=&email=bmxquiksilver7185%40gmail.com&city=maturin&street_address=Urb.+Las+trinitarias+calle+10+casa+561&product_id=1&merchant_order_id=&order_number=9093731393217&country=VEN&ip_country=Venezuela&product_description=MarketOfLondon.co.uk+VIP+Account&lang=en&currency_code=GBP&demo=&pay_method=CC&invoice_id=9093731393226&quantity=1&cart_tangible=N&phone=4129427966+4129427966&total=259.00&credit_card_processed=Y&zip=&merchant_product_id=VIP&street_address2=&card_holder_name=Romel&first_name=Romel 200 59.020 ms - 5758
 
-
      Given links back to my website
      app.post('/thank-you')
 
-
     */
 
-    console.log('2Checkout Approved URL req:', req);
+    console.log('2Checkout Approved URL req.method:', req.method);
+    console.log('2Checkout Approved URL req.url:', req.url);
+    console.log('2Checkout Approved URL req.body:', req.body);
+
     defaultRoute(req, res);
   });
 
   // 2Checkout Instant Notification Service
   app.post('/2co-ins', function(req, res) {
-    console.log('2Checkout Instant Notification Service req:', req);
+    console.log('2Checkout Instant Notification Service req:', req.method);
+    console.log('2Checkout Instant Notification Service req:', req.url);
+    console.log('2Checkout Instant Notification Service req:', req.body);
+
     defaultRoute(req, res);
   });
 
