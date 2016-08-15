@@ -206,6 +206,10 @@ module.exports = function(app) {
   });
 
 
+  app.get('/robots.txt', function(req, res) {
+    res.sendFile('robots.txt', {root: path.join(process.cwd(), basePath)});
+  });
+
   app.get('/privacy-policy', function(req, res) {
     defaultRoute(req, res);
   });
