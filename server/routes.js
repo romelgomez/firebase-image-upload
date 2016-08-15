@@ -27,9 +27,9 @@ switch(process.env.NODE_ENV) {
 
 var metaTags = {
   title:          'MarketOfLondon.co.uk - Jobs, Real Estate, Transport, Services, Marketplace related Publications',
-  url:            'https://londres.herokuapp.com',
+  url:            'http://www.marketoflondon.co.uk',
   description:    'Jobs, Real Estate, Transport, Services, Marketplace related Publications',
-  image:          'https://londres.herokuapp.com/static/assets/images/uk.jpg',
+  image:          'http://www.marketoflondon.co.uk/static/assets/images/uk.jpg',
   twitterAccount: '@MarketOfLondon'
 };
 
@@ -138,7 +138,7 @@ function setMetaImage (images, featuredImageId){
     }
   }
 
-  metaTags.image = $images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ $images[0].$id +'.jpg') : 'https://londres.herokuapp.com/static/assets/images/uk.jpg';
+  metaTags.image = $images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ $images[0].$id +'.jpg') : 'http://www.marketoflondon.co.uk/static/assets/images/uk.jpg';
 }
 
 function defaultRoute(req, res){
@@ -264,7 +264,7 @@ module.exports = function(app) {
 
         // META URL
         // ***********************************
-        var metaURL = 'https://londres.herokuapp.com/view-publication/';
+        var metaURL = 'http://www.marketoflondon.co.uk/view-publication/';
         metaURL += publication.$id + '/';
         metaURL += slug(publication.title) + '.html';
         metaTags.url = metaURL;
@@ -308,7 +308,7 @@ module.exports = function(app) {
 
         // META URL
         // ***********************************
-        var metaURL = 'https://londres.herokuapp.com/';
+        var metaURL = 'http://www.marketoflondon.co.uk/';
         metaURL += typeof user.accountName !== 'undefined' && user.accountName !== '' ? user.accountName : user.$id;
         metaTags.url = metaURL;
 
@@ -363,7 +363,7 @@ module.exports = function(app) {
 
         // META URL
         // ***********************************
-        var metaURL = 'https://londres.herokuapp.com/';
+        var metaURL = 'http://www.marketoflondon.co.uk/';
 
         /*
          locations: [ 'Scotland', 'North East Scotland', 'Dundee East' ],
