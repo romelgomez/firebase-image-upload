@@ -163,16 +163,31 @@ module.exports = function(app) {
   });
 
   // 2Checkout Approved URL
-  app.get('/thank-you', function(req, res) {
+  app.post('/thank-you', function(req, res) {
+
+    /*
+
+     Header Redirect (Your URL)
+     app.get('/thank-you')
+     GET /thank-you?middle_initial=&sid=901325544&fixed=N&cart_weight=0&key=AA86C2002853AC30B0BDAED7090C8D15&state=monagas&last_name=&email=bmxquiksilver7185%40gmail.com&city=maturin&street_address=Urb.+Las+trinitarias+calle+10+casa+561&product_id=1&merchant_order_id=&order_number=9093731393217&country=VEN&ip_country=Venezuela&product_description=MarketOfLondon.co.uk+VIP+Account&lang=en&currency_code=GBP&demo=&pay_method=CC&invoice_id=9093731393226&quantity=1&cart_tangible=N&phone=4129427966+4129427966&total=259.00&credit_card_processed=Y&zip=&merchant_product_id=VIP&street_address2=&card_holder_name=Romel&first_name=Romel 200 59.020 ms - 5758
+
+
+     Given links back to my website
+     app.post('/thank-you')
+
+
+    */
+
     console.log('2Checkout Approved URL req:', req);
     defaultRoute(req, res);
   });
 
   // 2Checkout Instant Notification Service
-  app.get('/2co-ins', function(req, res) {
+  app.post('/2co-ins', function(req, res) {
     console.log('2Checkout Instant Notification Service req:', req);
     defaultRoute(req, res);
   });
+
 
   app.get('/privacy-policy', function(req, res) {
     defaultRoute(req, res);
