@@ -138,7 +138,7 @@ function setMetaImage (images, featuredImageId){
     }
   }
 
-  metaTags.image = $images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ $images[0].$id +'.jpg') : 'http://www.marketoflondon.co.uk/static/assets/images/uk.jpg';
+  metaTags.image = $images.length > 0? ('http://res.cloudinary.com/berlin/image/upload/c_fill,h_630,w_1200/'+ $images[0].$id +'.jpg') : metaTags.image;
 }
 
 function defaultRoute(req, res){
