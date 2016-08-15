@@ -258,7 +258,7 @@ module.exports = function(app) {
         // META TITLE
         // ***********************************
         var metaTitle = capitalize(publication.title).trim();
-        metaTitle += publication.department === 'Real Estate'? ' for ' + (publication.reHomeFor | uppercase) : '';
+        metaTitle += publication.department === 'Real Estate'? ' for ' + publication.reHomeFor.toUpperCase() : '';
         metaTitle += ' - MarketOfLondon.co.uk';
         metaTags.title = metaTitle;
 
@@ -357,7 +357,7 @@ module.exports = function(app) {
         // META TITLE
         // ***********************************
         var metaTitle = capitalize(publication.title).trim();
-        metaTitle += publication.department === 'Real Estate'? ' for ' + (publication.reHomeFor | uppercase) : '';
+        metaTitle += publication.department === 'Real Estate'? ' for ' + publication.reHomeFor.toUpperCase() : '';
         metaTitle += ' - MarketOfLondon.co.uk';
         metaTags.title = metaTitle;
 
