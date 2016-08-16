@@ -58,12 +58,61 @@
           </div>
           <hr style="margin-bottom: 0;">
           <div class="spacing-grid">
-            <a href='https://sandbox.2checkout.com/checkout/purchase?sid=901325544&quantity=1&product_id=1' class="btn btn-md btn-black">Subscribe today!</a>
+            <a ng-href='https://sandbox.2checkout.com/checkout/purchase?sid=901325544&quantity=1&product_id=1&auuid={{account.user.uid}}' class="btn btn-md btn-black">Subscribe today!</a>
           </div>
         </div>
       </div>
       <div class="col-md-3"></div>
     </div>
+
+    <hr style="margin-top: 10px; margin-bottom: 10px;">
+
+    <div>
+      <h5><b>Notes relate to the billing of your monthly subscription:</b></h5>
+      <p>
+        <b>-</b> Refund Policy: All products are sold “as is”. The customer assumes the responsibility for the purchase, and no refunds will be issued.
+      </p>
+      <p>
+        <b>-</b> Privacy Policy: This policy covers how we use your personal information. We take your privacy seriously and will take all measures to protect your personal information. Any personal information received will only be used to fulfill your order, and may be used for internal analytical purposes. We will not sell or redistribute your information to anyone.
+      </p>
+      <p>
+        <b>-</b> You want to stop your monthly subscription? <br> R: You have 4 options:
+      </p>
+
+      <ol>
+        <li>Visit 2CheckOut website: <a href="https://www.2co.com/" target="_blank">https://www.2co.com/</a>, and then:
+           <ol type="a">
+             <li>
+               Use your 2CO Order Number/PayPal Invoice ID or First 6 Digits of Card Charged and Last 2 Digits of Card Charged then input your email, then click Find my Order.
+             </li>
+             <li>
+               Now find "I'd like to..." and click on "Stop my recurring membership or subscription", then select desired subscription.
+             </li>
+             <li>
+               Click on "Stop Selected".
+             </li>
+             <li>
+               Your subscription is now cancelled.
+             </li>
+           </ol>
+        </li>
+        <li>
+          Email us with the Invoice ID, at least 2-3 days before that the bill is done, <b>helpcenter@marketoflondon.co.uk</b>
+        </li>
+        <li>
+          You should get an email billing reminder 3 days before the bill is done, In there is a URL to stop the billing.
+        </li>
+        <li>
+          Contact directly to 2Checkout to request stop your monthly billing, <a href="https://www.2checkout.com/contact" target="_blank">https://www.2checkout.com/contact</a>.
+        </li>
+      </ol>
+      <p>
+        <b>-</b> Are you experiencing problems with your account? <br> R: Email us at <b>helpcenter@marketoflondon.co.uk</b>
+      </p>
+
+    </div>
+
+    <!--<pre>{{account | json}}</pre>-->
 
     <!--<ul class="list-unstyled">-->
       <!--<li ng-repeat="provider in firebaseUser.providerData">-->
