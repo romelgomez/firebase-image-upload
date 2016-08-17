@@ -2,6 +2,8 @@ var path = require('path');
 var fs = require('fs');
 var Q = require('q');
 var handlebars = require('handlebars');
+var md5 = require('js-md5');
+
 
 //var Firebase = require("firebase");
 //var FireRef = new Firebase('berlin.firebaseio.com/');
@@ -116,6 +118,22 @@ function getUserByAccountName (accountName){
   return deferred.promise;
 }
 
+function gotVIP (userID, invoiceId){
+  var deferred = Q.defer();
+
+  firebase.FireRef.child('users').child(userID).update({
+      vip: true,
+      invoiceId: invoiceId
+    })
+    .then(function(user){
+      deferred.resolve(user);
+    }, function (error) {
+      deferred.reject(error);
+    });
+
+  return deferred.promise;
+}
+
 function slug(input) {
   return (!!input) ? String(input).toLowerCase().replace(/[^a-zá-źA-ZÁ-Ź0-9]/g, ' ').trim().replace(/\s{2,}/g, ' ').replace(/\s+/g, '-') : '';
 }
@@ -165,7 +183,46 @@ module.exports = function(app) {
   // 2Checkout Approved URL
   app.post('/thank-you', function(req, res) {
 
+    console.log('');
+    console.log('************************************ 2Checkout Approved URL *********************************************');
+    console.log('2Checkout Approved URL req.method:', req.method);
+    console.log('2Checkout Approved URL req.url:', req.url);
+    console.log('2Checkout Approved URL req.body: \n', req.body);
+    console.log('#################################### 2Checkout Approved URL ##############################################');
+    console.log('');
+
+    if(typeof req.body.auuid !== 'undefined' && req.body.auuid !== ''){
+      var hash = md5('MWJjYTI2NzAtOTU0NC00NGMwLTkxZGMtMTY0NzNkMDY4NjU1' + '901325544' + req.body.order_number + req.body.total).toUpperCase();
+      if(hash === req.body.key){
+
+        gotVIP(req.body.auuid, req.body.invoice_id)
+          .then(function(){
+            defaultRoute(req, res);
+          },function(){
+            res.redirect('/error-when-upgrading-to-vip');
+          });
+
+      }else{
+        res.redirect('/error-when-upgrading-to-vip');
+      }
+    }else{
+      res.redirect('/error-when-upgrading-to-vip');
+    }
+
     /*
+
+     req.body.auuid
+     req.body.key
+     req.body.invoice_id
+
+     md5('MWJjYTI2NzAtOTU0NC00NGMwLTkxZGMtMTY0NzNkMDY4NjU1' + '901325544' + req.body.order_number + req.body.total);
+
+     UPPERCASE(MD5_ENCRYPTED(Secret Word + Seller ID + order_number + Sale Total))
+
+     'MWJjYTI2NzAtOTU0NC00NGMwLTkxZGMtMTY0NzNkMDY4NjU1' + '901325544' + req.body.order_number + req.body.total
+
+     MWJjYTI2NzAtOTU0NC00NGMwLTkxZGMtMTY0NzNkMDY4NjU19013255449093731417148259.00
+
 
      Header Redirect (Your URL)
      app.get('/thank-you')
@@ -180,15 +237,6 @@ module.exports = function(app) {
 
     */
 
-    console.log('');
-    console.log('************************************ 2Checkout Approved URL *********************************************');
-    console.log('2Checkout Approved URL req.method:', req.method);
-    console.log('2Checkout Approved URL req.url:', req.url);
-    console.log('2Checkout Approved URL req.body: \n', req.body);
-    console.log('#################################### 2Checkout Approved URL ##############################################');
-    console.log('');
-
-    defaultRoute(req, res);
   });
 
   // 2Checkout Instant Notification Service
