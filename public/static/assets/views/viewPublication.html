@@ -101,7 +101,9 @@
             <b>Share on social networks:</b>
           </div>
 
-          <a class="twitter-share-button" href="https://twitter.com/intent/tweet">Tweet</a>
+          <div ng-if="publication.data.$id">
+            <custom-twitter-share-button publication-title="publication.data.title" publication-id="publication.data.$id"></custom-twitter-share-button>
+          </div>
 
           <div>
             <facebook data-url="publication.$seo.url"></facebook>

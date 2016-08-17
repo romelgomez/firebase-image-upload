@@ -137,4 +137,24 @@ publicationsModule
       });
 
 
-    }]);
+    }])
+  .directive('customTwitterShareButton',['$window', '$timeout', function ($window, $timeout) {
+
+    return {
+      restrict:'E',
+      scope:{
+        publicationTitle:'=',
+        publicationId:'='
+      },
+      template:''+
+      '<a class="twitter-share-button" href="https://twitter.com/intent/tweet?text={{publicationTitle}}&via=marketoflondon&url=http://www.marketoflondon.co.uk/v/l/{{publicationId}}/t">Tweet</a>',
+      link:function(scope){
+
+        $timeout(function () {
+          twttr.widgets.load()
+        });
+
+      }
+    }
+
+  }]);
