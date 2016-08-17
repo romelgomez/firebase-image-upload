@@ -48,6 +48,14 @@ angular.module('routes',['ngRoute'])
         controller: 'SearchController',
         reloadOnSearch: false
       })
+      .when('/thank-you', {
+        templateUrl: 'static/assets/views/thank-you.html',
+        controller: 'ThankYouController'
+      })
+      .when('/error-when-upgrading-to-vip', {
+        templateUrl: 'static/assets/views/error-when-upgrading-to-vip.html',
+        controller: 'ErrorWhenUpgradingController'
+      })
       .when('/privacy-policy', {
         templateUrl: 'static/assets/views/privacyPolicy.html',
         controller: 'MainController'

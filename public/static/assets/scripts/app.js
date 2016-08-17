@@ -15,7 +15,8 @@ angular.module('app',[
     'main',
     'search',
     'updateMeta',
-    'accountPublications'
+    'accountPublications',
+    'checkout'
   ])
   .controller('AppController',[ '$scope', 'FireAuth',function( $scope, FireAuth){
 

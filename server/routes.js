@@ -180,8 +180,20 @@ module.exports = function(app) {
      defaultRoute(req, res);
   });
 
-  // 2Checkout Approved URL
-  app.post('/thank-you', function(req, res) {
+  // 2Checkout Error when upgrading to vip
+  app.get('/error-when-upgrading-to-vip', function(req, res) {
+    defaultRoute(req, res);
+  });
+
+  app.get('/thank-you', function(req, res) {
+    defaultRoute(req, res);
+  });
+
+  app.get('/upgrade', function(req, res) {
+    res.redirect('/error-when-upgrading-to-vip');
+  });
+
+  app.post('/upgrade', function(req, res) {
 
     console.log('');
     console.log('************************************ 2Checkout Approved URL *********************************************');
@@ -197,7 +209,7 @@ module.exports = function(app) {
 
         gotVIP(req.body.auuid, req.body.invoice_id)
           .then(function(){
-            defaultRoute(req, res);
+            res.redirect('/thank-you');
           },function(){
             res.redirect('/error-when-upgrading-to-vip');
           });
