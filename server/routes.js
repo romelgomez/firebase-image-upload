@@ -199,13 +199,13 @@ module.exports = function(app) {
 
   app.post('/upgrade', function(req, res) {
 
-    console.log('');
-    console.log('************************************ 2Checkout Approved URL *********************************************');
-    console.log('2Checkout Approved URL req.method:', req.method);
-    console.log('2Checkout Approved URL req.url:', req.url);
-    console.log('2Checkout Approved URL req.body: \n', req.body);
-    console.log('#################################### 2Checkout Approved URL ##############################################');
-    console.log('');
+    //console.log('');
+    //console.log('************************************ 2Checkout Approved URL *********************************************');
+    //console.log('2Checkout Approved URL req.method:', req.method);
+    //console.log('2Checkout Approved URL req.url:', req.url);
+    //console.log('2Checkout Approved URL req.body: \n', req.body);
+    //console.log('#################################### 2Checkout Approved URL ##############################################');
+    //console.log('');
 
     if(typeof req.body.auuid !== 'undefined' && req.body.auuid !== ''){
       var hash = md5('MWJjYTI2NzAtOTU0NC00NGMwLTkxZGMtMTY0NzNkMDY4NjU1' + '901325544' + req.body.order_number + req.body.total).toUpperCase();
@@ -256,18 +256,18 @@ module.exports = function(app) {
   });
 
   // 2Checkout Instant Notification Service
-  app.post('/2co-ins', function(req, res) {
-
-    console.log('');
-    console.log('************************************ 2Checkout Instant Notification Service *********************************************');
-    console.log('2Checkout Instant Notification Service req:', req.method);
-    console.log('2Checkout Instant Notification Service req:', req.url);
-    console.log('2Checkout Instant Notification Service req: \n', req.body);
-    console.log('#################################### 2Checkout Instant Notification Service ##############################################');
-    console.log('');
-
-    defaultRoute(req, res);
-  });
+  //app.post('/2co-ins', function(req, res) {
+  //
+  //  console.log('');
+  //  console.log('************************************ 2Checkout Instant Notification Service *********************************************');
+  //  console.log('2Checkout Instant Notification Service req:', req.method);
+  //  console.log('2Checkout Instant Notification Service req:', req.url);
+  //  console.log('2Checkout Instant Notification Service req: \n', req.body);
+  //  console.log('#################################### 2Checkout Instant Notification Service ##############################################');
+  //  console.log('');
+  //
+  //  defaultRoute(req, res);
+  //});
 
 
   app.get('/robots.txt', function(req, res) {
@@ -314,47 +314,47 @@ module.exports = function(app) {
     defaultRoute(req, res);
   });
 
-  app.get('/view-publication/:id/:title', function(req, res){
-
-    getPublicationByUUDID(req.params.id)
-      .then(function(publication){
-
-        // META TITLE
-        // ***********************************
-        var metaTitle = capitalize(publication.title).trim();
-        metaTitle += publication.department === 'Real Estate'? ' for ' + publication.reHomeFor.toUpperCase() : '';
-        metaTitle += ' - MarketOfLondon.co.uk';
-        metaTags.title = metaTitle;
-
-        // META URL
-        // ***********************************
-        var metaURL = 'http://www.marketoflondon.co.uk/view-publication/';
-        metaURL += publication.$id + '/';
-        metaURL += slug(publication.title) + '.html';
-        metaTags.url = metaURL;
-
-        // META Description
-        // ***********************************
-        metaTags.description = publication.description;
-
-        // META Image
-        // ***********************************
-        setMetaImage(publication.images, publication.featuredImageId);
-
-        return readFile('index1.html');
-      })
-      .then(function(the){
-        var template = handlebars.compile(the.source.toString());
-        return Q.when({result: template(metaTags)})
-      })
-      .then(function(the){
-        res.send(the.result);
-      },function(error){
-        //throw error;
-        res.redirect('/');
-      });
-
-  });
+  //app.get('/view-publication/:id/:title', function(req, res){
+  //
+  //  getPublicationByUUDID(req.params.id)
+  //    .then(function(publication){
+  //
+  //      // META TITLE
+  //      // ***********************************
+  //      var metaTitle = capitalize(publication.title).trim();
+  //      metaTitle += publication.department === 'Real Estate'? ' for ' + publication.reHomeFor.toUpperCase() : '';
+  //      metaTitle += ' - MarketOfLondon.co.uk';
+  //      metaTags.title = metaTitle;
+  //
+  //      // META URL
+  //      // ***********************************
+  //      var metaURL = 'http://www.marketoflondon.co.uk/view-publication/';
+  //      metaURL += publication.$id + '/';
+  //      metaURL += slug(publication.title) + '.html';
+  //      metaTags.url = metaURL;
+  //
+  //      // META Description
+  //      // ***********************************
+  //      metaTags.description = publication.description;
+  //
+  //      // META Image
+  //      // ***********************************
+  //      setMetaImage(publication.images, publication.featuredImageId);
+  //
+  //      return readFile('index1.html');
+  //    })
+  //    .then(function(the){
+  //      var template = handlebars.compile(the.source.toString());
+  //      return Q.when({result: template(metaTags)})
+  //    })
+  //    .then(function(the){
+  //      res.send(the.result);
+  //    },function(error){
+  //      //throw error;
+  //      res.redirect('/');
+  //    });
+  //
+  //});
 
   // http://localhost:8080/walesServicesLTD
 
@@ -445,6 +445,8 @@ module.exports = function(app) {
         metaURL += publication.$id + '/';
         metaURL += slug(publication.title) + '.html';
         metaTags.url = metaURL;
+
+        metaTags.twitterURL = 'http://www.marketoflondon.co.uk/v/l/' + publication.$id + '/t';
 
         // META Description
         // ***********************************
