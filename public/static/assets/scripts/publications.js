@@ -217,17 +217,38 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       //    deferred.resolve();
       //  });
 
-      if(angular.isDefined($routeParams.publicationId)){
-        setPublication($routeParams.publicationId)
-          .then(function(){
-            $scope.publication.isReady = true;
-            deferred.resolve();
-          });
-      }else{
-        $scope.publication.images = []; // If this definition is moved to the main object the images in edit mode after F5 are not recognized.
-        $scope.publication.isReady = true;
-        deferred.resolve();
-      }
+      $scope.profile = $firebaseObject(FireRef.child('users/'+user.uid));
+
+      $q.all([$scope.profile.$loaded()])
+        .then(function () {
+
+          if($window.parseInt($scope.profile.publicationsCount) >= 7 && $scope.profile.vip !== true){
+            $location('/upgrade-to-vip')
+          }else{
+            if(angular.isDefined($routeParams.publicationId)){
+              return setPublication($routeParams.publicationId);
+            }else{
+              $scope.publication.images = []; // If this definition is moved to the main object the images in edit mode after F5 are not recognized.
+            }
+          }
+
+        })
+        .then(function(){
+          $scope.publication.isReady = true;
+          deferred.resolve();
+        });
+
+      //if(angular.isDefined($routeParams.publicationId)){
+      //  setPublication($routeParams.publicationId)
+      //    .then(function(){
+      //      $scope.publication.isReady = true;
+      //      deferred.resolve();
+      //    });
+      //}else{
+      //  $scope.publication.images = []; // If this definition is moved to the main object the images in edit mode after F5 are not recognized.
+      //  $scope.publication.isReady = true;
+      //  deferred.resolve();
+      //}
 
       $scope.submit = function(){
         if($scope.publicationForm.$valid){

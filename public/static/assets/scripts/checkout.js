@@ -1,4 +1,5 @@
 // FrontEnd Controller
 angular.module('checkout',[])
-  .controller('ThankYouController',['$scope',function($scope){}])
-  .controller('ErrorWhenUpgradingController',['$scope',function($scope){}]);
+  .controller('ThankYouController',[function(){}])
+  .controller('ErrorWhenUpgradingController',[function(){}])
+  .controller('UpgradeToVipController',[function(){}]);

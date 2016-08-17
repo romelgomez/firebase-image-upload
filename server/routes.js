@@ -193,6 +193,10 @@ module.exports = function(app) {
     res.redirect('/error-when-upgrading-to-vip');
   });
 
+  app.get('/upgrade-to-vip', function(req, res) {
+    defaultRoute(req, res);
+  });
+
   app.post('/upgrade', function(req, res) {
 
     console.log('');

@@ -52,6 +52,10 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'static/assets/views/thank-you.html',
         controller: 'ThankYouController'
       })
+      .when('/upgrade-to-vip', {
+        templateUrl: 'static/assets/views/upgrade-to-vip.html',
+        controller: 'UpgradeToVipController'
+      })
       .when('/error-when-upgrading-to-vip', {
         templateUrl: 'static/assets/views/error-when-upgrading-to-vip.html',
         controller: 'ErrorWhenUpgradingController'
