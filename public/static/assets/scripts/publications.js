@@ -223,7 +223,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         .then(function () {
 
           if($window.parseInt($scope.profile.publicationsCount) >= 7 && $scope.profile.vip !== true){
-            $location('/upgrade-to-vip')
+            $location.path('/upgrade-to-vip');
           }else{
             if(angular.isDefined($routeParams.publicationId)){
               return setPublication($routeParams.publicationId);
