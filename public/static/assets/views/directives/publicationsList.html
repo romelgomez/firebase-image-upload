@@ -390,8 +390,15 @@
 
     <!--ng-change="algolia.pagination.pageChanged()"-->
 
+    <div class="pull-left visible-md-block visible-lg-block">
+      With <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> from <img class="img-responsive"  style="height: 20px; display: inline-block;" src="static/assets/images/Algolia_logo_bg-white.jpg">
+    </div>
+
     <div class="pull-right">
       <ul ng-click="algolia.pagination.pageChanged()" uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.req.hitsPerPage"  total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.req.hitsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></ul>
+      <div class="visible-xs-block visible-sm-block" style="margin-top: 10px; text-align: right;">
+        With <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> from <img class="img-responsive"  style="height: 20px; display: inline-block;" src="static/assets/images/Algolia_logo_bg-white.jpg">
+      </div>
     </div>
 
 
