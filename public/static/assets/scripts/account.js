@@ -408,37 +408,59 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
           var userInput = modelValue || viewValue;
 
-          $q.all([
-              FireRef.child('accountNames').child(userInput).once('value'),
-              FireRef.child('users').child($scope.profile.$id).child('accountName').once('value')
-            ])
-            .then(function(snapshots){
+          //console.log('userInput', userInput);
 
-              //console.log('snapshots[0].val()', snapshots[0].val());
-              //console.log('snapshots[0].key()', snapshots[0].key());
-              //console.log('snapshots[1].val()', snapshots[1].val());
-              //console.log('snapshots[1].key()', snapshots[1].key());
-              //console.log('----------------------------------------');
+          // url path, the url that are like this: some-case are not necessary include in this list
+          var reservedWords = {
+            search: true,
+            features: true,
+            categories: true,
+            locations: true,
+            login: true,
+            account: true,
+            upgrade: true
+          };
 
-              /*
-               snapshots[0].val() is userID in accountNames path e.g accountNames/londonServicesLTD/userID
-               snapshots[0].key() is accountName key in accountNames e.g accountNames/londonServicesLTD
+          if(reservedWords[userInput.toLowerCase()] === true){
+            deferred.reject(false);
+          } else {
 
-               snapshots[1].val() is the current accountName value in user/userID/accountName e.g londonServicesLTD
-               snapshots[1].key() is 'accountName' key in user/userID/
-              */
+            $q.all([
+                FireRef.child('accountNames').child(userInput).once('value'),
+                FireRef.child('users').child($scope.profile.$id).child('accountName').once('value')
+              ])
+              .then(function(snapshots){
 
-              if(!snapshots[0].exists()){
-                deferred.resolve(true);
-              }else if(snapshots[0].val() === $scope.profile.$id){
-                deferred.resolve(true);
-              }else{
+                //console.log('snapshots[0].val()', snapshots[0].val());
+                //console.log('snapshots[0].key()', snapshots[0].key());
+                //console.log('snapshots[1].val()', snapshots[1].val());
+                //console.log('snapshots[1].key()', snapshots[1].key());
+                //console.log('----------------------------------------');
+
+                /*
+                 snapshots[0].val() is userID in accountNames path e.g accountNames/londonServicesLTD/userID
+                 snapshots[0].key() is accountName key in accountNames e.g accountNames/londonServicesLTD
+
+                 snapshots[1].val() is the current accountName value in user/userID/accountName e.g londonServicesLTD
+                 snapshots[1].key() is 'accountName' key in user/userID/
+                 */
+
+                if(!snapshots[0].exists()){
+                  deferred.resolve(true);
+                }else if(snapshots[0].val() === $scope.profile.$id){
+                  deferred.resolve(true);
+                }else{
+                  deferred.reject(false);
+                }
+
+              },function(){
                 deferred.reject(false);
-              }
+              });
 
-            },function(){
-              deferred.reject(false);
-            });
+          }
+
+
+
 
           return deferred.promise;
         }
