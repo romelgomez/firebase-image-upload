@@ -76,10 +76,10 @@ function getUserByUUID (uuid){
 
   firebase.FireRef.child('users/'+uuid).once('value')
     .then(function(snapshot){
-      var user = snapshot.val();
-      user.$id = snapshot.key;
 
       if(snapshot.exists()){
+        var user = snapshot.val();
+        user.$id = snapshot.key;
         deferred.resolve(user);
       }else{
         deferred.reject('User does not exist');
