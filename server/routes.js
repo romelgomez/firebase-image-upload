@@ -180,6 +180,10 @@ module.exports = function(app) {
      defaultRoute(req, res);
   });
 
+  app.get('/features', function(req, res) {
+    defaultRoute(req, res);
+  });
+
   // 2Checkout Error when upgrading to vip
   app.get('/error-when-upgrading-to-vip', function(req, res) {
     defaultRoute(req, res);

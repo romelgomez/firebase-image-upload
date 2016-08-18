@@ -48,6 +48,10 @@ angular.module('routes',['ngRoute'])
         controller: 'SearchController',
         reloadOnSearch: false
       })
+      .when('/features', {
+        templateUrl: 'static/assets/views/features.html',
+        controller: 'FeaturesController'
+      })
       .when('/thank-you', {
         templateUrl: 'static/assets/views/thank-you.html',
         controller: 'ThankYouController'

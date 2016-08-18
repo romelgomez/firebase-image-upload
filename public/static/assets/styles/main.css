@@ -187,6 +187,10 @@ ul.jqtree-tree span.jqtree-border {
     font-family: 'Poiret One', cursive;
 }
 
+.droid-sans{
+    font-family: 'Droid Sans', sans-serif;
+}
+
 .input-without-focus:focus{
     outline: none;
     webkit-box-shadow:none;
