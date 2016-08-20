@@ -9,29 +9,30 @@
 </div>
 
 <div ng-show="lording.isDone" style="margin-bottom: 10px;">
-  <div
-       ng-style="{
-          'margin-top':0,
-          'padding':'300px 0 10px 0',
-          'background' : (profile.$banners.length > 0) ? 'url(\'' + 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_500,w_1500/' + profile.$banners[0].$id + '.jpg\') no-repeat center center' : 'url(\'' + '/static/assets/images/iceland.jpg' + '\') no-repeat center center',
-          '-webkit-background-size':'cover',
-          '-moz-background-size':'cover',
-          '-o-background-size':'cover',
-          'background-size':'cover',
-          'box-shadow' : 'inset 0 0 1px 1px rgba(0,0,0,0.2)'
-        }"
-  >
 
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-5 col-sm-5 col-md-2 col-lg-2">
-          <img ng-click="profileImages('lg', profile.$images.length-1)" ng-src="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,w_400/' + profile.$images[0].$id + '.jpg' : 'static/assets/images/unnamedPerson.jpg'}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
-        </div>
-        <!--<div  class="col-lg-9">-->
-        <!--</div>-->
-      </div>
+  <div>
+    <div>
+      <img  ng-src="{{(profile.$banners.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,w_2000/' + profile.$banners[0].$id + '.jpg' : '/static/assets/images/iceland.jpg'}}" alt="..." class="img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
     </div>
 
+    <div class="container">
+      <div class="visible-lg-block row" style="position: relative;">
+        <div style="position: absolute; width: 100%; height: 100%; top: -277px; z-index: 10;">
+          <div class="col-lg-3">
+            <img ng-click="profileImages('lg', profile.$images.length-1)" ng-src="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,w_400/' + profile.$images[0].$id + '.jpg' : 'static/assets/images/unnamedPerson.jpg'}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
+          </div>
+        </div>
+      </div>
+      <div class="visible-sm-block visible-md-block" style="position: relative;">
+        <div class="" style="position: absolute; width: 100%; height: 100%; top: -175px; z-index: 10;">
+          <div class="text-center">
+            <div class="col-lg-3">
+              <img style="width: 160px;" ng-click="profileImages('lg', profile.$images.length-1)" ng-src="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,w_400/' + profile.$images[0].$id + '.jpg' : 'static/assets/images/unnamedPerson.jpg'}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 
