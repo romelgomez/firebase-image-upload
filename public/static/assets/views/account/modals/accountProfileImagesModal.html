@@ -3,6 +3,12 @@
     <h3 class="modal-title">Profile images</h3>
   </div>
   <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
+    <div class="alert alert-info alert-xs" style="margin-bottom: 10px;" role="alert">NOTES: <br>
+      <ol type="a">
+        <li>Collage maker online: <a href="https://www.befunky.com/features/collage-maker/" target="_blank">https://www.befunky.com</a></li>
+        <li>Full view fixed to: {high: 400px, width: 400px}</li>
+      </ol>
+    </div>
 
     <form id="profileImages" name="forms.profileImages" novalidate="" ng-submit="submit()">
       <upload-images
