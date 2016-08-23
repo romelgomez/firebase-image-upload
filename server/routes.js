@@ -35,6 +35,8 @@ var metaTags = {
   twitterAccount: '@MarketOfLondon'
 };
 
+var metaTagsCopy = metaTags;
+
 function readFile(fileName){
   var deferred = Q.defer();
 
@@ -166,6 +168,7 @@ function defaultRoute(req, res){
       return Q.when({result: template(metaTags)})
     })
     .then(function(the){
+      metaTags = metaTagsCopy;
       res.send(the.result);
     },function(error){
       throw error;
@@ -399,6 +402,7 @@ module.exports = function(app) {
         return Q.when({result: template(metaTags)})
       })
       .then(function(the){
+        metaTags = metaTagsCopy;
         res.send(the.result);
       },function(){
         res.redirect('/');
@@ -471,6 +475,7 @@ module.exports = function(app) {
         return Q.when({result: template(metaTags)});
       })
       .then(function(the){
+        metaTags = metaTagsCopy;
         res.send(the.result);
       },function(error){
         //throw error;
