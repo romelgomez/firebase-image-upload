@@ -9,7 +9,7 @@
   <div style="margin-bottom: 20px; border-bottom: 1px solid #959595; background: #000;">
     <div uib-carousel interval="5000" no-wrap="false" active="">
       <div uib-slide ng-repeat="image in publication.$images track by $index" index="$index">
-        <img class="img-responsive" ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_700,w_1200/{{image.$id}}.webp" style="margin:auto;">
+        <img class="img-responsive" ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_700,q_auto:best,w_1200/{{image.$id}}.webp" style="margin:auto;">
         <!--<div class="carousel-caption">-->
           <!--<h4>{{image.name | removeFileExtension | noSpecialChars | capitalizeFirstChar}}</h4>-->
         <!--</div>-->

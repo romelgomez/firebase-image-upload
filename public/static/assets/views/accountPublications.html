@@ -12,14 +12,14 @@
 
   <div>
     <div>
-      <img  ng-src="{{(profile.$banners.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,w_2000/' + profile.$banners[0].$id + '.jpg' : '/static/assets/images/iceland.jpg'}}" alt="..." class="img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
+      <img  ng-src="{{(profile.$banners.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,q_auto:best,w_2000/' + profile.$banners[0].$id + '.webp' : 'http://res.cloudinary.com/berlin/image/upload/c_fill,h_617,q_auto:best,w_2000/v1471962346/iceland_q4qb4e.webp'}}" alt="..." class="img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
     </div>
 
     <div class="container">
       <div class="visible-lg-block row" style="position: relative;">
         <div style="position: absolute; width: 100%; height: 100%; top: -277px; z-index: 10;">
           <div class="col-lg-3">
-            <img ng-click="profileImages('lg', profile.$images.length-1)" ng-src="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,w_400/' + profile.$images[0].$id + '.jpg' : 'static/assets/images/unnamedPerson.jpg'}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
+            <img ng-click="profileImages('lg', profile.$images.length-1)" ng-src="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:best,w_400/' + profile.$images[0].$id + '.webp' : 'http://res.cloudinary.com/berlin/image/upload/c_scale,w_400/v1471961823/unnamedPerson_diuaor.webp'}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
         <div class="" style="position: absolute; width: 100%; height: 100%; top: -175px; z-index: 10;">
           <div class="text-center">
             <div class="col-lg-3">
-              <img style="width: 160px;" ng-click="profileImages('lg', profile.$images.length-1)" ng-src="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,w_400/' + profile.$images[0].$id + '.jpg' : 'static/assets/images/unnamedPerson.jpg'}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
+              <img style="width: 160px;" ng-click="profileImages('lg', profile.$images.length-1)" ng-src="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:best,w_400/' + profile.$images[0].$id + '.webp' : 'http://res.cloudinary.com/berlin/image/upload/c_scale,w_400/v1471961823/unnamedPerson_diuaor.webp'}}" alt="..." class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }" >
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@
 
                 <div class="row" style="padding-left: 10px; padding-right: 10px;">
                   <div ng-repeat="image in profile.$images | reverse | limitTo: 6" class="col-xs-6 col-md-4" style="padding-right:5px; padding-left: 5px;" >
-                    <img ng-click="profileImages( 'lg', $index)"  class="img-responsive thumbnail" ng-style="{ cursor: 'pointer'}" ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,w_400/{{image.public_id}}.jpg" style="margin-bottom: 10px;">
+                    <img ng-click="profileImages( 'lg', $index)"  class="img-responsive thumbnail" ng-style="{ cursor: 'pointer'}" ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:best,w_400/{{image.public_id}}.webp" style="margin-bottom: 10px;">
                   </div>
                 </div>
                 <hr ng-show="(profile.landLineTelephone !== undefined && profile.landLineTelephone !== '') || (profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
@@ -143,7 +143,7 @@
 
     <div uib-carousel active="active" interval="5000" no-wrap="false">
       <div uib-slide ng-repeat="image in profileImages | reverse  track by $index" index="$index">
-        <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_800,w_900/{{image.public_id}}.jpg" style="margin:auto;">
+        <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_800,q_auto:best,w_900/{{image.public_id}}.webp" style="margin:auto;">
         <!--<div class="carousel-caption">-->
           <!--<h4>{{image.name | removeFileExtension | noSpecialChars | capitalizeFirstChar}}</h4>-->
         <!--</div>-->
