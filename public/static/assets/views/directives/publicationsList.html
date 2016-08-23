@@ -1,5 +1,13 @@
 <div>
 
+  <div ng-show="locationPath === '/search'">
+    <img class="img-responsive" src="http://res.cloudinary.com/berlin/image/upload/q_auto:best/v1471975218/publications-banner-2_nw8ung.webp">
+    <!--<img class="img-responsive" src="http://res.cloudinary.com/berlin/image/upload/q_auto:best/v1471975624/publications-banner-3_jtzcbf.webp">-->
+    <!--<img class="img-responsive" src="http://res.cloudinary.com/berlin/image/upload/q_auto:best/v1471975923/publications-banner-4_jsbjf0.webp">-->
+    <!--<img class="img-responsive" src="http://res.cloudinary.com/berlin/image/upload/q_auto:best/v1471976263/publications-banner-5_qicjhx.webp">-->
+    <hr class="hr-xs">
+  </div>
+
   <div ng-show="!(algolia.res.query === '' && algolia.res.nbHits === 0)">
     <form name="algoliaForm" novalidate="" ng-submit="submit()">
       <div class="input-group">
@@ -170,6 +178,31 @@
               </button>
             </div>
           </div>
+
+          <div>
+            <hr class="hr-xs">
+            <div>
+              <img class="img-responsive img-thumbnail" src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:best,w_300/v1471980275/jobs-banner-4_narvua.webp">
+            </div>
+            <div style="margin-top: 10px;">
+              <img class="img-responsive img-thumbnail" src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:best,w_300/v1471982509/transport-banner-2_jl6n1a.webp">
+            </div>
+            <div style="margin-top: 10px;">
+              <img class="img-responsive img-thumbnail" src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:best,w_300/v1471983285/real-state-banner_syinid.webp">
+            </div>
+            <div style="margin-top: 10px;">
+              <img class="img-responsive img-thumbnail" src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:best,w_300/v1471986618/services-banner_g45sqe.webp">
+            </div>
+            <div style="margin-top: 10px;">
+              <a ng-href="search?c=marketplace" class="img-thumbnail">
+                <div class="hovereffect">
+                  <img class="img-responsive" src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:best,w_300/v1471991348/site/marketplace-banner-3_bhqftd.webp">
+                  <div class="overlay"></div>
+                </div>
+              </a>
+            </div>
+          </div>
+
 
 
         </div>

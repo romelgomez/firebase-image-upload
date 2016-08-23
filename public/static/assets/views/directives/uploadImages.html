@@ -101,18 +101,21 @@
 
             <div ng-switch="value.blobUrl !== undefined">
               <div ng-switch-when="true">
-                <img class="img-thumbnail img-preview img-responsive" ng-src="{{value.blobUrl || 'assets/images/loading.jpeg'}}" alt="{{value.name}}">
+                <img class="img-thumbnail img-preview img-responsive" ng-src="{{value.blobUrl || 'http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.webp'}}" alt="{{value.name}}">
               </div>
               <div ng-switch-when="false">
 
                 <div ng-if="value.$error !== undefined">
-                  <img class="img-thumbnail img-preview img-responsive" ng-src="/assets/images/invalid_image.png" alt="{{value.name}}">
+                  <img class="img-thumbnail img-preview img-responsive" ng-src="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.webp" alt="{{value.name}}">
                 </div>
 
                 <div ng-if="value.$id !== undefined">
-                  <cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="jpg">
-                    <cl-transformation height="400" width="440" crop="fill"/>
-                  </cl-image>
+                  <img class="inline img-thumbnail img-preview img-responsive" ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:best,w_200/{{value.$id}}.webp">
+
+                  <!--<cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="webp">-->
+                    <!--<cl-transformation height="150" width="200" crop="fill"/>-->
+                  <!--</cl-image>-->
+
                 </div>
 
               </div>

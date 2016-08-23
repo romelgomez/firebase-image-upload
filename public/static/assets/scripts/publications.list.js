@@ -31,6 +31,8 @@ publicationsModule
         },
         link : function($scope) {
 
+          $scope.locationPath = $location.path();
+
           $scope.profile  = typeof $scope.profile !== 'undefined' ? $scope.profile : {};
           $scope.editMode = typeof $scope.editMode !== 'undefined' ? $scope.editMode : false;
 
