@@ -215,7 +215,7 @@ module.exports = function(app) {
     //console.log('');
 
     if(typeof req.body.auuid !== 'undefined' && req.body.auuid !== ''){
-      var hash = md5('MWJjYTI2NzAtOTU0NC00NGMwLTkxZGMtMTY0NzNkMDY4NjU1' + '901325544' + req.body.order_number + req.body.total).toUpperCase();
+      var hash = md5('NmJmM2E3NTAtMjM2OS00OTg3LThhNTMtNjk3ODY3NTM4MzM4' + '103002757' + req.body.order_number + req.body.total).toUpperCase();
       if(hash === req.body.key){
 
         gotVIP(req.body.auuid, req.body.invoice_id)
