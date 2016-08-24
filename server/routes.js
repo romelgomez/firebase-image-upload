@@ -215,7 +215,13 @@ module.exports = function(app) {
     console.log('');
 
     if(typeof req.body.auuid !== 'undefined' && req.body.auuid !== ''){
-      var hash = md5('NmJmM2E3NTAtMjM2OS00OTg3LThhNTMtNjk3ODY3NTM4MzM4' + '103002757' + req.body.order_number + req.body.total).toUpperCase();
+      var hash = '';
+      if(req.body.demo === 'Y'){
+        hash = md5('NmJmM2E3NTAtMjM2OS00OTg3LThhNTMtNjk3ODY3NTM4MzM4' + '103002757' + 1 + req.body.total).toUpperCase();
+      }else{
+        hash = md5('NmJmM2E3NTAtMjM2OS00OTg3LThhNTMtNjk3ODY3NTM4MzM4' + '103002757' + req.body.order_number + req.body.total).toUpperCase();
+      }
+
       console.log('hash', hash);
       console.log('req.body.key', req.body.key);
       if(hash === req.body.key){
