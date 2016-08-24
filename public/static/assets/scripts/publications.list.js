@@ -102,7 +102,12 @@ publicationsModule
               currentPage : 1,
               pageChanged : function() {
                 $scope.algolia.req.page = $scope.algolia.pagination.currentPage-1;
-                parseURL();
+                parseURL()
+                  .then(function(){
+                    $window.scrollTo(0, 0);
+                  },function(err){
+                    //notificationService.error(err);
+                  })
               }
             },
             // configuration relate to sort order
@@ -622,6 +627,29 @@ publicationsModule
 
 
            */
+
+          $scope.setRootCategory = function(category){
+
+            if($scope.algolia.req.query !== '' && category === null){
+              $scope.algolia.req.query = '';
+            }else{
+              parsedURL = '';
+
+              resetQuerySettings();
+
+              $location.search({
+                c: category
+              });
+
+              parseURL()
+                .then(function(){
+                  $window.scrollTo(0, 0);
+                },function(err){
+                  notificationService.error(err);
+                })
+            }
+
+          };
 
           function parseURL () {
             if(parsedURL === ''){
