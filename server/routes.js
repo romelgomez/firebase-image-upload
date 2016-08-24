@@ -206,24 +206,31 @@ module.exports = function(app) {
 
   app.post('/upgrade', function(req, res) {
 
-    console.log('');
-    console.log('************************************ 2Checkout Approved URL *********************************************');
-    console.log('2Checkout Approved URL req.method:', req.method);
-    console.log('2Checkout Approved URL req.url:', req.url);
-    console.log('2Checkout Approved URL req.body: \n', req.body);
-    console.log('#################################### 2Checkout Approved URL ##############################################');
-    console.log('');
+    // 2Checkout Theme Color #831eff
+
+    //console.log('');
+    //console.log('************************************ 2Checkout Approved URL *********************************************');
+    //console.log('2Checkout Approved URL req.method:', req.method);
+    //console.log('2Checkout Approved URL req.url:', req.url);
+    //console.log('2Checkout Approved URL req.body: \n', req.body);
+    //console.log('#################################### 2Checkout Approved URL ##############################################');
+    //console.log('');
 
     if(typeof req.body.auuid !== 'undefined' && req.body.auuid !== ''){
+
+      var hash = md5('NmJmM2E3NTAtMjM2OS00OTg3LThhNTMtNjk3ODY3NTM4MzM4' + '103002757' + req.body.order_number + req.body.total).toUpperCase();
+
+      /* Test in Demo MODE: https://www.2checkout.com/documentation/checkout/passback/validation/
       var hash = '';
       if(req.body.demo === 'Y'){
         hash = md5('NmJmM2E3NTAtMjM2OS00OTg3LThhNTMtNjk3ODY3NTM4MzM4' + '103002757' + 1 + req.body.total).toUpperCase();
       }else{
         hash = md5('NmJmM2E3NTAtMjM2OS00OTg3LThhNTMtNjk3ODY3NTM4MzM4' + '103002757' + req.body.order_number + req.body.total).toUpperCase();
       }
+      */
 
-      console.log('hash', hash);
-      console.log('req.body.key', req.body.key);
+      //console.log('hash', hash);
+      //console.log('req.body.key', req.body.key);
       if(hash === req.body.key){
 
         gotVIP(req.body.auuid, req.body.invoice_id)
@@ -234,11 +241,11 @@ module.exports = function(app) {
           });
 
       }else{
-        console.log('hash not match');
+        //console.log('hash not match');
         res.redirect('/error-when-upgrading-to-vip');
       }
     }else{
-      console.log('auuid is undefined');
+      //console.log('auuid is undefined');
       res.redirect('/error-when-upgrading-to-vip');
     }
 
