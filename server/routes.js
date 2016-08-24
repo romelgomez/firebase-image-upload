@@ -216,6 +216,8 @@ module.exports = function(app) {
 
     if(typeof req.body.auuid !== 'undefined' && req.body.auuid !== ''){
       var hash = md5('NmJmM2E3NTAtMjM2OS00OTg3LThhNTMtNjk3ODY3NTM4MzM4' + '103002757' + req.body.order_number + req.body.total).toUpperCase();
+      console.log('hash', hash);
+      console.log('req.body.key', req.body.key);
       if(hash === req.body.key){
 
         gotVIP(req.body.auuid, req.body.invoice_id)
