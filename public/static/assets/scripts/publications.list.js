@@ -78,6 +78,7 @@ publicationsModule
           };
 
           $scope.algolia = {
+            queryString: '',
             isReady: false,
             req : {
               query: '',
@@ -629,25 +630,24 @@ publicationsModule
            */
 
           $scope.setRootCategory = function(category){
+            parsedURL = '';
+            $scope.algolia.queryStringWatcherUnregister();
+            $scope.algolia.queryString = '';
+            $scope.algolia.req.query = '';
+            resetQuerySettings();
 
-            if($scope.algolia.req.query !== '' && category === null){
-              $scope.algolia.req.query = '';
-            }else{
-              parsedURL = '';
+            $location.search({
+              c: category,
+              q: null
+            });
 
-              resetQuerySettings();
-
-              $location.search({
-                c: category
+            parseURL()
+              .then(function(){
+                $scope.algolia.queryStringWatcherUnregister = queryStringWatcher(false);
+                $window.scrollTo(0, 0);
+              },function(err){
+                notificationService.error(err);
               });
-
-              parseURL()
-                .then(function(){
-                  $window.scrollTo(0, 0);
-                },function(err){
-                  notificationService.error(err);
-                })
-            }
 
           };
 
@@ -819,53 +819,14 @@ publicationsModule
                 }
               }
 
+              // queryString
+              if(typeof searchObj.q === 'string'){
+                $scope.algolia.req.query = searchObj.q;
+              }
+
             } else {
               // estado interno se refleja en la url
               //console.log('estado interno se refleja en la url');
-              //$location.search()
-              //var currentURLState = {};
-
-              // {"left":5,"name":"Real Estate","parentId":"","right":10,"$id":"-K5pzphvGtzcQhxopgpD","$priority":null,"count":1}
-              //$location.search({c: ['jobs', 'mecanico', 'doctor']})
-
-              //// Categories
-              //var categoriesFacets = [];
-              //angular.forEach($scope.algolia.faceting.currentFacets.categories, function (facet) {
-              //  //currentURLState
-              //  categoriesFacets.push($filter('slug')(facet.name));
-              //});
-              //
-              //// Locations
-              //var locationsFacets = [];
-              //angular.forEach($scope.algolia.faceting.currentFacets.locations, function (facet) {
-              //  //currentURLState
-              //  locationsFacets.push($filter('slug')(facet.name));
-              //});
-              //
-              //var jobTypeFacets = [];
-              //angular.forEach($scope.algolia.faceting.currentFacets.jobType, function (facet) {
-              //  //currentURLState
-              //  jobTypeFacets.push($filter('slug')(facet.name));
-              //});
-              //
-              //var jobRecruiterTypeFacets = [];
-              //angular.forEach($scope.algolia.faceting.currentFacets.jobRecruiterType, function (facet) {
-              //  //currentURLState
-              //  jobRecruiterTypeFacets.push($filter('slug')(facet.name));
-              //});
-              //
-              //var jobSalaryTypeFacets = [];
-              //angular.forEach($scope.algolia.faceting.currentFacets.jobSalaryType, function (facet) {
-              //  //currentURLState
-              //  jobSalaryTypeFacets.push($filter('slug')(facet.name));
-              //});
-              //
-              //var jobHasBenefitsFacets = [];
-              //angular.forEach($scope.algolia.faceting.currentFacets.jobHasBenefits, function (facet) {
-              //  //currentURLState
-              //  jobHasBenefitsFacets.push($filter('slug')(facet.name));
-              //});
-
 
               /*
                currentFacets: {
@@ -899,22 +860,14 @@ publicationsModule
             return search();
           }
 
-          /**
-           * MAIN FUNCTION
-           */
-          $q.all($scope.lording.promises)
-            .then(function () {
+          function queryStringWatcher(_doQuery_){
+            var doQuery = typeof _doQuery_ !== 'undefined'? _doQuery_ : true;
 
-              // We need call this before set the watcher in the search query string
-              var searchObj = $location.search();
-              if(typeof searchObj.q === 'string'){
-                $scope.algolia.req.query = searchObj.q;
-                //$scope.algolia.req.query = $filter('noSpecialChars')(searchObj.search)
-              }
-
-              $scope.$watch(function(){
-                return $scope.algolia.req.query;
-              },function(){
+            return $scope.$watch(function(){
+              return $scope.algolia.queryString;
+            },function(){
+              if(doQuery){
+                $scope.algolia.req.query = $scope.algolia.queryString;
 
                 /*
                  * if parsedURL is undefined
@@ -943,9 +896,25 @@ publicationsModule
                   },function(err){
                     notificationService.error(err);
                   })
+              }else{
+                doQuery = true;
+              }
+            });
+          }
 
+          /**
+           * MAIN FUNCTION
+           */
+          $q.all($scope.lording.promises)
+            .then(function () {
 
-              });
+              //We need call this before set the watcher in the search query string
+              var searchObj = $location.search();
+              if(typeof searchObj.q === 'string'){
+                $scope.algolia.queryString = searchObj.q;
+              }
+
+              $scope.algolia.queryStringWatcherUnregister = queryStringWatcher(true);
 
             }, function(){
               notificationService.error('This action cannot be completed.');
@@ -1005,52 +974,3 @@ publicationsModule
     };
 
   }]);
-
-
-// TODO ADD support TO deep link urls
-//console.log('$routeParams', $routeParams);
-//if($scope.algolia.req.query !== ''){
-//  //$route.updateParams({'q':$scope.algolia.req.query});
-//  $location.search('q', $scope.algolia.req.query);
-//}
-
-//$route.updateParams({'c':null});
-
-// Categories
-//if(typeof $routeParams.c !== 'undefined'){
-//
-//  switch(typeof $routeParams.c) {
-//    case 'object':
-//
-//      break;
-//    case 'string':
-//
-//      var facetName = '';
-//
-//      switch($routeParams.c) {
-//        case 'jobs':
-//          facetName = 'Jobs';
-//          break;
-//        case 'transport':
-//          facetName = 'Transport';
-//          break;
-//        case 'marketplace':
-//          facetName = 'Marketplace';
-//          break;
-//        case 'real-estate':
-//          facetName = 'Real Estate';
-//          break;
-//        case 'services':
-//          facetName = 'Services';
-//          break;
-//      }
-//
-//      $scope.algolia.faceting.treeFacetsMethods.addFacet('categories',{
-//        name: facetName,
-//        parentId: ''
-//      }, true);
-//
-//      break;
-//  }
-//}
-
