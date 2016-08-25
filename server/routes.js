@@ -37,6 +37,18 @@ var metaTags = {
 
 var metaTagsCopy = metaTags;
 
+function capitalizeFirstChar(input) {
+  return (!!input) ? input.trim().replace(/(^\w?)/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1);}) : '';
+}
+
+function lodashTruncates(text, length) {
+  var _text = _.truncate(text, {
+    length: length,
+    separator: /,? +/
+  });
+  return capitalizeFirstChar(_text);
+}
+
 function readFile(fileName){
   var deferred = Q.defer();
 
@@ -253,34 +265,6 @@ module.exports = function(app) {
       res.redirect('/error-when-upgrading-to-vip');
     }
 
-    /*
-
-     req.body.auuid
-     req.body.key
-     req.body.invoice_id
-
-     md5('MWJjYTI2NzAtOTU0NC00NGMwLTkxZGMtMTY0NzNkMDY4NjU1' + '901325544' + req.body.order_number + req.body.total);
-
-     UPPERCASE(MD5_ENCRYPTED(Secret Word + Seller ID + order_number + Sale Total))
-
-     'MWJjYTI2NzAtOTU0NC00NGMwLTkxZGMtMTY0NzNkMDY4NjU1' + '901325544' + req.body.order_number + req.body.total
-
-     MWJjYTI2NzAtOTU0NC00NGMwLTkxZGMtMTY0NzNkMDY4NjU19013255449093731417148259.00
-
-
-     Header Redirect (Your URL)
-     app.get('/thank-you')
-     GET /thank-you?middle_initial=&sid=901325544&fixed=N&cart_weight=0&key=AA86C2002853AC30B0BDAED7090C8D15&state=monagas&last_name=&email=bmxquiksilver7185%40gmail.com&city=maturin&street_address=Urb.+Las+trinitarias+calle+10+casa+561&product_id=1&merchant_order_id=&order_number=9093731393217&country=VEN&ip_country=Venezuela&product_description=MarketOfLondon.co.uk+VIP+Account&lang=en&currency_code=GBP&demo=&pay_method=CC&invoice_id=9093731393226&quantity=1&cart_tangible=N&phone=4129427966+4129427966&total=259.00&credit_card_processed=Y&zip=&merchant_product_id=VIP&street_address2=&card_holder_name=Romel&first_name=Romel 200 59.020 ms - 5758
-
-     Given links back to my website
-     app.post('/thank-you')
-
-     FRAUD_STATUS_CHANGED
-     ORDER_CREATED
-     INVOICE_STATUS_CHANGED invoice_status: 'deposited'
-
-    */
-
   });
 
   // 2Checkout Instant Notification Service
@@ -406,7 +390,7 @@ module.exports = function(app) {
 
         // META Description
         // ***********************************
-        metaTags.description = typeof user.bio !== 'undefined' && user.bio !== '' ? user.bio : 'MarketOfLondon.co.uk - Jobs, Real Estate, Transport, Services, Marketplace related Publications';
+        metaTags.description = typeof user.bio !== 'undefined' && user.bio !== '' ? lodashTruncates(user.bio, 159) : 'MarketOfLondon.co.uk - Jobs, Real Estate, Transport, Services, Marketplace related Publications';
 
         // META image
         // ***********************************
@@ -479,7 +463,7 @@ module.exports = function(app) {
 
         // META Description
         // ***********************************
-        metaTags.description = publication.description;
+        metaTags.description = lodashTruncates(publication.description, 159);
 
         // META Image
         // ***********************************
