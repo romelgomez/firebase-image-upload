@@ -276,7 +276,7 @@
                         <div class="row">
                           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                             <a ng-href="/v/{{publication.categories | lodashJoin:' ' | slug }}-in-{{publication.locations | lodashJoin:' ' | slug }}/{{publication.objectID}}/{{publication.title | slug}}.html">
-                              <img ng-show="sizeOf(publication.images) === 0" src="static/assets/images/noImageAvailableBig.jpg" alt="..." class="img-responsive img-thumbnail">
+                              <img ng-show="sizeOf(publication.images) === 0" src="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1472131224/noImageAvailableBig_lxxmuu.webp" alt="..." class="img-responsive img-thumbnail">
                               <cl-image ng-show="sizeOf(publication.images) > 0"  public-id="{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images) }}" class="inline img-responsive img-thumbnail" format="webp">
                                 <cl-transformation height="300" width="600" crop="fill"  />
                               </cl-image>
@@ -461,13 +461,13 @@
     <!--ng-change="algolia.pagination.pageChanged()"-->
 
     <div class="pull-left visible-md-block visible-lg-block">
-      With <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> from <img class="img-responsive"  style="height: 20px; display: inline-block;" src="static/assets/images/Algolia_logo_bg-white.png">
+      With <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> from <img class="img-responsive"  style="height: 20px; display: inline-block;" src="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1472131370/Algolia_logo_bg-white_jn2n2w.webp">
     </div>
 
     <div class="pull-right">
       <ul ng-click="algolia.pagination.pageChanged()" uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.req.hitsPerPage"  total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.req.hitsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></ul>
       <div class="visible-xs-block visible-sm-block" style="margin-top: 10px; text-align: right;">
-        With <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> from <img class="img-responsive"  style="height: 20px; display: inline-block;" src="static/assets/images/Algolia_logo_bg-white.png">
+        With <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> from <img class="img-responsive"  style="height: 20px; display: inline-block;" src="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1472131370/Algolia_logo_bg-white_jn2n2w.webp">
       </div>
     </div>
 
