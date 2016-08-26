@@ -101,11 +101,13 @@ publicationsModule
               maxSize: 10,
               // current page
               currentPage : 1,
-              pageChanged : function() {
+              pageChanged : function(scrollToTheTop) {
                 $scope.algolia.req.page = $scope.algolia.pagination.currentPage-1;
                 parseURL()
                   .then(function(){
-                    $window.scrollTo(0, 0);
+                    if(typeof scrollToTheTop !== 'undefined' && scrollToTheTop === true){
+                      $window.scrollTo(0, 0);
+                    }
                   },function(err){
                     //notificationService.error(err);
                   })

@@ -65,7 +65,7 @@
 
     <pre ng-show="algolia.res.nbPages > 0" style="margin-bottom: 10px"><b>Page:</b> {{algolia.pagination.currentPage}} of {{algolia.res.nbPages}} | <b>Hits:</b> {{algolia.res.nbHits}}</pre>
 
-    <ul ng-click="algolia.pagination.pageChanged()" uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.req.hitsPerPage"  total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.req.hitsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></ul>
+    <ul ng-click="algolia.pagination.pageChanged(false)" uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.req.hitsPerPage"  total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.req.hitsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></ul>
 
     <div ng-show="algolia.res.nbHits > 0" >
       <hr class="hr-xs">
@@ -465,7 +465,7 @@
     </div>
 
     <div class="pull-right">
-      <ul ng-click="algolia.pagination.pageChanged()" uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.req.hitsPerPage"  total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.req.hitsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></ul>
+      <ul ng-click="algolia.pagination.pageChanged(true)" uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.req.hitsPerPage"  total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.req.hitsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></ul>
       <div class="visible-xs-block visible-sm-block" style="margin-top: 10px; text-align: right;">
         With <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> from <img class="img-responsive"  style="height: 20px; display: inline-block;" src="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1472131370/Algolia_logo_bg-white_jn2n2w.webp">
       </div>
