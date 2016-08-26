@@ -1,10 +1,22 @@
-<div class="panel panel-default" style="margin-top: 50px; margin-bottom: 0; " ng-controller="AccountProfileController" >
+<!--<div class="panel panel-default" style="margin-top: 50px; margin-bottom: 0; " ng-controller="AccountProfileController" >-->
+<div class="panel panel-default" style="margin-top: 10px; margin-bottom: 0; " ng-controller="AccountProfileController" >
   <div class="panel-body">
 
-    <div style="text-align: center; margin-top: -60px;">
-      <div class="photo" style="padding: 4px; border: solid 1px #A0A0A0; background: #FFFFFF;">
-        <img ng-src="{{firebaseUser.providerData[0].photoURL !== null? firebaseUser.providerData[0].photoURL : firebaseUser.photoURL}}" alt="avatar">
-      </div>
+    <!--<ul>-->
+      <!--<li>firebaseUser.providerData[0].photoURL: {{firebaseUser.providerData[0].photoURL}}</li>-->
+      <!--<li>firebaseUser.photoURL: {{firebaseUser.photoURL}}</li>-->
+    <!--</ul>-->
+
+
+    <!--<div style="text-align: center; margin-top: -60px;">-->
+      <!--<div class="photo" style="padding: 4px; border: solid 1px #A0A0A0; background: #FFFFFF;">-->
+        <!--<img ng-show="" ng-src="{{firebaseUser.providerData[0].photoURL !== null? firebaseUser.providerData[0].photoURL : firebaseUser.photoURL}}" alt="avatar">-->
+      <!--</div>-->
+      <!--<div>-->
+        <!--Hi <span style="color: #F0563D;">{{account.profile.names | capitalize}} {{account.profile.lastNames | capitalize}}</span>-->
+      <!--</div>-->
+    <!--</div>-->
+    <div>
       <div>
         Hi <span style="color: #F0563D;">{{account.profile.names | capitalize}} {{account.profile.lastNames | capitalize}}</span>
       </div>
