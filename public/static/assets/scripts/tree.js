@@ -428,7 +428,6 @@ angular.module('tree',['ngMessages','cgBusy','jlareau.pnotify', 'angular-clipboa
       return {
         restrict:'E',
         template:''+
-        '<link rel="stylesheet" href="/bower_components/jqtree/jqtree.css" />'+
         '<section cg-busy="{promise:httpRequestPromise,message:\'Just a moment\'}">' +
         '<section>' +
         '<div class="panel panel-default">'+
