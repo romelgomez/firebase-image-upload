@@ -7,7 +7,6 @@
 
 body {
     padding: 50px 0 0;
-    /*margin-bottom: 60px;*/
 }
 
 a:hover {
@@ -24,7 +23,6 @@ a:hover {
 }
 
 
-/* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .marketing,
 .footer {
@@ -50,33 +48,10 @@ a:hover {
 
 /* Custom page footer */
 .footer {
-//padding-top: 19px;
+/*//padding-top: 19px;*/
     color: #777;
-//border-top: 1px solid #e5e5e5;
+/*//border-top: 1px solid #e5e5e5;*/
 }
-
-
-/* tree  */
-ul.jqtree-tree .jqtree-element {
-    position: relative;
-
-    /* Store - new css */
-    padding: 7px;
-    border-radius: 4px;
-}
-
-ul.jqtree-tree li {
-    /* Store - new css */
-    border: 1px solid #143546;
-    margin: 7px 7px 7px 0;
-    border-radius: 4px;
-}
-ul.jqtree-tree span.jqtree-border {
-    /* Store - new css */
-    padding: 7px;
-    border-radius: 4px;
-}
-/* tree ends */
 
 .a-link {
     color: #337ab7;
