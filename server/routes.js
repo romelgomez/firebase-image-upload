@@ -298,18 +298,6 @@ module.exports = function(app) {
      defaultRoute(req, res);
   });
 
-  app.get('/categories', function(req, res){
-    defaultRoute(req, res);
-  });
-
-  app.get('/locations', function(req, res){
-    defaultRoute(req, res);
-  });
-
-  app.get('/j-tree-test', function(req, res){
-    defaultRoute(req, res);
-  });
-
   app.get('/new-publication', function(req, res){
     defaultRoute(req, res);
   });

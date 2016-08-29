@@ -76,18 +76,6 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'static/assets/views/termsOfService.html',
         controller: 'MainController'
       })
-      .whenAuthenticated('/categories', {
-        templateUrl: 'static/assets/views/categories.html',
-        controller: 'TreeController'
-      })
-      .whenAuthenticated('/locations', {
-        templateUrl: 'static/assets/views/locations.html',
-        controller: 'TreeController'
-      })
-      .whenAuthenticated('/j-tree-test', {
-        templateUrl: 'static/assets/views/jtree-diretive-test.html',
-        controller: 'TreeController'
-      })
       .whenAuthenticated('/new-publication', {
         templateUrl: 'static/assets/views/publication.html',
         controller: 'PublicationsController'
@@ -99,10 +87,6 @@ angular.module('routes',['ngRoute'])
       .when('/view-publication/:publicationID/:title', {
         templateUrl: 'static/assets/views/viewPublication.html',
         controller: 'ViewPublicationController'
-      })
-      .when('/all-publications-of/:userID/:pseudonymOrNames', {
-        templateUrl: 'static/assets/views/viewAllPublication.html',
-        controller: 'ViewAllPublicationController'
       })
       .when('/login', {
         templateUrl: 'static/assets/views/login.html',

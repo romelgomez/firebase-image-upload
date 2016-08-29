@@ -1,6 +1,37 @@
 'use strict';
 
 var publicationsModule = angular.module('publications',['uuid','ngMessages','angular-redactor','ngFileUpload','cloudinary','algoliasearch', 'images'])
+  .factory('treeService', [
+    '$filter',
+    function($filter) {
+
+      return {
+        getPath : function(nodeId,nodes){
+          var path = [];
+          var reverseNodes   = $filter('reverse')(nodes);
+          var process = function (nodeId){
+            angular.forEach(reverseNodes,function(node){
+              if(nodeId === node.$id){
+                path.push(node);
+                if(node.parentId !== ''){
+                  process(node.parentId);
+                }
+              }
+            });
+          };
+          process(nodeId);
+          return $filter('reverse')(path);
+        },
+        pathNames : function(path){
+          var pathNames = [];
+          angular.forEach(path,function(pathNode){
+            pathNames.push(pathNode.name);
+          });
+          return pathNames;
+        }
+      };
+
+    }])
   .factory('publicationService',['$q', '$window', 'FireRef', 'imagesService', function( $q, $window, FireRef, imagesService){
 
     var publicationsRef = FireRef.child('publications');
