@@ -86,6 +86,18 @@ gulp.task('basic', function() {
     .pipe(gulp.dest(output.dist));
 });
 
+gulp.task('distributed-dependencies', function() {
+  return gulp.src([
+      'public/static/assets/views/publication.html',
+      'public/static/assets/views/login.html'
+    ])
+    .pipe(useref())
+    .pipe(gulpif('*.js', uglify()))
+    .pipe(gulpif('*.css', csso()))
+    .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
+    .pipe(gulp.dest(output.dist));
+});
+
 gulp.task('fonts', function() {
   return gulp.src([src.fonts.fontAwesome,src.fonts.bootstrap])
     .pipe(gulp.dest(output.fonts));
@@ -101,7 +113,7 @@ gulp.task('robots.txt', function() {
     .pipe(gulp.dest(output.dist));
 });
 
-gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts', 'favicon', 'robots.txt', 'google-site-verification'], function() {
+gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts', 'favicon', 'robots.txt', 'google-site-verification', 'distributed-dependencies'], function() {
   return gulp.src('dist/**/*')
     .pipe(size({title: 'build', gzip: true}));
 });
