@@ -31,7 +31,6 @@ a:hover {
 }
 
 .header {
-//border-bottom: 1px solid #e5e5e5;
     margin-bottom: 10px;
 }
 
@@ -48,9 +47,7 @@ a:hover {
 
 /* Custom page footer */
 .footer {
-/*//padding-top: 19px;*/
     color: #777;
-/*//border-top: 1px solid #e5e5e5;*/
 }
 
 .a-link {
@@ -79,23 +76,10 @@ a:hover {
 }
 
 /*!* FileUpload START *!*/
-/*.file-name{*/
-    /*white-space: nowrap;*/
-/*//font-weight: bold;*/
-    /*width: 300px;*/
-    /*margin-bottom: 2px;*/
-/*}*/
-/*.file-name:not(:hover) {*/
-    /*overflow: hidden;*/
-    /*text-overflow: ellipsis;*/
-/*}*/
 .remove-button{
     padding-top: 10px;
 }
 .img-preview{
-    /*height:100px;*/
-    /*max-height: 250px;*/
-    /*max-width: 250px;*/
     margin-bottom: 5px;
 }
 .file-input{
@@ -232,29 +216,18 @@ a:hover {
     font-size: 3vw;
 }
 
-
-
 /* How to Make Bootstrap 3 img logo Responsive
   https://codepen.io/bootstrapped/pen/KwYGwq
 */
-.navbar-brand {
-    padding: 0;
-}
 .navbar-brand>img {
     height: 95%;
-    /*padding: 15px;*/
     width: auto;
-}
-
-.navbar-brand>img {
-    /*padding: 7px 15px;*/
 }
 
 .nopadding {
     padding: 0 !important;
     margin: 0 !important;
 }
-
 
 .hovereffect {
     width:100%;
