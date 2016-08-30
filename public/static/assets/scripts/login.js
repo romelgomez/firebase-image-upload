@@ -242,7 +242,7 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
 
       function promptForLinkCredential (size, email, credential, providers){
         var modalInstance = $uibModal.open({
-          templateUrl: 'promptForLinkCredentialModal.html',
+          templateUrl: 'static/assets/views/promptForLinkCredentialModal.html',
           controller: 'PromptForLinkCredentialController',
           size: size,
           resolve: {

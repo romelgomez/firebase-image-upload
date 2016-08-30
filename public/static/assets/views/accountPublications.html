@@ -8,6 +8,7 @@
   </div>
 </div>
 
+
 <div ng-show="lording.isDone" style="margin-bottom: 10px;">
 
   <div>
@@ -138,28 +139,7 @@
 </div>
 
 
-<script type="text/ng-template" id="profileImagesModal.html">
-  <div class="modal-body">
-
-    <div uib-carousel active="active" interval="5000" no-wrap="false">
-      <div uib-slide ng-repeat="image in profileImages | reverse  track by $index" index="$index">
-        <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_800,q_auto:best,w_900/{{image.public_id}}.webp" style="margin:auto;">
-        <!--<div class="carousel-caption">-->
-          <!--<h4>{{image.name | removeFileExtension | noSpecialChars | capitalizeFirstChar}}</h4>-->
-        <!--</div>-->
-      </div>
-    </div>
-
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancel()">Close</button>
-  </div>
-</script>
-
-
-
 <!-- This extra line is necessary to avoid the flicking when we setting the head title use by the twitter share button, the ng-cloak directive don't work  -->
 <div ng-if="profile.accountName !== undefined && profile.accountName !== ''">
   <update-title title="Look @{{profile.accountName !== undefined && profile.accountName !== ''? profile.accountName : profile.$id }} Publications in MarketOfLondon.co.uk"></update-title>
 </div>
-

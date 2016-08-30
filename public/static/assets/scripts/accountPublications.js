@@ -170,7 +170,7 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
       $scope.profileImages = function(size, active){
         if(angular.isDefined($scope.profile.$images) && $scope.profile.$images.length > 0){
           var modalInstance = $uibModal.open({
-            templateUrl: 'profileImagesModal.html',
+            templateUrl: 'static/assets/views/profileImagesModal.html',
             controller: 'ProfileImagesController',
             size: size,
             resolve: {

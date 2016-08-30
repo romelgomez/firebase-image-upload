@@ -312,7 +312,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         console.log($scope.publication.model.title !== '' && $scope.publication.model.title !== undefined  ? $scope.publication.model.title : 'Untitled');
 
         var modalInstance = $uibModal.open({
-          templateUrl: 'discardPublication.html',
+          templateUrl: 'static/assets/views/discardPublication.html',
           controller: 'DiscardPublicationController',
           resolve: {
             publicationId:function(){
