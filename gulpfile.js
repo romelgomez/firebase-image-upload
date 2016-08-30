@@ -61,8 +61,6 @@ gulp.task('views', function () {
     .pipe(useref({
       base: 'dist'
     }))
-    .pipe(gulpif('*.js', uglify()))
-    .pipe(gulpif('*.css', csso()))
     .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
     .pipe(gulp.dest(output.views))
 });
