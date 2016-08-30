@@ -195,6 +195,11 @@ module.exports = function(app) {
      defaultRoute(req, res);
   });
 
+  // google-site-verification for http://www.marketoflondon.co.uk/
+  app.get('/googleb3b941affe88d9b8.html', function(req, res) {
+    res.sendFile('index1.html', {root: path.join(process.cwd(), basePath)});
+  });
+
   app.get('/features', function(req, res) {
     defaultRoute(req, res);
   });
