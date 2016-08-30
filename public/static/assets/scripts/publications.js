@@ -449,9 +449,9 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       template:'' +
       '<div>'+
         '<hr class="hr-xs">'+
-        '<label class="control-label"><i class="fa fa-map-marker"></i> Location <sup style="color: red;">*</sup></label>'+
+        '<label class="control-label"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Location <sup style="color: red;">*</sup></label>'+
         '<div class="list-group" style="margin-bottom: 0">'+
-          '<button type="button" class="list-group-item" ng-click="setLocation(location.$id); publication.redefineLocation = false;" ng-repeat="location in locations | filter:{parentId: model.locationId}:true" ><i style="color: #286090" class="fa fa-folder"></i> {{location.name | capitalizeFirstChar}}</button>'+
+          '<button type="button" class="list-group-item" ng-click="setLocation(location.$id); publication.redefineLocation = false;" ng-repeat="location in locations | filter:{parentId: model.locationId}:true" ><span style="color: #286090" class="glyphicon glyphicon-folder-close"></span> {{location.name | capitalizeFirstChar}}</button>'+
         '</div>'+
 
         '<ol ng-show="locationPath.length > 0" class="breadcrumb" style="margin-bottom: 0; margin-top: 10px;">'+
@@ -505,7 +505,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         '</div>'+
         '<div class="list-group">'+
           '<button type="button" class="list-group-item" ng-click="setCategory(category.$id)" ng-repeat="category in categories | filter:{parentId: model.categoryId}:true" >' +
-            '<i style="color: #286090" class="fa" ng-class="{\'fa-folder\': (category.name !== \'Marketplace\' && category.name !== \'Jobs\' && category.name !== \'Real Estate\' && category.name !== \'Transport\' && category.name !== \'Services\') , \'fa-shopping-cart\': (category.name === \'Marketplace\') , \'fa-suitcase\': (category.name === \'Jobs\'), \'fa-home\': (category.name === \'Real Estate\'), \'fa-car\': (category.name === \'Transport\'), \'fa-wrench\' : (category.name === \'Services\')}"></i> '+
+            '<span style="color: #286090" class="glyphicon" ng-class="{\'glyphicon-folder-close\': (category.name !== \'Marketplace\' && category.name !== \'Jobs\' && category.name !== \'Real Estate\' && category.name !== \'Transport\' && category.name !== \'Services\') , \'glyphicon-shopping-cart\': (category.name === \'Marketplace\') , \'glyphicon-briefcase\': (category.name === \'Jobs\'), \'glyphicon-home\': (category.name === \'Real Estate\'), \'glyphicon-plane\': (category.name === \'Transport\'), \'glyphicon-wrench\' : (category.name === \'Services\')}"></span> '+
             '{{category.name | capitalizeFirstChar}}'+
           '</button>'+
         '</div>'+
@@ -519,7 +519,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
         '</div>'+
         '<div class="panel-footer" style="text-align: right;">'+
           '<button ng-click="categorySelected = true; redefineCategory = false" type="button" class="btn btn-primary" ng-disabled="model.categoryId ===\'\'" >'+
-            '<i class="fa fa-check"></i> Confirm selection' +
+            '<span class="glyphicon glyphicon glyphicon-ok"></span> Confirm selection' +
           '</button>'+
         '</div>'+
       '</div>',
@@ -578,7 +578,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       },
       template:''+
       '<div class="form-group">'+
-        '<label class="control-label"><i class="fa fa-certificate"></i> Warranty <sup style="color: red;">*</sup></label>'+
+        '<label class="control-label"><span class="glyphicon glyphicon-certificate"></span> Warranty <sup style="color: red;">*</sup></label>'+
         '<textarea redactor name="htmlWarranty" data-ng-model="model.htmlWarranty" required class="form-control" placeholder=""></textarea>'+
         '<div data-ng-messages="formName.$submitted && formName.htmlWarranty.$error" class="help-block">'+
           '<div data-ng-message="required" >'+
@@ -635,7 +635,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       '<div class="form-group" >'+
         '<div class="row">'+
           '<div class="col-xs-12 col-sm-12 col-md-5">'+
-            '<label class="control-label"><i class="fa fa-cubes"></i> Quantity in stock <sup style="color: red;">*</sup></label>'+
+            '<label class="control-label"><span class="glyphicon glyphicon-th"></span> Quantity in stock <sup style="color: red;">*</sup></label>'+
               '<div class="input-group">'+
                 '<div class="input-group-addon">Units</div>'+
                 '<input name="quantity" ng-model="model.quantity" required class="form-control" placeholder="Eje: 100" type="number">'+
@@ -689,7 +689,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       template:''+
       '<hr class="hr-xs">'+
 
-      '<label><i class="fa fa-random"></i> Job type</label>'+
+      '<label><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Job type</label>'+
       '<div class="row" style="margin-bottom: 10px;">'+
         '<div class="col-xs-12 col-sm-12 col-md-5">'+
           '<select class="form-control" ng-model="model.jobType">'+
@@ -726,14 +726,14 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       '<div class="row">'+
         '<div class="col-xs-12 col-sm-12 col-md-5">'+
 
-          '<label><i class="fa fa-gbp"></i> Salary</label>'+
+          '<label><span class="glyphicon glyphicon-gbp"></span> Salary</label>'+
           '<div style="margin-bottom: 10px;">'+
             '<select class="form-control" ng-model="model.jobSalaryType">'+
               '<option ng-repeat="salaryType in jobSalaryTypes" value="{{salaryType}}"> {{salaryType}} </option>'+
             '</select>'+
           '</div>'+
 
-          '<label><i class="fa fa-gbp"></i> From:</label>'+
+          '<label><span class="glyphicon glyphicon-gbp"></span> From:</label>'+
           '<div class="form-group" style="margin-bottom: 10px;">'+
             '<input name="jobSalaryStartAt" ng-model="model.jobSalaryStartAt" required class="form-control" placeholder="<Base salary or start at>" type="number">'+
           '</div>'+
@@ -743,7 +743,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
             '</div>'+
           '</div>'+
 
-          '<label><i class="fa fa-gbp"></i> To:</label>'+
+          '<label><span class="glyphicon glyphicon-gbp"></span> To:</label>'+
           '<div class="form-group" style="margin-bottom: 10px;">'+
             '<input name="jobSalaryEndAt" ng-model="model.jobSalaryEndAt" required class="form-control" placeholder="<End at>" type="number">'+
           '</div>'+
@@ -832,7 +832,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       template:''+
       '<hr class="hr-xs">'+
 
-      '<label><i class="fa fa-random"></i> Recruiter type</label>'+
+      '<label><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Recruiter type</label>'+
         '<div class="row" style="margin-bottom: 10px;">'+
         '<div class="col-xs-12 col-sm-12 col-md-5">'+
           '<select class="form-control" ng-model="model.jobRecruiterType">'+
@@ -865,7 +865,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       template:''+
       '<hr class="hr-xs">'+
 
-      '<label><i class="fa fa-random"></i> Home status</label>'+
+      '<label><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Home status</label>'+
         '<div class="row" style="margin-bottom: 10px;">'+
         '<div class="col-xs-12 col-sm-12 col-md-5">'+
           '<select class="form-control" ng-model="model.reHomeStatus">'+
@@ -899,7 +899,7 @@ var publicationsModule = angular.module('publications',['uuid','ngMessages','ang
       template:''+
       '<hr class="hr-xs">'+
 
-      '<label><i class="fa fa-random"></i> Home for</label>'+
+      '<label><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Home for</label>'+
         '<div class="row" style="margin-bottom: 10px;">'+
         '<div class="col-xs-12 col-sm-12 col-md-5">'+
           '<select class="form-control" ng-model="model.reHomeFor">'+

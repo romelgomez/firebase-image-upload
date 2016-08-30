@@ -14,16 +14,16 @@
               data-ngf-validate="{size: {max: '10MB'}, width: {min: 500, max:5000}, height: {min: 500, max: 5000}}"
               data-ngf-validate-force="true"
               required>
-        <i class="fa fa-picture-o"></i> Select the images</button>
+        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Select the images</button>
     </div>
     <div>
-      <button ng-style="{'margin-bottom': (imagesInfo().invalid > 0) || (imagesInfo().isUploaded > 0) ? '10px' : 0 }" ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove in queue</button>
+      <button ng-style="{'margin-bottom': (imagesInfo().invalid > 0) || (imagesInfo().isUploaded > 0) ? '10px' : 0 }" ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove images in queue</button>
     </div>
     <div>
-      <button ng-style="{'margin-bottom': (imagesInfo().invalid > 0) ? '10px' : 0 }" ng-show="imagesInfo().isUploaded > 0" type="button" class="btn btn-danger" ng-click="deleteAllImages(imagesTag, imagesPath)"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
+      <button ng-style="{'margin-bottom': (imagesInfo().invalid > 0) ? '10px' : 0 }" ng-show="imagesInfo().isUploaded > 0" type="button" class="btn btn-danger" ng-click="deleteAllImages(imagesTag, imagesPath)"><span class="glyphicon glyphicon-trash"></span> Remove images in server</button>
     </div>
     <div>
-      <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove invalid</button>
+      <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove invalid images</button>
     </div>
   </div>
 
@@ -38,11 +38,11 @@
             data-ngf-validate="{size: {max: '10MB'}, width: {min: 500, max:5000}, height: {min: 500, max: 5000}}"
             data-ngf-validate-force="true"
             required>
-      <i class="fa fa-picture-o"></i> Select the images</button>
+      <span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Select the images</button>
 
-    <button ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove in queue</button>
-    <button ng-show="imagesInfo().isUploaded > 0" type="button" class="btn btn-danger" ng-click="deleteAllImages(imagesTag, imagesPath)"><span class="glyphicon glyphicon-trash"></span> Remove in server</button>
-    <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove invalid</button>
+    <button ng-show="imagesInfo().inQueue > 0" type="button" class="btn btn-danger" ng-click="removeAllQueueFiles()"><span class="glyphicon glyphicon-trash"></span> Remove all pictures in the queue</button>
+    <button ng-show="imagesInfo().isUploaded > 0" type="button" class="btn btn-danger" ng-click="deleteAllImages(imagesTag, imagesPath)"><span class="glyphicon glyphicon-trash"></span> Remove all pictures in the server</button>
+    <button ng-show="imagesInfo().invalid > 0" type="button" class="btn btn-danger" ng-click="removeInvalidFiles()"><span class="glyphicon glyphicon-trash"></span> Remove all pictures invalid</button>
   </div>
 
 
@@ -85,7 +85,7 @@
       </li>
       <li class="list-group-item">
         <span class="badge">{{imagesInfo().invalid}}</span>
-        Images invalid:
+        Invalid images:
       </li>
     </ul>
 
@@ -172,7 +172,7 @@
         </div>
       </div>
       <div class="panel-footer" style="padding: 5px; text-align: right">
-        <button ng-show="value.isUploaded && featuredImageId !== value.$id && imagesInfo().isUploaded > 1" type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(featuredImagePath, value.$id)" ><i class="fa fa-thumb-tack"></i> Set as featured Image</button>
+        <button ng-show="value.isUploaded && featuredImageId !== value.$id && imagesInfo().isUploaded > 1" type="button" class="btn btn-primary btn-xs" ng-click="setAsPrimaryImage(featuredImagePath, value.$id)" ><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Set as featured Image</button>
         <button type="button" class="btn btn-danger btn-xs" ng-click="removeFile(imagesPath, featuredImagePath, imagesTag, key, value)" ><span class="glyphicon glyphicon-trash"></span> Remove</button>
       </div>
     </div>

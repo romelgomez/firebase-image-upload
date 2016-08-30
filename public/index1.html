@@ -33,30 +33,17 @@
 
   <link rel="publisher" href="https://plus.google.com/+MarketoflondonUk" />
 
+  <!-- build:css(.) static/assets/styles/bs.min.css -->
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="/bower_components/bootstrap-social/bootstrap-social.css" />
+  <!-- endbuild -->
+
   <!-- build:css(.) static/assets/styles/ng.min.css -->
   <link rel="stylesheet" href="/bower_components/angular-busy/dist/angular-busy.css" />
   <link rel="stylesheet" href="/bower_components/angular-loading-bar/build/loading-bar.css" />
 
   <!-- build:css(.) static/assets/styles/nf.min.css -->
   <link rel="stylesheet" href="/bower_components/pnotify/pnotify.core.css" />
-  <!-- endbuild -->
-
-  <!-- build:css(.) static/assets/styles/fa.min.css -->
-  <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.css" />
-  <!-- endbuild -->
-
-  <!-- build:css(.) static/assets/styles/bs.min.css -->
-  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
-  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.css" />
-  <link rel="stylesheet" href="/bower_components/bootstrap-social/bootstrap-social.css" />
-  <!-- endbuild -->
-
-  <!-- build:css(.) static/assets/styles/tr.min.css -->
-  <link rel="stylesheet" href="/bower_components/jqtree/jqtree.css" />
-  <!-- endbuild -->
-
-  <!-- build:css(.) static/assets/styles/pr.min.css -->
-  <link rel="stylesheet" href="/bower_components/ngprogress/ngProgress.css" />
   <!-- endbuild -->
 
   <!-- build:css(.) static/assets/styles/ps.min.css -->
@@ -76,7 +63,7 @@
   <link href='https://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
   <link href="https://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet">
 </head>
-<body ng-controller="AppController" style="background: url('http://res.cloudinary.com/berlin/image/upload/v1472088753/brickwall_bjshpi.png')">
+<body ng-controller="AppController" style="background: url('http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1472088753/brickwall_bjshpi.png')">
 <div id="fb-root"></div>
 
 <!--[if lt IE 7]>
@@ -101,7 +88,7 @@
     <div class="collapse navbar-collapse" id="js-navbar-collapse">
       <ul class="nav navbar-nav">
         <li><a ng-href="/new-publication" style="color: #337ab7;">Publish Something!</a></li>
-        <li ng-cloak ng-show="firebaseUser" ><a ng-href="/account">Account <i class="fa fa-wrench"></i></a></li>
+        <li ng-cloak ng-show="firebaseUser" ><a ng-href="/account">Account</a></li>
         <li ng-cloak ng-show="!firebaseUser" ><a ng-href="/login" style="color: #337ab7;" >Log in</a></li>
         <li ng-cloak ng-show="firebaseUser" ><a ng-click="logout()" style="cursor: pointer; color: red;" >logout</a></li>
       </ul>
@@ -119,7 +106,7 @@
         <div class="col-xs-12">
           <a ng-href="search?c=jobs">
             <div class="hovereffect">
-              <img src="http://res.cloudinary.com/berlin/image/upload/v1472049889/jobs-banner-big-7_dqnohj.webp" class="img-responsive" alt="Jobs">
+              <img src="http://res.cloudinary.com/berlin/image/upload/q_auto:eco/v1472049889/jobs-banner-big-7_dqnohj.webp" class="img-responsive" alt="Jobs">
               <div class="overlay"></div>
             </div>
           </a>
@@ -178,7 +165,7 @@
       - <a ng-href="/terms-of-service">Terms Of Service</a>
       - <a ng-href="/features">Features</a>
       - <a ng-href="/contact-us">Contact us</a>
-      - Follow us on Twitter <a href="https://twitter.com/marketoflondon" target="_blank">@marketoflondon</a> <i class="fa fa-twitter" aria-hidden="true"></i>
+      - Follow us on Twitter <a href="https://twitter.com/marketoflondon" target="_blank">@marketoflondon</a>
     </p>
   </div>
 </div>

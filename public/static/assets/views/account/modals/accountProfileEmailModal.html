@@ -7,7 +7,7 @@
     <form id="emailAccount" name="forms.emailAccount" novalidate="" ng-submit="submit()">
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.newEmail.$valid),'has-error has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.newEmail.$invalid) }">
-        <label class="control-label"><i class="fa fa-envelope"></i> New Email <sup style="color: red;">*</sup></label>
+        <label class="control-label">New Email <sup style="color: red;">*</sup></label>
         <input type="email" name="newEmail" ng-model="model.emailAccount.newEmail" required class="form-control" placeholder="">
         <span ng-show="forms.emailAccount.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.emailAccount.newEmail.$valid),'glyphicon-remove': ( forms.emailAccount.newEmail.$invalid) }" aria-hidden="true"></span>
         <div data-ng-messages="forms.emailAccount.$submitted && forms.emailAccount.newEmail.$error" class="help-block">
@@ -21,7 +21,7 @@
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.password.$valid),'has-error has-feedback': (forms.emailAccount.$submitted && forms.emailAccount.password.$invalid) }">
-        <label class="control-label"><i class="fa fa-key"></i> Password <sup style="color: red;">*</sup></label>
+        <label class="control-label">Password <sup style="color: red;">*</sup></label>
         <input type="password" name="password" ng-model="model.emailAccount.password" required minlength="7" class="form-control" placeholder="">
         <span ng-show="forms.emailAccount.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.emailAccount.password.$valid),'glyphicon-remove': ( forms.emailAccount.password.$invalid) }" aria-hidden="true"></span>
         <div data-ng-messages="forms.emailAccount.$submitted && forms.emailAccount.password.$error" class="help-block">

@@ -85,15 +85,15 @@
                 <hr ng-show="(profile.bio !== undefined && profile.bio !== '') || (profile.landLineTelephone !== undefined && profile.landLineTelephone !== '') || (profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
               </div>
               <div ng-show="(profile.bio !== undefined && profile.bio !== '')">
-                <i class="fa fa-leanpub" aria-hidden="true"></i> {{profile.bio}}
+                <span class="glyphicon glyphicon-globe" aria-hidden="true"></span> {{profile.bio}}
                 <hr class="hr-xs">
               </div>
               <div>
-                <i class="fa fa-calendar" aria-hidden="true"></i> Joined {{profile.startedAt | date : 'MMMM'}} {{profile.startedAt | date : 'yyyy'}}
+                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> Joined {{profile.startedAt | date : 'MMMM'}} {{profile.startedAt | date : 'yyyy'}}
                 <hr ng-show="(profile.landLineTelephone !== undefined && profile.landLineTelephone !== '') || (profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
               </div>
               <div ng-show="profile.$images.length > 0">
-                <div style="margin-bottom: 5px;"><i class="fa fa-camera" aria-hidden="true"></i> Photos</div>
+                <div style="margin-bottom: 5px;"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span> Photos</div>
 
                 <div class="row" style="padding-left: 10px; padding-right: 10px;">
                   <div ng-repeat="image in profile.$images | reverse | limitTo: 6" class="col-xs-6 col-md-4" style="padding-right:5px; padding-left: 5px;" >
@@ -103,11 +103,11 @@
                 <hr ng-show="(profile.landLineTelephone !== undefined && profile.landLineTelephone !== '') || (profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
               </div>
               <div ng-show="(profile.landLineTelephone !== undefined && profile.landLineTelephone !== '')">
-                <i class="fa fa-phone"></i> {{profile.landLineTelephone}}
+                <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> {{profile.landLineTelephone}}
                 <hr ng-show="(profile.mobilePhone !== undefined && profile.mobilePhone  !== '') || (profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
               </div>
               <div ng-show="(profile.mobilePhone !== undefined && profile.mobilePhone  !== '')">
-                <i class="fa fa-mobile-phone"></i> {{profile.mobilePhone}}
+                <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> {{profile.mobilePhone}}
                 <hr ng-show="(profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" class="hr-xs">
               </div>
               <div ng-show="(profile.facebookAccount !== undefined && profile.facebookAccount !== '') || (profile.twitterAccount !== undefined && profile.twitterAccount !== '')" style="font-size: 30px;">

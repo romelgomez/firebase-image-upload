@@ -67,19 +67,19 @@
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.mobilePhone.$invalid) }">
-        <label class="control-label"><i class="fa fa-mobile-phone"></i> Mobile phone</label>
+        <label class="control-label"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span> Mobile phone</label>
         <input type="text" name="mobilePhone" ng-model="model.mobilePhone" class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.mobilePhone.$valid),'glyphicon-remove': ( forms.profileDetails.mobilePhone.$invalid) }" aria-hidden="true"></span>
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.landLineTelephone.$invalid) }">
-        <label class="control-label"><i class="fa fa-phone"></i> Landline Telephone</label>
+        <label class="control-label"><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> Landline Telephone</label>
         <input type="text" name="landLineTelephone" ng-model="model.landLineTelephone" class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.landLineTelephone.$valid),'glyphicon-remove': ( forms.profileDetails.landLineTelephone.$invalid) }" aria-hidden="true"></span>
       </div>
 
       <div ng-show="profile.provider !== 'password'" class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.email.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.email.$invalid) }">
-        <label class="control-label"><i class="fa fa-envelope"></i> Email</label>
+        <label class="control-label"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Email</label>
         <input type="email" name="email" ng-model="model.email" class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.email.$valid),'glyphicon-remove': ( forms.profileDetails.email.$invalid) }" aria-hidden="true"></span>
         <div data-ng-messages="forms.emailAccount.$submitted && forms.emailAccount.email.$error" class="help-block">
@@ -90,7 +90,7 @@
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.twitterAccount.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.twitterAccount.$invalid) }">
-        <label class="control-label"><i class="fa fa-twitter"></i> Twitter account</label>
+        <label class="control-label">Twitter account</label>
         <input type="text" name="twitterAccount" ng-model="model.twitterAccount" ng-trim no-special-chars class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.twitterAccount.$valid),'glyphicon-remove': ( forms.profileDetails.twitterAccount.$invalid) }" aria-hidden="true"></span>
         <div data-ng-messages="forms.profileDetails.$submitted && forms.profileDetails.twitterAccount.$error" class="help-block">
@@ -101,7 +101,7 @@
       </div>
 
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.facebookAccount.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.facebookAccount.$invalid) }">
-        <label class="control-label"><i class="fa fa-facebook-official"></i> Facebook account</label>
+        <label class="control-label">Facebook account</label>
         <input type="text" name="facebookAccount" ng-model="model.facebookAccount" ng-trim class="form-control" placeholder="">
         <span ng-show="forms.profileDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.profileDetails.facebookAccount.$valid),'glyphicon-remove': ( forms.profileDetails.facebookAccount.$invalid) }" aria-hidden="true"></span>
       </div>
