@@ -28,9 +28,9 @@ switch(process.env.NODE_ENV) {
 //__dirname : /home/romelgomez/workspace/projects/berlin/server
 
 var metaTags = {
-  title:          'Market of London - UK Classified Ads: Jobs, Real Estate, Transport, Services, and Marketplace related Publications',
+  title:          'Market of London - Jobs Classified Ads - UK',
   url:            'http://www.marketoflondon.co.uk',
-  description:    'Share easily all your publications and brand in social networks, either jobs, real estate, services, transport, and marketplace related publications, marketoflondon.co.uk supports it all.',
+  description:    'Share easily your Brand and Jobs offers in social networks',
   image:          'http://res.cloudinary.com/berlin/image/upload/c_fill,e_sepia:77,h_630,q_auto:best,w_1200/v1471288313/Market_Of_London_share_image_xan9wg.webp',
   twitterAccount: '@MarketOfLondon'
 };
