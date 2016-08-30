@@ -19,13 +19,19 @@ angular.module('app',[
     'accountPublications',
     'checkout'
   ])
-  .controller('AppController',[ '$scope', 'FireAuth',function( $scope, FireAuth){
+  .controller('AppController',[ '$scope', 'FireAuth', '$location',function( $scope, FireAuth, $location){
 
     FireAuth.$onAuthStateChanged(function(firebaseUser) {
 
       //console.log('firebaseUser', firebaseUser);
 
       $scope.firebaseUser = firebaseUser;
+    });
+
+    $scope.$watch(function(){
+      return $location.path();
+    },function(){
+      $scope.path = $location.path();
     });
 
     //https://github.com/firebase/angularfire/blob/master/docs/guide/user-auth.md#retrieving-authentication-state
