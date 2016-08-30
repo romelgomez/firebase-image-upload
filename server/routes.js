@@ -30,7 +30,7 @@ switch(process.env.NODE_ENV) {
 var metaTags = {
   title:          'Market of London - Jobs Classified Ads - UK',
   url:            'http://www.marketoflondon.co.uk',
-  description:    'Share easily your Brand and Jobs offers in social networks',
+  description:    'Share easily your brand and offers of jobs in social networks, also publications of services, transports, real estate, and marketplace items.',
   image:          'http://res.cloudinary.com/berlin/image/upload/c_fill,e_sepia:77,h_630,q_auto:best,w_1200/v1471288313/Market_Of_London_share_image_xan9wg.webp',
   twitterAccount: '@MarketOfLondon'
 };
