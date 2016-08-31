@@ -22,6 +22,8 @@ var processhtml = require('gulp-processhtml');
 var useref = require('gulp-useref');
 var sourcemaps = require('gulp-sourcemaps');
 var lazypipe = require('lazypipe');
+var gzip = require('gulp-gzip');
+
 
 
 var src = {

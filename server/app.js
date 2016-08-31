@@ -1,6 +1,8 @@
 // set up ========================
+var compression = require('compression');
 var express = require('express');
 var app = express();  // create our app w/ express
+app.use(compression());
 var morgan = require('morgan'); // log requests to the console (express4)
 var path = require('path'); // normalize the paths : http://stackoverflow.com/questions/9756567/do-you-need-to-use-path-join-in-node-js
 var bodyParser = require('body-parser'); // pull information from HTML POST (express4)
