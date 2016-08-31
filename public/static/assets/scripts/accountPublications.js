@@ -60,7 +60,7 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
           .then(function(){
             if(typeof $scope.profile.startedAt !== 'undefined'){
 
-              $scope.profile.$seoURL = 'https://londres.herokuapp.com/';
+              $scope.profile.$seoURL = 'http://www.marketoflondon.co.uk/';
               $scope.profile.$seoURL += ($scope.profile.accountName !== undefined && $scope.profile.accountName !== '')? $scope.profile.accountName: $scope.profile.$id;
 
               deferred.resolve();

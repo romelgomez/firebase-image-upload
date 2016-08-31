@@ -100,7 +100,7 @@ publicationsModule
           .then(function(the){
             $scope.profile = the.profile;
 
-            var seoUrl = 'https://londres.herokuapp.com/';
+            var seoUrl = 'http://www.marketoflondon.co.uk/';
 
             var categoriesAndLocations = '';
             var categories = $window._.join($scope.publication.data.categories, ' ');
