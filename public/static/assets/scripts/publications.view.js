@@ -130,11 +130,11 @@ publicationsModule
 
 
       // Twitter share button
-      setTimeout(function() {
-        if(typeof $window.twttr.widgets !== 'undefined'){
-          $window.twttr.widgets.load();
-        }
-      });
+      //setTimeout(function() {
+      //  if(typeof $window.twttr.widgets !== 'undefined'){
+      //    $window.twttr.widgets.load();
+      //  }
+      //});
 
 
     }])
@@ -151,7 +151,24 @@ publicationsModule
       link:function(scope){
 
         $timeout(function () {
-          twttr.widgets.load()
+          $window.twttr = (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+              t = window.twttr || {};
+            if (d.getElementById(id)) return t;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = 'https://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js, fjs);
+
+            t._e = [];
+            t.ready = function(f) {
+              t._e.push(f);
+            };
+
+            return t;
+          }(document, 'script', 'twitter-wjs'));
+
+          //$window.twttr.widgets.load()
         });
 
       }
