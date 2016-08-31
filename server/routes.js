@@ -192,7 +192,11 @@ function defaultRoute(req, res){
 module.exports = function(app) {
 
   app.get('/', function(req, res) {
-     defaultRoute(req, res);
+    // Rewrite Cache-Control set defined in app.js
+    res.set({
+      'Cache-Control': 'no-cache'
+    });
+    defaultRoute(req, res);
   });
 
   // google-site-verification for http://www.marketoflondon.co.uk/

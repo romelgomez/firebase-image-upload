@@ -23,6 +23,9 @@ var useref = require('gulp-useref');
 var sourcemaps = require('gulp-sourcemaps');
 var lazypipe = require('lazypipe');
 var gzip = require('gulp-gzip');
+var rev = require('gulp-rev');
+var revReplace = require('gulp-rev-replace');
+var rename = require("gulp-rename");
 
 
 
@@ -87,7 +90,13 @@ gulp.task('basic', function() {
     .pipe(useref())
     .pipe(gulpif('*.js', uglify()))
     .pipe(gulpif('*.css', csso()))
+    .pipe(rev())
+    .pipe(revReplace())
     .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
+    .pipe(gulpif('*.html', rename({
+      basename: 'index1',
+      extname: ".html"
+    })))
     .pipe(gulp.dest(output.dist));
 });
 
