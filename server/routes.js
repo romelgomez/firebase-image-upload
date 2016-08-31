@@ -193,9 +193,9 @@ module.exports = function(app) {
 
   app.get('/', function(req, res) {
     // Rewrite Cache-Control set defined in app.js
-    res.set({
-      'Cache-Control': 'no-cache'
-    });
+    //res.set({
+    //  'Cache-Control': 'no-cache'
+    //});
     defaultRoute(req, res);
   });
 

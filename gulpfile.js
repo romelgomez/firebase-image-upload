@@ -85,18 +85,27 @@ gulp.task('google-site-verification', function() {
     .pipe(gulp.dest(output.dist));
 });
 
+//gulp.task('basic', function() {
+//  return gulp.src('public/index1.html')
+//    .pipe(useref())
+//    .pipe(gulpif('*.js', uglify()))
+//    .pipe(gulpif('*.css', csso()))
+//    .pipe(rev())
+//    .pipe(revReplace())
+//    .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
+//    .pipe(gulpif('*.html', rename({
+//      basename: 'index1',
+//      extname: ".html"
+//    })))
+//    .pipe(gulp.dest(output.dist));
+//});
+
 gulp.task('basic', function() {
   return gulp.src('public/index1.html')
     .pipe(useref())
     .pipe(gulpif('*.js', uglify()))
     .pipe(gulpif('*.css', csso()))
-    .pipe(rev())
-    .pipe(revReplace())
     .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
-    .pipe(gulpif('*.html', rename({
-      basename: 'index1',
-      extname: ".html"
-    })))
     .pipe(gulp.dest(output.dist));
 });
 

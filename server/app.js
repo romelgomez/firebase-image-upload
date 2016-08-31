@@ -11,8 +11,9 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
 // configuration =================
 app.use(compression());
-app.use(express.static(path.join(process.cwd(), 'dist'), { 'Cache-Control': 'public', maxAge: '1d' })); // set the static files location /public/img will be /img for users
+app.use(express.static(path.join(process.cwd(), 'dist'), { 'Cache-Control': 'public', maxAge: '7d' })); // set the static files location /public/img will be /img for users
 //app.use('/bower_components',  express.static(path.join(process.cwd(), 'bower_components'))); // set the static files location of bower_components
+//app.use(express.static(path.join(process.cwd(), 'dist'))); // set the static files location /public/img will be /img for users
 app.use(morgan('dev'));  // log every request to the console
 app.use(bodyParser.urlencoded({'extended':'true'})); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json

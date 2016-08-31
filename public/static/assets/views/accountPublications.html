@@ -79,7 +79,7 @@
 
           <div class="panel panel-default">
             <div class="panel-body">
-              <span style="color: #000; font-size: 22px; font-weight: 600; font-family: Raleway;"> {{profile.pseudonym === undefined || profile.pseudonym === ''? profile.names : profile.pseudonym }}</span>
+              <span style="color: #000; font-size: 22px; font-family: sans-serif;"> {{profile.pseudonym === undefined || profile.pseudonym === ''? profile.names : profile.pseudonym }}</span>
 
               <div ng-show="(profile.accountName !== undefined && profile.accountName !== '')">
                 <span style="text-shadow: 0 0 0.3px rgba(0,0,0,.8)"> <a ng-href="/{{profile.accountName}}">@{{profile.accountName}}</a></span>
