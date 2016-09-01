@@ -193,12 +193,12 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
       };
 
 
-      // Twitter share button
-      setTimeout(function() {
-        if(typeof $window.twttr.widgets !== 'undefined'){
-          $window.twttr.widgets.load();
-        }
-      });
+      //// Twitter share button
+      //setTimeout(function() {
+      //  if(typeof $window.twttr.widgets !== 'undefined'){
+      //    $window.twttr.widgets.load();
+      //  }
+      //});
 
 
     }])

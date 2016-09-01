@@ -104,7 +104,7 @@
           </div>
 
           <div ng-if="publication.data.$id">
-            <custom-twitter-share-button publication-title="publication.data.title" publication-id="publication.data.$id"></custom-twitter-share-button>
+            <custom-twitter-share-button data-text="publication.data.title" data-url="'http://www.marketoflondon.co.uk/v/l/' + publication.data.$id + '/t'"></custom-twitter-share-button>
           </div>
 
           <div>

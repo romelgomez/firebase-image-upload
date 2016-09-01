@@ -46,7 +46,8 @@
           <div class="col-lg-3" style="text-align: center;">
             <div class="visible-md-block visible-lg-block"></div>
             <div>
-              <a class="twitter-share-button" href="https://twitter.com/intent/tweet">Tweet</a>
+
+              <custom-twitter-share-button ng-if="profile.$seoURL" data-text="profile.pseudonym !== 'undefined' && profile.pseudonym !== '' ? 'Look the publications of ' + profile.pseudonym + ' in ' : 'Look the publications of ' + profile.names + ' in '" data-url="profile.$seoURL" ></custom-twitter-share-button>
 
               <div style="display: inline-block; margin-left: 4px;">
                 <script>

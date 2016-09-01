@@ -92,6 +92,46 @@ angular.module('app',[
     }
 
   }])
+  .directive('customTwitterShareButton',['$window', '$timeout', function ($window, $timeout) {
+
+    return {
+      restrict:'E',
+      replace: true,
+      scope:{
+        text:'=',
+        url:'='
+      },
+      template:''+
+      '<a class="twitter-share-button" href="https://twitter.com/intent/tweet?text={{text}}&via=marketoflondon&url={{url}}">Tweet</a>',
+      link:function(scope){
+
+        $timeout(function () {
+          $window.twttr = (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+              t = window.twttr || {};
+            if (d.getElementById(id)) return t;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = 'https://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js, fjs);
+
+            t._e = [];
+            t.ready = function(f) {
+              t._e.push(f);
+            };
+
+            return t;
+          }(document, 'script', 'twitter-wjs'));
+
+          if(typeof $window.twttr.widgets !== 'undefined'){
+            $window.twttr.widgets.load();
+          }
+        });
+
+      }
+    }
+
+  }])
   .directive('inputFocus',[function(){
     return {
       restrict:'A',
