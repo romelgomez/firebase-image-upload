@@ -9,7 +9,12 @@
         <a ng-href="/new-publication">Now you can create more than 7 publications!</a>
       </div>
       <div style="margin-top: 10px;" class="center-block">
-        <img class="img-thumbnail img-responsive" src="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1472083300/thank-you_a2symq.webp">
+
+        <picture>
+          <source type="image/webp" ng-srcset="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1472083300/thank-you_a2symq.webp">
+          <img class="img-thumbnail img-responsive" ng-src="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1472083300/thank-you_a2symq.jpg">
+        </picture>
+
       </div>
 
     </div>

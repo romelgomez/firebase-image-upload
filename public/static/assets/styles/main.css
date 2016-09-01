@@ -219,7 +219,7 @@ a:hover {
 /* How to Make Bootstrap 3 img logo Responsive
   https://codepen.io/bootstrapped/pen/KwYGwq
 */
-.navbar-brand>img {
+.navbar-brand picture img {
     height: 95%;
     width: auto;
 }

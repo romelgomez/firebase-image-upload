@@ -96,21 +96,35 @@
     <div class="panel panel-default" ng-repeat="(key, value) in images" style="margin-bottom: 10px;">
       <div class="panel-body" style="padding: 5px;">
         <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
 
 
             <div ng-switch="value.blobUrl !== undefined">
               <div ng-switch-when="true">
-                <img class="img-thumbnail img-preview img-responsive" ng-src="{{value.blobUrl || 'http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.webp'}}" alt="{{value.name}}">
+
+                <picture>
+                  <source type="image/webp" ng-srcset="{{value.blobUrl || 'http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.webp'}}">
+                  <img ng-src="{{value.blobUrl || 'http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.jpg'}}" class="img-thumbnail img-preview img-responsive" alt="{{value.name}}">
+                </picture>
+
               </div>
               <div ng-switch-when="false">
 
                 <div ng-if="value.$error !== undefined">
-                  <img class="img-thumbnail img-preview img-responsive" ng-src="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.webp" alt="{{value.name}}">
+
+                  <picture>
+                    <source type="image/webp" ng-srcset="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.webp">
+                    <img ng-src="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.jpg" class="img-thumbnail img-preview img-responsive" alt="{{value.name}}">
+                  </picture>
+
                 </div>
 
                 <div ng-if="value.$id !== undefined">
-                  <img class="inline img-thumbnail img-preview img-responsive" ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:best,w_200/{{value.$id}}.webp">
+
+                  <picture>
+                    <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:best,w_250/{{value.$id}}.webp">
+                    <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:best,w_250/{{value.$id}}.jpg" class="inline img-thumbnail img-preview img-responsive">
+                  </picture>
 
                   <!--<cl-image public-id="{{value.$id}}" class="inline img-thumbnail img-preview img-responsive" format="webp">-->
                     <!--<cl-transformation height="150" width="200" crop="fill"/>-->
@@ -137,7 +151,7 @@
             <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.isUploaded)}">{{value.isUploaded ? 'In server' : 'In queue' }}</span></div>
             <div style="margin-bottom: 5px;"><span ng-show="featuredImageId === value.$id" class="label label-info">Primary image</span></div>
           </div>
-          <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+          <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
             <div class="file-name">
               <span class="hidden-md hidden-lg"><b>Name: </b> {{value.name | limitTo: 20 }}{{value.name.length > 20 ? ' ...' : ''}} </span>
               <span class="hidden-xs hidden-sm">{{value.name}}</span>
