@@ -38,8 +38,7 @@
   <!--<pre>jobHasBonus  {{algolia.res.facets.jobHasBonus | json}}</pre>-->
   <!--<pre>{{algolia.sortOrder | json}}</pre>-->
 
-  <div ng-show="algolia.res.nbHits > 0" class="visible-xs-block visible-sm-block">
-    <hr class="hr-xs">
+  <div ng-show="algolia.res.nbHits > 0" class="visible-xs-block visible-sm-block" style="margin-bottom: 10px;">
     <button type="button" ng-click="responsiveFilters('lg')" class="btn btn-default btn-block responsive-width">Filter by categories, locations, and custom properties</button>
   </div>
 
