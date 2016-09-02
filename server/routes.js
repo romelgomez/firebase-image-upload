@@ -208,6 +208,10 @@ module.exports = function(app) {
     res.sendFile('googleb3b941affe88d9b8.html', {root: path.join(process.cwd(), basePath)});
   });
 
+  app.get('/sitemap.txt', function(req, res) {
+    res.sendFile('sitemap.txt', {root: path.join(process.cwd(), basePath)});
+  });
+
   app.get('/features', function(req, res) {
     defaultRoute(req, res);
   });
