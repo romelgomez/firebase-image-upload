@@ -35,8 +35,6 @@ var metaTags = {
   twitterAccount: '@MarketOfLondon'
 };
 
-var metaTagsCopy = metaTags;
-
 function capitalizeFirstChar(input) {
   return (!!input) ? input.trim().replace(/(^\w?)/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1);}) : '';
 }
@@ -180,7 +178,13 @@ function defaultRoute(req, res){
       return Q.when({result: template(metaTags)})
     })
     .then(function(the){
-      metaTags = metaTagsCopy;
+      metaTags = {
+        title:          'Market of London - Jobs Classified Ads - UK',
+        url:            'http://www.marketoflondon.co.uk',
+        description:    'Share easily your brand and offers of jobs in social networks, also publications of services, transports, real estate, and marketplace items.',
+        image:          'http://res.cloudinary.com/berlin/image/upload/c_fill,e_sepia:77,h_630,q_auto:best,w_1200/v1471288313/Market_Of_London_share_image_xan9wg.webp',
+        twitterAccount: '@MarketOfLondon'
+      };
       res.send(the.result);
     },function(error){
       throw error;
@@ -404,7 +408,13 @@ module.exports = function(app) {
         return Q.when({result: template(metaTags)})
       })
       .then(function(the){
-        metaTags = metaTagsCopy;
+        metaTags = {
+          title:          'Market of London - Jobs Classified Ads - UK',
+          url:            'http://www.marketoflondon.co.uk',
+          description:    'Share easily your brand and offers of jobs in social networks, also publications of services, transports, real estate, and marketplace items.',
+          image:          'http://res.cloudinary.com/berlin/image/upload/c_fill,e_sepia:77,h_630,q_auto:best,w_1200/v1471288313/Market_Of_London_share_image_xan9wg.webp',
+          twitterAccount: '@MarketOfLondon'
+        };
         res.send(the.result);
       },function(){
         res.redirect('/');
@@ -477,7 +487,13 @@ module.exports = function(app) {
         return Q.when({result: template(metaTags)});
       })
       .then(function(the){
-        metaTags = metaTagsCopy;
+        metaTags = {
+          title:          'Market of London - Jobs Classified Ads - UK',
+          url:            'http://www.marketoflondon.co.uk',
+          description:    'Share easily your brand and offers of jobs in social networks, also publications of services, transports, real estate, and marketplace items.',
+          image:          'http://res.cloudinary.com/berlin/image/upload/c_fill,e_sepia:77,h_630,q_auto:best,w_1200/v1471288313/Market_Of_London_share_image_xan9wg.webp',
+          twitterAccount: '@MarketOfLondon'
+        };
         res.send(the.result);
       },function(error){
         //throw error;
