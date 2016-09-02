@@ -85,6 +85,11 @@ gulp.task('google-site-verification', function() {
     .pipe(gulp.dest(output.dist));
 });
 
+gulp.task('sitemap', function() {
+  return gulp.src('public/sitemap.txt')
+    .pipe(gulp.dest(output.dist));
+});
+
 //gulp.task('basic', function() {
 //  return gulp.src('public/index1.html')
 //    .pipe(useref())
@@ -136,7 +141,7 @@ gulp.task('robots.txt', function() {
     .pipe(gulp.dest(output.dist));
 });
 
-gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts', 'favicon', 'robots.txt', 'google-site-verification'], function() {
+gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts', 'favicon', 'robots.txt', 'google-site-verification', 'sitemap'], function() {
   return gulp.src('dist/**/*')
     .pipe(size({title: 'build', gzip: true}));
 });
