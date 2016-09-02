@@ -1,6 +1,6 @@
 <div>
 
-  <div ng-show="locationPath === '/search'" style="margin-bottom: 5px;">
+  <div ng-show="locationPath === '/search' ||  locationPath === '/'" style="margin-bottom: 5px;">
     <a ng-click="setRootCategory(null)" style="display: inline-block;">
       <div class="hovereffect">
 
@@ -195,7 +195,7 @@
             </div>
           </div>
 
-          <div ng-show="locationPath === '/search'">
+          <div ng-show="locationPath === '/search' ||  locationPath === '/'">
             <hr class="hr-xs">
             <p>
               <b>
@@ -203,69 +203,71 @@
               </b>
             </p>
             <div>
-              <a ng-click="setRootCategory('jobs')" class="img-thumbnail">
-                <div class="hovereffect">
+              <div>
+                <a ng-click="setRootCategory('jobs')" class="img-thumbnail">
+                  <div class="hovereffect">
 
-                  <picture>
-                    <source type="image/webp" srcset="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471980275/jobs-banner-4_narvua.webp">
-                    <img src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471980275/jobs-banner-4_narvua.jpg" class="img-responsive" alt="Jobs">
-                  </picture>
+                    <picture>
+                      <source type="image/webp" srcset="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471980275/jobs-banner-4_narvua.webp">
+                      <img src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471980275/jobs-banner-4_narvua.jpg" class="img-responsive" alt="Jobs">
+                    </picture>
 
-                  <div class="overlay"></div>
-                </div>
-              </a>
-            </div>
-            <div style="margin-top: 10px;">
-              <a ng-click="setRootCategory('transport')" class="img-thumbnail">
-                <div class="hovereffect">
+                    <div class="overlay"></div>
+                  </div>
+                </a>
+              </div>
+              <div style="margin-top: 10px;">
+                <a ng-click="setRootCategory('transport')" class="img-thumbnail">
+                  <div class="hovereffect">
 
-                  <picture>
-                    <source type="image/webp" srcset="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471982509/transport-banner-2_jl6n1a.webp">
-                    <img src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471982509/transport-banner-2_jl6n1a.jpg" class="img-responsive" alt="Transport">
-                  </picture>
+                    <picture>
+                      <source type="image/webp" srcset="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471982509/transport-banner-2_jl6n1a.webp">
+                      <img src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471982509/transport-banner-2_jl6n1a.jpg" class="img-responsive" alt="Transport">
+                    </picture>
 
-                  <div class="overlay"></div>
-                </div>
-              </a>
-            </div>
-            <div style="margin-top: 10px;">
-              <a ng-click="setRootCategory('real-estate')" class="img-thumbnail">
-                <div class="hovereffect">
+                    <div class="overlay"></div>
+                  </div>
+                </a>
+              </div>
+              <div style="margin-top: 10px;">
+                <a ng-click="setRootCategory('real-estate')" class="img-thumbnail">
+                  <div class="hovereffect">
 
-                  <picture>
-                    <source type="image/webp" srcset="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471983285/real-state-banner_syinid.webp">
-                    <img src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471983285/real-state-banner_syinid.jpg" class="img-responsive" alt="Transport">
-                  </picture>
+                    <picture>
+                      <source type="image/webp" srcset="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471983285/real-state-banner_syinid.webp">
+                      <img src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471983285/real-state-banner_syinid.jpg" class="img-responsive" alt="Transport">
+                    </picture>
 
-                  <div class="overlay"></div>
-                </div>
-              </a>
-            </div>
-            <div style="margin-top: 10px;">
-              <a ng-click="setRootCategory('services')" class="img-thumbnail">
-                <div class="hovereffect">
+                    <div class="overlay"></div>
+                  </div>
+                </a>
+              </div>
+              <div style="margin-top: 10px;">
+                <a ng-click="setRootCategory('services')" class="img-thumbnail">
+                  <div class="hovereffect">
 
-                  <picture>
-                    <source type="image/webp" srcset="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471986618/services-banner_g45sqe.webp">
-                    <img src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471986618/services-banner_g45sqe.jpg" class="img-responsive" alt="Transport">
-                  </picture>
+                    <picture>
+                      <source type="image/webp" srcset="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471986618/services-banner_g45sqe.webp">
+                      <img src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471986618/services-banner_g45sqe.jpg" class="img-responsive" alt="Transport">
+                    </picture>
 
-                  <div class="overlay"></div>
-                </div>
-              </a>
-            </div>
-            <div style="margin-top: 10px;">
-              <a ng-click="setRootCategory('marketplace')" class="img-thumbnail">
-                <div class="hovereffect">
+                    <div class="overlay"></div>
+                  </div>
+                </a>
+              </div>
+              <div style="margin-top: 10px;">
+                <a ng-click="setRootCategory('marketplace')" class="img-thumbnail">
+                  <div class="hovereffect">
 
-                  <picture>
-                    <source type="image/webp" srcset="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471991348/site/marketplace-banner-3_bhqftd.webp">
-                    <img src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471991348/site/marketplace-banner-3_bhqftd.jpg" class="img-responsive" alt="Transport">
-                  </picture>
+                    <picture>
+                      <source type="image/webp" srcset="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471991348/site/marketplace-banner-3_bhqftd.webp">
+                      <img src="http://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471991348/site/marketplace-banner-3_bhqftd.jpg" class="img-responsive" alt="Transport">
+                    </picture>
 
-                  <div class="overlay"></div>
-                </div>
-              </a>
+                    <div class="overlay"></div>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
 

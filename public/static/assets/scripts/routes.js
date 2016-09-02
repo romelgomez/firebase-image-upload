@@ -41,7 +41,8 @@ angular.module('routes',['ngRoute'])
     $routeProvider
       .when('/', {
         templateUrl: 'static/assets/views/main.html',
-        controller: 'MainController'
+        controller: 'MainController',
+        reloadOnSearch: false
       })
       .when('/search', {
         templateUrl: 'static/assets/views/search.html',
