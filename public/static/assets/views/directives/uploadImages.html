@@ -103,8 +103,8 @@
               <div ng-switch-when="true">
 
                 <picture>
-                  <source type="image/webp" ng-srcset="{{value.blobUrl || 'http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.webp'}}">
-                  <img ng-src="{{value.blobUrl || 'http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.jpg'}}" class="img-thumbnail img-preview img-responsive" alt="{{value.name}}">
+                  <source type="image/webp" ng-srcset="{{value.blobUrl || 'https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.webp'}}">
+                  <img ng-src="{{value.blobUrl || 'https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.jpg'}}" class="img-thumbnail img-preview img-responsive" alt="{{value.name}}">
                 </picture>
 
               </div>
@@ -113,8 +113,8 @@
                 <div ng-if="value.$error !== undefined">
 
                   <picture>
-                    <source type="image/webp" ng-srcset="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.webp">
-                    <img ng-src="http://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.jpg" class="img-thumbnail img-preview img-responsive" alt="{{value.name}}">
+                    <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.webp">
+                    <img ng-src="https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.jpg" class="img-thumbnail img-preview img-responsive" alt="{{value.name}}">
                   </picture>
 
                 </div>
