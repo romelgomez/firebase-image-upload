@@ -141,7 +141,12 @@ gulp.task('robots.txt', function() {
     .pipe(gulp.dest(output.dist));
 });
 
-gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts', 'favicon', 'robots.txt', 'google-site-verification', 'sitemap'], function() {
+gulp.task('manifest.txt', function() {
+  return gulp.src('public/manifest.txt')
+    .pipe(gulp.dest(output.dist));
+});
+
+gulp.task('build', ['lint', 'basic', 'images', 'views', 'fonts', 'favicon', 'robots.txt', 'google-site-verification', 'sitemap', 'manifest.txt'], function() {
   return gulp.src('dist/**/*')
     .pipe(size({title: 'build', gzip: true}));
 });

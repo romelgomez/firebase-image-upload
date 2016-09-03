@@ -419,3 +419,48 @@ a:hover {
     .non-printable { display: none; }
     .printable { display: block; }
 }
+
+.main-title h1{
+    font-family: serif;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.main-title h2{
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+@media(max-width:767px){
+    .main-title h1{
+        font-size: 22px;
+    }
+    .main-title h2{
+        font-size: 14px;
+    }
+}
+@media(min-width:768px){
+    .main-title h1{
+        font-size: 24px;
+    }
+    .main-title h2{
+        font-size: 17px;
+    }
+}
+@media(min-width:992px){
+    .main-title h1{
+        font-size: 25px;
+    }
+    .main-title h2{
+        font-size: 18px;
+    }
+}
+@media(min-width:1200px){
+    .main-title h1{
+        font-size: 25px;
+    }
+    .main-title h2{
+        font-size: 18px;
+    }
+}
+
