@@ -15,10 +15,10 @@
 
       <h3 class="panel-title visible-md-block visible-lg-block">
         <a style="color: #337ab7;" href="/{{account.profile.accountName !== undefined ? account.profile.accountName : account.profile.$id }}"> {{account.profile.pseudonym === undefined || account.profile.pseudonym === '' ? account.profile.names : account.profile.pseudonym}}</a>
-        -
-        <b ng-bind="account.profile.vip !== undefined && account.profile.vip === true ? 'VIP Account' : 'Essential Account'"></b>
-        <span ng-show="(account.profile.vip === undefined || account.profile.vip === false) && (active !== 1)" >-</span>
-        <span ng-show="(account.profile.vip === undefined || account.profile.vip === false) && (active !== 1)" class="upgrade-to-vip" ng-click="active = 1">Upgrade to VIP</span>
+        <!-- - -->
+        <!--<b ng-bind="account.profile.vip !== undefined && account.profile.vip === true ? 'VIP Account' : 'Essential Account'"></b>-->
+        <!--<span ng-show="(account.profile.vip === undefined || account.profile.vip === false) && (active !== 1)" >-</span>-->
+        <!--<span ng-show="(account.profile.vip === undefined || account.profile.vip === false) && (active !== 1)" class="upgrade-to-vip" ng-click="active = 1">Upgrade to VIP</span>-->
       </h3>
 
       <div class="panel-title visible-xs-block visible-sm-block">
