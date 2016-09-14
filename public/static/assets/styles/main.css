@@ -426,6 +426,13 @@ a:hover {
     margin-top: 0;
     margin-bottom: 0;
 }
+.main-title small{
+    margin-top: 10px;
+    margin-bottom: 0;
+    color: #333;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 .main-title h2{
     margin-top: 10px;
     margin-bottom: 0;
@@ -435,6 +442,9 @@ a:hover {
     .main-title h1{
         font-size: 22px;
     }
+    .main-title small{
+        font-size: 14px;
+    }
     .main-title h2{
         font-size: 14px;
     }
@@ -442,6 +452,9 @@ a:hover {
 @media(min-width:768px){
     .main-title h1{
         font-size: 24px;
+    }
+    .main-title small{
+        font-size: 17px;
     }
     .main-title h2{
         font-size: 17px;
@@ -451,6 +464,9 @@ a:hover {
     .main-title h1{
         font-size: 25px;
     }
+    .main-title small{
+        font-size: 18px;
+    }
     .main-title h2{
         font-size: 18px;
     }
@@ -458,6 +474,9 @@ a:hover {
 @media(min-width:1200px){
     .main-title h1{
         font-size: 25px;
+    }
+    .main-title small{
+        font-size: 18px;
     }
     .main-title h2{
         font-size: 18px;
