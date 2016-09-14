@@ -239,7 +239,7 @@ angular.module('filters',[])
     };
   }])
   /**
-   * @Description add class="img-responsive" to all images <img
+   * @Description add class="img-responsive" to all images <img , used in description input of the publication
    * */
   .filter('imgResponsive', ['$window', '$filter', function($window, $filter) {
     return function(text) {

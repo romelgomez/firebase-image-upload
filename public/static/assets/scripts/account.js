@@ -25,22 +25,6 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
     $scope.lording.promises.push($scope.account.profile.$loaded());
 
-    var modalErrors = function(error){
-      switch(error) {
-        case 'escape key press':
-          notificationService.notice('This action was canceled by the user');
-          break;
-        case undefined:
-          notificationService.notice('This action was canceled by the user');
-          break;
-        case 'backdrop click':
-          notificationService.notice('This action was canceled by the user');
-          break;
-        default:
-          notificationService.error(error);
-      }
-    };
-
     $scope.changeProfileDetails = function(size){
       var modalInstance = $uibModal.open({
         templateUrl: 'accountProfileDetailsModal.html',
@@ -55,13 +39,11 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
       modalInstance.result.then(function () {
         notificationService.success('The profile has been updated.');
-      }, function (error) {
-        //modalErrors(error);
       });
     };
 
     $scope.adminProfileBanners = function(size){
-      var modalInstance = $uibModal.open({
+      $uibModal.open({
         templateUrl: 'accountProfileBannersModal.html',
         controller: 'accountProfileBannersModalController',
         size: size,
@@ -75,15 +57,10 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
         }
       });
 
-      modalInstance.result.then(function () {
-        //notificationService.success('The profile banners has been updated.');
-      }, function (error) {
-        //modalErrors(error);
-      });
     };
 
     $scope.adminProfileImages = function(size){
-      var modalInstance = $uibModal.open({
+      $uibModal.open({
         templateUrl: 'accountProfileImagesModal.html',
         controller: 'accountProfileImagesModalController',
         size: size,
@@ -96,66 +73,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
           }
         }
       });
-
-      modalInstance.result.then(function () {
-        //notificationService.success('The profile images has been updated.');
-      }, function (error) {
-        //modalErrors(error);
-      });
     };
-
-    $scope.changePassword = function(size){
-      var modalInstance = $uibModal.open({
-        templateUrl: 'accountProfilePasswordModal.html',
-        controller: 'AccountProfilePasswordModalController',
-        size: size,
-        resolve: {
-          profile: function () {
-            return $scope.account.profile;
-          }
-        }
-      });
-
-      modalInstance.result.then(function () {
-        notificationService.success('The password has been updated.');
-      }, function (error) {
-        //modalErrors(error);
-      });
-    };
-
-    $scope.changeEmail = function(size){
-      var modalInstance = $uibModal.open({
-        templateUrl: 'accountProfileEmailModal.html',
-        controller: 'AccountProfileEmailModalController',
-        size: size,
-        resolve: {
-          profile: function () {
-            return $scope.account.profile;
-          }
-        }
-      });
-
-      modalInstance.result.then(function () {
-        notificationService.success('The email has been updated.');
-      }, function (error) {
-        //modalErrors(error);
-      });
-    };
-
-    $scope.unlinkProvider = function(providerId){
-
-      $scope.httpRequestPromise = $scope.firebaseUser.unlink(providerId)
-        .then(function(){
-          notificationService.success('The provider has been unlink.');
-        }, function (error) {
-          notificationService.error(error);
-        });
-
-    };
-
-
-  }])
-  .controller('AccountBillingController',['$scope', function($scope){
 
   }])
   .controller('AccountProfileDetailsModalController',['$scope','$uibModalInstance', '$q', 'profile' , 'FireRef', function($scope, $uibModalInstance, $q, profile, FireRef){
@@ -318,83 +236,6 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
     };
 
   }])
-  .controller('AccountProfilePasswordModalController',['$scope','$uibModalInstance','FireAuth','profile',function($scope, $uibModalInstance, FireAuth, profile){
-
-    $scope.forms = {
-      accountPassword: {}
-    };
-
-    var original = angular.copy($scope.model = {
-      accountPassword:{
-        oldPassword:'',
-        newPassword:'',
-        sameNewPassword:''
-      }
-    });
-
-    $scope.submit = function(){
-      if($scope.forms.accountPassword.$valid){
-
-        $scope.httpRequestPromise = FireAuth.$changePassword({email: profile.email, oldPassword: $scope.model.accountPassword.oldPassword, newPassword: $scope.model.accountPassword.newPassword})
-          .then(function() {
-            $uibModalInstance.close();
-          }, function(error){
-            $uibModalInstance.dismiss(error);
-          });
-
-      }
-    };
-
-    $scope.cancel = function () {
-      $uibModalInstance.dismiss();
-    };
-
-  }])
-  .controller('AccountProfileEmailModalController',['$q', '$scope', '$uibModalInstance', 'FireAuth', 'profile',function( $q, $scope, $uibModalInstance, FireAuth, profile){
-
-    $scope.forms = {
-      emailAccount: {}
-    };
-
-    var original = angular.copy($scope.model = {
-      emailAccount:{
-        newEmail:'',
-        password:''
-      }
-    });
-
-    $scope.submit = function(){
-      if($scope.forms.emailAccount.$valid){
-        var deferred  = $q.defer();
-        $scope.httpRequestPromise = deferred.promise;
-
-        FireAuth.$changeEmail({password: $scope.model.emailAccount.password, newEmail: $scope.model.emailAccount.newEmail, oldEmail: profile.email})
-          .then(function() {
-            profile.email = $scope.model.emailAccount.newEmail;
-            return profile.$save();
-          })
-          .then(function() {
-            $uibModalInstance.close();
-            deferred.resolve();
-          }, function(error){
-            $uibModalInstance.dismiss(error);
-            deferred.reject(error);
-          });
-
-      }
-    };
-
-    $scope.resetForm = function(){
-      angular.copy(original.emailAccount,$scope.model.emailAccount);
-      $scope.forms.emailAccount.$setUntouched();
-      $scope.forms.emailAccount.$setPristine();
-    };
-
-    $scope.cancel = function () {
-      $uibModalInstance.dismiss();
-    };
-
-  }])
   .directive('isAccountNameAvailable',[ 'FireRef', '$q', function( FireRef, $q){
 
     return {
@@ -408,9 +249,7 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
 
           var userInput = modelValue || viewValue;
 
-          //console.log('userInput', userInput);
-
-          // url path, the url that are like this: some-case are not necessary include in this list
+          // url path, the url that are like this: some-case are not necessary include in this list, because the Account Names are formatted as camelCase
           var reservedWords = {
             search: true,
             features: true,
@@ -431,20 +270,6 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
               ])
               .then(function(snapshots){
 
-                //console.log('snapshots[0].val()', snapshots[0].val());
-                //console.log('snapshots[0].key()', snapshots[0].key());
-                //console.log('snapshots[1].val()', snapshots[1].val());
-                //console.log('snapshots[1].key()', snapshots[1].key());
-                //console.log('----------------------------------------');
-
-                /*
-                 snapshots[0].val() is userID in accountNames path e.g accountNames/londonServicesLTD/userID
-                 snapshots[0].key() is accountName key in accountNames e.g accountNames/londonServicesLTD
-
-                 snapshots[1].val() is the current accountName value in user/userID/accountName e.g londonServicesLTD
-                 snapshots[1].key() is 'accountName' key in user/userID/
-                 */
-
                 if(!snapshots[0].exists()){
                   deferred.resolve(true);
                 }else if(snapshots[0].val() === $scope.profile.$id){
@@ -458,9 +283,6 @@ angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algol
               });
 
           }
-
-
-
 
           return deferred.promise;
         }

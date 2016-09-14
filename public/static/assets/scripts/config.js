@@ -1,8 +1,6 @@
 'use strict';
 
-//http://stackoverflow.com/questions/20663076/angularjs-app-run-documentation
-
-angular.module('fire2',['firebase'])
+angular.module('fireConfig',['firebase'])
   .constant('FIRE_BASE_CONFIG', {
     apiKey: 'AIzaSyBAuBLwxWaynoLI6AQeR60k9xPG5JnIgTA',
     authDomain: 'berlin.firebaseapp.com',

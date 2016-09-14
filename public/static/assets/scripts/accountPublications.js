@@ -10,8 +10,7 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
     '$location',
     'FireRef',
     '$firebaseObject',
-    '$window',
-    function($scope, $timeout, $q, $uibModal, $routeParams, $location, FireRef, $firebaseObject, $window){
+    function($scope, $timeout, $q, $uibModal, $routeParams, $location, FireRef, $firebaseObject){
 
       $scope.profile = {};
 
@@ -48,11 +47,11 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
         FireRef.child('accountNames').child($routeParams.accountName).once('value')
           .then(function(snapshot){
             if(snapshot.exists()){
-              // get profile data by the id (snapshot.val() - facebook:10204911533563856)
+              // get profile data by the id e.g k0JEbbtlGAhNN58sXdiBOUo9Z5g2
               setProfile(snapshot.val());
               return  $scope.profile.$loaded();
             }else{
-              // maybe is a userID
+              // maybe is a userID e.g berlinServices
               setProfile($routeParams.accountName);
               return  $scope.profile.$loaded();
             }
@@ -72,12 +71,14 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
         return deferred.promise;
       }
 
+      /**
+       * Firebase paths:
+       *
+       * banners
+       * profileBanners
+       * featuredBannerId
+       */
       function setProfileBanners (){
-        /*
-         banners
-         profileBanners
-         featuredBannerId
-         */
         var profileBanners = [];
         angular.forEach($scope.profile.banners, function(imageData,imageID){
           imageData.$id = imageID;
@@ -90,12 +91,14 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
         $scope.profile.$banners  = profileBanners;
       }
 
+      /**
+       * Firebase paths:
+       *
+       * images
+       * profileImages
+       * featuredImageId
+       */
       function setProfileImages (){
-        /*
-         images
-         profileImages
-         featuredImageId
-         */
         var profileImages = [];
         angular.forEach($scope.profile.images, function(imageData,imageID){
           imageData.$id = imageID;
@@ -107,8 +110,6 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
         });
         $scope.profile.$images = profileImages;
       }
-
-
 
       var getProfilePromise = getProfile()
         .then(function(){
@@ -134,7 +135,6 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
           $scope.$watch(function(){
             return $scope.profile.images;
           },function(){
-            //console.log('setProfileImages is called');
             setProfileImages();
           });
 
@@ -151,25 +151,9 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
 
       $scope.lording.promises.push(getProfilePromise);
 
-      function modalErrors(error){
-        switch(error) {
-          case 'escape key press':
-            notificationService.notice('This action was canceled by the user');
-            break;
-          case undefined:
-            notificationService.notice('This action was canceled by the user');
-            break;
-          case 'backdrop click':
-            notificationService.notice('This action was canceled by the user');
-            break;
-          default:
-            notificationService.error(error);
-        }
-      }
-
       $scope.profileImages = function(size, active){
         if(angular.isDefined($scope.profile.$images) && $scope.profile.$images.length > 0){
-          var modalInstance = $uibModal.open({
+          $uibModal.open({
             templateUrl: 'static/assets/views/profileImagesModal.html',
             controller: 'ProfileImagesController',
             size: size,
@@ -182,24 +166,8 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
               }
             }
           });
-
-          modalInstance.result.then(function () {
-            //notificationService.success('');
-          }, function (error) {
-            //modalErrors(error);
-          });
-
         }
       };
-
-
-      //// Twitter share button
-      //setTimeout(function() {
-      //  if(typeof $window.twttr.widgets !== 'undefined'){
-      //    $window.twttr.widgets.load();
-      //  }
-      //});
-
 
     }])
   .controller('ProfileImagesController',[ '$scope', '$uibModalInstance', 'profileImages', 'active',function($scope, $uibModalInstance, profileImages, active){

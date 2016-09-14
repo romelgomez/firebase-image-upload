@@ -13,16 +13,6 @@ a:hover {
     cursor:pointer;
 }
 
-.upgrade-to-vip {
-    cursor: pointer;
-    color: #F0563D;
-}
-
-.upgrade-to-vip:hover {
-    text-decoration: underline;
-}
-
-
 .header,
 .marketing,
 .footer {
@@ -74,6 +64,39 @@ a:hover {
     line-height: 1.5;
     border-radius: 3px;
 }
+
+.subRequired {
+    color: red;
+}
+
+.view-container{
+    margin-top: 17px;
+}
+
+.breadcrumb{
+    margin-bottom: 10px;
+}
+
+#category-selection .panel-footer{
+    text-align: right;
+}
+#category-selection .alert-xs{
+    margin-bottom: 0;
+}
+
+#category-selection .list-group .glyphicon{
+    color: #286090
+}
+
+#location-input .list-group {
+    margin-bottom: 0;
+}
+
+#location-input .breadcrumb {
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
 
 /*!* FileUpload START *!*/
 .remove-button{
@@ -135,6 +158,9 @@ a:hover {
     background-position: center center;
 }
 
+.loading-background{
+    height: 600px;
+}
 
 /* https://www.google.com/fonts#QuickUsePlace:quickUse/Family:Raleway */
 .font-raleway{
@@ -316,96 +342,6 @@ a:hover {
     -webkit-transition-delay:.2s;
     transition-delay:.2s;
 }
-
-
-/*-------------------------------------------------------------------------------------------*/
-/*  Pricing       ||---------------------------- */
-/*-------------------------------------------------------------------------------------------*/
-
-.Pricing-box {
-    border: 1px solid #f1f1f1;
-    text-align: center;
-}
-
-.Pricing-box.highlight {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-}
-
-.Pricing-box.highlight hr {
-    border-color: #ddd;
-}
-
-.price-title h4, .price-title h5 {
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
-
-.Pricing-box .price {
-    font-size: 50px;
-    font-weight: 700;
-    position: relative;
-}
-
-.Pricing-box .price .price-sm {
-    font-size: 14px;
-    position: absolute;
-}
-
-.Pricing-box .price .price-lg {
-    padding-left: 10px;
-}
-
-.Pricing-box .price-tenure {
-    font-size: 12px;
-    color: #888;
-    font-weight: 400;
-    padding-top: 8px;
-}
-
-.Pricing-box .pricing-features {
-    font-size: 13px;
-    text-transform: uppercase;
-}
-
-.Pricing-box .pricing-features ul {
-    list-style: none;
-    padding: 0px;
-    margin: 0px;
-}
-
-.Pricing-box .pricing-features ul li {
-    padding: 6px;
-}
-
-.spacing-box {
-    padding: 25px;
-}
-
-.btn-black {
-    color: #fff;
-    background: #323232;
-    border: none;
-}
-
-.btn-black:hover {
-    color: #fff;
-    /*background: #e6ae49;*/
-    background: rgba(50,50,50,0.85);
-}
-
-.spacing-grid {
-    padding-top: 25px;
-    padding-bottom: 25px;
-}
-
-.btn-md {
-    padding: 11px 20px;
-    display: inline-block;
-}
-
-
-/* END Pricing */
 
 
 @media (min-width: 768px) {

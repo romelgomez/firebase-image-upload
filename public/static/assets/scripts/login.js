@@ -23,9 +23,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
           var credential;
 
           //https://firebase.google.com/docs/auth/web/account-linking#link-auth-provider-credentials-to-a-user-account
-
-          //console.log('authenticatedUser.email', authenticatedUser.email);
-
           if(authenticatedUser.email !== null){
 
             var provider = $window.sessionStorage.getItem(authenticatedUser.email+'?provider');
@@ -117,7 +114,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
        * @param {Object} error
        **/
       function showError(error) {
-        //console.log('error:', error);
 
         switch (error.code) {
           case 'auth/invalid-email':
@@ -139,7 +135,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
             notificationService.error('A network error has occurred.');
             break;
           case 'auth/account-exists-with-different-credential':
-            //console.log('auth/account-exists-with-different-credential');
             attemptLinkCredential(error.email, error.credential);
             break;
           case 'auth/email-already-in-use':
@@ -259,8 +254,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
         });
 
         modalInstance.result.then(function (result) {
-          //console.log('result', result);
-          //console.log('email', email);
 
           $window.sessionStorage.setItem(email+'?provider', result.credential.provider);
           $window.sessionStorage.setItem(email+'?accessToken', result.credential.accessToken);
@@ -282,9 +275,8 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
             $scope.oauthLogin(result.provider, result.redirect);
           }
 
-        }, function (error) {
-          //modalErrors(error);
         });
+
       }
 
       function attemptLinkCredential (email, credential){
@@ -372,98 +364,3 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
     };
 
   }]);
-
-
-
-//var deferred = $q.defer();
-//$scope.httpRequestPromise = deferred.promise;
-//FireAuth.$onAuthStateChanged(function() {
-//  deferred.resolve();
-//});
-
-
-/*
-
- password
-
- displayName: null,
- email: bmxquiksilver7185@gmail.com,
- emailVerified: false,
- isAnonymous: false,
- photoURL: null,
- providerData: [object Object],
- displayName: null
- email: "bmxquiksilver7185@gmail.com"
- photoURL: null
- providerId: "password"
- uid: "bmxquiksilver7185@gmail.com"
- providerId: firebase,
- refreshToken: ANflqpGbesLfW-pW-3JbNWVMBJmPvc4xYMR7iXngbELkwKOle4QA0-ZcekBMkIUEcHNd45ViUaMU_mYO96ob_EpE2FchV-df14CthBOn-Dye9aWi94_4PmUNmD25VG5oHi4LBufkqh7s0FW4XCnFf4dFItmuVbxou1HYXerAcKbfcsOnArrTrrh8WLJoC1OVfzRtI1_K7zqT5yysofxgI_aqllHIexTiSAdjv2CiGMhEc5pVP52X6dYnHzmXWWLX2iSdqY-bKh6I,
- uid: b0d0d782-7fe2-4c55-8fcb-c73aab87538e
-
- twitter
-
- displayName: null,
- email: null,
- emailVerified: false,
- isAnonymous: false,
- photoURL: null,
- providerData: [object Object],
- displayName  "Prof. Romel Gomez"
- email null
- photoURL  "http://pbs.twimg.com/profile_images/738749616406028289/W6u_C9Nu_normal.jpg"
- providerId  "twitter.com"
- uid "192774776"
- providerId: firebase,
- refreshToken: ANflqpEr5AvN329oARVLtzj2yEv5r4noY5XJJF-HRmfplEKR_dIBIMIG68ezhWssAjOaUBA5aFYyGpYmgoBsPFFhMIcDVhHczlT2ctqQu68YQZYkhFAAXMrPWqQHQdjw0TFNJwkKGshdiHY7wH2HSgT3493UFbvkY8eHwxFPVJOzEjeL_NmPEF5fXjJ0JJoQ55nL2PUIa5J878RjtmsQ-fs6OM-ZDyfwK9tV8akL6i1mMrZKqk6MZcFaJkHYtDGqJ9aQG1sdhHf4LcwCOsilry9BmMML0nDnbU_saebHf3659ojv7zufV5mFc42pn7bEAVOWzrbqXPKz,
- uid: twitter:192774776
-
- facebook
-
- displayName: null,
- email: null,
- emailVerified: false,
- isAnonymous: false,
- photoURL: null,
- providerData: [object Object],
- displayName: "Romel Gomez"
- email: "solokarma@hotmail.com"
- photoURL : "https://scontent.xx.fbcdn.net/v/t1.0-1/p100x100/13087589_10206201012200016_3365804100092745919_n.jpg?oh=3128858e8a9b63717496ec4513c0ab7a&oe=57D679C1"
- providerId : "facebook.com"
- uid : "10204911533563856"
- providerId: firebase,
- refreshToken: ANflqpFcnJxQpDdpqDO-vLO2a1lE8gOA8KPiYD3KMwKLs83cvxXfaAUX7MhIMGIQOtbtAs5sMgA1J1-4bQ6i-3egziwY0M_MKNrJcCm7E5nAKGsKzygaSJefv3BjtiySOfkRAWS5BAIg94DpXzAvLSv15ST8rxLzpWUEqNnvQ0EUNXuvTXZbWHAPVJTek9c92GT52ihoK3duujYVwhXsKjMwbuy6ZB6ogatDiKlfNYRzMcEsWrsVuW3rbeo4PfJ_hbMuXWnMItVTWqulLOk-rpjIInmeC5fzOOfq4kGEIfBAy3fVA0d_IrZMhrJpc8Djek-Jm0gTTJS-hECjy9qcQa47QfUVE44H47rqUCKKEuxUvVTdmu2AMZN5iBP3vX5BCumI_qZZ8w_IjKupv3jYAUsFm-vPNLBRI7-LWXFx__KyArin-aVMvbKEEbBhb0anS5NF70QOSuFQWRO5nS-CGRTQIMEWJU6Y-g,
- uid: facebook:102049115335638560
-
-
- firebase.auth.AuthCredential.
- accessToken: "192774776-ejTIkDlfAD1Pq0dRkiS8Dj9rmrTgGpgd81LPsxqG",
- secret: "x3zbdLzR86RhwQy2GXmar1iZVOsWAxVeWsqRjkp2NH1TM",
- provider: "twitter.com"
-
- firebase.User
- signInAnonymously
- signInWithCredential
- signInWithCustomToken
- signInWithEmailAndPassword
-
- firebase.auth.UserCredential
- signInWithPopup
- getRedirectResult
-
-
-
- https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult
-
- auth.getRedirectResult().then(function(result) {
- // The firebase.User instance:
- var user = result.user;
- // The Facebook firebase.auth.AuthCredential containing the Facebook
- // access token:
- var credential = result.credential;
- })
-
- firebase.Promise containing void
- signInWithRedirect
-
- */

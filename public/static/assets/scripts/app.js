@@ -5,7 +5,7 @@ angular.module('app',[
     'filters',
     'validators',
     'firebase',
-    'fire2',
+    'fireConfig',
     'routes',
     'cgBusy',
     'jlareau.pnotify',
@@ -16,15 +16,11 @@ angular.module('app',[
     'main',
     'search',
     'updateMeta',
-    'accountPublications',
-    'checkout'
+    'accountPublications'
   ])
   .controller('AppController',[ '$scope', 'FireAuth', '$location',function( $scope, FireAuth, $location){
 
     FireAuth.$onAuthStateChanged(function(firebaseUser) {
-
-      //console.log('firebaseUser', firebaseUser);
-
       $scope.firebaseUser = firebaseUser;
     });
 
@@ -34,11 +30,7 @@ angular.module('app',[
       $scope.path = $location.path();
     });
 
-    //https://github.com/firebase/angularfire/blob/master/docs/guide/user-auth.md#retrieving-authentication-state
-
     $scope.logout = function() { FireAuth.$signOut(); };
-
-    $scope.inProduction = false;
 
     $scope.sizeOf = function(obj) {
       if (typeof obj === 'undefined'){
@@ -103,7 +95,7 @@ angular.module('app',[
       },
       template:''+
       '<a class="twitter-share-button" href="https://twitter.com/intent/tweet?text={{text}}&via=marketoflondon&url={{url}}">Tweet</a>',
-      link:function(scope){
+      link:function(){
 
         $timeout(function () {
           $window.twttr = (function(d, s, id) {
@@ -140,5 +132,3 @@ angular.module('app',[
       }
     };
   }]);
-
-
