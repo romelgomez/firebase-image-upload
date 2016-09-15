@@ -36,6 +36,9 @@ https://apis.google.com/js/rpc:shindig_random.js?onload=init
 https://berlin.firebaseapp.com/__/auth/iframe.js
 https://www.google-analytics.com/analytics.js
 
+http://www.marketoflondon.co.uk/static/assets/scripts/all.min.js
+http://www.marketoflondon.co.uk/static/assets/styles/all.min.css
+
 https://static.licdn.com/scds/common/u/images/apps/connect/sprites/sprite_connect_v14.png
 https://www.facebook.com/rsrc.php/v3/yx/r/Rnf8y1qsswj.png
 https://platform.twitter.com/widgets.js

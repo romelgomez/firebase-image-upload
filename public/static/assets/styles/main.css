@@ -65,7 +65,7 @@ a:hover {
     border-radius: 3px;
 }
 
-.subRequired {
+.subRequired, .remove {
     color: red;
 }
 
@@ -160,6 +160,11 @@ a:hover {
 
 .loading-background{
     height: 600px;
+    background-size:     cover;
+    background: url(https://res.cloudinary.com/berlin/image/upload/v1472088423/loading_cecchx.gif);
+    background-size:     cover;
+    background-repeat:   no-repeat;
+    background-position: center center;
 }
 
 /* https://www.google.com/fonts#QuickUsePlace:quickUse/Family:Raleway */
@@ -418,4 +423,3 @@ a:hover {
         font-size: 18px;
     }
 }
-

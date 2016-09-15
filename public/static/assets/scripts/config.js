@@ -1,6 +1,7 @@
 'use strict';
 
 //$.cloudinary.config().cloud_name = 'berlin';
+// http://stackoverflow.com/questions/20663076/angularjs-app-run-documentation
 
 /**
  * Site configuration
