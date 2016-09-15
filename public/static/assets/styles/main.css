@@ -13,6 +13,10 @@ a:hover {
     cursor:pointer;
 }
 
+h4 {
+    font-family: 'Lato', sans-serif;
+}
+
 .header,
 .marketing,
 .footer {
@@ -150,12 +154,19 @@ a:hover {
     border-radius: 50%;
 }
 
-.uk-flag-background{
-    background-size:     cover;
-    background: url(https://res.cloudinary.com/berlin/image/upload/v1472088423/loading_cecchx.gif);
-    background-size:     cover;
-    background-repeat:   no-repeat;
-    background-position: center center;
+.image-gallery {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #959595;
+    background: #000;
+}
+
+.publication-title {
+    font-size: 25px;
+    font-family: 'Lato', sans-serif;
+}
+
+.publisher {
+    font-family: 'Lato', sans-serif;
 }
 
 .loading-background{

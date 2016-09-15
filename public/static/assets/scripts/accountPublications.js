@@ -60,8 +60,8 @@ var publicationsModule = angular.module('accountPublications',[])
           .then(function(){
             if(typeof $scope.profile.startedAt !== 'undefined'){
 
-              $scope.profile.$seoURL = SITE_URL; // e,g  'http://www.marketoflondon.co.uk/'
-              $scope.profile.$seoURL += ($scope.profile.accountName !== undefined && $scope.profile.accountName !== '')? $scope.profile.accountName: $scope.profile.$id;
+              $scope.profile.$seoURL = SITE_URL; // e,g  'http://www.marketoflondon.co.uk'
+              $scope.profile.$seoURL += ($scope.profile.accountName !== undefined && $scope.profile.accountName !== '')? '/' + $scope.profile.accountName: '/' + $scope.profile.$id;
 
               deferred.resolve();
             }else {

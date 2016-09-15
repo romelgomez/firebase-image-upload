@@ -10,7 +10,15 @@ publicationsModule
     '$firebaseObject',
     'notificationService',
     'SITE_URL',
-    function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseObject, notificationService, SITE_URL){
+    'SITE_TITLE',
+    'CLOUDINARY_CLOUD_NAME',
+    'SITE_CURRENCY_SYMBOL',
+    function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseObject, notificationService, SITE_TITLE, SITE_URL, CLOUDINARY_CLOUD_NAME, SITE_CURRENCY_SYMBOL){
+
+      $scope.CLOUDINARY_CLOUD_NAME = CLOUDINARY_CLOUD_NAME;
+      $scope.SITE_URL = SITE_URL;
+      $scope.SITE_TITLE = SITE_TITLE;
+      $scope.SITE_CURRENCY_SYMBOL = SITE_CURRENCY_SYMBOL;
 
       $scope.publication = {
         $isReady: false,
@@ -86,7 +94,7 @@ publicationsModule
             .then(function(the){
               $scope.profile = the.profile;
 
-              var seoUrl = SITE_URL; // e.g 'http://www.marketoflondon.co.uk/'
+              var seoUrl = SITE_URL; // e.g 'http://www.marketoflondon.co.uk'
 
               var categoriesAndLocations = '';
               var categories = $window._.join($scope.publication.data.categories, ' ');
@@ -95,7 +103,7 @@ publicationsModule
               categoriesAndLocations += ' in ';
               categoriesAndLocations += locations;
 
-              seoUrl += typeof the.profile.accountName !== 'undefined' && the.profile.accountName !== '' ? the.profile.accountName + '/': the.profile.$id + '/';
+              seoUrl += typeof the.profile.accountName !== 'undefined' && the.profile.accountName !== '' ? '/' + the.profile.accountName + '/': '/' + the.profile.$id + '/';
               seoUrl += $filter('slug')(categoriesAndLocations) + '/';
               seoUrl += $scope.publication.data.$id + '/';
               seoUrl += $filter('slug')($scope.publication.data.title) + '.html';

@@ -46,11 +46,11 @@ angular.module('routes',[])
       })
       .when('/privacy-policy', {
         templateUrl: 'static/assets/views/privacyPolicy.html',
-        controller: 'MainController'
+        controller: 'SimpleViewsController'
       })
       .when('/terms-of-service', {
         templateUrl: 'static/assets/views/termsOfService.html',
-        controller: 'MainController'
+        controller: 'SimpleViewsController'
       })
       .whenAuthenticated('/new-publication', {
         templateUrl: 'static/assets/views/publication.html',
