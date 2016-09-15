@@ -105,7 +105,7 @@
 
             <!-- Title input -->
             <div class="form-group">
-              <label class="control-label"><span class="glyphicon glyphicon-bookmark"></span> Title <sup class="subRequired">*</sup></label>
+              <label class="control-label"><span class="glyphicon glyphicon-bookmark"></span> Title <sup class="required">*</sup></label>
               <input type="text" name="title" ng-model="publication.model.title" required minlength="7" capitalize-first-char class="form-control" placeholder="">
               <div data-ng-messages="publicationForm.$submitted && publicationForm.title.$error" class="help-block">
                 <div data-ng-message="required">
@@ -119,7 +119,7 @@
 
             <!-- Description input -->
             <div class="form-group">
-              <label class="control-label"><span class="glyphicon glyphicon-book"></span> Description <sup class="subRequired">*</sup></label>
+              <label class="control-label"><span class="glyphicon glyphicon-book"></span> Description <sup class="required">*</sup></label>
               <textarea redactor name="htmlDescription" data-ng-model="publication.model.htmlDescription" required class="form-control" placeholder=""></textarea>
               <div data-ng-messages="publicationForm.$submitted && publicationForm.htmlDescription.$error" class="help-block">
                 <div data-ng-message="required" >
@@ -132,7 +132,7 @@
             <div class="form-group" ng-if="publication.model.department === 'Marketplace' || publication.model.department === 'Real Estate' || publication.model.department === 'Transport'">
               <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-5">
-                  <label class="control-label"><span class="glyphicon glyphicon-tag"></span> Price <sup class="subRequired">*</sup></label>
+                  <label class="control-label"><span class="glyphicon glyphicon-tag"></span> Price <sup class="required">*</sup></label>
                   <div class="input-group">
                     <div class="input-group-addon">£</div>
                     <input name="price" ng-model="publication.model.price" required class="form-control" placeholder="Eje: 1000" type="number">
@@ -150,7 +150,7 @@
             <div class="form-group" ng-if="publication.model.department === 'Marketplace'">
               <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-5">
-                  <label class="control-label"><span class="glyphicon glyphicon-th"></span> Quantity in stock <sup class="subRequired">*</sup></label>
+                  <label class="control-label"><span class="glyphicon glyphicon-th"></span> Quantity in stock <sup class="required">*</sup></label>
                   <div class="input-group">
                     <div class="input-group-addon">Units</div>
                     <input name="quantity" ng-model="publication.model.quantity" required class="form-control" placeholder="Eje: 100" type="number">
@@ -167,7 +167,7 @@
             <!-- Warranty input - only if the publications type is: ['Marketplace']  -->
             <div ng-if="publication.model.department === 'Marketplace'" ng-controller="MarketplacePublicationController">
               <div class="form-group">
-                <label class="control-label"><span class="glyphicon glyphicon-certificate"></span> Warranty <sup class="subRequired">*</sup></label>
+                <label class="control-label"><span class="glyphicon glyphicon-certificate"></span> Warranty <sup class="required">*</sup></label>
                 <textarea redactor name="htmlWarranty" data-ng-model="publication.model.htmlWarranty" required class="form-control" placeholder=""></textarea>
                 <div data-ng-messages="publicationForm.$submitted && publicationForm.htmlWarranty.$error" class="help-block">
                   <div data-ng-message="required" >
@@ -180,7 +180,7 @@
             <!-- Location input  -->
             <div id="location-input">
               <hr class="hr-xs">
-              <label class="control-label"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Location <sup class="subRequired">*</sup></label>
+              <label class="control-label"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Location <sup class="required">*</sup></label>
               <div class="list-group">
                 <button type="button" class="list-group-item" ng-click="setLocation(location.$id); publication.redefineLocation = false;" ng-repeat="location in publication.locations | filter:{parentId: publication.model.locationId}:true" ><span style="color: #286090" class="glyphicon glyphicon-folder-close"></span> <span ng-bind="location.name | capitalizeFirstChar"></span></button>
               </div>
@@ -339,7 +339,7 @@
         </form>
 
         <hr class="hr-xs">
-        <div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: This superscript <sup class="subRequired">*</sup> mean that, is required.</div>
+        <div class="alert alert-info alert-xs" style="margin-bottom: 0;" role="alert">NOTE: This superscript <sup class="required">*</sup> mean that, is required.</div>
 
       </div>
     </div>

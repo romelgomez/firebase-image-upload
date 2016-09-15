@@ -186,8 +186,6 @@ var publicationsModule = angular.module('publications',[])
     'SITE_TITLE',
     function($scope, $q, $window, $filter, $routeParams, $location, $http, FireRef, $firebaseArray, $firebaseObject, rfc4122, treeService, notificationService, $upload, user, $uibModal, publicationService, imagesService, CATEGORIES, LOCATIONS, SITE_TITLE){
 
-      $scope.SITE_TITLE = SITE_TITLE;
-
       var deferred = $q.defer();
       $scope.httpRequestPromise = deferred.promise;
 
