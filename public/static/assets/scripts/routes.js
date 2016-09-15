@@ -4,7 +4,7 @@
  http://stackoverflow.com/questions/20663076/angularjs-app-run-documentation
  */
 
-angular.module('routes',['ngRoute'])
+angular.module('routes',[])
   .constant('SECURED_ROUTES', {})
   .constant('LOGIN_REDIRECT_PATH', '/login')
   /**
@@ -43,31 +43,6 @@ angular.module('routes',['ngRoute'])
         templateUrl: 'static/assets/views/main.html',
         controller: 'MainController',
         reloadOnSearch: false
-      })
-      .when('/search', {
-        templateUrl: 'static/assets/views/search.html',
-        controller: 'SearchController',
-        reloadOnSearch: false
-      })
-      .when('/contact-us', {
-        templateUrl: 'static/assets/views/contact-us.html',
-        controller: 'ContactUsController'
-      })
-      .when('/features', {
-        templateUrl: 'static/assets/views/features.html',
-        controller: 'FeaturesController'
-      })
-      .when('/thank-you', {
-        templateUrl: 'static/assets/views/thank-you.html',
-        controller: 'ThankYouController'
-      })
-      .when('/upgrade-to-vip', {
-        templateUrl: 'static/assets/views/upgrade-to-vip.html',
-        controller: 'UpgradeToVipController'
-      })
-      .when('/error-when-upgrading-to-vip', {
-        templateUrl: 'static/assets/views/error-when-upgrading-to-vip.html',
-        controller: 'ErrorWhenUpgradingController'
       })
       .when('/privacy-policy', {
         templateUrl: 'static/assets/views/privacyPolicy.html',

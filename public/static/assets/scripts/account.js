@@ -1,9 +1,7 @@
 'use strict';
 
-$.cloudinary.config().cloud_name = 'berlin';
-
-angular.module('account',['trTrustpass','ngPasswordStrength','cloudinary','algoliasearch','images'])
-  .controller('AccountController',['$scope', '$q', 'user', '$uibModal', 'FireRef', '$firebaseObject', 'notificationService', '$log', function ($scope, $q, user, $uibModal, FireRef, $firebaseObject, notificationService, $log) {
+angular.module('account',[])
+  .controller('AccountController',['$scope', '$q', 'user', '$uibModal', 'FireRef', '$firebaseObject', function ($scope, $q, user, $uibModal, FireRef, $firebaseObject) {
 
     $scope.lording = {
       deferred: $q.defer(),

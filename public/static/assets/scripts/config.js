@@ -1,6 +1,16 @@
 'use strict';
 
-angular.module('fireConfig',['firebase'])
+//$.cloudinary.config().cloud_name = 'berlin';
+
+/**
+ * Site configuration
+ ****************************/
+angular.module('siteConfig',[])
+  .constant('SITE_URL', 'http://www.marketoflondon.co.uk/')
+  .constant('CLOUDINARY_URL', 'https://api.cloudinary.com/v1_1/berlin/upload')
+  .constant('CLOUDINARY_UPLOAD_PRESET', 'ebdyaimw')
+  .constant('ALGOLIA_APPLICATION_ID', 'FU6V8V2Y6Q')
+  .constant('ALGOLIA_API_KEY', '75b635c7c8656803b0b9e82e0510f266')
   .constant('FIRE_BASE_CONFIG', {
     apiKey: 'AIzaSyBAuBLwxWaynoLI6AQeR60k9xPG5JnIgTA',
     authDomain: 'berlin.firebaseapp.com',
@@ -15,4 +25,15 @@ angular.module('fireConfig',['firebase'])
   }])
   .factory('FireRef', ['$window', function($window) {
     return $window.firebase.database().ref();
-  }]);
+  }])
+  .run(function(){
+    var googleAppID = 'UA-74513768-1';
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', googleAppID, 'auto');
+    ga('send', 'pageview');
+  });

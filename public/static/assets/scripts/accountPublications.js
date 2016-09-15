@@ -1,6 +1,6 @@
 'use strict';
 
-var publicationsModule = angular.module('accountPublications',['algoliasearch'])
+var publicationsModule = angular.module('accountPublications',[])
   .controller('AccountPublicationsController',[
     '$scope',
     '$timeout',
@@ -10,7 +10,8 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
     '$location',
     'FireRef',
     '$firebaseObject',
-    function($scope, $timeout, $q, $uibModal, $routeParams, $location, FireRef, $firebaseObject){
+    'SITE_URL',
+    function($scope, $timeout, $q, $uibModal, $routeParams, $location, FireRef, $firebaseObject, SITE_URL){
 
       $scope.profile = {};
 
@@ -59,7 +60,7 @@ var publicationsModule = angular.module('accountPublications',['algoliasearch'])
           .then(function(){
             if(typeof $scope.profile.startedAt !== 'undefined'){
 
-              $scope.profile.$seoURL = 'http://www.marketoflondon.co.uk/';
+              $scope.profile.$seoURL = URL; // e,g  'http://www.marketoflondon.co.uk/'
               $scope.profile.$seoURL += ($scope.profile.accountName !== undefined && $scope.profile.accountName !== '')? $scope.profile.accountName: $scope.profile.$id;
 
               deferred.resolve();

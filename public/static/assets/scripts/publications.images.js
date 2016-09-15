@@ -1,14 +1,22 @@
-angular.module('images', ['uuid'])
-  .factory('imagesService', ['$q', '$http', '$window', 'rfc4122', 'Upload', function($q , $http, $window, rfc4122, Upload) {
+angular.module('images', [])
+  .factory('imagesService', [
+    '$q',
+    '$http',
+    '$window',
+    'rfc4122',
+    'Upload',
+    'CLOUDINARY_URL',
+    'CLOUDINARY_UPLOAD_PRESET',
+    function($q , $http, $window, rfc4122, Upload, CLOUDINARY_URL, CLOUDINARY_UPLOAD_PRESET) {
 
     function uploadFile(file, fileId, imagesTags){
       var deferred = $q.defer();
 
       file.upload = Upload.upload({
-        url: 'https://api.cloudinary.com/v1_1/berlin/upload',
+        url: CLOUDINARY_URL,
         fields: {
           public_id: fileId,
-          upload_preset: 'ebdyaimw',
+          upload_preset: CLOUDINARY_UPLOAD_PRESET,
           context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name,
           tags: imagesTags
         },
@@ -16,7 +24,6 @@ angular.module('images', ['uuid'])
       }).progress(function (e) {
         file.progress = Math.round((e.loaded * 100.0) / e.total);
       }).success(function (data) {
-        //console.log('image data: ',data);
         file.isUploaded = true;
         file.$id        = data.public_id;
         deferred.resolve(data);

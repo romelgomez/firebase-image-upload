@@ -1,11 +1,12 @@
 'use strict';
 
 angular.module('app',[
+    'ngRoute',
+    'siteConfig',
     'angular-loading-bar',
     'filters',
     'validators',
     'firebase',
-    'fireConfig',
     'routes',
     'cgBusy',
     'jlareau.pnotify',
@@ -14,9 +15,17 @@ angular.module('app',[
     'account',
     'ui.bootstrap',
     'main',
-    'search',
     'updateMeta',
-    'accountPublications'
+    'accountPublications',
+    'trTrustpass',
+    'ngPasswordStrength',
+    'cloudinary',
+    'algoliasearch',
+    'images',
+    'ngMessages',
+    'angular-redactor',
+    'uuid',
+    'ngFileUpload'
   ])
   .controller('AppController',[ '$scope', 'FireAuth', '$location',function( $scope, FireAuth, $location){
 

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswordStrength'])
+angular.module('login',[])
   .controller('LoginController', [
     '$q',
     '$window',
@@ -38,9 +38,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
                   break;
                 case 'twitter.com':
                   credential = firebase.auth.TwitterAuthProvider.credential($window.sessionStorage.getItem(authenticatedUser.email+'?accessToken'), $window.sessionStorage.getItem(authenticatedUser.email+'?secret'));
-                  break;
-                case 'github.com':
-                  credential = firebase.auth.GithubAuthProvider.credential($window.sessionStorage.getItem(authenticatedUser.email+'?accessToken'));
                   break;
               }
               if(typeof credential !== 'undefined' && credential !== null){
@@ -178,11 +175,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
                 profile.provider        = firebaseUser.providerData[0].providerId;
                 profile.startedAt       = $window.firebase.database.ServerValue.TIMESTAMP;
                 break;
-              case 'github.com':
-                profile.names           = firebaseUser.providerData[0].displayName;
-                profile.provider        = firebaseUser.providerData[0].providerId;
-                profile.startedAt       = $window.firebase.database.ServerValue.TIMESTAMP;
-                break;
               case 'password':
                 profile.email     = $scope.model.register.email;
                 profile.names     = $scope.model.register.names;
@@ -267,8 +259,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
             case 'google.com':
               $window.sessionStorage.setItem(email+'?idToken', result.credential.idToken);
               break;
-            case 'github.com':
-              break;
           }
 
           if(result.credential.provider !== 'password'){
@@ -320,11 +310,6 @@ angular.module('login',['ngMessages','validation.match','trTrustpass','ngPasswor
             break;
           case 'google.com':
             authProvider = new firebase.auth.GoogleAuthProvider();
-            break;
-          case 'github.com':
-            // https://developer.github.com/v3/oauth/
-            authProvider = new $window.firebase.auth.GithubAuthProvider();
-            authProvider.addScope('user:email');
             break;
         }
 

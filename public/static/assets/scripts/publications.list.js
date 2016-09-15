@@ -17,7 +17,9 @@ publicationsModule
     'LOCATIONS',
     'CATEGORIES_ROUTE_PARAMETERS',
     'LOCATIONS_ROUTE_PARAMETERS',
-    function($q, $location, $window, algolia, FireRef , FireAuth, $firebaseArray, $firebaseObject, $route, $routeParams, notificationService, $filter, $uibModal, CATEGORIES, LOCATIONS, CATEGORIES_ROUTE_PARAMETERS, LOCATIONS_ROUTE_PARAMETERS){
+    'ALGOLIA_APPLICATION_ID',
+    'ALGOLIA_API_KEY',
+    function($q, $location, $window, algolia, FireRef , FireAuth, $firebaseArray, $firebaseObject, $route, $routeParams, notificationService, $filter, $uibModal, CATEGORIES, LOCATIONS, CATEGORIES_ROUTE_PARAMETERS, LOCATIONS_ROUTE_PARAMETERS, ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY){
       return {
         restrict:'E',
         templateUrl: 'static/assets/views/directives/publicationsList.html',
@@ -57,7 +59,7 @@ publicationsModule
             $scope.lording.promise = $scope.lording.deferred.promise;
           }
 
-          var client = algolia.Client('FU6V8V2Y6Q', '75b635c7c8656803b0b9e82e0510f266');
+          var client = algolia.Client(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
 
           var allFacets = {
             categories: CATEGORIES,

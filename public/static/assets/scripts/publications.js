@@ -1,6 +1,6 @@
 'use strict';
 
-var publicationsModule = angular.module('publications',['uuid','ngMessages','angular-redactor','ngFileUpload','cloudinary','algoliasearch', 'images'])
+var publicationsModule = angular.module('publications',[])
   .factory('treeService', [
     '$filter',
     function($filter) {
