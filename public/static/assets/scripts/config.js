@@ -8,10 +8,13 @@
  ****************************/
 angular.module('siteConfig',[])
   .constant('SITE_URL', 'http://www.marketoflondon.co.uk/')
+  .constant('CLOUDINARY_CLOUD_NAME', 'berlin')
   .constant('CLOUDINARY_URL', 'https://api.cloudinary.com/v1_1/berlin/upload')
   .constant('CLOUDINARY_UPLOAD_PRESET', 'ebdyaimw')
   .constant('ALGOLIA_APPLICATION_ID', 'FU6V8V2Y6Q')
   .constant('ALGOLIA_API_KEY', '75b635c7c8656803b0b9e82e0510f266')
+  .constant('FACEBOOK_API_ID', '1717304911824824')
+  .constant('FACEBOOK_SDK_VERSION', 'v2.7')
   .constant('FIRE_BASE_CONFIG', {
     apiKey: 'AIzaSyBAuBLwxWaynoLI6AQeR60k9xPG5JnIgTA',
     authDomain: 'berlin.firebaseapp.com',

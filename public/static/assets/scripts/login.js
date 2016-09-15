@@ -166,7 +166,6 @@ angular.module('login',[])
                 break;
               case 'twitter.com':
                 profile.names           = firebaseUser.providerData[0].displayName;
-                //profile.twitterAccount  = user['twitter'].username;
                 profile.provider        = firebaseUser.providerData[0].providerId;
                 profile.startedAt       = $window.firebase.database.ServerValue.TIMESTAMP;
                 break;

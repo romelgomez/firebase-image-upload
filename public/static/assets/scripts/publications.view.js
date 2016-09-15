@@ -86,7 +86,7 @@ publicationsModule
             .then(function(the){
               $scope.profile = the.profile;
 
-              var seoUrl = URL; // e.g 'http://www.marketoflondon.co.uk/'
+              var seoUrl = SITE_URL; // e.g 'http://www.marketoflondon.co.uk/'
 
               var categoriesAndLocations = '';
               var categories = $window._.join($scope.publication.data.categories, ' ');

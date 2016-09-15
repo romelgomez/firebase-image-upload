@@ -53,7 +53,7 @@ angular.module('app',[
     };
 
   }])
-  .directive('facebook',['$window', function ($window) {
+  .directive('facebook',['$window', 'FACEBOOK_API_ID', 'FACEBOOK_SDK_VERSION', function ($window, FACEBOOK_API_ID, FACEBOOK_SDK_VERSION) {
 
     return {
       restrict:'E',
@@ -66,9 +66,9 @@ angular.module('app',[
 
         $window.fbAsyncInit = function() {
           FB.init({
-            appId      : '1717304911824824',
+            appId      : FACEBOOK_API_ID,
             xfbml      : true,
-            version    : 'v2.7'
+            version    : FACEBOOK_SDK_VERSION
           });
         };
 
@@ -76,7 +76,7 @@ angular.module('app',[
           var js, fjs = d.getElementsByTagName(s)[0];
           if (d.getElementById(id)) {return;}
           js = d.createElement(s); js.id = id;
-          js.src = '//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.7&appId=762758047167957';
+          js.src = '//connect.facebook.net/en_GB/sdk.js';
           fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
 
