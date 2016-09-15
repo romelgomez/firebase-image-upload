@@ -27,7 +27,18 @@ angular.module('app',[
     'uuid',
     'ngFileUpload'
   ])
-  .controller('AppController',[ '$scope', 'FireAuth', '$location',function( $scope, FireAuth, $location){
+  .controller('AppController',[
+    '$scope',
+    'FireAuth',
+    '$location',
+    'SITE_TITLE',
+    'SITE_URL',
+    'SITE_TWITTER',
+    function( $scope, FireAuth, $location, SITE_TITLE, SITE_URL, SITE_TWITTER){
+
+    $scope.SITE_TITLE = SITE_TITLE;
+    $scope.SITE_URL = SITE_URL;
+    $scope.SITE_TWITTER = SITE_TWITTER;
 
     FireAuth.$onAuthStateChanged(function(firebaseUser) {
       $scope.firebaseUser = firebaseUser;

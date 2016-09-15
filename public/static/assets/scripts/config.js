@@ -9,6 +9,8 @@
 angular.module('siteConfig',[])
   .constant('SITE_URL', 'http://www.marketoflondon.co.uk')
   .constant('SITE_TITLE', 'Market of London - Jobs Classified Ads - UK')
+  .constant('SITE_EMAIL', '')
+  .constant('SITE_TWITTER', 'marketoflondon')
   .constant('SITE_CURRENCY_SYMBOL', '£')
   .constant('CLOUDINARY_CLOUD_NAME', 'berlin')
   .constant('CLOUDINARY_URL', 'https://api.cloudinary.com/v1_1/berlin/upload')

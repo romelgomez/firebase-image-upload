@@ -155,7 +155,7 @@ var publicationsModule = angular.module('accountPublications',[])
       $scope.profileImages = function(size, active){
         if(angular.isDefined($scope.profile.$images) && $scope.profile.$images.length > 0){
           $uibModal.open({
-            templateUrl: 'static/assets/views/profileImagesModal.html',
+            templateUrl: 'static/assets/views/account/modals/profileImagesModal.html',
             controller: 'ProfileImagesController',
             size: size,
             resolve: {

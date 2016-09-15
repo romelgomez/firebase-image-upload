@@ -228,7 +228,7 @@ angular.module('login',[])
 
       function promptForLinkCredential (size, email, credential, providers){
         var modalInstance = $uibModal.open({
-          templateUrl: 'static/assets/views/promptForLinkCredentialModal.html',
+          templateUrl: 'static/assets/views/login/modals/promptForLinkCredentialModal.html',
           controller: 'PromptForLinkCredentialController',
           size: size,
           resolve: {
