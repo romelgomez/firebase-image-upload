@@ -27,13 +27,13 @@
         <div>
           <h3 class="panel-title" style="font-size: 25px; font-family: 'Lato', sans-serif;">
             <div>
-              {{publication.data.title | capitalizeFirstChar}}
-              <span ng-show="publication.data.department === 'Real Estate'"> for {{publication.data.reHomeFor | uppercase}}</span>
+              <span ng-bind="publication.data.title | capitalizeFirstChar"></span>
+              <span ng-show="publication.data.department === 'Real Estate'"> for <span ng-bind="publication.data.reHomeFor | uppercase"></span></span>
             </div>
           </h3>
 
           <div class="non-printable" style="font-family: 'Lato', sans-serif;">
-            Publication by <a href="/{{profile.accountName !== undefined ? profile.accountName : profile.$id }}"> {{profile.pseudonym === undefined || profile.pseudonym === '' ? profile.names : profile.pseudonym}} </a>
+            Publication by <a href="/{{profile.accountName !== undefined ? profile.accountName : profile.$id }}"> <span ng-bind="profile.pseudonym === undefined || profile.pseudonym === '' ? profile.names : profile.pseudonym"></span> </a>
           </div>
         </div>
 
@@ -42,34 +42,31 @@
         <div>
           <h4 ng-if="publication.data.department !== 'Services' && publication.data.department !== 'Jobs'" style="font-family: 'Lato', sans-serif;">
             Price:
-            {{publication.data.price | currency : '£' : 2 }}
+            <span ng-bind="publication.data.price | currency : '£' : 2"></span>
           </h4>
 
 
-          <h5 ng-if="publication.data.department === 'Marketplace'" ><span class="glyphicon glyphicon-th" aria-hidden="true"></span> Quantity in stock: {{publication.data.quantity}}</h5>
+          <h5 ng-if="publication.data.department === 'Marketplace'" ><span class="glyphicon glyphicon-th" aria-hidden="true"></span> Quantity in stock: <span ng-bind="publication.data.quantity"></span></h5>
           <h4 ng-if="publication.data.department === 'Jobs'">
             Salary:
-            {{publication.data.jobSalaryStartAt | currency : '£' : 2 }} - {{publication.data.jobSalaryEndAt | currency : '£' : 2 }}
-            per {{publication.data.jobSalaryType == 'Annual' ? 'annum' : ''}}
-            {{publication.data.jobSalaryType == 'Daily' ? 'day' : ''}}
-            {{publication.data.jobSalaryType == 'Hourly' ? 'hour' : ''}}
-            {{publication.data.jobHasBenefits ? '+ benefits' : ''}}
-            {{publication.data.jobHasBonus ? '+ bonus' : ''}}
-            (Estimated Monthly Salary {{publication.data.jobEstimatedMonthlySalary | currency : '£' : 2 }})
+            <span ng-bind="publication.data.jobSalaryStartAt | currency : '£' : 2 "></span> - <span ng-bind="publication.data.jobSalaryEndAt | currency : '£' : 2 "></span>
+            per <span ng-bind="publication.data.jobSalaryType == 'Annual' ? 'annum' : ''"></span>
+            <span ng-bind="publication.data.jobSalaryType == 'Daily' ? 'day' : ''"></span>
+            <span ng-bind="publication.data.jobSalaryType == 'Hourly' ? 'hour' : ''"></span>
+            <span ng-bind="publication.data.jobHasBenefits ? '+ benefits' : ''"></span>
+            <span ng-bind="publication.data.jobHasBonus ? '+ bonus' : ''"></span>
+            (Estimated Monthly Salary <span ng-bind="publication.data.jobEstimatedMonthlySalary | currency : '£' : 2 "></span>)
           </h4>
-          <h5 ng-if="publication.data.department === 'Jobs'"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> {{publication.data.jobType}}</h5>
-          <h5 ng-if="publication.data.department === 'Jobs'"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{publication.data.jobRecruiterType}}</h5>
+          <h5 ng-if="publication.data.department === 'Jobs'"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> <span ng-bind="publication.data.jobType"></span></h5>
+          <h5 ng-if="publication.data.department === 'Jobs'"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <span ng-bind="publication.data.jobRecruiterType"></span></h5>
           <h5>
             <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-            <span ng-repeat="location in publication.data.locations"> {{location | capitalizeFirstChar}}{{!$last ? ' • ' : ''}}</span>
+            <span ng-repeat="location in publication.data.locations"> <span ng-bind="location | capitalizeFirstChar"></span><span ng-bind="!$last ? ' • ' : ''"></span></span>
           </h5>
           <h5>
             <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-            Published: {{publication.data.releaseDate | date:'dd'}}/{{publication.data.releaseDate | date:'MM'}}/{{publication.data.releaseDate | date:'yyyy'}}
+            Published: <span ng-bind="publication.data.releaseDate | date:'dd'"></span>/<span ng-bind="publication.data.releaseDate | date:'MM'"></span>/<span ng-bind="publication.data.releaseDate | date:'yyyy'"></span>
           </h5>
-
-          <!--<pre>{{profile | json}}</pre>-->
-          <!--<pre>{{publication | json}}</pre>-->
 
         </div>
 
@@ -90,14 +87,6 @@
 
           <span ng-bind-html="publication.data.htmlWarranty | imgResponsive | unsafe"></span>
         </div>
-        <!--<div>-->
-        <!--<hr class="hr-xs">-->
-
-        <!--<div style="padding-bottom: 15px;">-->
-        <!--<b>Publication barcode:</b>-->
-        <!--</div>-->
-        <!--<barcode-img barcode-string="publication.$barcode.string" barcode-options="publication.$barcode.options" ></barcode-img>-->
-        <!--</div>-->
         <div class="non-printable">
           <hr class="hr-xs">
 
@@ -120,8 +109,6 @@
           <div>
             <facebook data-url="publication.$seo.url"></facebook>
           </div>
-
-
 
         </div>
 

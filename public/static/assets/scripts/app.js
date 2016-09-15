@@ -36,7 +36,7 @@ angular.module('app',[
     $scope.$watch(function(){
       return $location.path();
     },function(){
-      $scope.path = $location.path();
+      $scope.locationPath = $location.path();
     });
 
     $scope.logout = function() { FireAuth.$signOut(); };

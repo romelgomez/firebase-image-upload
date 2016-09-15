@@ -33,8 +33,6 @@ publicationsModule
         },
         link : function($scope) {
 
-          $scope.locationPath = $location.path();
-
           $scope.profile  = typeof $scope.profile !== 'undefined' ? $scope.profile : {};
           $scope.editMode = typeof $scope.editMode !== 'undefined' ? $scope.editMode : false;
 
@@ -494,20 +492,6 @@ publicationsModule
           }
 
 
-          /** Los diferentes parametros de busqueda
-           *  facetas
-           *   categorías
-           *   locaciones
-           *   personalizadas
-           *
-           *  índice
-           *
-           *  pagina
-           *
-           *  búsqueda
-           */
-
-
           /**
            * @Description  set all query to default.
            * @return {Undefined}
@@ -542,24 +526,6 @@ publicationsModule
                 notificationService.error(err);
               })
           };
-
-          $scope._parseURL = function(){
-            console.log('$location.search()', $location.search());
-
-            var searchObj = $location.search();
-
-            console.log('typeof searchObj.c', typeof searchObj.c);
-            console.log('typeof searchObj.l', typeof searchObj.l);
-            console.log('typeof searchObj[\'page\']', typeof searchObj['page']);
-            console.log('typeof searchObj[\'job-type\']', typeof searchObj['job-type']);
-            console.log('typeof searchObj[\'job-has-bonus\']', typeof searchObj['job-has-bonus']);
-            console.log('routeParameters.locations(searchObj.l)', routeParameters.locations[searchObj.l]);
-
-            //$location.search({c: ['jobs', 'mecanico']})
-            //$location.search({c: ['jobs', 'mecanico', 'doctor']})
-            //$location.search({c: ['jobs', 'mecanico']})
-          };
-
 
           function getCurrentURLState(facetsNames){
             var currentURLState = {};
@@ -906,25 +872,6 @@ publicationsModule
             });
           }
 
-          /**
-           * MAIN FUNCTION
-           */
-          $q.all($scope.lording.promises)
-            .then(function () {
-
-              //We need call this before set the watcher in the search query string
-              var searchObj = $location.search();
-              if(typeof searchObj.q === 'string'){
-                $scope.algolia.queryString = searchObj.q;
-              }
-
-              $scope.algolia.queryStringWatcherUnregister = queryStringWatcher(true);
-
-            }, function(){
-              notificationService.error('This action cannot be completed.');
-              $location.path('/');
-            });
-
           $scope.viewPublication = function (publicationId) {
             $location.path('/view-publication/'+publicationId);
           };
@@ -954,6 +901,35 @@ publicationsModule
 
             }
           };
+
+          function main(){
+            $scope.$watch(function(){
+              return $location.path();
+            },function(){
+              $scope.locationPath = $location.path();
+            });
+
+            /**
+             * MAIN FUNCTION
+             */
+            $q.all($scope.lording.promises)
+              .then(function () {
+
+                //We need call this before set the watcher in the search query string
+                var searchObj = $location.search();
+                if(typeof searchObj.q === 'string'){
+                  $scope.algolia.queryString = searchObj.q;
+                }
+
+                $scope.algolia.queryStringWatcherUnregister = queryStringWatcher(true);
+
+              }, function(){
+                notificationService.error('This action cannot be completed.');
+                $location.path('/');
+              });
+          }
+
+          main();
 
         }
       };
