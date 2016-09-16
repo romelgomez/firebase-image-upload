@@ -1,12 +1,13 @@
 <div>
 
+  <!-- Any Type Publications Banner -->
   <div ng-show="locationPath === '/'" style="margin-bottom: 5px;">
     <a ng-click="setRootCategory(null)" style="display: inline-block;">
       <div class="hovereffect">
 
         <picture>
-          <source type="image/webp" srcset="https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471975218/publications-banner-2_nw8ung.webp">
-          <img src="https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471975218/publications-banner-2_nw8ung.jpg" class="img-responsive">
+          <source type="image/webp" srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.anyTypePublicationsBanner.webp}}">
+          <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.anyTypePublicationsBanner.jpg}}" class="img-responsive">
         </picture>
 
         <div class="overlay"></div>
@@ -16,6 +17,7 @@
     <hr class="hr-xs" style="margin-top: 5px;">
   </div>
 
+  <!-- Search input -->
   <div ng-show="!(algolia.res.query === '' && algolia.res.nbHits === 0)">
     <form name="algoliaForm" novalidate="" ng-submit="submit()">
       <div class="input-group">
@@ -29,39 +31,50 @@
     <hr class="hr-xs">
   </div>
 
+  <!-- Filters-Facets responsive modal  -->
   <div ng-show="algolia.res.nbHits > 0" class="visible-xs-block visible-sm-block" style="margin-bottom: 10px;">
     <button type="button" ng-click="responsiveFilters('lg')" class="btn btn-default btn-block responsive-width">Filter by categories, locations, and custom properties</button>
   </div>
 
   <div>
 
+    <!-- Categories selection manifest -->
     <ol ng-show="algolia.faceting.currentFacets.categories.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
-      <li ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('categories')" class="a-link" style="color: #ff0000"><span class="glyphicon glyphicon-book" aria-hidden="true"></span> <span >Reset Categories</span>  </li>
+      <li ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('categories')" class="a-link remove"><span class="glyphicon glyphicon-book" aria-hidden="true"></span> <span >Reset Categories</span>  </li>
       <li ng-repeat="facet in algolia.faceting.currentFacets.categories" ng-click="algolia.faceting.treeFacetsMethods.removeFacet('categories', facet, $index)" ng-class="{'a-link': !$last}"> <span ng-bind="facet.name | capitalizeFirstChar"></span> </li>
     </ol>
 
+    <!-- Locations selection manifest -->
     <ol ng-show="algolia.faceting.currentFacets.locations.length > 0" class="breadcrumb" style="margin-bottom: 7px;">
-      <li ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('locations')" class="a-link" style="color: #ff0000"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> <span >Reset Locations</span> </li>
+      <li ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('locations')" class="a-link remove"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> <span >Reset Locations</span> </li>
       <li ng-repeat="facet in algolia.faceting.currentFacets.locations" ng-click="algolia.faceting.treeFacetsMethods.removeFacet('locations', facet, $index)" ng-class="{'a-link': !$last}"> <span ng-bind="facet.name | capitalizeFirstChar"></span> </li>
     </ol>
 
+    <!-- No publications Info for the query string  -->
     <div ng-show="(algolia.res.query !== '' && algolia.res.nbHits === 0)">
       <div class="alert alert-info" role="alert" style="margin-bottom: 10px;">There is not publications for this query: <b><span ng-bind="algolia.res.query"></span></b>, <a href="/new-publication">create new one here!</a>  </div>
       <hr class="hr-xs">
     </div>
 
+    <!-- No publications Info for the account-->
     <div ng-show="(algolia.res.query === '' && algolia.res.nbHits === 0)" >
       <div class="alert alert-info" role="alert" style="margin-bottom: 10px;">There is not publications, <a href="/new-publication">create new one here!</a>  </div>
       <hr class="hr-xs">
     </div>
 
+    <!-- Count of pages, total hits manifest -->
     <pre ng-show="algolia.res.nbPages > 0" style="margin-bottom: 10px"><b>Page:</b> <span ng-bind="algolia.pagination.currentPage"></span> of <span ng-bind="algolia.res.nbPages"></span> | <b>Hits:</b> <span ng-bind="algolia.res.nbHits"></span></pre>
 
+    <!-- Pagination -->
     <ul ng-click="algolia.pagination.pageChanged(false)" uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.req.hitsPerPage"  total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.req.hitsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></ul>
 
+
+    <!-- Publications and Sidebar filter-facets -->
     <div ng-show="algolia.res.nbHits > 0" >
       <hr class="hr-xs">
       <div class="row">
+
+        <!-- Filter facets -->
         <div class="hidden-xs hidden-sm col-md-3 col-lg-3">
 
           <div class="panel panel-default" style="margin-bottom: 0;">
@@ -71,25 +84,25 @@
             </div>
             <div class="list-group" ng-show="algolia.faceting.currentFacets.jobType.length > 0 || algolia.faceting.currentFacets.jobRecruiterType.length > 0 || algolia.faceting.currentFacets.jobSalaryType.length > 0 || algolia.faceting.currentFacets.reHomeStatus.length > 0 || algolia.faceting.currentFacets.reHomeStatus.length > 0 || algolia.faceting.currentFacets.reHomeFor.length > 0 || algolia.faceting.currentFacets.jobHasBenefits.length > 0 || algolia.faceting.currentFacets.jobHasBonus.length > 0">
               <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobType')"  >
-                <span style="color: #ff0000" class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Job type: <span ng-bind="algolia.faceting.currentFacets.jobType[0].name"></span>
+                <span class="glyphicon glyphicon-remove-sign remove" aria-hidden="true"></span> Job type: <span ng-bind="algolia.faceting.currentFacets.jobType[0].name"></span>
               </button>
               <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobRecruiterType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobRecruiterType')"  >
-                <span style="color: #ff0000" class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Recruiter Type: <span ng-bind="algolia.faceting.currentFacets.jobRecruiterType[0].name"></span>
+                <span class="glyphicon glyphicon-remove-sign remove" aria-hidden="true"></span> Recruiter Type: <span ng-bind="algolia.faceting.currentFacets.jobRecruiterType[0].name"></span>
               </button>
               <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobHasBenefits.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobHasBenefits')"  >
-                <span style="color: #ff0000" class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> The job has benefits
+                <span class="glyphicon glyphicon-remove-sign remove" aria-hidden="true"></span> The job has benefits
               </button>
               <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobHasBonus.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobHasBonus')"  >
-                <span style="color: #ff0000" class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> The job has bonus
+                <span class="glyphicon glyphicon-remove-sign remove" aria-hidden="true"></span> The job has bonus
               </button>
               <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobSalaryType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobSalaryType')"  >
-                <span style="color: #ff0000" class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Salary Type: <span ng-bind="algolia.faceting.currentFacets.jobSalaryType[0].name"></span>
+                <span class="glyphicon glyphicon-remove-sign remove" aria-hidden="true"></span> Salary Type: <span ng-bind="algolia.faceting.currentFacets.jobSalaryType[0].name"></span>
               </button>
               <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.reHomeStatus.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeStatus')"  >
-                <span style="color: #ff0000" class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Home Status: <span ng-bind="algolia.faceting.currentFacets.reHomeStatus[0].name"></span>
+                <span class="glyphicon glyphicon-remove-sign remove" aria-hidden="true"></span> Home Status: <span ng-bind="algolia.faceting.currentFacets.reHomeStatus[0].name"></span>
               </button>
               <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.reHomeFor.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeFor')"  >
-                <span style="color: #ff0000" class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Home for: <span ng-bind="algolia.faceting.currentFacets.reHomeFor[0].name"></span>
+                <span class="glyphicon glyphicon-remove-sign remove" aria-hidden="true"></span> Home for: <span ng-bind="algolia.faceting.currentFacets.reHomeFor[0].name"></span>
               </button>
             </div>
 
@@ -177,8 +190,8 @@
                   <div class="hovereffect">
 
                     <picture>
-                      <source type="image/webp" srcset="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471980275/jobs-banner-4_narvua.webp">
-                      <img src="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471980275/jobs-banner-4_narvua.jpg" class="img-responsive" alt="Jobs">
+                      <source type="image/webp" srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.shortcutsBanners.jobs.webp}}">
+                      <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.shortcutsBanners.jobs.jpg}}" class="img-responsive" alt="Jobs">
                     </picture>
 
                     <div class="overlay"></div>
@@ -190,8 +203,8 @@
                   <div class="hovereffect">
 
                     <picture>
-                      <source type="image/webp" srcset="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471982509/transport-banner-2_jl6n1a.webp">
-                      <img src="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471982509/transport-banner-2_jl6n1a.jpg" class="img-responsive" alt="Transport">
+                      <source type="image/webp" srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.shortcutsBanners.transport.webp}}">
+                      <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.shortcutsBanners.transport.jpg}}" class="img-responsive" alt="Transport">
                     </picture>
 
                     <div class="overlay"></div>
@@ -203,8 +216,8 @@
                   <div class="hovereffect">
 
                     <picture>
-                      <source type="image/webp" srcset="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471983285/real-state-banner_syinid.webp">
-                      <img src="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471983285/real-state-banner_syinid.jpg" class="img-responsive" alt="Transport">
+                      <source type="image/webp" srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.shortcutsBanners.realState.webp}}">
+                      <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.shortcutsBanners.realState.jpg}}" class="img-responsive" alt="Transport">
                     </picture>
 
                     <div class="overlay"></div>
@@ -216,8 +229,8 @@
                   <div class="hovereffect">
 
                     <picture>
-                      <source type="image/webp" srcset="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471986618/services-banner_g45sqe.webp">
-                      <img src="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471986618/services-banner_g45sqe.jpg" class="img-responsive" alt="Transport">
+                      <source type="image/webp" srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.shortcutsBanners.services.webp}}">
+                      <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.shortcutsBanners.services.jpg}}" class="img-responsive" alt="Transport">
                     </picture>
 
                     <div class="overlay"></div>
@@ -229,8 +242,8 @@
                   <div class="hovereffect">
 
                     <picture>
-                      <source type="image/webp" srcset="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471991348/site/marketplace-banner-3_bhqftd.webp">
-                      <img src="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471991348/site/marketplace-banner-3_bhqftd.jpg" class="img-responsive" alt="Transport">
+                      <source type="image/webp" srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.shortcutsBanners.marketplace.webp}}">
+                      <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.shortcutsBanners.marketplace.jpg}}" class="img-responsive" alt="Transport">
                     </picture>
 
                     <div class="overlay"></div>
@@ -243,6 +256,8 @@
 
 
         </div>
+
+        <!-- Publications -->
         <div class="col-xs-12 col-md-9 col-lg-9">
 
           <div ng-show="algolia.res.nbHits > 1 && algolia.faceting.currentFacets.categories.length > 0" class="well well-sm" style="margin-bottom: 10px;">
@@ -253,13 +268,15 @@
           </div>
 
           <div>
-            <!-- to see the links to edit or view -->
+            <!-- Only Visible in account page as edit mode -->
             <div ng-if="editMode">
               <div class="panel panel-default" style="margin-bottom: 0;">
                 <ul class="list-group">
                   <li class="list-group-item" ng-repeat="publication in algolia.res.hits">
                     <!-- publication -->
                     <div>
+
+                      <!-- Title -->
                       <div class="row">
                         <div class="col-xs-12">
                           <a ng-href="/v/{{publication.categories | lodashJoin:' ' | slug }}-in-{{publication.locations | lodashJoin:' ' | slug }}/{{publication.objectID}}/{{publication.title | slug}}.html">
@@ -272,19 +289,21 @@
                         </div>
                       </div>
 
+                      <!-- Feature Image an details of the publication - only if the publications type is: ['Marketplace', 'Real Estate', 'Transport', 'Services'] -->
                       <div ng-if="(publication.department === 'Marketplace') || (publication.department === 'Real Estate') || (publication.department === 'Transport') || (publication.department === 'Services')">
                         <div class="row">
+                          <!-- Feature Image -->
                           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                             <a ng-href="/v/{{publication.categories | lodashJoin:' ' | slug }}-in-{{publication.locations | lodashJoin:' ' | slug }}/{{publication.objectID}}/{{publication.title | slug}}.html">
 
                               <picture ng-show="sizeOf(publication.images) === 0">
-                                <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:low,w_700/noImageAvailableBig_lxxmuu.webp">
-                                <img src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:low,w_700/noImageAvailableBig_lxxmuu.jpg" class="img-responsive img-thumbnail">
+                                <source type="image/webp" ng-srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.webp}}">
+                                <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.jpg}}" class="img-responsive img-thumbnail">
                               </picture>
 
                               <picture ng-show="sizeOf(publication.images) > 0">
-                                <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
-                                <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
+                                <source type="image/webp" ng-srcset="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
+                                <img ng-src="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
                               </picture>
 
                             </a>
@@ -299,9 +318,11 @@
                                   <span ng-bind="publication.price | currency : '£' : 2"></span>
                                 </h4>
                               </li>
+                              <!-- Home For Sell or Rent - only if the publications type is: ['Real Estate']-->
                               <li ng-if="publication.department === 'Real Estate'">
                                 <span class="glyphicon glyphicon-home" aria-hidden="true"></span> <b><span ng-bind="publication.reHomeStatus"></span> Home for <span ng-bind="publication.reHomeFor"></span></b>
                               </li>
+                              <!-- Location of the Publication -->
                               <li>
                                 <h5>
                                   <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
@@ -356,13 +377,13 @@
                           <div class="hidden-xs hidden-sm col-md-2 col-lg-2">
 
                             <picture ng-show="sizeOf(publication.images) === 0">
-                              <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:low,w_250/noImageAvailableBig_lxxmuu.webp">
-                              <img src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:low,w_250/noImageAvailableBig_lxxmuu.jpg" class="img-responsive img-thumbnail">
+                              <source type="image/webp" ng-srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.webp}}">
+                              <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.jpg}}" class="img-responsive img-thumbnail">
                             </picture>
 
                             <picture ng-show="sizeOf(publication.images) > 0">
-                              <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:low,w_250/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
-                              <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:low,w_250/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
+                              <source type="image/webp" ng-srcset="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_150,q_auto:low,w_250/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
+                              <img ng-src="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_150,q_auto:low,w_250/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
                             </picture>
 
                           </div>
@@ -402,13 +423,13 @@
                           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8" >
 
                             <picture ng-show="sizeOf(publication.images) === 0">
-                              <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:low,w_700/noImageAvailableBig_lxxmuu.webp">
-                              <img src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:low,w_700/noImageAvailableBig_lxxmuu.jpg" class="img-responsive img-thumbnail">
+                              <source type="image/webp" ng-srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.webp}}">
+                              <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.jpg}}" class="img-responsive img-thumbnail">
                             </picture>
 
                             <picture ng-show="sizeOf(publication.images) > 0">
-                              <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
-                              <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
+                              <source type="image/webp" ng-srcset="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
+                              <img ng-src="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
                             </picture>
 
                           </div>
@@ -470,13 +491,13 @@
                           <div class="hidden-xs hidden-sm col-md-2 col-lg-2">
 
                             <picture ng-show="sizeOf(publication.images) === 0">
-                              <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:low,w_250/noImageAvailableBig_lxxmuu.webp">
-                              <img src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:low,w_250/noImageAvailableBig_lxxmuu.jpg" class="img-responsive img-thumbnail">
+                              <source type="image/webp" ng-srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.webp}}">
+                              <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.jpg}}" class="img-responsive img-thumbnail">
                             </picture>
 
                             <picture ng-show="sizeOf(publication.images) > 0">
-                              <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:good,w_250/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
-                              <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:good,w_250/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
+                              <source type="image/webp" ng-srcset="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_150,q_auto:good,w_250/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
+                              <img ng-src="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_150,q_auto:good,w_250/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
                             </picture>
 
                           </div>
@@ -502,136 +523,33 @@
       <hr class="hr-xs">
     </div>
 
-    <div class="pull-left visible-md-block visible-lg-block">
-      With <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> from
 
-      <picture>
-        <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:low,w_70/v1472131370/Algolia_logo_bg-white_jn2n2w.webp">
-        <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:low,w_70/v1472131370/Algolia_logo_bg-white_jn2n2w.png" class="img-responsive" style="height: 20px; display: inline-block;" >
-      </picture>
-
-    </div>
-
-    <div class="pull-right">
-      <ul ng-click="algolia.pagination.pageChanged(true)" uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.req.hitsPerPage"  total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.req.hitsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></ul>
-      <div class="visible-xs-block visible-sm-block" style="margin-top: 10px; text-align: right;">
+    <!-- Algolia Logo -->
+    <div>
+      <div class="pull-left visible-md-block visible-lg-block">
         With <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> from
+        <a href="https://www.algolia.com/" target="_blank">
+          <picture>
+            <source type="image/webp" ng-srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.algoliaLogo.webp}}">
+            <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.algoliaLogo.jpg}}" class="img-responsive" style="height: 20px; display: inline-block;" >
+          </picture>
+        </a>
+      </div>
 
-        <picture>
-          <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:low,w_70/v1472131370/Algolia_logo_bg-white_jn2n2w.webp">
-          <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:low,w_70/v1472131370/Algolia_logo_bg-white_jn2n2w.png" class="img-responsive" style="height: 20px; display: inline-block;" >
-        </picture>
-
+      <div class="pull-right">
+        <ul ng-click="algolia.pagination.pageChanged(true)" uib-pagination style="margin-bottom: -5px; margin-top: 0;" ng-show="algolia.res.nbHits > algolia.req.hitsPerPage"  total-items="algolia.res.nbHits" ng-model="algolia.pagination.currentPage" max-size="algolia.pagination.maxSize" items-per-page="algolia.req.hitsPerPage" class="pagination-sm" boundary-links="algolia.res.nbPages > algolia.pagination.maxSize" rotate="false" num-pages="algolia.pagination.numPages"></ul>
+        <div class="visible-xs-block visible-sm-block" style="margin-top: 10px; text-align: right;">
+          With <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> from
+          <a href="https://www.algolia.com/" target="_blank">
+            <picture>
+              <source type="image/webp" ng-srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.algoliaLogo.webp}}">
+              <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.algoliaLogo.jpg}}" class="img-responsive" style="height: 20px; display: inline-block;" >
+            </picture>
+          </a>
+        </div>
       </div>
     </div>
 
 
   </div>
 </div>
-
-<script type="text/ng-template" id="responsiveFiltersModal.html">
-  <div class="modal-body">
-
-    <div class="panel panel-default" style="margin-bottom: 0;">
-
-      <div class="panel-heading" ng-show="algolia.faceting.currentFacets.jobType.length > 0 || algolia.faceting.currentFacets.jobRecruiterType.length > 0 || algolia.faceting.currentFacets.jobSalaryType.length > 0 || algolia.faceting.currentFacets.reHomeStatus.length > 0 || algolia.faceting.currentFacets.reHomeStatus.length > 0 || algolia.faceting.currentFacets.reHomeFor.length > 0 || algolia.faceting.currentFacets.jobHasBenefits.length > 0 || algolia.faceting.currentFacets.jobHasBonus.length > 0">
-        <span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Current Filters
-      </div>
-      <div class="list-group" ng-show="algolia.faceting.currentFacets.jobType.length > 0 || algolia.faceting.currentFacets.jobRecruiterType.length > 0 || algolia.faceting.currentFacets.jobSalaryType.length > 0 || algolia.faceting.currentFacets.reHomeStatus.length > 0 || algolia.faceting.currentFacets.reHomeStatus.length > 0 || algolia.faceting.currentFacets.reHomeFor.length > 0 || algolia.faceting.currentFacets.jobHasBenefits.length > 0 || algolia.faceting.currentFacets.jobHasBonus.length > 0">
-        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobType')"  >
-          <span class="glyphicon glyphicon-remove remove" aria-hidden="true"></span> <span ng-bind="'Job type: ' + algolia.faceting.currentFacets.jobType[0].name"></span>
-        </button>
-        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobRecruiterType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobRecruiterType')"  >
-          <span class="glyphicon glyphicon-remove remove" aria-hidden="true"></span> <span ng-bind="'Recruiter Type: ' + algolia.faceting.currentFacets.jobRecruiterType[0].name"></span>
-        </button>
-        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobHasBenefits.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobHasBenefits')"  >
-          <span class="glyphicon glyphicon-remove remove" aria-hidden="true"></span> The job has benefits
-        </button>
-        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobHasBonus.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobHasBonus')"  >
-          <span class="glyphicon glyphicon-remove remove" aria-hidden="true"></span> The job has bonus
-        </button>
-        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.jobSalaryType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobSalaryType')"  >
-          <span class="glyphicon glyphicon-remove remove" aria-hidden="true"></span> <span ng-bind="'Salary Type: '+ algolia.faceting.currentFacets.jobSalaryType[0].name"></span>
-        </button>
-        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.reHomeStatus.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeStatus')"  >
-          <span class="glyphicon glyphicon-remove remove" aria-hidden="true"></span> <span ng-bind="'Home Status: ' + algolia.faceting.currentFacets.reHomeStatus[0].name"></span>
-        </button>
-        <button type="button" class="list-group-item" ng-show="algolia.faceting.currentFacets.reHomeFor.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeFor')"  >
-          <span class="glyphicon glyphicon-remove remove" aria-hidden="true"></span> <span ng-bind="'Home for: ' + algolia.faceting.currentFacets.reHomeFor[0].name"></span>
-        </button>
-      </div>
-
-      <div class="panel-heading"><span class="glyphicon glyphicon-book" aria-hidden="true"></span> Categories <button ng-show="algolia.faceting.currentFacets.categories.length > 0" ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('categories')" type="button" style="padding-bottom: 0; padding-top: 0; color: #ff0000;" class="btn btn-link">Reset</button></div>
-      <div class="list-group">
-        <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('categories', facet, true);" ng-repeat="facet in algolia.faceting.facetsAvailables.categories" >
-          <span style="color: #286090" class="glyphicon" ng-class="{'glyphicon-shopping-cart': (facet.name === 'Marketplace'),'glyphicon-briefcase': (facet.name === 'Jobs'),'glyphicon-home': (facet.name === 'Real Estate'),'glyphicon-plane': (facet.name === 'Transport'),'glyphicon-wrench': (facet.name === 'Services')}"></span>
-          <span ng-bind="facet.name | capitalizeFirstChar"></span> - <span class="badge" style="float: inherit;"><span ng-bind="facet.count"></span></span>
-        </button>
-      </div>
-
-      <div class="panel-heading"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Locations <button ng-show="algolia.faceting.currentFacets.locations.length > 0" ng-click="algolia.faceting.treeFacetsMethods.removeAllFacet('locations')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
-      <div class="list-group">
-        <button type="button" class="list-group-item" ng-click="algolia.faceting.treeFacetsMethods.addFacet('locations', facet, true);" ng-repeat="facet in algolia.faceting.facetsAvailables.locations" >
-          <span ng-bind="facet.name | capitalizeFirstChar"></span> - <span class="badge" style="float: inherit;"><span ng-bind="facet.count"></span></span>
-        </button>
-      </div>
-
-    </div>
-
-    <!-- Jobs Facets -->
-    <div ng-if="algolia.res.facets.jobType && sizeOf(algolia.res.facets.jobType) > 1 && algolia.faceting.currentFacets.categories.length > 0 && (algolia.faceting.currentFacets.categories[0].name === 'Jobs')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
-      <div class="panel-heading"><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Job type <button ng-show="algolia.faceting.currentFacets.jobType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobType')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
-      <div class="list-group">
-        <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobType',facetName, true);" ng-repeat="(facetName , count) in algolia.res.facets.jobType" >
-          <span ng-bind="facetName | capitalizeFirstChar"></span> - <span class="badge" style="float: inherit;"><span ng-bind="count"></span></span>
-        </button>
-      </div>
-    </div>
-
-    <div ng-if="algolia.res.facets.jobRecruiterType && sizeOf(algolia.res.facets.jobRecruiterType) > 1 && algolia.faceting.currentFacets.categories.length > 0 && (algolia.faceting.currentFacets.categories[0].name === 'Jobs')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
-      <div class="panel-heading"><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Recruiter Type <button ng-show="algolia.faceting.currentFacets.jobRecruiterType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobRecruiterType')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
-      <div class="list-group">
-        <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobRecruiterType',facetName, true);" ng-repeat="(facetName , count) in algolia.res.facets.jobRecruiterType" >
-          <span ng-bind="facetName | capitalizeFirstChar"></span> - <span class="badge" style="float: inherit;"><span ng-bind="count"></span></span>
-        </button>
-      </div>
-    </div>
-
-    <div ng-if="algolia.res.facets.jobSalaryType && sizeOf(algolia.res.facets.jobSalaryType) > 1 && algolia.faceting.currentFacets.categories.length > 0  && (algolia.faceting.currentFacets.categories[0].name === 'Jobs')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
-      <div class="panel-heading"><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Salary Type <button ng-show="algolia.faceting.currentFacets.jobSalaryType.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('jobSalaryType')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
-      <div class="list-group">
-        <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('jobSalaryType',facetName, true);" ng-repeat="(facetName , count) in algolia.res.facets.jobSalaryType" >
-          <span ng-bind="facetName | capitalizeFirstChar"></span> - <span class="badge" style="float: inherit;"><span ng-bind="count"></span></span>
-        </button>
-      </div>
-    </div>
-
-    <button ng-if="algolia.res.facets.jobHasBenefits.true && sizeOf(algolia.res.facets.jobHasBenefits) > 1 && algolia.faceting.currentFacets.categories.length > 0  && (algolia.faceting.currentFacets.categories[0].name === 'Jobs')" ng-click="algolia.faceting.facetsMethods.addFacet('jobHasBenefits', true, true);" class="btn btn-default btn-block" type="submit" style="margin-top: 10px; text-align: left;">The job has benefits - <span class="badge" style="float: inherit; background-color: #777;" ng-bind="algolia.res.facets.jobHasBenefits.true"></span></button>
-
-    <button ng-if="algolia.res.facets.jobHasBonus.true && sizeOf(algolia.res.facets.jobHasBonus) > 1 && algolia.faceting.currentFacets.categories.length > 0  && (algolia.faceting.currentFacets.categories[0].name === 'Jobs')" ng-click="algolia.faceting.facetsMethods.addFacet('jobHasBonus',true, true);" class="btn btn-default btn-block" type="submit" style="margin-top: 10px; text-align: left;">The job has bonus - <span class="badge" style="float: inherit; background-color: #777;" ng-bind="algolia.res.facets.jobHasBonus.true"></span></button>
-
-
-    <!-- Real State Facets -->
-    <div ng-if="algolia.res.facets.reHomeStatus && sizeOf(algolia.res.facets.reHomeStatus) > 1 && algolia.faceting.currentFacets.categories.length > 0 && (algolia.faceting.currentFacets.categories[0].name === 'Real Estate')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
-      <div class="panel-heading"><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Home Status <button ng-show="algolia.faceting.currentFacets.reHomeStatus.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeStatus')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
-      <div class="list-group">
-        <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('reHomeStatus',facetName, true);" ng-repeat="(facetName , count) in algolia.res.facets.reHomeStatus" >
-          <span ng-bind="facetName | capitalizeFirstChar"></span> - <span class="badge" style="float: inherit;"><span ng-bind="count"></span></span>
-        </button>
-      </div>
-    </div>
-
-    <div ng-if="algolia.res.facets.reHomeFor && sizeOf(algolia.res.facets.reHomeFor) > 1 && algolia.faceting.currentFacets.categories.length > 0 && (algolia.faceting.currentFacets.categories[0].name === 'Real Estate')" class="panel panel-default"  style="margin-bottom: 0; margin-top: 10px;">
-      <div class="panel-heading"><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Home for <button ng-show="algolia.faceting.currentFacets.reHomeFor.length > 0" ng-click="algolia.faceting.facetsMethods.removeFacet('reHomeFor')" type="button" style="padding-bottom: 0; padding-top: 0; color: red;" class="btn btn-link">Reset</button></div>
-      <div class="list-group">
-        <button type="button" class="list-group-item" ng-click="algolia.faceting.facetsMethods.addFacet('reHomeFor',facetName, true);" ng-repeat="(facetName , count) in algolia.res.facets.reHomeFor" >
-          <span ng-bind="facetName | capitalizeFirstChar"></span> - <span class="badge" style="float: inherit;"><span ng-bind="count"></span></span>
-        </button>
-      </div>
-    </div>
-
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancel()">Close</button>
-  </div>
-</script>

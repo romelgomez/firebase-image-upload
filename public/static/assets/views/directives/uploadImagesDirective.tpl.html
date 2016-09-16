@@ -70,17 +70,18 @@
 
   <div ng-show="images.length > 0">
 
+    <!-- Images info -->
     <ul class="list-group" style="margin-bottom: 10px;">
       <li class="list-group-item">
-        <span class="badge">{{imagesInfo().inQueue}}</span>
+        <span class="badge"><span ng-bind="imagesInfo().inQueue"></span></span>
         Images in queue to upload:
       </li>
       <li class="list-group-item">
-        <span class="badge">{{imagesInfo().isUploaded}}</span>
+        <span class="badge"><span ng-bind="imagesInfo().isUploaded"></span></span>
         Images in server:
       </li>
       <li class="list-group-item">
-        <span class="badge">{{imagesInfo().invalid}}</span>
+        <span class="badge"><span ng-bind="imagesInfo().invalid"></span></span>
         Invalid images:
       </li>
     </ul>
@@ -95,51 +96,44 @@
 
             <div ng-switch="value.blobUrl !== undefined">
               <div ng-switch-when="true">
-
                 <picture>
-                  <source type="image/webp" ng-srcset="{{value.blobUrl || 'https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.webp'}}">
-                  <img ng-src="{{value.blobUrl || 'https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.jpg'}}" class="img-thumbnail img-preview img-responsive" alt="{{value.name}}">
+                  <source type="image/webp" ng-srcset="{{value.blobUrl || CLOUDINARY_SITE_DEFAULT_IMAGES.uploadImagesDirective.loading.webp}}">
+                  <img ng-src="{{value.blobUrl || CLOUDINARY_SITE_DEFAULT_IMAGES.uploadImagesDirective.loading.jpg}}" class="img-thumbnail img-preview img-responsive" alt="{{value.name}}">
                 </picture>
-
               </div>
               <div ng-switch-when="false">
 
                 <div ng-if="value.$error !== undefined">
-
                   <picture>
-                    <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.webp">
-                    <img ng-src="https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.jpg" class="img-thumbnail img-preview img-responsive" alt="{{value.name}}">
+                    <source type="image/webp" ng-srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.uploadImagesDirective.invalidImage.webp}}">
+                    <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.uploadImagesDirective.invalidImage.jpg}}" class="img-thumbnail img-preview img-responsive" alt="{{value.name}}">
                   </picture>
-
                 </div>
 
                 <div ng-if="value.$id !== undefined">
-
                   <picture>
-                    <source type="image/webp" ng-srcset="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:best,w_250/{{value.$id}}.webp">
-                    <img ng-src="https://res.cloudinary.com/berlin/image/upload/c_fill,h_150,q_auto:best,w_250/{{value.$id}}.jpg" class="inline img-thumbnail img-preview img-responsive">
+                    <source type="image/webp" ng-srcset="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_150,q_auto:best,w_250/{{value.$id}}.webp">
+                    <img ng-src="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_150,q_auto:best,w_250/{{value.$id}}.jpg" class="inline img-thumbnail img-preview img-responsive">
                   </picture>
-
-
                 </div>
 
               </div>
             </div>
 
-            <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.isUploaded)}">{{value.isUploaded ? 'In server' : 'In queue' }}</span></div>
+            <div style="margin-bottom: 5px;"><span class="label label-default" ng-class="{'label-primary':(value.isUploaded)}"><span ng-bind="value.isUploaded ? 'In server' : 'In queue'"></span></span></div>
             <div style="margin-bottom: 5px;"><span ng-show="featuredImageId === value.$id" class="label label-info">Primary image</span></div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
             <div class="file-name">
-              <span class="hidden-md hidden-lg"><b>Name: </b> {{value.name | limitTo: 20 }}{{value.name.length > 20 ? ' ...' : ''}} </span>
-              <span class="hidden-xs hidden-sm">{{value.name}}</span>
+              <span class="hidden-md hidden-lg"><b>Name: </b> <span ng-bind="value.name | limitTo: 20 "></span> <span ng-bind="value.name.length > 20 ? ' ...' : ''"></span> </span>
+              <span class="hidden-xs hidden-sm"><span ng-bind="value.name"></span></span>
             </div>
             <hr class="hidden-xs hidden-sm" style="margin-top: 5px; margin-bottom: 5px;">
             <div>
 
               <div ng-show="!value.$error">
-                <div><b>Size: </b>{{ ' ' + (value.size | bytes)}}</div>
-                <uib-progressbar ng-show="value.isUploaded === undefined" class="progress-striped active" value="value.progress ? value.progress : 0" type="{{  value.progress < 100 ? 'info' : 'success' }}">{{value.progress}}%</uib-progressbar>
+                <div><b>Size: </b><span ng-bind="' ' + (value.size | bytes)"></span> </div>
+                <uib-progressbar ng-show="value.isUploaded === undefined" class="progress-striped active" value="value.progress ? value.progress : 0" type="{{  value.progress < 100 ? 'info' : 'success'}}"><span ng-bind="value.progress"></span>%</uib-progressbar>
               </div>
 
               <div ng-show="value.$error" class="bg-warning" style="padding: 7px;">
@@ -154,7 +148,7 @@
                           <span ng-switch-default>Undefined</span>
                         </span>
                 </div>
-                <div style="margin-bottom: 3px"><b>Size: </b> {{' ' + (value.size | bytes)}}</div>
+                <div style="margin-bottom: 3px"><b>Size: </b> <span ng-bind="' ' + (value.size | bytes)"></span></div>
               </div>
 
             </div>

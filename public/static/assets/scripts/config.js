@@ -23,6 +23,52 @@ angular.module('siteConfig',[])
     accountProfileImage:{
       jpg: 'https://res.cloudinary.com/berlin/image/upload/c_scale,w_400/v1471961823/unnamedPerson_diuaor.jpg',
       webp: 'https://res.cloudinary.com/berlin/image/upload/c_scale,w_400/v1471961823/unnamedPerson_diuaor.webp'
+    },
+    uploadImagesDirective:{
+      loading:{
+        jpg:'https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.jpg',
+        webp:'https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/loading_esicpm.webp'
+      },
+      invalidImage:{
+        jpg:'https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.jpg',
+        webp:'https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471973179/invalid_image_azvsxw.webp'
+      }
+    },
+    publicationsListDirective:{
+      anyTypePublicationsBanner:{
+        jpg:'https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471975218/publications-banner-2_nw8ung.jpg',
+        webp:'https://res.cloudinary.com/berlin/image/upload/q_auto:low/v1471975218/publications-banner-2_nw8ung.webp'
+      },
+      shortcutsBanners: {
+        jobs:{
+          jpg:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471980275/jobs-banner-4_narvua.jpg',
+          webp:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471980275/jobs-banner-4_narvua.webp'
+        },
+        transport:{
+          jpg:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471982509/transport-banner-2_jl6n1a.jpg',
+          webp:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471982509/transport-banner-2_jl6n1a.webp'
+        },
+        realState:{
+          jpg:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471983285/real-state-banner_syinid.jpg',
+          webp:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471983285/real-state-banner_syinid.webp'
+        },
+        services:{
+          jpg:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471986618/services-banner_g45sqe.jpg',
+          webp:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471986618/services-banner_g45sqe.webp'
+        },
+        marketplace:{
+          jpg:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471991348/site/marketplace-banner-3_bhqftd.jpg',
+          webp:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:eco,w_300/v1471991348/site/marketplace-banner-3_bhqftd.webp'
+        }
+      },
+      noImageAvailableBig:{
+        jpg:'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:low,w_700/noImageAvailableBig_lxxmuu.jpg',
+        webp:'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:low,w_700/noImageAvailableBig_lxxmuu.webp'
+      },
+      algoliaLogo:{
+        jpg:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:low,w_70/v1472131370/Algolia_logo_bg-white_jn2n2w.jpg',
+        webp:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:low,w_70/v1472131370/Algolia_logo_bg-white_jn2n2w.webp'
+      }
     }
   })
   .constant('ALGOLIA_APPLICATION_ID', 'FU6V8V2Y6Q')
@@ -45,6 +91,9 @@ angular.module('siteConfig',[])
     return $window.firebase.database().ref();
   }])
   .run(function(){
+    /**
+     * Google Analytics App ID
+     */
     var googleAppID = 'UA-74513768-1';
 
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

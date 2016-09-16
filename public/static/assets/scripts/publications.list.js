@@ -19,10 +19,35 @@ publicationsModule
     'LOCATIONS_ROUTE_PARAMETERS',
     'ALGOLIA_APPLICATION_ID',
     'ALGOLIA_API_KEY',
-    function($q, $location, $window, algolia, FireRef , FireAuth, $firebaseArray, $firebaseObject, $route, $routeParams, notificationService, $filter, $uibModal, CATEGORIES, LOCATIONS, CATEGORIES_ROUTE_PARAMETERS, LOCATIONS_ROUTE_PARAMETERS, ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY){
+    'CLOUDINARY_CLOUD_NAME',
+    'CLOUDINARY_SITE_DEFAULT_IMAGES',
+    function(
+      $q,
+      $location,
+      $window,
+      algolia,
+      FireRef,
+      FireAuth,
+      $firebaseArray,
+      $firebaseObject,
+      $route,
+      $routeParams,
+      notificationService,
+      $filter,
+      $uibModal,
+      CATEGORIES,
+      LOCATIONS,
+      CATEGORIES_ROUTE_PARAMETERS,
+      LOCATIONS_ROUTE_PARAMETERS,
+      ALGOLIA_APPLICATION_ID,
+      ALGOLIA_API_KEY,
+      CLOUDINARY_CLOUD_NAME,
+      CLOUDINARY_SITE_DEFAULT_IMAGES
+    ){
+
       return {
         restrict:'E',
-        templateUrl: 'static/assets/views/directives/publicationsList.html',
+        templateUrl: 'static/assets/views/directives/publicationsListDirective.tpl.html',
         scope:{
           profile:'=?',
           editMode:'=?',
@@ -32,6 +57,9 @@ publicationsModule
           publications:'=?'
         },
         link : function($scope) {
+
+          $scope.CLOUDINARY_CLOUD_NAME = CLOUDINARY_CLOUD_NAME;
+          $scope.CLOUDINARY_SITE_DEFAULT_IMAGES = CLOUDINARY_SITE_DEFAULT_IMAGES;
 
           $scope.profile  = typeof $scope.profile !== 'undefined' ? $scope.profile : {};
           $scope.editMode = typeof $scope.editMode !== 'undefined' ? $scope.editMode : false;
@@ -593,8 +621,8 @@ publicationsModule
 
           /*
 
-          Al principo la URL se refleja en el estado interno,
-          luego el estado interno se refleja en la url.
+           Al principo la URL se refleja en el estado interno,
+           luego el estado interno se refleja en la url.
 
 
            */
@@ -811,7 +839,7 @@ publicationsModule
                jobHasBenefits:[],
                jobHasBonus:[]
                },
-              */
+               */
 
               $location.search(getCurrentURLState({
                 'c':'categories',
@@ -883,7 +911,7 @@ publicationsModule
           $scope.responsiveFilters = function(size){
             if($scope.algolia.res.nbHits > 0 ){
               var modalInstance = $uibModal.open({
-                templateUrl: 'responsiveFiltersModal.html',
+                templateUrl: 'static/assets/views/directives/publicationsResponsiveFiltersModal.html',
                 controller: 'ResponsiveFiltersController',
                 size: size,
                 resolve: {
