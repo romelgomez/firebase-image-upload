@@ -19,6 +19,10 @@ angular.module('siteConfig',[])
     accountBanner: {
       jpg : 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,q_auto:best,w_2000/v1471962346/iceland_q4qb4e.jpg',
       webp : 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,q_auto:best,w_2000/v1471962346/iceland_q4qb4e.webp'
+    },
+    accountProfileImage:{
+      jpg: 'https://res.cloudinary.com/berlin/image/upload/c_scale,w_400/v1471961823/unnamedPerson_diuaor.jpg',
+      webp: 'https://res.cloudinary.com/berlin/image/upload/c_scale,w_400/v1471961823/unnamedPerson_diuaor.webp'
     }
   })
   .constant('ALGOLIA_APPLICATION_ID', 'FU6V8V2Y6Q')

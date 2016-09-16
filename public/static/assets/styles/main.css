@@ -101,6 +101,38 @@ h4 {
     margin-top: 10px;
 }
 
+.sidebar-account-publications-pseudonym {
+    color: #000;
+    font-size: 22px;
+    font-family: sans-serif;
+}
+
+.sidebar-account-publications-account-name {
+    text-shadow: 0 0 0.3px rgba(0,0,0,.8);
+}
+
+.sidebar-account-publications-profile-photos {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.sidebar-account-publications-profile-photos div {
+    padding-right:5px;
+    padding-left: 5px;
+}
+
+.sidebar-account-publications-info {
+    border-bottom: 1px solid #D4D4D4;
+    background: white;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.sidebar-account-publications-info-linkedin {
+    display: inline-block;
+    margin-left: 4px;
+}
+
+
 
 /*!* FileUpload START *!*/
 .remove-button{
