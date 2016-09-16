@@ -34,36 +34,45 @@ angular.module('app',[
     'SITE_TITLE',
     'SITE_URL',
     'SITE_TWITTER',
-    function( $scope, FireAuth, $location, SITE_TITLE, SITE_URL, SITE_TWITTER){
+    'SITE_CURRENCY_SYMBOL',
+    'CLOUDINARY_CLOUD_NAME',
+    'CLOUDINARY_SITE_DEFAULT_IMAGES',
+    function( $scope, FireAuth, $location, SITE_TITLE, SITE_URL, SITE_TWITTER, SITE_CURRENCY_SYMBOL, CLOUDINARY_CLOUD_NAME, CLOUDINARY_SITE_DEFAULT_IMAGES){
 
-    $scope.SITE_TITLE = SITE_TITLE;
-    $scope.SITE_URL = SITE_URL;
-    $scope.SITE_TWITTER = SITE_TWITTER;
+      /**
+       * Make available in the all views
+       */
+      $scope.SITE_TITLE = SITE_TITLE;
+      $scope.SITE_URL = SITE_URL;
+      $scope.SITE_CURRENCY_SYMBOL = SITE_CURRENCY_SYMBOL;
+      $scope.SITE_TWITTER = SITE_TWITTER;
+      $scope.CLOUDINARY_CLOUD_NAME = CLOUDINARY_CLOUD_NAME;
+      $scope.CLOUDINARY_SITE_DEFAULT_IMAGES = CLOUDINARY_SITE_DEFAULT_IMAGES;
 
-    FireAuth.$onAuthStateChanged(function(firebaseUser) {
-      $scope.firebaseUser = firebaseUser;
-    });
+      FireAuth.$onAuthStateChanged(function(firebaseUser) {
+        $scope.firebaseUser = firebaseUser;
+      });
 
-    $scope.$watch(function(){
-      return $location.path();
-    },function(){
-      $scope.locationPath = $location.path();
-    });
+      $scope.$watch(function(){
+        return $location.path();
+      },function(){
+        $scope.locationPath = $location.path();
+      });
 
-    $scope.logout = function() { FireAuth.$signOut(); };
+      $scope.logout = function() { FireAuth.$signOut(); };
 
-    $scope.sizeOf = function(obj) {
-      if (typeof obj === 'undefined'){
-        obj = {};
-      }
-      return Object.keys(obj).length;
-    };
+      $scope.sizeOf = function(obj) {
+        if (typeof obj === 'undefined'){
+          obj = {};
+        }
+        return Object.keys(obj).length;
+      };
 
-    $scope.firstObj = function (obj) {
-      for (var key in obj) if (obj.hasOwnProperty(key)) return key;
-    };
+      $scope.firstObj = function (obj) {
+        for (var key in obj) if (obj.hasOwnProperty(key)) return key;
+      };
 
-  }])
+    }])
   .directive('facebook',['$window', 'FACEBOOK_API_ID', 'FACEBOOK_SDK_VERSION', function ($window, FACEBOOK_API_ID, FACEBOOK_SDK_VERSION) {
 
     return {

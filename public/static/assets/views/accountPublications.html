@@ -1,4 +1,4 @@
-<div class="container" style="margin-top: 17px;" ng-show="!lording.isDone">
+<div class="container view-container" ng-show="!lording.isDone">
   <div cg-busy="{promise: lording.promise, message:'Just a moment'}">
     <div class="panel panel-default loading-background">
       <div class="panel-body">
@@ -15,8 +15,8 @@
     <div>
 
       <picture>
-        <source type="image/webp" ng-srcset="{{(profile.$banners.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,q_auto:best,w_2000/' + profile.$banners[0].$id + '.webp' : 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,q_auto:best,w_2000/v1471962346/iceland_q4qb4e.webp'}}">
-        <img ng-src="{{(profile.$banners.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,q_auto:best,w_2000/' + profile.$banners[0].$id + '.jpg' : 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,q_auto:best,w_2000/v1471962346/iceland_q4qb4e.jpg'}}" class="img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }">
+        <source type="image/webp" ng-srcset="{{(profile.$banners.length > 0) ? 'https://res.cloudinary.com/'+ CLOUDINARY_CLOUD_NAME +'/image/upload/c_fill,h_617,q_auto:best,w_2000/' + profile.$banners[0].$id + '.webp' : CLOUDINARY_SITE_DEFAULT_IMAGES.accountBanner.webp}}">
+        <img ng-src="{{(profile.$banners.length > 0) ? 'https://res.cloudinary.com/'+ CLOUDINARY_CLOUD_NAME +'/image/upload/c_fill,h_617,q_auto:best,w_2000/' + profile.$banners[0].$id + '.jpg' : CLOUDINARY_SITE_DEFAULT_IMAGES.accountBanner.jpg}}" class="img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }">
       </picture>
 
     </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-3">
 
             <picture>
-              <source type="image/webp" ng-srcset="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:best,w_400/' + profile.$images[0].$id + '.webp' : 'https://res.cloudinary.com/berlin/image/upload/c_scale,w_400/v1471961823/unnamedPerson_diuaor.webp'}}">
+              <source type="image/webp" ng-srcset="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/'+ CLOUDINARY_CLOUD_NAME +'/image/upload/c_fill,h_400,q_auto:best,w_400/' + profile.$images[0].$id + '.webp' : 'https://res.cloudinary.com/berlin/image/upload/c_scale,w_400/v1471961823/unnamedPerson_diuaor.webp'}}">
               <img ng-click="profileImages('lg', profile.$images.length-1)" ng-src="{{(profile.$images.length > 0) ? 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:best,w_400/' + profile.$images[0].$id + '.jpg' : 'https://res.cloudinary.com/berlin/image/upload/c_scale,w_400/v1471961823/unnamedPerson_diuaor.jpg'}}" class="img-thumbnail img-responsive" ng-style="{cursor: (profile.$images.length > 0) ? 'pointer' : 'default' }">
             </picture>
 

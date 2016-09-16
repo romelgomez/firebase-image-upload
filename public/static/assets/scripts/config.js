@@ -15,6 +15,12 @@ angular.module('siteConfig',[])
   .constant('CLOUDINARY_CLOUD_NAME', 'berlin')
   .constant('CLOUDINARY_URL', 'https://api.cloudinary.com/v1_1/berlin/upload')
   .constant('CLOUDINARY_UPLOAD_PRESET', 'ebdyaimw')
+  .constant('CLOUDINARY_SITE_DEFAULT_IMAGES', {
+    accountBanner: {
+      jpg : 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,q_auto:best,w_2000/v1471962346/iceland_q4qb4e.jpg',
+      webp : 'https://res.cloudinary.com/berlin/image/upload/c_fill,h_617,q_auto:best,w_2000/v1471962346/iceland_q4qb4e.webp'
+    }
+  })
   .constant('ALGOLIA_APPLICATION_ID', 'FU6V8V2Y6Q')
   .constant('ALGOLIA_API_KEY', '75b635c7c8656803b0b9e82e0510f266')
   .constant('FACEBOOK_API_ID', '1717304911824824')

@@ -10,15 +10,7 @@ publicationsModule
     '$firebaseObject',
     'notificationService',
     'SITE_URL',
-    'SITE_TITLE',
-    'CLOUDINARY_CLOUD_NAME',
-    'SITE_CURRENCY_SYMBOL',
-    function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseObject, notificationService, SITE_TITLE, SITE_URL, CLOUDINARY_CLOUD_NAME, SITE_CURRENCY_SYMBOL){
-
-      $scope.CLOUDINARY_CLOUD_NAME = CLOUDINARY_CLOUD_NAME;
-      $scope.SITE_URL = SITE_URL;
-      $scope.SITE_TITLE = SITE_TITLE;
-      $scope.SITE_CURRENCY_SYMBOL = SITE_CURRENCY_SYMBOL;
+    function($scope, $q, $window, $filter, $routeParams, $location, FireRef, $firebaseObject, notificationService, SITE_URL){
 
       $scope.publication = {
         $isReady: false,

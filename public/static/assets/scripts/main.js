@@ -1,6 +1,5 @@
 angular.module('main',[])
-  .controller('MainController',['$scope', '$q', 'SITE_TITLE',function($scope, $q, SITE_TITLE){
-    $scope.SITE_TITLE = SITE_TITLE;
+  .controller('MainController',['$scope', '$q', function($scope, $q){
 
     $scope.lording = {
       deferred: $q.defer(),
