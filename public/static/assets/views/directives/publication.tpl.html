@@ -1,0 +1,179 @@
+<!-- publication -->
+<div>
+
+  <!-- Title -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <div ng-if="editMode">
+        <a ng-href="/v/{{publication.categories | lodashJoin:' ' | slug }}-in-{{publication.locations | lodashJoin:' ' | slug }}/{{publication.objectID}}/{{publication.title | slug}}.html">
+          <h4>
+            <span style="color: #286090" class="glyphicon" ng-class="{'glyphicon-shopping-cart': (publication.department === 'Marketplace'),'glyphicon-briefcase': (publication.department === 'Jobs'),'glyphicon-home': (publication.department === 'Real Estate'),'glyphicon-plane': (publication.department === 'Transport'),'glyphicon-wrench': (publication.department === 'Services')}"></span>
+            - <span ng-bind-html="publication._highlightResult.title.value | unsafe"></span>
+          </h4>
+        </a>
+      </div>
+
+      <div ng-if="!editMode">
+        <h4>
+          <span style="color: #286090" class="glyphicon" ng-class="{'glyphicon-shopping-cart': (publication.department === 'Marketplace'),'glyphicon-briefcase': (publication.department === 'Jobs'),'glyphicon-home': (publication.department === 'Real Estate'),'glyphicon-plane': (publication.department === 'Transport'),'glyphicon-wrench': (publication.department === 'Services')}"></span>
+          - <span ng-bind-html="publication._highlightResult.title.value | unsafe"></span>
+        </h4>
+      </div>
+
+      <hr class="hr-xs">
+    </div>
+  </div>
+
+  <!-- Publication feature Image an details - only if the publications type is: ['Marketplace', 'Real Estate', 'Transport', 'Services'] -->
+  <div ng-if="(publication.department === 'Marketplace') || (publication.department === 'Real Estate') || (publication.department === 'Transport') || (publication.department === 'Services')">
+    <div class="row">
+      <!-- Feature Image -->
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+
+        <div ng-if="editMode">
+          <!-- Publication Link -->
+          <a ng-href="/v/{{publication.categories | lodashJoin:' ' | slug }}-in-{{publication.locations | lodashJoin:' ' | slug }}/{{publication.objectID}}/{{publication.title | slug}}.html">
+
+            <picture ng-show="sizeOf(publication.images) === 0">
+              <source type="image/webp" ng-srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.webp}}">
+              <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.jpg}}" class="img-responsive img-thumbnail">
+            </picture>
+
+            <picture ng-show="sizeOf(publication.images) > 0">
+              <source type="image/webp" ng-srcset="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
+              <img ng-src="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
+            </picture>
+          </a>
+        </div>
+
+        <div ng-if="!editMode">
+          <picture ng-show="sizeOf(publication.images) === 0">
+            <source type="image/webp" ng-srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.webp}}">
+            <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.jpg}}" class="img-responsive img-thumbnail">
+          </picture>
+
+          <picture ng-show="sizeOf(publication.images) > 0">
+            <source type="image/webp" ng-srcset="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
+            <img ng-src="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_400,q_auto:good,w_700/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
+          </picture>
+        </div>
+
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+
+        <hr class="hr-xs visible-xs-block visible-sm-block">
+
+        <ul class="list-unstyled">
+
+          <!-- Price - only if the publications type is: ['Real Estate', 'Jobs', 'Marketplace', 'Transport']-->
+          <li ng-if="publication.department !== 'Services'">
+            <h4>
+              <span ng-bind="publication.price | currency : '£' : 2"></span>
+            </h4>
+          </li>
+          <!-- Home For Sell or Rent - only if the publications type is: ['Real Estate']-->
+          <li ng-if="publication.department === 'Real Estate'">
+            <span class="glyphicon glyphicon-home" aria-hidden="true"></span> <b><span ng-bind="publication.reHomeStatus"></span> Home for <span ng-bind="publication.reHomeFor"></span></b>
+          </li>
+
+          <!-- Location of the Publication -->
+          <li>
+            <h5>
+              <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+              <span ng-repeat="location in publication.locations"> <span ng-bind="location | capitalizeFirstChar"></span> <span ng-bind="!$last ? ' • ': ''"></span> </span>
+            </h5>
+          </li>
+
+          <!-- Release Date  -->
+          <li>
+            <h5>
+              <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> Since: <span ng-bind="publication.releaseDate | date:'dd'"></span>/<span ng-bind="publication.releaseDate | date:'MM'"></span>/<span ng-bind="publication.releaseDate | date:'yy'"></span>
+            </h5>
+          </li>
+
+          <!-- Edit button -->
+          <li ng-if="editMode" ng-if="algolia.faceting.currentFacets.userID.length > 0">
+            <button type="button" class="btn btn-warning btn-xs" ng-click="editPublication(publication.objectID)">Edit</button>
+          </li>
+
+        </ul>
+
+      </div>
+    </div>
+  </div><!-- END Publication feature Image an details -->
+
+  <!-- Jobs related details - only if the publications type is: ['Jobs']-->
+  <div ng-if="(publication.department === 'Jobs')">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+        <ul class="list-unstyled">
+
+          <!-- Salary -->
+          <li>
+            <h4>
+              <span ng-bind="publication.jobSalaryStartAt | currency : '£' : 2 "></span> - <span ng-bind="publication.jobSalaryEndAt | currency : '£' : 2 "></span>
+              per <span ng-bind="publication.jobSalaryType == 'Annual' ? 'annum' : ''"></span>
+              <span ng-bind="publication.jobSalaryType == 'Daily' ? 'day' : ''"></span>
+              <span ng-bind="publication.jobSalaryType == 'Hourly' ? 'hour' : ''"></span>
+              <span ng-bind="publication.jobHasBenefits ? '+ benefits' : ''"></span>
+              <span ng-bind="publication.jobHasBonus ? '+ bonus' : ''"></span>
+              (Estimated Monthly Salary <span ng-bind="publication.jobEstimatedMonthlySalary | currency : '£' : 2 "></span>)
+            </h4>
+          </li>
+
+          <!-- Job type -->
+          <li><span class="glyphicon glyphicon-time" aria-hidden="true"></span> <span ng-bind="publication.jobType"></span></li>
+
+          <!-- Location of the job -->
+          <li>
+            <h5>
+              <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+              <span ng-repeat="location in publication.locations"> <span ng-bind="location | capitalizeFirstChar"></span> <span ng-bind="!$last ? ' • ': ''"></span> </span>
+            </h5>
+          </li>
+
+          <!-- Release Date -->
+          <li>
+            <h5>
+              <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> Since: <span ng-bind="publication.releaseDate | date:'dd'"></span>/<span ng-bind="publication.releaseDate | date:'MM'"></span>/<span ng-bind="publication.releaseDate | date:'yyyy'"></span>
+            </h5>
+          </li>
+
+          <!-- Edit button -->
+          <li ng-if="editMode" ng-if="algolia.faceting.currentFacets.userID.length > 0">
+            <button type="button" class="btn btn-warning btn-xs" ng-click="editPublication(publication.objectID)">Edit</button>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- Feature Image -->
+      <div class="hidden-xs hidden-sm col-md-2 col-lg-2">
+
+        <picture ng-show="sizeOf(publication.images) === 0">
+          <source type="image/webp" ng-srcset="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.webp}}">
+          <img ng-src="{{CLOUDINARY_SITE_DEFAULT_IMAGES.publicationsListDirective.noImageAvailableBig.jpg}}" class="img-responsive img-thumbnail">
+        </picture>
+
+        <picture ng-show="sizeOf(publication.images) > 0">
+          <source type="image/webp" ng-srcset="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_150,q_auto:low,w_250/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.webp">
+          <img ng-src="https://res.cloudinary.com/{{CLOUDINARY_CLOUD_NAME}}/image/upload/c_fill,h_150,q_auto:low,w_250/{{publication.featuredImageId !== '' ? publication.featuredImageId : firstObj(publication.images)}}.jpg" class="img-responsive img-thumbnail">
+        </picture>
+
+      </div>
+
+    </div><!-- END Jobs related details -->
+
+    <!-- Publication description -->
+    <div class="row">
+      <div class="col-xs-12">
+        <hr class="hr-xs">
+        <span ng-bind="publication.description | lodashTruncates: 147" ></span>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
