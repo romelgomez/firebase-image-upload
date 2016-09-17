@@ -6,9 +6,6 @@
 
     <form id="profileDetails" name="forms.profileDetails" novalidate="" ng-submit="submit()">
 
-      <!--<pre>{{forms.profileDetails | json}}</pre>-->
-      <!--<pre>{{profile | json}}</pre>-->
-
       <div class="form-group" ng-class="{'has-success has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.accountName.$valid),'has-error has-feedback': (forms.profileDetails.$submitted && forms.profileDetails.accountName.$invalid) }">
         <label class="control-label">Account Name <sup style="color: red;">*</sup></label>
         <input type="text" name="accountName" ng-model="model.accountName" required ng-trim no-special-chars camel-case is-account-name-available profile="profile" class="form-control" placeholder="E.g. londonServicesLTD">
