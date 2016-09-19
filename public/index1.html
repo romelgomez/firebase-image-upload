@@ -45,7 +45,7 @@
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0;">
   <div class="container" >
     <div class="navbar-header">
 
@@ -56,7 +56,7 @@
         <span class="icon-bar"></span>
       </button>
 
-      <a class="navbar-brand font-raleway" ng-href="/" id="logo">
+      <a class="navbar-brand font-raleway" ng-href="/" style="padding: 6px;">
 
         <picture>
           <source type="image/webp" srcset="https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:low,w_250/v1472222421/logo_3_iglbc5.webp">
@@ -70,10 +70,10 @@
 
     <div class="collapse navbar-collapse" id="js-navbar-collapse"  ng-cloak="">
       <ul class="nav navbar-nav">
-        <li><a ng-href="/new-publication" id="new-publication">Publish Something for FREE!</a></li>
+        <li><a ng-href="/new-publication" style="color: #337ab7;">Publish Something for FREE!</a></li>
         <li ng-cloak ng-show="firebaseUser" ><a ng-href="/account">Account</a></li>
-        <li ng-cloak ng-show="!firebaseUser" ><a ng-href="/login" id="login" >Log in</a></li>
-        <li ng-cloak ng-show="firebaseUser" ><a ng-click="logout()" id="logout" >logout</a></li>
+        <li ng-cloak ng-show="!firebaseUser" ><a ng-href="/login" style="color: #337ab7;" >Log in</a></li>
+        <li ng-cloak ng-show="firebaseUser" ><a ng-click="logout()" style="cursor: pointer; color: red;" >logout</a></li>
       </ul>
     </div>
   </div>
@@ -82,7 +82,7 @@
 <!-- Publications -->
 <div ng-show="locationPath === '/'">
 
-  <div id="publications-container" class="container">
+  <div class="container" style="margin-top: 20px;">
     <div class="panel panel-default">
       <div class="panel-body">
 
@@ -98,7 +98,7 @@
         </div>
 
         <div>
-          <div id="loading-background-container" ng-show="!lording.isDone">
+          <div ng-show="!lording.isDone" style="margin-top: 10px; border: 0; border-top: 1px solid #eee;">
             <div cg-busy="{promise: lording.promise, message:'Just a moment'}">
               <div class="loading-background img-responsive">
                 <div>
