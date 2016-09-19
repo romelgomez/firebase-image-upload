@@ -66,7 +66,7 @@ angular.module('siteConfig',[])
         webp:'https://res.cloudinary.com/berlin/image/upload/c_fill,h_400,q_auto:low,w_700/noImageAvailableBig_lxxmuu.webp'
       },
       algoliaLogo:{
-        jpg:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:low,w_70/v1472131370/Algolia_logo_bg-white_jn2n2w.jpg',
+        png:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:low,w_70/v1472131370/Algolia_logo_bg-white_jn2n2w.png',
         webp:'https://res.cloudinary.com/berlin/image/upload/c_scale,q_auto:low,w_70/v1472131370/Algolia_logo_bg-white_jn2n2w.webp'
       }
     }
