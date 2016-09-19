@@ -82,6 +82,37 @@ h4 {
     margin-bottom: 10px;
 }
 
+#new-publication {
+    color: #337ab7;
+}
+
+#login {
+    color: #337ab7;
+}
+
+#logout {
+    cursor: pointer;
+    color: red;
+}
+
+#logo {
+    padding: 6px;
+}
+
+#navbar {
+    margin-bottom: 0;
+}
+
+#publications-container{
+    margin-top: 20px;
+}
+
+#loading-background-container{
+    margin-top: 10px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+
 #category-selection .panel-footer{
     text-align: right;
 }

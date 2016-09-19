@@ -303,6 +303,10 @@ module.exports = function(app) {
     res.sendFile('robots.txt', {root: path.join(process.cwd(), basePath)});
   });
 
+  app.get('/robots.xml', function(req, res) {
+    res.sendFile('robots.xml', {root: path.join(process.cwd(), basePath)});
+  });
+
   app.get('/manifest.txt', function(req, res) {
     res.sendFile('manifest.txt', {root: path.join(process.cwd(), basePath)});
   });
