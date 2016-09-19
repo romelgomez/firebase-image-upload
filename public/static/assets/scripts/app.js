@@ -19,7 +19,6 @@ angular.module('app',[
     'accountPublications',
     'trTrustpass',
     'ngPasswordStrength',
-    'cloudinary',
     'algoliasearch',
     'images',
     'ngMessages',
