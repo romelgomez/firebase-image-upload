@@ -264,7 +264,7 @@
           <div ng-show="algolia.res.nbHits > 1 && algolia.faceting.currentFacets.categories.length > 0" class="well well-sm" style="margin-bottom: 10px;">
             <div style="margin-bottom: 5px;">Sorted by: </div>
             <select  class="form-control" ng-model="algolia.sortOrder.currentIndexName" ng-change="algolia.sortOrder.sortBy()">
-              <option ng-repeat="sortOrder in algolia.sortOrder.options[algolia.faceting.currentFacets.categories[0].name]" value="{{sortOrder.indexName}}"><span ng-bind="sortOrder.title"></span></option>
+              <option ng-repeat="sortOrder in algolia.sortOrder.options[algolia.faceting.currentFacets.categories[0].name]" value="{{sortOrder.indexName}}">{{sortOrder.title}}</option>
             </select>
           </div>
 
