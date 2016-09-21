@@ -1,14 +1,6 @@
 angular.module('main',[])
-  .controller('MainController',['$scope', '$q', function($scope, $q){
+  .controller('MainController',['$scope',function($scope){
 
-    $scope.lording = {
-      deferred: $q.defer(),
-      isDone: false,
-      promises: []
-    };
 
-    $scope.lording.promise = $scope.lording.deferred.promise;
 
-  }])
-  .controller('EmptyController',[function(){
   }]);

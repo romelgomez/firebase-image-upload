@@ -1,0 +1,14 @@
+<!-- Upload Image Directive Example -->
+<form id="profileImages" name="forms.profileImages" novalidate="" ng-submit="submit()">
+  <upload-images
+    form-name="forms.profileImages"
+    http-request-promise="httpRequestPromise"
+    images="images"
+    images-tag="'profile-' +user.uid"
+    images-path="'users/' + user.uid + '/images'"
+    featured-image-id="profile.featuredImageId"
+    featured-image-path="'users/' + user.uid"
+    featured-image-name="'featuredImageId'" ></upload-images>
+</form>
+
+<button ng-show="imagesInfo().inQueue > 0" form="profileImages" class="btn btn-primary" type="submit">Upload</button>

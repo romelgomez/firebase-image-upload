@@ -1,37 +1,8 @@
 var Q = require('q');
 var cloudinary = require('cloudinary');
-//var formidable = require('formidable');
+var cloudinaryConfig = require('./cloudinaryConfig');
 
-cloudinary.config({
-  cloud_name: 'berlin',
-  api_key: '987626748619663',
-  api_secret: 'ZtQveh15sfuAmOjFkRyuUgMpGuA'
-});
-
-/**
- * Upload file
- * @param {File} file
- * @param {Object} fields
- * @return {Promise<Object>}
- * */
-function $upload(file,fields){
- var deferred = Q.defer();
-
-  cloudinary.uploader.upload(
-    file.path,
-    function(result) {
-      deferred.resolve({result: result});
-    },
-    {
-      public_id: fields.fileId,
-      upload_preset: 'pmceswio',
-      context: 'alt=' + file.name + '|caption=' + file.name +  '|photo=' + file.name,
-      tags: [fields.publicationId]
-    }
-  );
-
-  return deferred.promise;
-}
+cloudinary.config(cloudinaryConfig.config);
 
 /**
  * Delete uploaded resource by public IDs
@@ -71,18 +42,14 @@ function $deleteByTag(tag){
   return deferred.promise;
 }
 
+/**
+ * API
+ */
 module.exports = function(app){
 
-  //app.post('/files', function(req, res){
-  //  var form = new formidable.IncomingForm();
-  //  form.parse(req, function(err, fields, files) {
-  //    $upload(files.file,fields)
-  //      .then(function(the){
-  //        res.json(the.result);
-  //      });
-  //  });
-  //});
-
+  /**
+   * DELETE
+   */
   app.delete('/files',function(req, res){
 
     if (typeof req.query.public_ids !== "undefined"){

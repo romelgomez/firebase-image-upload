@@ -1,17 +1,17 @@
-var Q = require('q');
+/**
+ * Run? 'node deleteAllResourceCloudinary.js'
+ * Will delete all images for the current config
+ */
+
 var cloudinary = require('cloudinary');
-var formidable = require('formidable');
+var cloudinaryConfig = require('./cloudinaryConfig');
 
-cloudinary.config({
-  cloud_name: 'berlin',
-  api_key: '987626748619663',
-  api_secret: 'ZtQveh15sfuAmOjFkRyuUgMpGuA'
-});
+cloudinary.config(cloudinaryConfig.config);
 
-// http://cloudinary.com/documentation/admin_api#delete_all_facebook_pictures
-
+/**
+ * More Info of delete_all_resources method:
+ * http://cloudinary.com/documentation/admin_api#delete_all_facebook_pictures
+ */
 cloudinary.api.delete_all_resources(function(result){
-
-  console.log('result: ',result);
-
+  console.log('Result: ',result);
 });

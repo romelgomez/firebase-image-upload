@@ -2,6 +2,6 @@
 bower_components
 node_modules
 .idea
-berlin.iml
 .tmp
 npm-debug.log
+firebase-image-upload.iml
